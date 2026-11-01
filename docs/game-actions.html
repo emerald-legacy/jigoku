@@ -146,7 +146,7 @@ this.action('Bow a character')
     <ul class="edge">
       <li>Its legality check only asks whether the target is a status token: no restriction stops it.</li>
       <li>Raises one <code>onStatusTokenDiscarded</code> event per token (<code>event.token</code>, and <code>event.cards</code>: the one card losing that token, or empty when the token is on no card).</li>
-      <li>Chat: "discard <em>card</em>'s status token", or "discard a status token" when no target token is on a card.</li>
+      <li>Chat: "discard <em>card</em>'s status token", naming only the first target token's card, or "discard a status token" when no target token is on a card.</li>
       <li>Builder shortcut: <code>.discardStatusToken(…)</code>.</li>
     </ul>
     <pre><code>// Perfect Land Ethos: Action: Discard each status token.
@@ -907,7 +907,7 @@ this.reaction('Draw 2 cards and return 1')
         <tr><td><code>takesNothingGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>Resolves (with its own default target) when nothing is taken.</td></tr>
         <tr><td><code>selectedCardsHandler</code></td><td><code>(context, event, cards) =&gt; void</code></td><td>none</td><td>Replaces the default handling of the taken cards (the chat line and <code>gameAction</code>).</td></tr>
         <tr><td><code>remainingCardsHandler</code></td><td><code>(context, event, cards) =&gt; void</code></td><td>none</td><td>Replaces <code>remainingCards</code>.</td></tr>
-        <tr><td><code>targets</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The card is chosen ("choose"), so Hantei XXXVIII may make the choice; he can't see the cards and chooses blindly: a random card, or none when only certain cards may be chosen (<code>cardCondition</code>: Miya Library).</td></tr>
+        <tr><td><code>targets</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The card is chosen ("choose"), so Hantei XXXVIII may make the choice; he can't see the cards and chooses blindly: random takeable cards, one at a time up to the mode's count, or none when only certain cards may be chosen (<code>cardCondition</code>: Miya Library).</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -982,7 +982,10 @@ this.reaction('Name a card')
     .gameAction(multiple((context) =&gt; {
         const cards = randomHandCards(context.player.opponent, 4);
         return [
-            lookAt(() =&gt; ({ target: cards })),
+            lookAt(() =&gt; ({
+                target: cards,
+                message: (context, cards) =&gt; msg`${context.player.opponent} reveals ${cards}`
+            })),
             discardMatching((context) =&gt; ({
                 target: context.player.opponent,
                 cards: cards,
@@ -1048,7 +1051,10 @@ this.reaction('Look at 3 random cards of the opponent\'s hand')
         target: shuffle(context.player.opponent?.hand ?? []).slice(0, 3),
         message: (context, cards) =&gt; msg`${context.player} sees ${cards} from ${context.player.opponent}'s hand`
     }))
-    .chatText((context) =&gt; msg`look at 3 random cards from ${context.player.opponent}'s hand`);</code></pre>
+    .chatText((context) =&gt; {
+        const amount = Math.min(3, context.player.opponent?.hand.length ?? 0);
+        return msg`look at ${amount} random card${amount === 1 ? '' : 's'} from ${context.player.opponent}'s hand`;
+    });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.3-JfS/CourtOfJustice.ts">Court of Justice</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/SceneOfTheCrime.ts">Scene of the Crime</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/DaidojiHarrier.ts">Daidoji Harrier</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.2-TL/UpholdingAuthority.ts">Upholding Authority</a></p>
   </div>
 <div class="ref" id="ga-rearrangeDeck" data-name="rearrangeDeck">
@@ -1149,7 +1155,7 @@ this.action('Give a character a +1/+1 attachment')
         <tr><td><code>destination</code></td><td><code>Location</code></td><td>none</td><td>Where they go, in their controller's zones. Without it nothing moves.</td></tr>
         <tr><td><code>bottom</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Put it on the bottom of a deck.</td></tr>
         <tr><td><code>shuffle</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Shuffle the destination deck after the last target moved.</td></tr>
-        <tr><td><code>faceup</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Turn the card faceup (ignored with <code>shuffle</code>).</td></tr>
+        <tr><td><code>faceup</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Turn the card faceup (not the last target when <code>shuffle</code> is set).</td></tr>
         <tr><td><code>changePlayer</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Move it to the zone of its controller's opponent.</td></tr>
         <tr><td><code>discardDestinationCards</code></td><td><code>boolean</code></td><td><code>false</code></td><td>When the destination is a province: first discard the dynasty cards in it.</td></tr>
         <tr><td><code>switch</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Swap places with <code>switchTarget</code>.</td></tr>
@@ -1316,7 +1322,7 @@ this.reaction('Refill province faceup')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Characters, attachments, events and holdings that are not already removed from the game. The target is evaluated once, so a random pick stays the same for the message and the move.</li>
+      <li>Characters, attachments, events and holdings that are not already removed from the game. <code>message</code> and <code>returnAtEndOfConflict</code> use the targets of the first evaluation, but the move evaluates the property factory again, so a random <code>target</code> computed in the factory can set aside other cards than the message names.</li>
       <li>The hidden and playable effects end when the card leaves the removed-from-game zone. It has no restriction type, and no event of its own.</li>
       <li>Chat: <code>set aside {0}</code>.</li>
       <li>No builder shortcut.</li>
@@ -1418,10 +1424,10 @@ this.action('Play an attachment')
       <tbody>
         <tr><td><code>target</code></td><td><code>BaseCard | BaseCard[]</code></td><td>the ability's source</td><td>The characters to put into play.</td></tr>
         <tr><td><code>fate</code></td><td><code>number</code></td><td><code>0</code></td><td>Fate the character enters play with. It sets the character's fate; it is not taken from anyone.</td></tr>
-        <tr><td><code>status</code></td><td><code>EntersPlayStatus</code></td><td>the card's <code>entersPlayStatus()</code></td><td><code>EntersPlayStatus.Honored</code> or <code>.Dishonored</code> to enter with that status. <code>Ordinary</code> (the default) uses the card's own status: <code>Ordinary</code>, except a card that "enters play dishonored" (Bayushi Shinobu).</td></tr>
+        <tr><td><code>status</code></td><td><code>EntersPlayStatus</code></td><td><code>EntersPlayStatus.Ordinary</code></td><td><code>EntersPlayStatus.Honored</code> or <code>.Dishonored</code> to enter with that status. <code>Ordinary</code> (the default) uses the card's own status: <code>Ordinary</code>, except a card that "enters play dishonored" (Bayushi Shinobu).</td></tr>
         <tr><td><code>controller</code></td><td><code>Players</code></td><td><code>Players.Self</code></td><td><code>Players.Opponent</code> gives control to the ability's player's opponent once in play.</td></tr>
         <tr><td><code>side</code></td><td><code>Player</code></td><td>the ability's player</td><td><code>putIntoConflict</code> only: whose side the character joins (attacking if that player attacks, else defending).</td></tr>
-        <tr><td><code>overrideLocation</code></td><td><code>Location</code></td><td>the card's location</td><td>What the event reports as <code>originalLocation</code>.</td></tr>
+        <tr><td><code>overrideLocation</code></td><td><code>Location</code></td><td>the card's location</td><td>What the event reports as <code>originalLocation</code>. No card or engine code passes it now.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -1551,7 +1557,7 @@ this.action('Turn attachment into character')
         cardCondition: (card, context) =&gt; card.parentCharacter?.controller === context.player,
         subActionProperties: (card) =&gt; ({
             target: card,
-            effect: [changeType(CardType.Character), …]
+            effect: [changeType(CardType.Character)].concat(…)
         }),
         gameAction: multiple([
             detach(),
@@ -1672,7 +1678,7 @@ this.persistentEffect({
     </table>
     <ul class="edge">
       <li>Only facedown dynasty characters, holdings or events in a province. Provinces themselves are revealed with <code>reveal</code>.</li>
-      <li>Raises <code>onCardRevealed</code>. Chat: "reveal the facedown card in <em>location</em>".</li>
+      <li>Raises <code>onCardRevealed</code>. Chat: "reveal the facedown card in <em>location</em>", or with several targets "reveal the facedown cards in <em>locations</em>" (each target's province).</li>
       <li>No builder shortcut.</li>
     </ul>
     <pre><code>// Daidoji Nerishma: Action: Choose a facedown card in one of your provinces – turn that card faceup.
@@ -1810,7 +1816,7 @@ this.action('Attacker moves a character home')
     </table>
     <ul class="edge">
       <li>The claimant is always the ability's player. Illegal when they can't claim rings (<code>RestrictionType.ClaimRings</code> on the player), the ring is removed from play, or they already claimed it.</li>
-      <li>Fate is only taken when the player may take fate from rings (<code>RestrictionType.TakeFateFromRings</code>): chat "<em>player</em> takes <em>N</em> fate from <em>ring</em>", and an <code>onMoveFate</code> event.</li>
+      <li>Fate is only taken when the ring has some and the player may take fate from rings (<code>RestrictionType.TakeFateFromRings</code>): chat "<em>player</em> takes <em>N</em> fate from <em>ring</em>", and an <code>onMoveFate</code> event.</li>
       <li>Unless <code>staysContested</code>, the ring stops being contested. Raises <code>onClaimRing</code>. Chat: "claim <em>ring</em>".</li>
       <li>No builder shortcut.</li>
     </ul>
@@ -1889,7 +1895,7 @@ this.reaction('Place 1 fate on each unclaimed ring')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Illegal for a ring already removed from play. A removed ring is neither unclaimed nor claimed.</li>
+      <li>Illegal for a ring already removed from play. A removed ring is not unclaimed (<code>isUnclaimed()</code> is false); its claimed state is left as it was.</li>
       <li>Its handler raises a second <code>onRemoveRingFromPlay</code> event, which does the removal.</li>
       <li>Chat: <code>remove the {0} from play</code>.</li>
       <li>No builder shortcut.</li>
@@ -1953,7 +1959,7 @@ this.reaction('Resolve the ring effect')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Several rings (RRG Ring Effects): one event opens a window where the resolving player (<code>player</code>) resolves the effects one at a time, each in full. They are ordered by the rings' priority (reversed when that player is not the first player); with that player's "order forced abilities" setting on, they choose the order. <code>enforceOrderedResolution</code> keeps the given order without a prompt.</li>
+      <li>Several rings (RRG Ring Effects): one event opens a window where the resolving player (<code>player</code>) resolves the effects one at a time, each in full. They are ordered by the rings' priority (reversed when the ability's player is not the first player); with that player's "order forced abilities" setting on, they choose the order. <code>enforceOrderedResolution</code> keeps the given order without a prompt.</li>
       <li>Several rings: each effect may be passed ("Don't resolve"), whatever <code>optional</code> says; Earth asks too.</li>
       <li>Several rings: the event counts as resolved in full (for <code>then()</code>) unless one of the ring effects was cancelled; a replaced one counts as resolved (Enlightenment).</li>
       <li>If the ability's player has a "cannot resolve rings" effect, the event is cancelled with the chat line <code>{player}'s ring effect is cancelled</code>, before its would-interrupt window (ruling #636: a cancelled ring effect can't be replaced). Raises <code>onResolveRingElement</code>.</li>
@@ -2223,7 +2229,7 @@ this.action('Flip the Imperial Favor')
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>gameAction</code></td><td><code>GameAction | ((winner: Player | null, context) =&gt; GameAction | null)</code></td><td>required</td><td>What happens after the count; the function form gets the winner (<code>null</code> on a tie).</td></tr>
+        <tr><td><code>gameAction</code></td><td><code>GameAction | ((winner: Player | null, context) =&gt; GameAction | null)</code></td><td>required</td><td>What happens after the count; the function form gets the winner (it isn't called on a tie).</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -2264,8 +2270,8 @@ this.action('Return player\'s rings')
         <tr><td><code>targetEffect</code></td><td><code>EffectFactory | EffectFactory[]</code></td><td>none</td><td>A lasting effect on the targets until the duel ends.</td></tr>
         <tr><td><code>refuseGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>The opponent is asked "Do you wish to refuse the duel?" while it has a legal target; "Yes" resolves it first, in its own window, and the duel is refused only if it resolved ("to"). A refusal whose effect was replaced (Kitsuki Shomon, Young Rumormonger dishonor another character) still refuses the duel (ruling #646); one an interrupt cancelled starts the duel.</td></tr>
         <tr><td><code>refusalMessage</code></td><td><code>(context, refuser) =&gt; MessageArgs</code></td><td>"<em>refuser</em> chooses to refuse the duel and …"</td><td>The chat line when the duel is refused: built when "Yes" is chosen (so it can read the state before the refusal), posted after the refusal fully resolved. A refusal that was replaced posts "<em>refuser</em> chooses to refuse the duel" instead; the replacement's own line names what happened. A refusal that didn't resolve posts none; the duel's own lines follow.</td></tr>
-        <tr><td><code>requiresConflict</code></td><td><code>boolean</code></td><td>unset (<code>.initiateDuel</code> sets <code>true</code>)</td><td>Characters added to the duel later must be participating. Unset, that holds when the duel was initiated during a conflict (RRG D.1); <code>false</code> lifts it.</td></tr>
-        <tr><td><code>targetCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>none</td><td>Who can be added to the duel later (Two Hands); replaces the participation check.</td></tr>
+        <tr><td><code>requiresConflict</code></td><td><code>boolean</code></td><td>unset (<code>.initiateDuel</code> sets <code>true</code>)</td><td>Characters added to the duel later must be participating. Unset, that holds when the duel was initiated during a conflict (RRG D.1); <code>false</code> lifts it. <code>.initiateDuel</code> also requires a participating challenger and target unless it is <code>false</code>.</td></tr>
+        <tr><td><code>targetCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>none</td><td>Who can be the duel's target (with <code>.initiateDuel</code>) or be added to the duel later (Two Hands); replaces the participation check.</td></tr>
         <tr><td><code>challengerCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>none</td><td>Read only by <code>.initiateDuel</code>, which uses it to choose the challenger.</td></tr>
       </tbody>
     </table>
@@ -2323,7 +2329,7 @@ this.duelChallenge('Add a character to the duel', (duel, context) =&gt; duel.cha
 </section>
 <section class="group">
 <h3 class="group-title" id="ga-group-1-bids">Bids</h3>
-<p>Fate and honor bids, and changing a bid after the dials are revealed. Abilities that read a bid read the dial (<code>player.showBid</code>); <code>modifyBid</code> adds a modifier on top of it.</p>
+<p>Honor bids, and changing a bid after the dials are revealed. The dial is <code>player.showBid</code>; <code>modifyBid</code> adds a modifier on top of it, and <code>player.honorBid</code> is the bid with that modifier (at least 0).</p>
 <div class="ref" id="ga-honorBid" data-name="honorBid">
     <h3><code>honorBid(properties?)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-honorBid">#</a></h3>
     <p>The players secretly choose a number on their honor dials and reveal them; then <code>postBidAction</code> resolves.</p>
@@ -2469,7 +2475,7 @@ this.action('Resurrect a character')
     </table>
     <ul class="edge">
       <li>A card is legal when at least one effect can be applied to it and no <code>CannotApplyLastingEffects</code> effect on it blocks that effect. Only the effects that can be applied are added. The location isn't checked.</li>
-      <li>The effect ends with its duration, or when the card changes zones (moving between provinces doesn't count) unless <code>canChangeZoneOnce</code> or <code>canChangeZoneNTimes</code> allow it.</li>
+      <li>The effect ends with its duration, when the card changes zones (moving between provinces doesn't count) or when it is turned facedown, unless <code>canChangeZoneOnce</code> or <code>canChangeZoneNTimes</code> allow it.</li>
       <li>Raises <code>onEffectApplied</code> (<code>event.effectTypes</code>).</li>
       <li>Builder shortcut: <code>.cardLastingEffect(…)</code>.</li>
     </ul>
@@ -2494,7 +2500,8 @@ this.conflictAction('Reduce opponent\'s characters mil', { conflictType: Conflic
         <tr><td><code>duration</code></td><td><code>Duration</code></td><td><code>Duration.UntilEndOfConflict</code></td><td>How long it lasts.</td></tr>
         <tr><td><code>until</code></td><td><code>EffectUntil</code></td><td>none</td><td>With <code>Duration.Custom</code>: when it ends.</td></tr>
         <tr><td><code>match</code></td><td><code>(card, context) =&gt; boolean</code></td><td>none</td><td>For a card effect: the cards it reaches while it lasts, also cards that enter play later (Grasp of Earth).</td></tr>
-        <tr><td><code>targetController</code></td><td><code>Players</code></td><td>none</td><td>With <code>match</code>: whose cards it reaches.</td></tr>
+        <tr><td><code>targetController</code></td><td><code>Players | Player</code></td><td>none</td><td>With <code>match</code>: whose cards it reaches.</td></tr>
+        <tr><td><code>endingMessage</code></td><td><code>string</code></td><td>none</td><td>With <code>Duration.Custom</code>: a chat line when the effect ends.</td></tr>
         <tr><td><code>condition</code></td><td><code>(context) =&gt; boolean</code></td><td>none</td><td>Only active while this holds.</td></tr>
         <tr><td><code>ability</code></td><td><code>BaseAbility</code></td><td>the resolving ability</td><td>The ability the effect belongs to.</td></tr>
       </tbody>
@@ -2617,7 +2624,7 @@ this.reaction('Count a ring as claimed')
         <tr><td><code>until</code></td><td><code>EffectUntil</code></td><td>none</td><td>With <code>Duration.Custom</code>: the events that end it.</td></tr>
         <tr><td><code>effect</code></td><td><code>EffectFactory | EffectFactory[]</code></td><td><code>takeControl(context.player)</code></td><td>The effects to apply instead.</td></tr>
         <tr><td><code>targetLocation</code></td><td><code>TargetLocation</code></td><td><code>Location.PlayArea</code></td><td>Doesn't limit it: the effect matches the card itself.</td></tr>
-        <tr><td colspan="4">Also the other <code>cardLastingEffect</code> properties: <code>condition</code>, <code>canChangeZoneOnce</code>, <code>canChangeZoneNTimes</code>, <code>chatText</code>.</td></tr>
+        <tr><td colspan="4">Its properties type has only these; the other <code>cardLastingEffect</code> properties (<code>condition</code>, <code>canChangeZoneOnce</code>, <code>chatText</code>, …) are not accepted.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -2863,7 +2870,7 @@ this.action('Remove a ring from the unclaimed ring pool')
       <li>Saying No to the prompt resolves nothing (not <code>noAffinityGameAction</code>).</li>
       <li>With the affinity but no legal target for <code>gameAction</code>, nobody is asked and nothing resolves.</li>
       <li>Chat: when the affinity is used, <code>{player} channels their {trait} affinity to {text}</code>, where {text} is <code>chatText</code> or the nested action's message. As an ability's effect message it is the message of the branch that applies.</li>
-      <li>Builder: <code>.onAffinity(trait, { activePromptTitle, chatText })</code> is a step modifier, not this action's shortcut: it wraps all the step's game actions in one <code>onAffinity</code> action.</li>
+      <li>Builder: <code>.onAffinity(trait, { activePromptTitle, chatText })</code> is a step modifier, not this action's shortcut: it wraps the step's own game actions (not those given to a target) in one <code>onAffinity</code> action.</li>
     </ul>
     <pre><code>// Earth's Examination: [conflict-political] Conflict Action: If you control a Shugenja character, choose a participating character - taint it, if able. With Earth affinity, you may bow that character. …
 .target({ … }, taint(), onAffinity({
@@ -2888,13 +2895,13 @@ this.action('Remove a ring from the unclaimed ring pool')
       <li>No builder shortcut.</li>
     </ul>
     <pre><code>// Deeds, not Words: … You may discard the Imperial Favor to honor that character. …
-chooseAction({
+trueGameAction: chooseAction({
     choices: {
         'Discard the Imperial Favor': sequential([…]),
         Done: noAction()
     }
 })</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Lion/DeedsNotWords.ts">Deeds, not Words</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/EbbAndFlow.ts">Ebb and Flow</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Lion/DeedsNotWords.ts">Deeds, not Words</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/EbbAndFlow.ts">Ebb and Flow</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/KitsukiSeiji.ts">Kitsuki Seiji</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Scorpion/IllusionaryDecoy.ts">Illusionary Decoy</a> (18 card files)</p>
 </div>
 <div class="ref" id="ga-optional" data-name="optional">
     <h3><code>optional(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-optional">#</a></h3>
@@ -3012,7 +3019,7 @@ this.action('Dishonor/Honor two characters')
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>cards</code></td><td><code>DrawCard[]</code></td><td><code>[]</code></td><td>The cards to choose from.</td></tr>
+        <tr><td><code>cards</code></td><td><code>DrawCard[]</code></td><td>required</td><td>The cards to choose from.</td></tr>
         <tr><td><code>gameAction</code></td><td><code>GameAction</code></td><td>required</td><td>Resolves on the chosen card.</td></tr>
         <tr><td><code>subActionProperties</code></td><td><code>(card) =&gt; Record&lt;string, unknown&gt;</code></td><td><code>(card) =&gt; ({ target: card })</code></td><td>What <code>gameAction</code> gets for a card. Return other properties to aim it elsewhere, e.g. <code>{ attachment: card }</code>.</td></tr>
         <tr><td><code>cardCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>any card</td><td>Which cards can be chosen. A card also needs <code>gameAction</code> to have a legal target with its sub-action properties.</td></tr>
@@ -3041,7 +3048,8 @@ this.reaction('Discard an opponent\'s card')
         location: Location.Hand
     })
     .lookAt((context) =&gt; ({
-        target: context.targets.target
+        target: context.targets.target,
+        message: (context, cards) =&gt; msg`${context.player.opponent} reveals ${cards}`
     }))
     .cardMenu((context) =&gt; ({
         cards: context.targets.target.filter((card) =&gt; card.isDrawCard()),
@@ -3254,6 +3262,7 @@ this.action('Make your opponent sacrifice a character')
 
 // The Receding Tide: … put that character into a non-stronghold province you control. …
 selectCard((context) =&gt; ({
+    targets: false,
     cardType: CardType.Province,
     controller: Players.Self,
     location: Location.Provinces,
@@ -3391,11 +3400,11 @@ this.action('Discard status token from attached character')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Legal if the ability meets its requirements with these ignored: wrong player, wrong location, limit reached, triggering restrictions, play restrictions (<code>CannotPlay</code>) and the Limited rule (<code>LimitedAlreadyPlayed</code>), plus <code>ignoredBlockers</code>; and it is not at its max for the player (unless <code>subResolution</code>).</li>
+      <li>Legal if the ability meets its requirements with these ignored: wrong player, wrong location, limit reached, triggering restrictions, play restrictions (<code>CannotPlay</code>) and the Limited rule (<code>LimitedAlreadyPlayed</code>), plus <code>ignoredBlockers</code>; it is not at its max for the player (unless <code>subResolution</code>); and its own costs can be paid (unless <code>ignoredBlockers</code> has <code>Blocker.CannotPayCost</code>).</li>
       <li>It goes straight to costs and targets: no early targeting, and it can't be cancelled while choosing. Play costs (an event's fate cost) and costs added by effects (<code>additionalTriggerCost</code>, <code>additionalPlayCost</code>) are never paid.</li>
       <li>Costs to choose a target ("as an additional cost to choose … as a target", <code>targetingCosts</code>) are paid when the effects start, after the targets are chosen; if they can't be paid, the resolution stops with "did not successfully pay the required costs". With <code>CannotPayCost</code> in <code>ignoredBlockers</code> (The Mirror's Gaze) neither they nor the ability's own costs are paid.</li>
       <li>Counts toward the ability's max unless <code>subResolution</code>. The resolved ability's own chat line reads <code>{player} resolves {card} …</code> instead of "uses" or "plays".</li>
-      <li>The resolution raises <code>onCardAbilityInitiated</code>, and also <code>onCardAbilityTriggered</code> for a triggered card ability unless <code>subResolution</code> is set. Both carry <code>resolvedWithoutTriggering: true</code>: Breach of Etiquette, The Weight of Duty, Hantei XXXVIII and duel limits ignore them.</li>
+      <li>The resolution raises <code>onCardAbilityInitiated</code> and <code>onInitiateAbilityEffects</code>, and also <code>onCardAbilityTriggered</code> for a triggered card ability unless <code>subResolution</code> is set. All carry <code>resolvedWithoutTriggering: true</code>: Breach of Etiquette, The Weight of Duty, Hantei XXXVIII, Hida Kisada, Kamayari, Kirei-ko and duel limits ignore them.</li>
       <li>No builder shortcut.</li>
     </ul>
     <pre><code>// The Mirror's Gaze: Reaction: After the effects of an opponent's event resolve – resolve that event again as if you had just played it, ignoring costs and triggering conditions. You may choose new targets.
@@ -3424,7 +3433,7 @@ this.reaction('Mirror an opponent\'s event')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Legal if the ability meets its requirements with wrong player, wrong location and limit reached ignored, plus <code>ignoredBlockers</code>. Unlike <code>resolveAbility</code>, triggering restrictions still apply.</li>
+      <li>Legal if the ability meets its requirements with wrong player, wrong location and limit reached ignored, plus <code>ignoredBlockers</code>; it is not at its max for the player (unless <code>subResolution</code>) and its own costs can be paid. Unlike <code>resolveAbility</code>, triggering restrictions still apply.</li>
       <li>Inside a select, the chosen card becomes the target: with Cunning Negotiator below, the chat names the province.</li>
       <li>No builder shortcut.</li>
     </ul>

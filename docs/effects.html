@@ -233,7 +233,7 @@ this.action('Choose a character to copy')
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>faction</code></td><td><code>string</code></td><td>required</td><td>The faction, e.g. <code>'scorpion'</code>.</td></tr>
+        <tr><td><code>faction</code></td><td><code>Faction</code></td><td>required</td><td>The faction, e.g. <code>'scorpion'</code> (the same values as <a href="#ef-addFaction"><code>addFaction</code></a>).</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -1029,7 +1029,7 @@ effect: [honorStatusDoesNotModifySkill(), honorStatusDoesNotAffectLeavePlay(), t
     <ul class="edge">
       <li>Gained abilities are not printed: <code>blank</code> doesn't remove them, <code>loseGainedAbilities</code> and <code>loseAllNonKeywordAbilities</code> do.</li>
       <li>The builder forms throw if the ability uses <code>playOnlyIf</code> ("a gained ability can't restrict playing the card"); the trigger forms throw without <code>when</code> or <code>aggregateWhen</code>.</li>
-      <li>Uses are counted per gaining card and kept when the same effect stops and starts again (a condition that turns off and on), so a "Max 1 per round" gained ability can't be reset that way.</li>
+      <li>Uses are counted per gaining card and kept when the same effect stops and starts again (a condition that turns off and on), so a gained ability's limit (once per round by default) can't be reset that way. A <code>max</code> counts per player across all copies anyway.</li>
       <li>Persistent form: <code>location</code> may only be <code>Location.PlayArea</code> (default) or <code>Location.Provinces</code>; any other value throws when the effect is applied. The constant ability starts only if the gaining card is in that location when it gains it. Set <code>createCopies: true</code> when several cards gain it at once, so each gets its own copy.</li>
       <li>Several cards granting the same ability give the card several separate abilities.</li>
     </ul>
@@ -1174,11 +1174,11 @@ this.persistentEffect({
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>targetAbility</code></td><td><code>CardAbility</code></td><td>every ability of the card</td><td>Only this ability gets the extra use.</td></tr>
-        <tr><td><code>applyingPlayer</code></td><td><code>Player</code></td><td>the effect source's controller</td><td>The player who gets the extra use.</td></tr>
+        <tr><td><code>applyingPlayer</code></td><td><code>Player</code></td><td>the player whose effect it is (<code>context.player</code>)</td><td>The player who gets the extra use.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
-      <li>Each copy raises the ability's limit by 1, for one player only (the effect source's controller, unless <code>applyingPlayer</code> is given): <code>BaseCard.getModifiedLimitMax</code>.</li>
+      <li>Each copy raises the ability's limit by 1, for one player only (the player whose effect it is, unless <code>applyingPlayer</code> is given): <code>BaseCard.getModifiedLimitMax</code>.</li>
       <li>It raises the ability's <code>limit</code>, not a <code>max</code>.</li>
       <li>Gained abilities count too; use <code>increaseLimitOnPrintedAbilities</code> for printed ones only.</li>
     </ul>
@@ -1206,7 +1206,7 @@ cardLastingEffect((context) =&gt; ({
       </tbody>
     </table>
     <ul class="edge">
-      <li>Only printed abilities count (<code>isPrintedAbility()</code>: not <code>.attachmentText()</code> text), and only for the effect source's controller. Each copy adds 1.</li>
+      <li>Only printed abilities count (<code>isPrintedAbility()</code>: not <code>.attachmentText()</code> text), and only for the player whose effect it is (<code>context.player</code>). Each copy adds 1.</li>
     </ul>
     <pre><code>// Centered Breath: Action: During a conflict, choose a participating Monk character – You may trigger each ability printed on that character an additional time this round (or specified period). …
 .target({
@@ -1301,7 +1301,7 @@ cardLastingEffect((context) =&gt; ({
 <h3 class="group-title" id="ef-group-1-restrictions">Restrictions</h3>
 <p>"Cannot" effects. Most of them store a restriction (<code>Restriction</code>, effect name <code>AbilityRestrictions</code>), which has two parts:</p>
   <ul>
-    <li><code>cannot</code>: what is forbidden. A <code>RestrictionType</code>, or a <code>PlayType</code> to forbid playing that way. A restriction without <code>cannot</code> forbids everything, including checks that name no type.</li>
+    <li><code>cannot</code>: what is forbidden. A <code>RestrictionType</code>, or a <code>PlayType</code> to forbid playing that way. A restriction without <code>cannot</code> forbids everything, including checks that name no type, except paying costs, removing fate and attaching (see <a href="#ef-immunity"><code>immunity</code></a>).</li>
     <li><code>appliesTo</code> (optional): whose attempts are forbidden. A <code>RestrictionScope</code>, a <code>{ trait }</code>, or an array of these, which must all match.</li>
   </ul>
   <p>The engine checks restrictions only where it calls <code>checkRestrictions(type, context)</code>. Every game action checks its own <code>restriction</code> type on each target in its <code>canAffect</code>: a restricted card is not a legal target, and the action does nothing to it. Targeting checks <code>RestrictionType.Target</code>.</p>
@@ -1409,8 +1409,8 @@ this.action('Opponent\'s characters at home can\'t use abilities')
       <tbody>
         <tr><td><code>properties</code></td><td><code>RestrictionType | PlayType | { … }</code></td><td>required</td><td>A bare type is short for <code>{ cannot: type }</code>.</td></tr>
         <tr><td><code>cannot</code></td><td><code>RestrictionType | PlayType</code></td><td>required</td><td>What is forbidden: <code>Bow</code>, <code>Target</code>, <code>SendHome</code>, <code>RemoveFate</code>, <code>DiscardFromPlay</code>, <code>MoveToConflict</code>, <code>TriggerAbilities</code>, … <code>RestrictionType.LeavePlay</code> covers discard from play, sacrifice, return to hand, return to deck, remove from game and put into a province.</td></tr>
-        <tr><td><code>appliesTo</code></td><td><code>RestrictionScope | { trait } | (…)[]</code></td><td>every attempt</td><td>Which attempts are forbidden, judged by the attempt's context: <code>RestrictionScope.OpponentsEvents</code>, <code>OpponentsCardEffects</code>, <code>CardEffects</code>, <code>RingEffects</code>, … <code>{ trait: Trait.Shugenja }</code> matches attempts whose source has the trait. With a list, every entry must match.</td></tr>
-        <tr><td><code>applyingPlayer</code></td><td><code>Player</code></td><td>the effect source's controller</td><td>"You" for the <code>Opponents…</code> and <code>Own…</code> scopes.</td></tr>
+        <tr><td><code>appliesTo</code></td><td><code>RestrictionScope | { trait } | (…)[]</code></td><td>every attempt</td><td>Which attempts are forbidden, judged by the attempt's context: <code>RestrictionScope.OpponentsEvents</code>, <code>OpponentsCardEffects</code>, <code>CardEffects</code>, <code>RingEffects</code>, … <code>OwnPrintedAbilities</code> ("you cannot trigger X's printed abilities": the applying player's uses of the card's printed abilities). <code>{ trait: Trait.Shugenja }</code> matches attempts whose source has the trait. With a list, every entry must match.</td></tr>
+        <tr><td><code>applyingPlayer</code></td><td><code>Player</code></td><td>the player whose effect it is (<code>context.player</code>)</td><td>"You" for the <code>Opponents…</code> and <code>Own…</code> scopes.</td></tr>
         <tr><td><code>source</code></td><td><code>BaseCard</code></td><td>—</td><td>Accepted by the type but ignored: <code>Restriction</code> does not read it.</td></tr>
       </tbody>
     </table>
@@ -1514,7 +1514,7 @@ this.whileAttached({
       <tbody>
         <tr><td><code>appliesTo</code></td><td><code>RestrictionScope | { trait: Trait } | (RestrictionScope | { trait: Trait })[]</code></td><td>every source</td><td>Whose effects the card is immune to. With an array, every entry must match.</td></tr>
         <tr><td><code>cannot</code></td><td><code>RestrictionType | PlayType</code></td><td>none: everything</td><td>Limit the immunity to one kind of attempt. With it set, this is the same as <code>cardCannot</code>.</td></tr>
-        <tr><td><code>applyingPlayer</code></td><td><code>Player</code></td><td>the effect source's controller</td><td>The player that "opponent" and "own" scopes are measured from.</td></tr>
+        <tr><td><code>applyingPlayer</code></td><td><code>Player</code></td><td>the player whose effect it is (<code>context.player</code>)</td><td>The player that "opponent" and "own" scopes are measured from.</td></tr>
         <tr><td><code>params</code></td><td><code>string</code></td><td>none</td><td>Extra data for a scope, e.g. the card name for <code>RestrictionScope.CopiesOfX</code>.</td></tr>
       </tbody>
     </table>
@@ -1571,7 +1571,7 @@ this.persistentEffect({
       <tbody>
         <tr><td><code>cannot</code></td><td><code>RestrictionType | PlayType</code></td><td>none: everything</td><td>What is forbidden.</td></tr>
         <tr><td><code>appliesTo</code></td><td><code>RestrictionScope | { trait: Trait } | …[]</code></td><td>every attempt</td><td>Which attempts are covered, e.g. <code>RestrictionScope.Events</code> with <code>cannot: Play</code>.</td></tr>
-        <tr><td><code>applyingPlayer</code></td><td><code>Player</code></td><td>the effect source's controller</td><td>The player that "opponent" and "own" scopes are measured from.</td></tr>
+        <tr><td><code>applyingPlayer</code></td><td><code>Player</code></td><td>the player whose effect it is (<code>context.player</code>)</td><td>The player that "opponent" and "own" scopes are measured from.</td></tr>
         <tr><td><code>params</code></td><td><code>string</code></td><td>none</td><td>Extra data for a scope, e.g. the card name for <code>CopiesOfX</code>.</td></tr>
       </tbody>
     </table>
@@ -1859,7 +1859,7 @@ this.action('cancel all ring effects')
       </tbody>
     </table>
     <ul class="edge">
-      <li>The ring passes if it has the element (<code>hasElement</code>) or the character itself adds it as an attacker.</li>
+      <li>The ring passes if it has the element (<code>hasElement</code>) or the character or an attachment on it adds it as an attacker.</li>
       <li>Not decided before a ring is chosen; choosing the ring checks the attackers again. With several effects, all must pass.</li>
       <li>Only declaration is restricted; moving to the conflict later is not.</li>
     </ul>
@@ -2429,7 +2429,7 @@ this.action('Allow attacking the stronghold')
       </tbody>
     </table>
     <ul class="edge">
-      <li>The number resolved is 1 plus the sum of all copies. When that reaches the ring's element count, all are resolved without a choice.</li>
+      <li>The number resolved is 1 plus the sum of all copies. When that reaches the ring's element count, the prompt adds a "Resolve All Elements" button; the player still picks (one element at a time, Done, or not at all).</li>
       <li>A conflict effect: it applies to the current conflict.</li>
     </ul>
     <pre><code>// Isawa Kaede: … If this character wins the conflict as an attacker, instead of choosing an element to resolve, resolve each of that ring's effects.
@@ -2775,7 +2775,7 @@ this.persistentEffect({
     </table>
     <ul class="edge">
       <li>Increases are added to the card's cost before reductions are taken off, then the cost floor applies.</li>
-      <li><code>amount: 0</code> turns into a reduction of 1 (the reducer defaults a falsy amount to 1).</li>
+      <li><code>amount: 0</code> changes nothing; only a missing amount defaults to 1 (<code>CostReducer</code>).</li>
     </ul>
     <pre><code>// Ageless Crone: During a conflict in which this character is participating, increase the cost for each player to play each event by 1.
 this.persistentEffect({
@@ -2850,7 +2850,7 @@ this.legendary(1);</code></pre>
     </table>
     <ul class="edge">
       <li>The target is a player: in a <code>persistentEffect</code> the default <code>targetController</code> is <code>Players.Self</code>; a card that reduces its own cost needs <code>location: Location.Any</code> (it is in hand) and <code>match: (card, source) =&gt; card === source</code>.</li>
-      <li>A detached effect: each application adds its own reducer; copies add up. <code>amount: 0</code> becomes 1.</li>
+      <li>A detached effect: each application adds its own reducer; copies add up. Only a missing <code>amount</code> becomes 1; <code>0</code> reduces nothing.</li>
       <li>A function <code>amount</code> gets the player who has the reducer, i.e. the one playing the card; it may return 0. "With Earth affinity, costs 1 less" (Grasp of Earth 2) reads that player's affinity there, with <code>targetController: Players.Any</code>: <code>targetCondition</code>'s context is the card's controller, who isn't always the player playing it (Trading on the Sand Road).</li>
       <li>It reduces the card's cost (<code>card.getCost()</code>), i.e. playing cards, not ability costs.</li>
     </ul>
@@ -3882,7 +3882,7 @@ this.persistentEffect({
     <ul class="edge">
       <li>A one-shot <code>when</code> effect is removed after the first matching event name, even if its function returned false; set <code>onlyRemoveOnSuccess</code> when other events of that name are expected first (e.g. <code>onCardLeavesPlay</code> for a specific card).</li>
       <li>A delayed effect in a <code>persistentEffect</code> is never removed by firing. A <code>condition</code> effect fires every time the condition holds at a state check; the action usually removes its cause (Obstinate Recruit leaves play).</li>
-      <li>The firing opens a window titled "&lt;source&gt;'s effect on &lt;target&gt;"; the action's events resolve in their own window.</li>
+      <li>The firing opens a window titled "&lt;source&gt;'s effect on &lt;target&gt;" ("&lt;source&gt;'s effect" when it is on several targets); the action's events resolve in their own window.</li>
       <li>On a player use <a href="#ef-playerDelayedEffect"><code>playerDelayedEffect</code></a>.</li>
     </ul>
     <pre><code>// A Perfect Cut: [conflict-military] Conflict Action: Choose a participating Bushi character - that character gets

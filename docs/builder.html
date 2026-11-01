@@ -522,7 +522,8 @@ this.declareAbilities(() =&gt; {
 this.reaction('Gain 2 fate')
     .aggregateWhen((events, context) =&gt;
         context.game.currentPhase === Phase.Fate &amp;&amp;
-        events.reduce((total, event) =&gt; total + (event.is(EventName.OnMoveFate) ? event.fate ?? 0 : 0), 0) &gt;= 4)
+        events.reduce((total, event) =&gt;
+            total + (event.is(EventName.OnMoveFate) &amp;&amp; event.origin?.type === CardType.Character ? event.fate ?? 0 : 0), 0) &gt;= 4)
     .gainFate(2)
     .chatText('gain 2 fate');</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/StarryHeavenSanctuary.ts">Starry Heaven Sanctuary</a></p>
@@ -2691,7 +2692,7 @@ this.action('Send a 2 or lower cost character home')
 
   <div class="ref" id="cm-getCurrentElementSymbol" data-name="getCurrentElementSymbol">
     <h3><code>getCurrentElementSymbol(key)</code> <span class="kind">Query</span> <a class="anchor" href="#cm-getCurrentElementSymbol">#</a></h3>
-    <p>The element of one of this card's element symbols, after effects that replace it. A card declares its symbols in <code>getPrintedElementSymbols()</code>, each with a <code>key</code>.</p>
+    <p>The element of one of this card's element symbols, after effects that replace it. A card declares its symbols in its <code>protected printedElementSymbols</code> list (read through <code>getPrintedElementSymbols()</code>), each with a <code>key</code>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2742,18 +2743,17 @@ this.action('Wield the power of the void')
     <h3><code>isBlank()</code> <span class="kind">Query</span> <a class="anchor" href="#cm-isBlank">#</a></h3>
     <p>Whether this card's printed text box is blank: a blank effect, or an effect that makes it a copy of another card. A province is also blank while it is broken or dishonored (unless the conflict ignores status tokens).</p>
     <ul class="edge">
-      <li>A blank card's printed abilities and persistent effects don't work; the engine checks this itself. Call it in cards that react through the event bus instead of an ability.</li>
+      <li>A blank card's printed abilities and persistent effects don't work; the engine checks this itself. Call it in card code outside an ability, such as an <code>allowAttachment()</code> override for a printed "No … attachments".</li>
     </ul>
-    <pre><code>// Hida Kisada: While you have not lost a conflict this phase, cancel the effects of the first action ability your opponent triggers from a card during each conflict.
-if(
-    … &amp;&amp;
-    this.location === Location.PlayArea &amp;&amp;
-    !this.isBlank() &amp;&amp;
-    …
-) {
-    event.cancel();
+    <pre><code>// Kitsuki Yaruma: Courtesy. No Poison attachments.
+override allowAttachment(attachment: BaseCard): boolean {
+    if(attachment.hasTrait(Trait.Poison) &amp;&amp; !this.isBlank()) {
+        return false;
+    }
+
+    return super.allowAttachment(attachment);
 }</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/HidaKisada.ts">Hida Kisada</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/KitsukiYaruma.ts">Kitsuki Yaruma</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/KitsukiChiari.ts">Kitsuki Chiari</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/KitsukiYaruma.ts">Kitsuki Yaruma</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/KitsukiChiari.ts">Kitsuki Chiari</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/Kuro.ts">Kuro</a></p>
   </div>
 
   <div class="ref" id="cm-isFaceup" data-name="isFaceup">

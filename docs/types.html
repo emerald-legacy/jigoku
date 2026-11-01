@@ -78,7 +78,7 @@ this.reaction('Disable a character')
     <li><code>gainStatusToken()</code> defaults <code>token</code> to <code>CharacterStatus.Honored</code>.</li>
     <li>The <code>onStatusTokenGained</code> event carries either a <code>StatusToken</code> (from honor, dishonor, taint, moving a token) or a <code>CharacterStatus</code> (from <code>gainStatusToken</code>); check <code>event.token instanceof StatusToken</code> before reading <code>grantedStatus</code>.</li>
   </ul>
-  <pre><code>// A Game of Letters: … choose a participating character and a status token on a character controlled by a different player - if you chose an honored status token, honor the chosen character. …
+  <pre><code>// A Game of Letters: … if you chose an honored status token, honor the chosen character. …
 .tokenTarget({
     name: 'token',
     activePromptTitle: 'Choose a token',
@@ -276,6 +276,17 @@ chosenReturnToDeck((context) =&gt; ({
   <pre><code>// Heart of the Inferno: … an attachment and you have Fire affinity, discard it.
 .gameAction(onAffinity({ trait: Trait.Fire, gameAction: discardFromPlay() }))</code></pre>
 </div>
+<div class="ref" id="en-Faction" data-name="Faction isFactionName">
+  <h3><code>Faction</code>, <code>isFactionName(value)</code> <span class="kind">Type</span> <a class="anchor" href="#en-Faction">#</a></h3>
+  <p>The clan names of the card and deck data, as a string union (<code>server/game/Constants/Faction.ts</code>, exported from <code>Constants.ts</code>): <code>'neutral'</code>, <code>'crab'</code>, <code>'crane'</code>, <code>'dragon'</code>, <code>'lion'</code>, <code>'phoenix'</code>, <code>'scorpion'</code>, <code>'unicorn'</code>, <code>'shadowlands'</code>.</p>
+  <p>Taken by <code>isFaction</code>, <code>addFaction</code>, <code>loseFaction</code> and <code>controlsClanCard</code>.</p>
+  <ul class="edge">
+    <li><code>isFactionName(value)</code> is a type guard: whether a string read from card or deck data (a printed faction, a stronghold's or deck's clan) is a known <code>Faction</code>. Narrow with it before passing such a string to <code>isFaction</code>; an unknown name is never any faction.</li>
+  </ul>
+  <pre><code>// Purveyor of Rarities: Conflict Action: Discard a card from your hand - if that card is out-of-clan or Foreign, gain 1 fate and this character gets +1[conflict-military] and +1[conflict-political] for this conflict. …
+return !card.isFaction('neutral') &amp;&amp; !(isFactionName(clan) &amp;&amp; card.isFaction(clan));</code></pre>
+  <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Unicorn/PurveyorOfRarities.ts">Purveyor of Rarities</a>; the engine uses it for printed factions and the same-clan restriction scopes.</p>
+</div>
 </section>
 
 <section class="group">
@@ -303,9 +314,10 @@ chosenReturnToDeck((context) =&gt; ({
     <li><code>gainAbility</code> accepts <code>AbilityType.Action</code>, <code>AbilityType.Persistent</code>, a triggered type with triggered-ability properties, or any type with an existing <code>CardAbility</code> to copy.</li>
   </ul>
   <pre><code>// Hida Kisada: While you have not lost a conflict this phase, cancel the effects of the first action ability your opponent triggers from a card during each conflict.
-const abilityRegistrar = new EventRegistrar(this.game);
-abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, AbilityType.WouldInterrupt, (event) =&gt; this.onInitiateAbilityEffectsWouldInterrupt(event));
-abilityRegistrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, AbilityType.OtherEffects, (event) =&gt; this.onInitiateAbilityEffectsOtherEffects(event));</code></pre>
+const registrar = new EventRegistrar(this.game);
+registrar.registerTriggerWindow(EventName.OnInitiateAbilityEffects, AbilityType.WouldInterrupt, (event) =&gt; this.recordFirstAction(event));
+…
+cancels.registerTriggerWindow(EventName.OnInitiateAbilityEffects, AbilityType.OtherEffects, (event) =&gt; {</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/HidaKisada.ts">Hida Kisada</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DisplayOfPower.ts">Display of Power</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Pilgrimage.ts">Pilgrimage</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.6-MotE/IllustriousPlagiarist.ts">Illustrious Plagiarist</a></p>
 </div>
 <div class="ref" id="en-Blocker" data-name="Blocker">
@@ -541,7 +553,7 @@ this.wouldInterrupt('Replace a void effect with another ring effect')
 </div>
 <div class="ref" id="en-FavorType" data-name="FavorType">
   <h3><code>FavorType</code> <span class="kind">Enum</span> <a class="anchor" href="#en-FavorType">#</a></h3>
-  <p>A side of the Imperial Favor: <code>side</code> of <code>claimImperialFavor()</code>, and the values of <code>player.imperialFavor</code> and <code>game.getFavorSide()</code> (strings, <code>''</code> when nobody has it).</p>
+  <p>A side of the Imperial Favor: <code>side</code> of <code>claimImperialFavor()</code>, the values of <code>player.imperialFavor</code> (<code>''</code> when that player does not have it) and <code>game.getFavorSide()</code> (<code>undefined</code> when nobody has it).</p>
   <table>
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
@@ -626,7 +638,7 @@ effect: delayedEffect({
 <div class="ref" id="en-EffectName" data-name="EffectName">
   <h3><code>EffectName</code> <span class="kind">Enum</span> <a class="anchor" href="#en-EffectName">#</a></h3>
   <p>The type key of every effect the engine applies (<code>effect.type</code>). The engine looks effects up by it (<code>card.anyEffect(EffectName.Blank)</code>, <code>player.sumEffects(EffectName.AdditionalAction)</code>).</p>
-  <p>Cards do not create effects from it directly. They call the effect factories in <code>effects.ts</code> (<code>modifyMilitarySkill(2)</code>, <code>cardCannot(…)</code>), which pick the name. Cards name it only to inspect effects, as Kiss of the Sea does with <code>event.effectTypes</code> of <code>onEffectApplied</code>. The table lists every value with the factories that create it; a few values are shared by several factories.</p>
+  <p>Cards rarely create effects from it directly: they call the effect factories in <code>effects.ts</code> (<code>modifyMilitarySkill(2)</code>, <code>cardCannot(…)</code>), which pick the name. Hida Kisada is the exception: it builds its <code>CancelFirstAction</code> effect with <code>EffectBuilder.player.detached</code>. Otherwise cards name it only to inspect effects, as Kiss of the Sea does with <code>event.effectTypes</code> of <code>onEffectApplied</code>. The table lists every value with the factories that create it; a few values are shared by several factories.</p>
   <table>
         <thead><tr><th>Value</th><th>String</th><th>Created by</th></tr></thead>
         <tbody>
@@ -748,6 +760,7 @@ effect: delayedEffect({
           <tr><td><code>CanPlayFromOwn</code></td><td><code>'canPlayFromOwn'</code></td><td><code>canPlayFromOwn</code></td></tr>
           <tr><td><code>CanPlayFromOutOfPlay</code></td><td><code>'canPlayFromOutOfPlay'</code></td><td><code>canPlayFromOutOfPlay</code></td></tr>
           <tr><td><code>CanPlayFromOpponents</code></td><td><code>'canPlayFromOpponents'</code></td><td><code>canPlayFromOpponents</code></td></tr>
+          <tr><td><code>CancelFirstAction</code></td><td><code>'cancelFirstAction'</code></td><td>No factory: Hida Kisada builds it with <code>EffectBuilder.player.detached</code> (the opponent's first action ability in each conflict is cancelled).</td></tr>
           <tr><td><code>CannotResolveRings</code></td><td><code>'cannotResolveRings'</code></td><td><code>cannotResolveRings</code></td></tr>
           <tr><td><code>ChangePlayerGloryModifier</code></td><td><code>'changePlayerGloryModifier'</code></td><td><code>changePlayerGloryModifier</code></td></tr>
           <tr><td><code>ChangePlayerSkillModifier</code></td><td><code>'changePlayerSkillModifier'</code></td><td><code>changePlayerSkillModifier</code></td></tr>
@@ -858,6 +871,7 @@ onEffectApplied: (event, context) =&gt; {
           <tr><td><code>OpponentsTriggeredAbilities</code></td><td><code>'opponentsTriggeredAbilities'</code></td><td>Triggered abilities (including actions) of the opponent.</td></tr>
           <tr><td><code>OpponentsTriggeredActionAbilities</code></td><td><code>'opponentsTriggeredActionAbilities'</code></td><td>Action abilities of the opponent.</td></tr>
           <tr><td><code>OwnCardEffects</code></td><td><code>'ownCardEffects'</code></td><td><code>CardEffects</code> attempts by the applying player.</td></tr>
+          <tr><td><code>OwnPrintedAbilities</code></td><td><code>'ownPrintedAbilities'</code></td><td>Printed abilities used by the applying player ("You cannot trigger X's printed abilities": Shinjo Takame, Ide Nobutada).</td></tr>
           <tr><td><code>Reactions</code></td><td><code>'reactions'</code></td><td>Reaction abilities.</td></tr>
           <tr><td><code>RingEffects</code></td><td><code>'ringEffects'</code></td><td>Ring effects (the source is a ring).</td></tr>
           <tr><td><code>Source</code></td><td><code>'source'</code></td><td>Attempts whose source is the effect's source.</td></tr>
@@ -894,7 +908,7 @@ cardCannot({
           <tr><td><code>DeclareAsDefender</code></td><td><code>'declareAsDefender'</code></td><td>Declaring defenders (<code>cannotBeDeclaredAsDefender</code>).</td></tr>
           <tr><td><code>Discard</code></td><td><code>'discard'</code></td><td>Discarding from hand: <code>chosenDiscard</code>, <code>discardAtRandom</code>, <code>discardMatching</code>, and <code>discardCard</code> on a card in hand (checked on the player).</td></tr>
           <tr><td><code>DiscardFromPlay</code></td><td><code>'discardFromPlay'</code></td><td><code>discardFromPlay</code></td></tr>
-          <tr><td><code>Dishonor</code></td><td><code>'dishonor'</code></td><td><code>dishonor</code>, <code>dishonorProvince</code></td></tr>
+          <tr><td><code>Dishonor</code></td><td><code>'dishonor'</code></td><td><code>dishonor</code>, <code>dishonorProvince</code>, <code>moveStatusToken</code> (a dishonored token, on the recipient)</td></tr>
           <tr><td><code>Draw</code></td><td><code>'draw'</code></td><td><code>draw</code></td></tr>
           <tr><td><code>Duel</code></td><td><code>'duel'</code></td><td><code>duel</code> and adding duel participants.</td></tr>
           <tr><td><code>EnterPlay</code></td><td><code>'enterPlay'</code></td><td>Playing or putting a character into play (checked on the player).</td></tr>
@@ -902,7 +916,7 @@ cardCannot({
           <tr><td><code>GainHonor</code></td><td><code>'gainHonor'</code></td><td><code>gainHonor</code></td></tr>
           <tr><td><code>HaveAffinity</code></td><td><code>'haveAffinity'</code></td><td>Affinity checks (<code>player.hasAffinity</code>).</td></tr>
           <tr><td><code>HaveImperialFavor</code></td><td><code>'haveImperialFavor'</code></td><td>Keeping the Imperial Favor.</td></tr>
-          <tr><td><code>Honor</code></td><td><code>'honor'</code></td><td><code>honor</code> (on the card and on the ability's player).</td></tr>
+          <tr><td><code>Honor</code></td><td><code>'honor'</code></td><td><code>honor</code> (on the card and on the ability's player), <code>moveStatusToken</code> (an honored token, on the recipient).</td></tr>
           <tr><td><code>InitiateKeywords</code></td><td><code>'initiateKeywords'</code></td><td>Keyword abilities, covert.</td></tr>
           <tr><td><code>LeavePlay</code></td><td><code>'leavePlay'</code></td><td>Every way of leaving play: matches <code>DiscardFromPlay</code>, <code>Sacrifice</code>, <code>ReturnToHand</code>, <code>ReturnToDeck</code>, <code>RemoveFromGame</code>, <code>PutIntoProvince</code>.</td></tr>
           <tr><td><code>LoseDuels</code></td><td><code>'loseDuels'</code></td><td>Losing a duel: a restricted loser does not lose.</td></tr>
@@ -1220,7 +1234,7 @@ this.wouldInterrupt('Keep the first player token')
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>card</code>, <code>player</code></td><td><code>BaseCard</code>, <code>Player</code></td><td>Set only on the probe event that <code>PlayerCostManager.getMinimumCost()</code> builds to count interrupts that reduce a cost. The real event has only <code>context</code>.</td></tr>
+          <tr><td><code>card</code>, <code>player</code></td><td><code>BaseCard?</code>, <code>Player?</code></td><td>Set only on the probe event that <code>PlayerCostManager.getMinimumCost()</code> builds to count interrupts that reduce a cost. The real event has only <code>context</code>.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -1377,7 +1391,7 @@ onSpendFate: (event, context) =&gt;
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the cost's event is created without a context, though it pays an ability's cost.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1513,7 +1527,7 @@ this.reaction('Opponent discards or dishonors')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>The character.</td></tr>
-          <tr><td><code>originalLocation</code></td><td><code>Location</code></td><td>Where it came from (<code>overrideLocation</code> if given).</td></tr>
+          <tr><td><code>originalLocation</code></td><td><code>Location</code></td><td>Where it came from: <code>card.location</code> when the event is created.</td></tr>
           <tr><td><code>fate</code></td><td><code>number?</code></td><td>Fate placed on it.</td></tr>
           <tr><td><code>status</code></td><td><code>EntersPlayStatus?</code></td><td>The status it enters play with.</td></tr>
           <tr><td><code>controller</code></td><td><code>Players?</code></td><td>Who will control it, relative to the ability's player.</td></tr>
@@ -1891,7 +1905,7 @@ this.reaction('Bow a character that just readied')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The card revealed.</td></tr>
-          <tr><td><code>onDeclaration</code></td><td><code>boolean</code></td><td>Revealed as the attacked province when the conflict was declared.</td></tr>
+          <tr><td><code>onDeclaration</code></td><td><code>boolean?</code></td><td>Revealed as the attacked province when the conflict was declared.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
@@ -2687,7 +2701,7 @@ this.reaction('Honor a Character')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>duel</code></td><td><code>Duel</code></td><td>The duel.</td></tr>
-          <tr><td><code>isHonorBid</code></td><td><code>boolean</code></td><td>Always <code>true</code> for a duel.</td></tr>
+          <tr><td><code>isHonorBid</code></td><td><code>boolean?</code></td><td>Always <code>true</code> for a duel.</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
         </tbody>
       </table>
@@ -3203,7 +3217,8 @@ if(
     <li>An event card can be played by a player who can play it from where it is, even if they do not own it.</li>
   </ul>
   <pre><code>// Asako Diplomat: Reaction: After this character wins a conflict, choose a character – honor or dishonor that character.
-afterConflict: (event, context) =&gt; event.conflict.isOnWinningSide(context.source)</code></pre>
+afterConflict: (event, context) =&gt;
+    event.conflict.isOnWinningSide(context.source)</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsakoDiplomat.ts">Asako Diplomat</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Blackmail.ts">Blackmail</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BlackmailArtist.ts">Blackmail Artist</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CityOfTheOpenHand.ts">City of the Open Hand</a></p>
 </div>
 <div class="ref" id="ctx-source" data-name="source">

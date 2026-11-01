@@ -179,7 +179,7 @@ eventRegistrar.registerTriggerWindow(EventName.OnResolveRingElement, AbilityType
 </ul>
 
 <h3 id="eng-limit-element-symbols">Copies read the original card's element symbols</h3>
-<p>Cards with an element symbol in their text (Isawa Skycaller, Kitsuki Seiji, Courteous Greeting and the other province-element cards, about 45) read it with <code>this.getCurrentElementSymbol(key)</code> or helpers such as <code>claimsRingOf(this, key, event)</code>, so from the card that wrote the ability. <code>getPrintedElementSymbols</code> is a per-class override: a copy (Shosuro Actor, Illusionary Terrain) or a card that gained the ability has no element symbols of its own.</p>
+<p>Cards with an element symbol in their text (Isawa Skycaller, Kitsuki Seiji, Courteous Greeting and the other province-element cards, about 45) read it with <code>this.getCurrentElementSymbol(key)</code> or helpers such as <code>claimsRingOf(this, key, event)</code>, so from the card that wrote the ability. The symbols are a per-class field (<code>printedElementSymbols</code>): a copy (Shosuro Actor, Illusionary Terrain) or a card that gained the ability has no element symbols of its own.</p>
 <ul>
     <li>It differs only after Twin Soul Temple changed the original's symbol: the copy then reads the changed element instead of the printed one. Twin Soul Temple also can't choose the copy's symbol.</li>
     <li>An original that isn't in play (Floating Fortress or Spirit of Valor copying a card from a discard pile) keeps its printed symbols, so the copy reads the right element.</li>
