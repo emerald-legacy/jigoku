@@ -31,7 +31,12 @@ export class CardGameAction<
 
     override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         const { target } = this.getProperties(context, additionalProperties);
-        for(const card of targetList(target)) {
+        this.addEventsForCards(events, targetList(target), context, additionalProperties);
+    }
+
+    /** Events for exactly these cards, without resolving the target again. */
+    protected addEventsForCards(events: Event[], cards: BaseCard[], context: Context, additionalProperties: ActionOverrides = {}): void {
+        for(const card of cards) {
             let allCostsPaid = true;
             const additionalCosts = card.getEffects(EffectName.UnlessActionCost)
                 .filter((properties) => properties.actionName === this.name);

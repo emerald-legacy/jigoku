@@ -1322,7 +1322,7 @@ this.reaction('Refill province faceup')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Characters, attachments, events and holdings that are not already removed from the game. <code>message</code> and <code>returnAtEndOfConflict</code> use the targets of the first evaluation, but the move evaluates the property factory again, so a random <code>target</code> computed in the factory can set aside other cards than the message names.</li>
+      <li>Characters, attachments, events and holdings that are not already removed from the game. The target is evaluated once, so a random pick stays the same for the message, the move and <code>returnAtEndOfConflict</code>.</li>
       <li>The hidden and playable effects end when the card leaves the removed-from-game zone. It has no restriction type, and no event of its own.</li>
       <li>Chat: <code>set aside {0}</code>.</li>
       <li>No builder shortcut.</li>

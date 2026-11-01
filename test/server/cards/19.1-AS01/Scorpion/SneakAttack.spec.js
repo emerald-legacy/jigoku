@@ -54,6 +54,48 @@ describe('Sneak Attack', function () {
             });
         });
 
+        describe('With more than two cards in the opponent\'s hand', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['bayushi-manipulator'],
+                        hand: ['sneak-attack']
+                    },
+                    player2: {
+                        inPlay: ['wandering-ronin'],
+                        hand: ['for-shame', 'let-go', 'banzai', 'fine-katana', 'ornate-fan', 'assassination']
+                    }
+                });
+
+                this.manipulator = this.player1.findCardByName('bayushi-manipulator');
+                this.sneakAttack = this.player1.findCardByName('sneak-attack');
+            });
+
+            it('should set aside the two cards it names and return them when the conflict ends', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.manipulator]
+                });
+                this.player2.clickPrompt('Done');
+                this.player1.clickCard(this.sneakAttack);
+
+                const setAsideLog = this.getChatLogs(5).find(l => l.startsWith('player2 sets aside '));
+                const named = setAsideLog.replace('player2 sets aside ', '').split(' and ').sort();
+                expect(named.length).toBe(2);
+                expect(this.player2.player.removedFromGame.map(card => card.name).sort()).toEqual(named);
+                expect(this.player2.hand.length).toBe(4);
+
+                this.player1.pass();
+                this.player2.pass();
+                this.player1.clickPrompt('Don\'t resolve');
+                expect(this.game.currentConflict).toBeFalsy();
+                expect(this.player2.player.removedFromGame.length).toBe(0);
+                expect(this.player2.hand.length).toBe(6);
+                expect(this.getChatLogs(10)).toContain('player2 picks back their cards');
+            });
+        });
+
         describe('With Seven Stings Keep', function () {
             beforeEach(function () {
                 this.setupTest({

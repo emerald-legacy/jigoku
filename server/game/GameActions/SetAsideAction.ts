@@ -46,7 +46,7 @@ export class SetAsideAction<Context extends AbilityContext = AbilityContext> ext
             context.game.addMessage(properties.message(context, cards));
         }
         // the cards just chosen, even if the target is random
-        super.addEventsToArray(events, context, { ...additionalProperties, target: cards });
+        this.addEventsForCards(events, cards, context, { ...additionalProperties, target: cards });
         if(properties.returnAtEndOfConflict) {
             this.#returnAtEndOfConflict(context, cards);
         }
