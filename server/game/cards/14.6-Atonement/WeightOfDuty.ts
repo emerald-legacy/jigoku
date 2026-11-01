@@ -28,15 +28,13 @@ export default class WeightOfDuty extends ProvinceCard {
             .cannotTargetFirst();
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: ELEMENT_KEY,
             prettyName: 'Ability - Province Element',
             element: Element.Void
-        });
-        return symbols;
-    }
+        }
+    ];
 
     private hasValidTarget(card: DrawCard, context: AbilityContext) {
         if(card.isUnique()) {

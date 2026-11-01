@@ -49,25 +49,23 @@ class HallowedGround extends DrawCard {
         });
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKeys.air,
             prettyName: 'Honor Loss',
             element: Element.Air
-        });
-        symbols.push({
+        },
+        {
             key: elementKeys.earth,
             prettyName: 'Cannot Claim Rings',
             element: Element.Earth
-        });
-        symbols.push({
+        },
+        {
             key: elementKeys.fire,
             prettyName: 'Cannot Fate Characters',
             element: Element.Fire
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

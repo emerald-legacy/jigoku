@@ -29,13 +29,11 @@ export default class StewardOfCrypticLore extends DrawCard {
             .chatText('change the province strength of an attacked province');
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: ELEMENT,
             prettyName: 'Conflict Type',
             element: Element.Earth
-        });
-        return symbols;
-    }
+        }
+    ];
 }

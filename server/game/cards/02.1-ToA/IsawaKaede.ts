@@ -23,15 +23,13 @@ class IsawaKaede extends DrawCard {
         });
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Element to Add',
             element: Element.Void
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

@@ -59,6 +59,11 @@ export class StatModifier {
         return undefined;
     }
 
+    /** A set effect: the only modifier, overriding every other one. */
+    static setBy(amount: number, effect: EffectLike) {
+        return this.fromEffect(amount, effect, true, `Set by ${this.getEffectName(effect)}`);
+    }
+
     static fromEffect(amount: number, effect: EffectLike | null | undefined, overrides = false, name = `${this.getEffectName(effect)}`) {
         return new this(
             amount,

@@ -16,15 +16,13 @@ class StudentOfTheTao extends DrawCard {
             }, sendHome());
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Province Element',
             element: Element.Void
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

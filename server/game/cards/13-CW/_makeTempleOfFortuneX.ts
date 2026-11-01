@@ -26,11 +26,9 @@ export function makeTempleOfFortuneX(id: string, element: Element) {
                 }));
         }
 
-        override getPrintedElementSymbols() {
-            const symbols = super.getPrintedElementSymbols();
-            symbols.push({ element, key: elementKeys[0], prettyName: 'Strength Bonus' });
-            symbols.push({ element, key: elementKeys[1], prettyName: 'Fate Ring' });
-            return symbols;
-        }
+        protected override printedElementSymbols = [
+            { element, key: elementKeys[0], prettyName: 'Strength Bonus' },
+            { element, key: elementKeys[1], prettyName: 'Fate Ring' }
+        ];
     };
 }

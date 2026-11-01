@@ -9,8 +9,7 @@ import { Stage, TargetMode, AbilityType, type Players, Blocker } from './Constan
 import type Player from './Player.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { GameAction } from './GameActions/GameAction.js';
-import type { Event } from './Events/Event.js';
-import type { Cost } from './costs/Cost.js';
+import type { Cost, CostResults } from './costs/Cost.js';
 import { addCostEvents } from './costs/addCostEvents.js';
 import type { TargetPropertiesInput } from './Interfaces.js';
 import type { AbilityLimit } from './AbilityLimit.js';
@@ -76,9 +75,6 @@ export interface TargetResults {
     cancelled?: boolean;
     payCostsFirst?: boolean;
     delayTargeting?: AbilityTarget | null;
-    playCosts?: boolean;
-    triggerCosts?: boolean;
-    events?: Event[];
 }
 
 /**
@@ -202,9 +198,6 @@ export class BaseAbility {
         return this.gameAction.some((gameAction) => gameAction.hasLegalTarget(context));
     }
 
-    /**
-     * Return whether all costs are capable of being paid for the ability.
-     */
     canPayCosts(context: AbilityContext): boolean {
         const contextCopy = context.copy({ stage: Stage.Cost });
         return this.getCosts(context).every((cost) => cost.canPay(contextCopy));
@@ -243,19 +236,16 @@ export class BaseAbility {
         ];
     }
 
-    resolveCosts(context: AbilityContext, results: TargetResults): void {
+    resolveCosts(context: AbilityContext, results: CostResults): void {
         for(const cost of this.getCosts(context, results.playCosts, results.triggerCosts)) {
             context.game.queueSimpleStep(() => {
                 if(!results.cancelled) {
-                    addCostEvents(cost, results.events ?? [], context, results);
+                    addCostEvents(cost, results.events, context, results);
                 }
             });
         }
     }
 
-    /**
-     * Returns whether there are eligible cards available to fulfill targets.
-     */
     canResolveTargets(context: AbilityContext): boolean {
         return this.nonDependentTargets.every((target) => target.canResolve(context));
     }

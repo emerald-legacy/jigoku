@@ -37,11 +37,6 @@ import type { StateViewer } from './types/StateViewer.js';
 import { discardStatusToken, gainHonor, loseHonor, removeFate } from './GameActions/GameActions.js';
 import { cardCostToDeclare, fateCostToDeclare, honorCostToDeclare } from './gamesteps/conflict/declarationCosts.js';
 
-interface MenuItem {
-    command: string;
-    text: string;
-}
-
 type StatSummary = { stat?: string; modifiers?: StatModifierSummary[] };
 type EffectMarkerKind = 'delayed' | 'modifier';
 type DuelCondition = (duel: Duel, context: AbilityContext<DrawCard>) => boolean;
@@ -100,7 +95,7 @@ export class DrawCard extends BaseCard {
     /** RRG Ephemeral: removed from game by its own keyword, so no other effect moves it out (manual moves excepted). */
     removedByEphemeral = false;
 
-    override menu: MenuItem[] = [
+    override menu: BaseCard['menu'] = [
         { command: 'bow', text: 'Bow/Ready' },
         { command: 'honor', text: 'Honor' },
         { command: 'dishonor', text: 'Dishonor' },
@@ -422,7 +417,7 @@ export class DrawCard extends BaseCard {
     override createSnapshot(): DrawCard {
         // Use Object.create to skip expensive constructor (setupCardAbilities, parseKeywords, uuid generation)
         // so the clone has no #private members: card classes use TS `private` for anything a snapshot may call
-        const clone = Object.create(DrawCard.prototype);
+        const clone: DrawCard = Object.create(DrawCard.prototype);
 
         // Copy base identity properties
         clone.owner = this.owner;
@@ -442,6 +437,8 @@ export class DrawCard extends BaseCard {
         clone.disguisedKeywordTraits = this.disguisedKeywordTraits;
         clone.allowDuplicatesOfAttachment = this.allowDuplicatesOfAttachment;
         clone.playConditions = this.playConditions;
+        clone.abilities = this.abilities;
+        clone.printedElementSymbols = [];
 
         // Copy game state
         clone.controller = this.controller;
@@ -450,6 +447,7 @@ export class DrawCard extends BaseCard {
         clone.fate = this.fate;
         clone.inConflict = this.inConflict;
         clone.parent = this.parent;
+        clone.host = this.host;
         clone.facedown = this.facedown;
 
         // Copy printed stats
@@ -469,7 +467,7 @@ export class DrawCard extends BaseCard {
         clone.attachmentHost = new AttachmentManager(clone);
 
         // Recursive snapshot for nested cards
-        clone.attachments = this.attachments.map((attachment: DrawCard) => attachment.createSnapshot());
+        clone.attachments = this.attachments.map((attachment) => attachment.createSnapshot());
 
         return clone;
     }
@@ -539,14 +537,6 @@ export class DrawCard extends BaseCard {
 
     getStatusTokenSkill(): number {
         return this.skillCalculator.getStatusTokenSkill();
-    }
-
-    getMilitaryModifiers(exclusions?: Exclusions): StatModifier[] {
-        return this.skillCalculator.getSkillModifiers(SkillType.Military, exclusions);
-    }
-
-    getPoliticalModifiers(exclusions?: Exclusions): StatModifier[] {
-        return this.skillCalculator.getSkillModifiers(SkillType.Political, exclusions);
     }
 
     get militarySkill(): number {

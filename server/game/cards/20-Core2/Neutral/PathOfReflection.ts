@@ -22,12 +22,8 @@ export default class PathOfReflection extends ProvinceCard {
             .chatText('switch {0}\'s military and political skill');
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push(
-            { prettyName: 'Conflict Element', key: this.conflictElement, element: Element.Water },
-            { prettyName: 'Province Element', key: this.provinceElement, element: Element.Water }
-        );
-        return symbols;
-    }
+    protected override printedElementSymbols = [
+        { prettyName: 'Conflict Element', key: this.conflictElement, element: Element.Water },
+        { prettyName: 'Province Element', key: this.provinceElement, element: Element.Water }
+    ];
 }

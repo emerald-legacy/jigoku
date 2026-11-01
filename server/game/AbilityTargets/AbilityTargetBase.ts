@@ -4,7 +4,8 @@ import type { DependentTarget, OwningAbility, TargetResults } from '../BaseAbili
 import type Player from '../Player.js';
 import type { ActionOverrides, GameAction, HeldAction } from '../GameActions/GameAction.js';
 import type { PromptButton } from '../PlayerPromptState.js';
-import { waitingPromptTitle } from './TargetPrompt.js';
+import { waitingPromptTitle, type CardSelectorInstance } from './TargetPrompt.js';
+import type BaseCard from '../BaseCard.js';
 import { resolveChoosingPlayer } from '../GameActions/resolveChoosingPlayer.js';
 
 /** What every kind of target declares: the target it depends on, and who chooses it (the ability's player by default). */
@@ -95,14 +96,14 @@ export abstract class AbilityTargetBase<Properties extends AbilityTargetBaseProp
     }
 
     /**
-     * Who chooses this target now, or nothing when targeting stopped or this target waits:
-     * the opponent chooses after costs are paid. In a solo game the chooser may be missing.
+     * Who chooses this target now, or nothing when targeting stopped or this target waits (the opponent chooses
+     * after costs are paid), or when a solo game has no opponent to choose.
      */
     protected chooserNow(
         context: AbilityContext,
         targetResults: TargetResults,
         override: Player | null | undefined = context.choosingPlayerOverride
-    ): { player: Player | undefined } | undefined {
+    ): Player | undefined {
         if(targetResults.cancelled || targetResults.payCostsFirst || targetResults.delayTargeting) {
             return undefined;
         }
@@ -111,6 +112,27 @@ export abstract class AbilityTargetBase<Properties extends AbilityTargetBaseProp
             targetResults.delayTargeting = this;
             return undefined;
         }
-        return { player };
+        return player;
+    }
+}
+
+export interface SelectorTargetProperties extends AbilityTargetBaseProperties {
+    gameAction: GameAction[];
+}
+
+/** A target chosen by clicking a card, then something on it (an ability, element symbol or status token). */
+export abstract class SelectorTargetBase<Properties extends SelectorTargetProperties> extends AbilityTargetBase<Properties> {
+    abstract selector: CardSelectorInstance;
+
+    hasLegalTarget(context: AbilityContext): boolean {
+        return this.selector.optional || this.selector.hasEnoughTargets(context, this.getChoosingPlayer(context));
+    }
+
+    getAllLegalTargets(context: AbilityContext): BaseCard[] {
+        return this.selector.getAllLegalTargets(context, this.getChoosingPlayer(context));
+    }
+
+    getGameAction(context: AbilityContext): HeldAction[] {
+        return this.heldActions(this.properties.gameAction, context);
     }
 }

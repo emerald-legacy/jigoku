@@ -4,7 +4,7 @@ import DrawCard from '../../../DrawCard.js';
 import * as costs from '../../../costs/index.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { modifyBothSkills } from '../../../effects.js';
-import { Location, Trait } from '../../../Constants.js';
+import { Location, Trait, isFactionName } from '../../../Constants.js';
 import type BaseCard from '../../../BaseCard.js';
 
 export default class PurveyorOfRarities extends DrawCard {
@@ -35,6 +35,6 @@ export default class PurveyorOfRarities extends DrawCard {
     /** RRG Out-of-clan: no symbol of the clan of its controller's stronghold (without one, the deck's clan). */
     private isOutOfClan(card: BaseCard, player: Player): boolean {
         const clan = player.stronghold ? player.stronghold.printedFaction : player.faction.value;
-        return !card.isFaction('neutral') && !(clan && card.isFaction(clan));
+        return !card.isFaction('neutral') && !(isFactionName(clan) && card.isFaction(clan));
     }
 }

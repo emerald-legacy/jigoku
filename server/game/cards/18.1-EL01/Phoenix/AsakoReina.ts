@@ -77,37 +77,33 @@ class AsakoReina extends DrawCard {
         return `${boons.slice(0, -1).join(', ')} and ${boons[boons.length - 1]}`;
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKeys.air,
             prettyName: '+1 honor',
             element: Element.Air
-        });
-        symbols.push({
+        },
+        {
             key: elementKeys.earth,
             prettyName: 'draw a card',
             element: Element.Earth
-        });
-        symbols.push({
+        },
+        {
             key: elementKeys.fire,
             prettyName: 'honor a character',
             element: Element.Fire
-        });
-
-        symbols.push({
+        },
+        {
             key: elementKeys.water,
             prettyName: 'ready a 2 cost or less character',
             element: Element.Water
-        });
-
-        symbols.push({
+        },
+        {
             key: elementKeys.void,
             prettyName: '+1 fate',
             element: Element.Void
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 export default AsakoReina;

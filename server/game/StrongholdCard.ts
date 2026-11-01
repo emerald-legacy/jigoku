@@ -30,10 +30,6 @@ export class StrongholdCard extends BaseCard {
         return this.cardData.fate ?? 0;
     }
 
-    getInfluence(): number {
-        return this.cardData.influence_pool ?? 0;
-    }
-
     override getProvinceStrengthBonus(): number {
         return parseInt(this.cardData.strength_bonus ?? '0');
     }

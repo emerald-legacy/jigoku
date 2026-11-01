@@ -101,7 +101,7 @@ export class ChosenDiscardAction<Context extends AbilityContext = AbilityContext
         context.game.addMessage(msg`${event.player} discards ${event.cards}`);
         event.discardedCards = event.cards;
         for(const card of event.cards ?? []) {
-            event.player.moveCard(card, card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
+            event.player.moveCard(card, card.discardPile);
         }
     }
 }

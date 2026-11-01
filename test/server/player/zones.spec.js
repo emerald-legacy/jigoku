@@ -250,22 +250,17 @@ describe('Player findCards', function() {
     });
 
     it('returns cards that match the predicate', function() {
-        const cards = [{ uuid: 'x', type: 'character' }, { uuid: 'y', type: 'event' }];
+        const cards = [{ uuid: 'x', type: 'character', attachments: [] }, { uuid: 'y', type: 'event', attachments: [] }];
         const result = this.player.findCards(cards, (c) => c.type === 'character');
         expect(result.length).toBe(1);
         expect(result[0].uuid).toBe('x');
     });
 
     it('returns attachments that match the predicate', function() {
-        const attachment = { uuid: 'att', type: 'attachment' };
+        const attachment = { uuid: 'att', type: 'attachment', attachments: [] };
         const card = { uuid: 'c', type: 'character', attachments: [attachment] };
         const result = this.player.findCards([card], (c) => c.type === 'attachment');
         expect(result).toContain(attachment);
-    });
-
-    it('returns empty array for null cardList', function() {
-        const result = this.player.findCards(null, () => true);
-        expect(result).toEqual([]);
     });
 });
 

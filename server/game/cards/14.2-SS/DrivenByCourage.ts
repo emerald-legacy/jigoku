@@ -22,13 +22,11 @@ export default class DrivenByCourage extends ProvinceCard {
             .chatText((context) => msg`give ${context.chatTarget()} +2${'political'} and +2${'military'}`);
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Ability - Province Element',
             element: Element.Air
-        });
-        return symbols;
-    }
+        }
+    ];
 }

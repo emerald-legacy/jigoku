@@ -12,15 +12,13 @@ class BonsaiGarden extends DrawCard {
             .gainHonor();
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Conflict Ring',
             element: Element.Air
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

@@ -46,31 +46,6 @@ describe('RoleCard', () => {
         it('marks the card as a role', () => {
             expect(card.isRole).toBe(true);
         });
-
-        it('initialises influenceModifier to 0', () => {
-            expect(card.influenceModifier).toBe(0);
-        });
-    });
-
-    describe('getInfluence()', () => {
-        it('returns the influence pool from card data', () => {
-            expect(card.getInfluence()).toBe(3);
-        });
-
-        it('adds a positive influenceModifier to influence pool', () => {
-            card.influenceModifier = 2;
-            expect(card.getInfluence()).toBe(5);
-        });
-
-        it('subtracts a negative influenceModifier from influence pool', () => {
-            card.influenceModifier = -1;
-            expect(card.getInfluence()).toBe(2);
-        });
-
-        it('returns the correct value when influence pool differs', () => {
-            const other = new RoleCard(owner, { ...cardData, influence_pool: 8 });
-            expect(other.getInfluence()).toBe(8);
-        });
     });
 
     describe('getElement()', () => {

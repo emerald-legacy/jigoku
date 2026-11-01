@@ -1,23 +1,22 @@
-import { AbilityTargetBase, type AbilityTargetBaseProperties } from './AbilityTargetBase.js';
+import { SelectorTargetBase, type SelectorTargetProperties } from './AbilityTargetBase.js';
 import { CardSelector } from '../CardSelector.js';
 import { type CardType, Stage, Location, ALL_CARD_TYPES } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type Player from '../Player.js';
 import type { StatusToken } from '../StatusToken.js';
-import type { ActionOverrides, GameAction, HeldAction } from '../GameActions/GameAction.js';
+import type { ActionOverrides } from '../GameActions/GameAction.js';
 import type { OwningAbility, TargetResults } from '../BaseAbility.js';
 import type { CardSelectorInstance } from './TargetPrompt.js';
 
-interface AbilityTargetTokenProperties extends AbilityTargetBaseProperties {
-    gameAction: GameAction[];
+interface AbilityTargetTokenProperties extends SelectorTargetProperties {
     location?: Location | Location[];
     cardType?: CardType | CardType[];
     tokenCondition?: (token: StatusToken, context: AbilityContext) => boolean;
     cardCondition?(card: BaseCard, context: AbilityContext): boolean;
 }
 
-export class AbilityTargetToken extends AbilityTargetBase<AbilityTargetTokenProperties> {
+export class AbilityTargetToken extends SelectorTargetBase<AbilityTargetTokenProperties> {
     selector: CardSelectorInstance;
 
     constructor(name: string, properties: AbilityTargetTokenProperties, ability: OwningAbility) {
@@ -54,28 +53,15 @@ export class AbilityTargetToken extends AbilityTargetBase<AbilityTargetTokenProp
             (this.properties.gameAction.length === 0 || this.properties.gameAction.some((gameAction) => gameAction.hasLegalTarget(contextCopy, this.actionOverrides(contextCopy))));
     }
 
-    hasLegalTarget(context: AbilityContext): boolean {
-        return this.selector.optional || this.selector.hasEnoughTargets(context, this.getChoosingPlayer(context));
-    }
-
-    getAllLegalTargets(context: AbilityContext): BaseCard[] {
-        return this.selector.getAllLegalTargets(context, this.getChoosingPlayer(context));
-    }
-
-    getGameAction(context: AbilityContext): HeldAction[] {
-        return this.heldActions(this.properties.gameAction, context);
-    }
-
     protected override actionOverrides(context: AbilityContext): ActionOverrides {
         return { target: context.tokens[this.name] };
     }
 
     resolve(context: AbilityContext, targetResults: TargetResults): void {
-        const chooser = this.chooserNow(context, targetResults);
-        if(!chooser) {
+        const player = this.chooserNow(context, targetResults);
+        if(!player) {
             return;
         }
-        const { player } = chooser;
         const promptProperties = {
             ...this.targetPromptProperties(context, targetResults),
             selector: this.selector,
@@ -110,10 +96,6 @@ export class AbilityTargetToken extends AbilityTargetBase<AbilityTargetTokenProp
                 return true;
             }
         };
-        if(!player) {
-            // a solo game has no opponent to choose
-            return;
-        }
         context.game.promptForSelect(player, Object.assign(promptProperties, this.properties));
     }
 

@@ -23,9 +23,7 @@ class SereneSeer extends DrawCard {
             .chatText('look at a province');
     }
 
-    override getPrintedElementSymbols() {
-        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
-    }
+    protected override printedElementSymbols = claimedRingSymbols([elementSymbol]);
 }
 
 

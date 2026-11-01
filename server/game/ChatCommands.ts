@@ -1,5 +1,6 @@
 import { msg } from './GameChat.js';
 import { rollDie } from './utils/random.js';
+import { isOwnKey } from './utils/helpers.js';
 import { discardAtRandom, moveCard, reveal } from './GameActions/GameActions.js';
 import { HonorBidPrompt } from './gamesteps/HonorBidPrompt.js';
 import { Location, CardType, Players, TargetMode, FavorType } from './Constants.js';
@@ -52,7 +53,7 @@ export class ChatCommands {
     }
 
     executeCommand(player: Player, command: string, args: string[]): boolean {
-        if(!player || !Object.prototype.hasOwnProperty.call(this.commands, command)) {
+        if(!isOwnKey(this.commands, command)) {
             return false;
         }
         if(!this.game.manualMode && !FREE_COMMANDS.has(command)) {
@@ -286,26 +287,14 @@ export class ChatCommands {
     }
 
     addFate(player: Player, args: string[]): void {
-        const num = this.getNumberOrDefault(args[1], 1);
-
-        this.game.promptForSelect(player, {
-            activePromptTitle: 'Select a card',
-            waitingPromptTitle: 'Waiting for opponent to set fate',
-            cardCondition: (card: BaseCard) =>
-                card.location === Location.PlayArea && card.controller === player,
-            onSelect: (p: Player, card: BaseCard) => {
-                if(!card.isDrawCard()) {
-                    return true;
-                }
-                card.modifyFate(num);
-                this.game.addMessage(msg`${p} uses the /add-fate command to set the fate count of ${card} to ${card.getFate()}`);
-
-                return true;
-            }
-        });
+        this.changeCardFate(player, args, 1, '/add-fate');
     }
 
     remFate(player: Player, args: string[]): void {
+        this.changeCardFate(player, args, -1, '/rem-fate');
+    }
+
+    private changeCardFate(player: Player, args: string[], sign: 1 | -1, command: string): void {
         const num = this.getNumberOrDefault(args[1], 1);
 
         this.game.promptForSelect(player, {
@@ -317,8 +306,8 @@ export class ChatCommands {
                 if(!card.isDrawCard()) {
                     return true;
                 }
-                card.modifyFate(-num);
-                this.game.addMessage(msg`${p} uses the /rem-fate command to set the fate count of ${card} to ${card.getFate()}`);
+                card.modifyFate(sign * num);
+                this.game.addMessage(msg`${p} uses the ${command} command to set the fate count of ${card} to ${card.getFate()}`);
 
                 return true;
             }
@@ -326,41 +315,26 @@ export class ChatCommands {
     }
 
     addRingFate(player: Player, args: string[]): boolean {
-        const ringElement = args[1];
-        const num = this.getNumberOrDefault(args[2], 1);
-
-        const ring = this.game.ringFor(ringElement);
-        if(ring) {
-
-            ring.modifyFate(num);
-            this.game.addMessage(msg`${player} uses the /add-fate-ring command to set the fate count of the ring of ${ringElement} to ${ring.getFate()}`);
-        } else {
-            this.game.promptForRingSelect(player, {
-                onSelect: (p: Player, ring: Ring) => {
-                    ring.modifyFate(num);
-                    this.game.addMessage(msg`${p} uses the /add-fate-ring command to set the fate count of the ring of ${ring.element} to ${ring.getFate()}`);
-                    return true;
-                }
-            });
-        }
-
-        return true;
+        return this.changeRingFate(player, args, 1, '/add-fate-ring');
     }
 
     remRingFate(player: Player, args: string[]): boolean {
+        return this.changeRingFate(player, args, -1, '/rem-fate-ring');
+    }
+
+    private changeRingFate(player: Player, args: string[], sign: 1 | -1, command: string): boolean {
         const ringElement = args[1];
         const num = this.getNumberOrDefault(args[2], 1);
 
         const ring = this.game.ringFor(ringElement);
         if(ring) {
-
-            ring.modifyFate(-num);
-            this.game.addMessage(msg`${player} uses the /rem-fate-ring command to set the fate count of the ring of ${ringElement} to ${ring.getFate()}`);
+            ring.modifyFate(sign * num);
+            this.game.addMessage(msg`${player} uses the ${command} command to set the fate count of the ring of ${ringElement} to ${ring.getFate()}`);
         } else {
             this.game.promptForRingSelect(player, {
                 onSelect: (p: Player, ring: Ring) => {
-                    ring.modifyFate(-num);
-                    this.game.addMessage(msg`${p} uses the /rem-fate-ring command to set the fate count of the ring of ${ring.element} to ${ring.getFate()}`);
+                    ring.modifyFate(sign * num);
+                    this.game.addMessage(msg`${p} uses the ${command} command to set the fate count of the ring of ${ring.element} to ${ring.getFate()}`);
                     return true;
                 }
             });

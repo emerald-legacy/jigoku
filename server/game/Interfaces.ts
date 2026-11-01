@@ -9,7 +9,7 @@ import type { Cost } from './costs/Cost.js';
 import type { AbilityLimit } from './AbilityLimit.js';
 import type Ring from './Ring.js';
 import type BaseCard from './BaseCard.js';
-import type { Faction } from './BaseCard.js';
+import type { Faction } from './Constants.js';
 import type DrawCard from './DrawCard.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type { EffectSource } from './EffectSource.js';

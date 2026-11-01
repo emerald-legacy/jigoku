@@ -27,7 +27,7 @@ export class LeavesPlayAction<
         event.isSacrifice = this.isSacrifice;
         event.destination = typeof destination === 'string' && isEnumValue(Location, destination)
             ? destination
-            : card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile;
+            : card.discardPile;
         event.preResolutionEffect = () => {
             const evCard = event.card;
             event.cardStateWhenLeftPlay = evCard.createSnapshot();
@@ -51,7 +51,7 @@ export class LeavesPlayAction<
         this.checkForRefillProvince(card, event, additionalProperties);
         if(!card.owner.isLegalLocationForCard(card, event.destination)) {
             card.game.addMessage(msg`${event.destination} is not a legal location for ${card} and it is discarded`);
-            event.destination = card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile;
+            event.destination = card.discardPile;
         }
         card.owner.moveCard(card, event.destination, event.options || {});
     }

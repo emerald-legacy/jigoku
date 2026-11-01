@@ -53,9 +53,7 @@ export default class CinderSalamander extends DrawCard {
             .max(perRound(1));
     }
 
-    public override getPrintedElementSymbols() {
-        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
-    }
+    protected override printedElementSymbols = claimedRingSymbols([elementSymbol]);
 
     private salamanderCountToText(salamanderCount: number): string {
         return salamanderCount > 1

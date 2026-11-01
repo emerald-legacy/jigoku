@@ -19,9 +19,7 @@ export default class HenshinSeeker extends DrawCard {
             }, ready());
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({ key: RING_CLAIM, prettyName: 'Ring', element: Element.Fire });
-        return symbols;
-    }
+    protected override printedElementSymbols = [
+        { key: RING_CLAIM, prettyName: 'Ring', element: Element.Fire }
+    ];
 }

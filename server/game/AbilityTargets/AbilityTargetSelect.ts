@@ -74,11 +74,10 @@ export class AbilityTargetSelect extends AbilityTargetBase<AbilityTargetSelectPr
         if(this.properties.condition && !this.properties.condition(context)) {
             return;
         }
-        const chooser = this.chooserNow(context, targetResults, this.properties.targets ? context.choosingPlayerOverride : null);
-        if(!chooser) {
+        const player = this.chooserNow(context, targetResults, this.properties.targets ? context.choosingPlayerOverride : null);
+        if(!player) {
             return;
         }
-        const { player } = chooser;
         const promptTitle = this.properties.activePromptTitle || 'Select one';
         const options: HandlerMenuOption[] = Object.keys(this.getChoices(context))
             .filter((key) => this.isChoiceLegal(key, context))
@@ -98,10 +97,6 @@ export class AbilityTargetSelect extends AbilityTargetBase<AbilityTargetSelectPr
         if(options.length === 1) {
             options[0].handler();
         } else if(options.length > 1) {
-            if(!player) {
-                // a solo game has no opponent to choose
-                return;
-            }
             context.game.promptWithHandlerMenu(player, {
                 waitingPromptTitle: context.stage === Stage.PreTarget ? waitingPromptTitle(context) : '',
                 activePromptTitle: promptTitle,

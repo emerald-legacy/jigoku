@@ -257,7 +257,7 @@ export class DeckSearchAction<Context extends AbilityContext = AbilityContext> e
                 if(remaining.length > 0) {
                     context.game.addMessage(msg`${player} discards ${remaining}`);
                     for(const card of remaining) {
-                        player.moveCard(card, isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
+                        player.moveCard(card, card.discardPile);
                     }
                 }
                 return;

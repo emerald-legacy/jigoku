@@ -21,13 +21,11 @@ export default class HonorsReward extends ProvinceCard {
             .chatText('give {0} +3 glory');
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Ability - Province Element',
             element: Element.Fire
-        });
-        return symbols;
-    }
+        }
+    ];
 }

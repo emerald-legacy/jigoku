@@ -38,15 +38,13 @@ class IsawaTsuke2 extends DrawCard {
         return countTargetable(context.game.requireConflict().getParticipants((card) => removeFate().canAffect(card, context)), context);
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Unclaimed Ring',
             element: Element.Fire
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

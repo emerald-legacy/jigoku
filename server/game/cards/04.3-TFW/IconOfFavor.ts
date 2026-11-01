@@ -23,15 +23,13 @@ class IconOfFavor extends DrawCard {
             }));
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Conflict Type',
             element: Element.Fire
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

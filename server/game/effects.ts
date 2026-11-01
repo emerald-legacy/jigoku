@@ -33,7 +33,7 @@ import type { CostReducerProps } from './CostReducer.js';
 import type { RestrictionProperties } from './Effects/Restriction.js';
 import type { EffectApplier } from './Effects/EffectApplier.js';
 import type { Conflict } from './Conflict.js';
-import type { Faction } from './BaseCard.js';
+import type { Faction } from './Constants.js';
 import type { Duel } from './Duel.js';
 import type { CharacterStatus, ConflictType, Element, SkillType, Trait } from './Constants.js';
 import type { StatusToken } from './StatusToken.js';
@@ -65,7 +65,7 @@ function modifyDuelistSkill(value: FlexibleValue<number>, duel?: Duel): EffectFa
 export const addElementAsAttacker = (element: FlexibleValue<Element | Element[]>) => EffectBuilder.card.flexible(EffectName.AddElementAsAttacker, element);
 export const addFlag = (flag: string) => EffectBuilder.card.static(EffectName.AddFlag, flag);
 export const addFaction = (faction: Faction) => EffectBuilder.card.static(EffectName.AddFaction, faction);
-export const loseFaction = (faction: string) => EffectBuilder.card.static(EffectName.LoseFaction, faction);
+export const loseFaction = (faction: Faction) => EffectBuilder.card.static(EffectName.LoseFaction, faction);
 export const addKeyword = (keyword: PrintedKeyword) => EffectBuilder.card.static(EffectName.AddKeyword, keyword);
 export const addTrait = (trait: Trait) => EffectBuilder.card.static(EffectName.AddTrait, trait);
 export const additionalTriggerCostForCard = (func: EffectValueMap[EffectName.AdditionalTriggerCost]) => EffectBuilder.card.static(EffectName.AdditionalTriggerCost, func);

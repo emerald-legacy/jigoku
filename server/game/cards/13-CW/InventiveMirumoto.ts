@@ -28,9 +28,7 @@ class InventiveMirumoto extends DrawCard {
             .chatText((context) => msg`play ${context.chatTarget()} onto ${context.source}`);
     }
 
-    override getPrintedElementSymbols() {
-        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
-    }
+    protected override printedElementSymbols = claimedRingSymbols([elementSymbol]);
 }
 
 

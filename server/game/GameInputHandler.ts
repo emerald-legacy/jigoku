@@ -64,7 +64,6 @@ export class GameInputHandler {
         const card = list.find((card: BaseCard) => !isProvince === !card.isProvince);
         if(card) {
             this.game.pipeline.handleCardClicked(player, card);
-            return;
         }
     }
 
@@ -184,7 +183,7 @@ export class GameInputHandler {
         if(!player) {
             return;
         }
-        if(typeof stat !== 'string' || !isChangeableStat(stat)) {
+        if(!isChangeableStat(stat)) {
             return;
         }
         if(!Number.isInteger(value) || Math.abs(value) > 1) {
@@ -218,7 +217,7 @@ export class GameInputHandler {
                 return;
             }
 
-            const card = Object.values(this.game.shortCardData).find((c: { name: string; id: string }) => {
+            const card = this.game.shortCardData.find((c: { name: string; id: string }) => {
                 return c.name.toLowerCase() === message.toLowerCase() || c.id.toLowerCase() === message.toLowerCase();
             });
 

@@ -19,9 +19,7 @@ class AsakoTsuki extends DrawCard {
             }, honor());
     }
 
-    override getPrintedElementSymbols() {
-        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
-    }
+    protected override printedElementSymbols = claimedRingSymbols([elementSymbol]);
 }
 
 

@@ -13,9 +13,7 @@ class ProdigyOfTheWaves extends DrawCard {
             .ready();
     }
 
-    override getPrintedElementSymbols() {
-        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
-    }
+    protected override printedElementSymbols = claimedRingSymbols([elementSymbol]);
 }
 
 

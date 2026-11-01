@@ -1,5 +1,5 @@
 import { EffectValueBase } from './EffectValue.js';
-import { AbilityType, CardType, Phase, type PlayType, RestrictionScope, RestrictionType, Stage, Trait, ALL_CARD_TYPES } from '../Constants.js';
+import { AbilityType, CardType, Phase, type PlayType, RestrictionScope, RestrictionType, Stage, Trait, ALL_CARD_TYPES, isFactionName } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
@@ -21,8 +21,7 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
     [RestrictionScope.AttachmentsWithSameClan]: (context, _effect, card) =>
         context.ability.isCardPlayed() &&
         isAttachment(context) &&
-        context.source.getPrintedFaction() !== 'neutral' &&
-        !!card && card.isFaction(context.source.getPrintedFaction()),
+        isSameNonNeutralClan(context.source.getPrintedFaction(), card),
     [RestrictionScope.AttackedProvinceNonForced]: (context, effect) =>
         !!context.game.currentConflict?.getConflictProvinces().some((province) => province === context.source) &&
         checkRestrictions[RestrictionScope.NonForcedAbilities](context, effect),
@@ -41,8 +40,7 @@ const checkRestrictions: Record<RestrictionScope, RestrictionCheck> = {
     [RestrictionScope.Events]: (context) => context.source.type === CardType.Event,
     [RestrictionScope.EventsWithSameClan]: (context, _effect, card) =>
         context.source.type === CardType.Event &&
-        context.source.getPrintedFaction() !== 'neutral' &&
-        !!card && card.isFaction(context.source.getPrintedFaction()),
+        isSameNonNeutralClan(context.source.getPrintedFaction(), card),
     [RestrictionScope.NonDynastyPhase]: (context) => context.game.currentPhase !== Phase.Dynasty,
     [RestrictionScope.NonSpellEvents]: (context) => context.source.type === CardType.Event && !context.source.hasTrait(Trait.Spell),
     [RestrictionScope.OpponentsAttachments]: (context, effect) =>
@@ -119,6 +117,10 @@ const getApplyingPlayer = (effect: Restriction): Player => {
 };
 
 /** An attachment, or a character played as an attachment (Tattooed Wanderer, Jealous Ancestor). */
+/** "with the same clan": the source's printed clan, if not neutral, is one of the card's. */
+const isSameNonNeutralClan = (faction: string | null, card: BaseCard | undefined) =>
+    faction !== 'neutral' && isFactionName(faction) && !!card && card.isFaction(faction);
+
 const isAttachment = (context: AbilityContext) => context.source.type === CardType.Attachment || context.ability.isCharacterPlayedAsAttachment();
 
 /** What an immunity (a restriction naming no type) doesn't stop (RRG Immune): peripheral entities such as fate and attachments aren't immune. */

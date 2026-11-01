@@ -3,6 +3,7 @@ import { AnonymousSpectator } from './AnonymousSpectator.js';
 import type Game from './Game.js';
 import type { GameState, SharedGameState } from './Game.js';
 import type BaseCard from './BaseCard.js';
+import type Player from './Player.js';
 import type { PlayerState } from './Player.js';
 import type { DeckDTO, GameSaveState, GameSummary, PlayerSummary } from '../gamenode/LobbyProtocol.js';
 import type { StateViewer } from './types/StateViewer.js';
@@ -166,17 +167,26 @@ export class GameStateSerializer {
         });
     }
 
+    /** The piles whose cards the opponent doesn't see, in the replay log's order. */
+    private hiddenPiles(player: Player) {
+        return {
+            hand: player.hand,
+            stronghold: player.strongholdProvince,
+            one: player.provinceOne,
+            two: player.provinceTwo,
+            three: player.provinceThree,
+            four: player.provinceFour,
+            strongholdChildren: player.stronghold?.childCards ?? []
+        };
+    }
+
     getHiddenInfoFingerprint(): string {
         const parts: string[] = [];
         for(const player of this.game.getPlayers()) {
             parts.push(player.name);
-            parts.push(player.hand.map((c) => c.uuid).join(','));
-            parts.push(player.strongholdProvince.map((c) => c.uuid).join(','));
-            parts.push(player.provinceOne.map((c) => c.uuid).join(','));
-            parts.push(player.provinceTwo.map((c) => c.uuid).join(','));
-            parts.push(player.provinceThree.map((c) => c.uuid).join(','));
-            parts.push(player.provinceFour.map((c) => c.uuid).join(','));
-            parts.push(player.stronghold ? player.stronghold.childCards.map((c) => c.uuid).join(',') : '');
+            for(const pile of Object.values(this.hiddenPiles(player))) {
+                parts.push(pile.map((c) => c.uuid).join(','));
+            }
         }
         return parts.join('|');
     }
@@ -198,24 +208,25 @@ export class GameStateSerializer {
 
     getHiddenInfo(): Record<string, unknown> {
         const info: Record<string, unknown> = {};
+        const cardSummary = (card: BaseCard) => ({
+            id: card.cardData.id,
+            name: card.cardData.name,
+            packId: card.packId,
+            type: card.getType(),
+            uuid: card.uuid
+        });
         for(const player of this.game.getPlayers()) {
-            const cardSummary = (card: BaseCard) => ({
-                id: card.cardData.id,
-                name: card.cardData.name,
-                packId: card.packId,
-                type: card.getType(),
-                uuid: card.uuid
-            });
+            const { hand, stronghold, one, two, three, four, strongholdChildren } = this.hiddenPiles(player);
             info[player.name] = {
-                hand: player.hand.map(cardSummary),
+                hand: hand.map(cardSummary),
                 provinces: {
-                    stronghold: player.strongholdProvince.map(cardSummary),
-                    one: player.provinceOne.map(cardSummary),
-                    two: player.provinceTwo.map(cardSummary),
-                    three: player.provinceThree.map(cardSummary),
-                    four: player.provinceFour.map(cardSummary)
+                    stronghold: stronghold.map(cardSummary),
+                    one: one.map(cardSummary),
+                    two: two.map(cardSummary),
+                    three: three.map(cardSummary),
+                    four: four.map(cardSummary)
                 },
-                strongholdChildren: player.stronghold ? player.stronghold.childCards.map(cardSummary) : []
+                strongholdChildren: strongholdChildren.map(cardSummary)
             };
         }
         return info;

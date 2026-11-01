@@ -1,7 +1,7 @@
 import type { ActionOverrides } from './GameAction.js';
 import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { EventName, Location, RestrictionType } from '../Constants.js';
+import { EventName, RestrictionType } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import { shuffle } from '../utils/random.js';
@@ -56,7 +56,7 @@ export class DiscardAtRandomAction<Context extends AbilityContext = AbilityConte
         player.game.addMessage(msg`${player} discards ${cardsToDiscard} at random`);
 
         for(const card of cardsToDiscard) {
-            player.moveCard(card, card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
+            player.moveCard(card, card.discardPile);
         }
     }
 }

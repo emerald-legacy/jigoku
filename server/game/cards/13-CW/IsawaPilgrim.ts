@@ -19,9 +19,7 @@ class IsawaPilgrim extends DrawCard {
             .chatText((context) => msg`give control of itself to ${context.player.opponent ?? context.player}`);
     }
 
-    override getPrintedElementSymbols() {
-        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
-    }
+    protected override printedElementSymbols = claimedRingSymbols([elementSymbol]);
 }
 
 

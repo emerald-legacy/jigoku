@@ -114,13 +114,11 @@ export default class Maelstrom extends ProvinceCard {
             .cannotTargetFirst();
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Ability - Province Element',
             element: Element.Water
-        });
-        return symbols;
-    }
+        }
+    ];
 }

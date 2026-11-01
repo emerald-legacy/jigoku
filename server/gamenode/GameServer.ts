@@ -129,7 +129,7 @@ export class GameServer implements GameRouter, LobbyHandlers {
         // collecting can hit the same broken state that caused the error; the report must still go out
         try {
             if(e.message.includes('Maximum call stack')) {
-                debugData.badSerializaton = detectBinary(game.getState());
+                debugData.badSerialization = detectBinary(game.getState());
             } else {
                 debugData.pipeline = game.pipeline.getDebugInfo();
                 debugData.effectEngine = game.effectEngine.getDebugInfo();
@@ -151,11 +151,9 @@ export class GameServer implements GameRouter, LobbyHandlers {
             });
         }
 
-        if(game) {
-            game.addMessage(
-                msg`A Server error has occurred processing your game state, apologies.  Your game may now be in an inconsistent state, or you may be able to continue.  The error has been logged.`
-            );
-        }
+        game.addMessage(
+            msg`A Server error has occurred processing your game state, apologies.  Your game may now be in an inconsistent state, or you may be able to continue.  The error has been logged.`
+        );
     }
 
     // The report has to survive a WebSocket frame and then a Mongo document, so keep

@@ -48,11 +48,10 @@ export class AbilityTargetRing extends AbilityTargetBase<AbilityTargetRingProper
     }
 
     resolve(context: AbilityContext, targetResults: TargetResults): void {
-        const chooser = this.chooserNow(context, targetResults);
-        if(!chooser) {
+        const player = this.chooserNow(context, targetResults);
+        if(!player) {
             return;
         }
-        const { player } = chooser;
         const promptProperties = {
             ...this.targetPromptProperties(context, targetResults),
             onSelect: (_player: Player, ring: Ring) => {
@@ -63,10 +62,6 @@ export class AbilityTargetRing extends AbilityTargetBase<AbilityTargetRingProper
                 return true;
             }
         };
-        if(!player) {
-            // a solo game has no opponent to choose
-            return;
-        }
         context.game.promptForRingSelect(player, Object.assign({}, promptProperties, this.properties));
     }
 

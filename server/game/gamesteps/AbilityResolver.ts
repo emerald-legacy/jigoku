@@ -7,30 +7,11 @@ import { InitiateAbilityEventWindow } from '../Events/InitiateAbilityEventWindow
 import { Location, Stage, CardType, EventName } from '../Constants.js';
 import type Game from '../Game.js';
 import type { Event } from '../Events/Event.js';
-import type { BaseAbility } from '../BaseAbility.js';
+import type { TargetResults } from '../BaseAbility.js';
+import type { CostResults } from '../costs/Cost.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import { MoveCardAction } from '../GameActions/MoveCardAction.js';
 import { canPayTargetingCosts, payTargetingCosts, type TargetingCost, targetingCosts } from '../GameActions/targetingCosts.js';
-
-type AbilityResolverTarget = Parameters<BaseAbility['resolveRemainingTargets']>[1];
-
-interface AbilityResolverTargetResults {
-    cancelled?: boolean;
-    payCostsFirst?: boolean;
-    delayTargeting?: AbilityResolverTarget | null;
-    playCosts?: boolean;
-    triggerCosts?: boolean;
-    events?: Event[];
-    canCancel?: boolean;
-}
-
-interface AbilityResolverCostResults {
-    cancelled: boolean;
-    canCancel: boolean;
-    events: Event[];
-    playCosts: boolean;
-    triggerCosts: boolean;
-}
 
 const snapshotTypes: CardType[] = [CardType.Character, CardType.Holding, CardType.Attachment];
 
@@ -40,8 +21,8 @@ export class AbilityResolver extends BaseStepWithPipeline {
     initiateAbility: boolean;
     passPriority: boolean;
     events: Event[];
-    targetResults: AbilityResolverTargetResults;
-    costResults: AbilityResolverCostResults;
+    targetResults: TargetResults;
+    costResults: CostResults;
     cancelled?: boolean;
 
     constructor(game: Game, context: AbilityContext) {
@@ -140,7 +121,7 @@ export class AbilityResolver extends BaseStepWithPipeline {
         this.context.ability.resolveCosts(this.context, this.costResults);
     }
 
-    getCostResults(): AbilityResolverCostResults {
+    getCostResults(): CostResults {
         return {
             cancelled: false,
             canCancel: this.canCancel,
@@ -278,17 +259,13 @@ export class AbilityResolver extends BaseStepWithPipeline {
     private discardStoppedEvent() {
         const source = this.context.source;
         if(this.context.ability.isCardPlayed() && source.type === CardType.Event && source.location === Location.Hand && this.costResults.events.length > 0) {
-            this.context.player.moveCard(source, source.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
+            this.context.player.moveCard(source, source.discardPile);
         }
     }
 
     moveEventCardToDiscard() {
         if(this.context.source.location === Location.BeingPlayed) {
-            if(this.context.source.isDynasty) {
-                this.context.player.moveCard(this.context.source, Location.DynastyDiscardPile);
-            } else {
-                this.context.player.moveCard(this.context.source, Location.ConflictDiscardPile);
-            }
+            this.context.player.moveCard(this.context.source, this.context.source.discardPile);
         }
     }
 

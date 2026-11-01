@@ -1,4 +1,9 @@
 import { DiscardMatchingAction } from '../../../build/server/game/GameActions/DiscardMatchingAction.js';
+import BaseCard from '../../../build/server/game/BaseCard.js';
+
+// fake cards that pick their discard pile as real cards do
+const discardPile = Object.getOwnPropertyDescriptor(BaseCard.prototype, 'discardPile');
+const fakeCard = (name, isDynasty) => Object.defineProperty({ name, isDynasty }, 'discardPile', discardPile);
 
 describe('DiscardMatchingAction', function() {
     beforeEach(function() {
@@ -7,9 +12,9 @@ describe('DiscardMatchingAction', function() {
         this.player.type = 'player';
         this.player.checkRestrictions.and.returnValue(true);
         this.player.game = this.game;
-        this.cardA = { name: 'Iron Will', isDynasty: false };
-        this.cardB = { name: 'Iron Will', isDynasty: false };
-        this.cardC = { name: 'Banzai!', isDynasty: false };
+        this.cardA = fakeCard('Iron Will', false);
+        this.cardB = fakeCard('Iron Will', false);
+        this.cardC = fakeCard('Banzai!', false);
         this.player.hand = [this.cardA, this.cardB, this.cardC];
         this.context = { player: this.player, gameActionsResolutionChain: [] };
     });
@@ -170,7 +175,7 @@ describe('DiscardMatchingAction', function() {
 
         describe('dynasty card routing', function() {
             beforeEach(function() {
-                this.dynastyCard = { name: 'Kitsuki Investigator', isDynasty: true };
+                this.dynastyCard = fakeCard('Kitsuki Investigator', true);
                 this.player.hand = [this.dynastyCard];
                 this.event = {
                     player: this.player,

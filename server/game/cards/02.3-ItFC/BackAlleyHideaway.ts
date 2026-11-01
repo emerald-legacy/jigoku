@@ -64,7 +64,7 @@ export default class BackAlleyHideaway extends DrawCard {
     /** The hidden characters go to their discard pile with it. */
     override leavesPlay(destination?: Location): void {
         for(const card of this.game.allCards.filter((card) => card.isUnderneath(this))) {
-            card.owner.moveCard(card, card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
+            card.owner.moveCard(card, card.discardPile);
         }
         super.leavesPlay(destination);
     }

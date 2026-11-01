@@ -16,13 +16,11 @@ export default class ThePursuitOfJustice extends ProvinceCard {
             }, ready());
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Ability - Province Element',
             element: Element.Water
-        });
-        return symbols;
-    }
+        }
+    ];
 }

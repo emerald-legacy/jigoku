@@ -13,15 +13,13 @@ class FireTensaiAcolyte extends DrawCard {
         });
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Contested Ring',
             element: Element.Fire
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

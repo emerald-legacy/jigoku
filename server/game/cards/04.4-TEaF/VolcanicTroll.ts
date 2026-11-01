@@ -13,15 +13,13 @@ class VolcanicTroll extends DrawCard {
         });
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Unclaimed Ring',
             element: Element.Fire
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

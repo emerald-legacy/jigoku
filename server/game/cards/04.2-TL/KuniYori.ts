@@ -26,15 +26,13 @@ class KuniYori extends DrawCard {
             }, (context) => playerChoices(context.player, (player) => discardAtRandom({ target: player })));
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Conflict Type',
             element: Element.Earth
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

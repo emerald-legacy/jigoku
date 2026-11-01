@@ -22,7 +22,7 @@ import type Game from './Game.js';
 import { type ActionContext, AbilityBuilder, TriggerBuilder, toActionProps, toAggregateProps, createDraft, holdsTriggerEvent, holdsAggregateEvents, toTriggerProps } from './AbilityBuilder.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { CardAction } from './CardAction.js';
-import { AbilityType, CardType, type CharacterStatus, Duration, EffectName, type Element, EventName, Location, type Players, type PlayType, Blocker, RestrictionType, RestrictionScope, type Trait, TRIGGERED_ABILITY_TYPES } from './Constants.js';
+import { AbilityType, CardType, type CharacterStatus, Duration, EffectName, type Element, EventName, Location, type Players, type PlayType, Blocker, RestrictionType, RestrictionScope, type Trait, TRIGGERED_ABILITY_TYPES, type Faction, isFactionName } from './Constants.js';
 import { ElementSymbol, type ElementSymbolInfo } from './ElementSymbol.js';
 import type { ActionProps, AttachmentConditionProps, PersistentEffectProps, TargetLocation, TriggeredAbilityProps } from './Interfaces.js';
 import type { GameObject } from './GameObject.js';
@@ -44,8 +44,6 @@ import { isPersistentGain } from './Effects/GainAbility.js';
 import type { CardData } from './types/CardData.js';
 import { type PrintedKeyword, parseKeywords as parseKeywordsFromText } from './KeywordParser.js';
 import type { StateViewer } from './types/StateViewer.js';
-
-export type Faction = 'neutral' | 'crab' | 'crane' | 'dragon' | 'lion' | 'phoenix' | 'scorpion' | 'unicorn' | 'shadowlands';
 
 /** Method syntax: a card's effects take its own context, and are only ever called with it. */
 export interface StoredPersistentEffect {
@@ -126,7 +124,7 @@ export class BaseCard extends EffectSource {
     isStronghold: boolean = false;
     packId: string | undefined;
 
-    protected statusManager!: CardStatusManager;
+    protected statusManager: CardStatusManager;
     allowedAttachmentTraits: string[] = [];
     private readonly pendingAbilities: Array<() => void> = [];
     private settingUp = false;
@@ -138,6 +136,8 @@ export class BaseCard extends EffectSource {
     parent: BaseCard | Ring | null = null;
     /** The card this one is underneath, while its location is `Location.Underneath`. */
     host: BaseCard | null = null;
+    /** The element symbols printed in the card's text. */
+    protected printedElementSymbols: ElementSymbolInfo[] = [];
 
     /** The attached character, in the cards' sense; null when attached to anything else. */
     get parentCharacter(): DrawCard | null {
@@ -151,6 +151,11 @@ export class BaseCard extends EffectSource {
 
     get attachments(): DrawCard[] {
         return this.attachmentHost.attachments;
+    }
+
+    /** The discard pile this card goes to. */
+    get discardPile(): Location.DynastyDiscardPile | Location.ConflictDiscardPile {
+        return this.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile;
     }
 
     set attachments(value: DrawCard[]) {
@@ -559,7 +564,7 @@ export class BaseCard extends EffectSource {
         return traitsBlanked ? [] : this.traits;
     }
 
-    override isFaction(faction: string): boolean {
+    override isFaction(faction: Faction): boolean {
         const cardFactions = this.getFactions();
         if(faction === 'neutral') {
             return cardFactions.has(faction) && cardFactions.size === 1;
@@ -567,12 +572,13 @@ export class BaseCard extends EffectSource {
         return cardFactions.has(faction);
     }
 
-    getFactions(): Set<string> {
+    getFactions(): Set<Faction> {
         const copiedCard = this.copiedCard;
         const cardFaction = copiedCard ? copiedCard.printedFaction : this.printedFaction;
         const addedFactions = this.getEffects(EffectName.AddFaction);
         const lostFactions = this.getEffects(EffectName.LoseFaction);
-        const factionArray = [...addedFactions, cardFaction].filter((faction) => !lostFactions.includes(faction));
+        const printedFactions = isFactionName(cardFaction) ? [cardFaction] : [];
+        const factionArray = [...addedFactions, ...printedFactions].filter((faction) => !lostFactions.includes(faction));
 
         return new Set(factionArray);
     }
@@ -1058,8 +1064,9 @@ export class BaseCard extends EffectSource {
         return false;
     }
 
+    /** Copies: a replaced element is written into them. */
     getPrintedElementSymbols(): ElementSymbolInfo[] {
-        return [];
+        return this.printedElementSymbols.map((symbol) => ({ ...symbol }));
     }
 
     getCurrentElementSymbols(): ElementSymbol[] {

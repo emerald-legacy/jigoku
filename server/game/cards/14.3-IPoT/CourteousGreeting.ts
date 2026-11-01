@@ -25,13 +25,11 @@ export default class CourteousGreeting extends ProvinceCard {
             .chatText((context) => msg`bow ${context.targets.defendingCharacter} and ${context.targets.attackingCharacter}`);
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Ability - Province Element',
             element: Element.Earth
-        });
-        return symbols;
-    }
+        }
+    ];
 }

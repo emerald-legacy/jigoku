@@ -2,7 +2,7 @@ import type { ActionOverrides } from './GameAction.js';
 import { msg, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { EventName, Location, RestrictionType } from '../Constants.js';
+import { EventName, RestrictionType } from '../Constants.js';
 import type Player from '../Player.js';
 import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
 import type { ActionEvent } from './GameAction.js';
@@ -84,7 +84,7 @@ export class DiscardMatchingAction<Context extends AbilityContext = AbilityConte
         }
 
         for(const card of cardsToDiscard) {
-            player.moveCard(card, card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile);
+            player.moveCard(card, card.discardPile);
         }
     }
 }

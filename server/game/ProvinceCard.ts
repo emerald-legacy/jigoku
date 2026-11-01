@@ -162,14 +162,17 @@ export class ProvinceCard extends BaseCard {
 
     override getPrintedElementSymbols(): ElementSymbolInfo[] {
         if(!this.hasElementSymbols()) {
-            return [];
+            return super.getPrintedElementSymbols();
         }
         const elements = this.cardData.elements === 'all' ? [Element.Air, Element.Earth, Element.Fire, Element.Void, Element.Water] : this.cardData.elements ?? [];
-        return elements.map((element, index) => ({
-            key: `province-element-${index}`,
-            prettyName: 'The Province\'s Element',
-            element
-        }));
+        return [
+            ...elements.map((element, index) => ({
+                key: `province-element-${index}`,
+                prettyName: 'The Province\'s Element',
+                element
+            })),
+            ...super.getPrintedElementSymbols()
+        ];
     }
 
     override leavesPlay() {

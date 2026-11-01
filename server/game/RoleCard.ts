@@ -22,12 +22,7 @@ const illegalActions = new Set([
 ]);
 
 export class RoleCard extends BaseCard {
-    influenceModifier = 0;
     isRole = true;
-
-    getInfluence(): number {
-        return (this.cardData.influence_pool ?? 0) + this.influenceModifier;
-    }
 
     override getSummary(activePlayer: StateViewer, hideWhenFaceup = false) {
         const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);

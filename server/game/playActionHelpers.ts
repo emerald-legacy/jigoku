@@ -1,5 +1,5 @@
 import type { AbilityContext } from './AbilityContext.js';
-import { Blocker, EffectName, RestrictionType, type PlayType } from './Constants.js';
+import { Blocker, EffectName, Phase, RestrictionType, type PlayType } from './Constants.js';
 import type DrawCard from './DrawCard.js';
 
 /**
@@ -23,4 +23,16 @@ export function getPlayBlocker(card: DrawCard, context: AbilityContext, ignoredB
         return Blocker.EnterPlayRestricted;
     }
     return card.anotherUniqueInPlay(context.player) ? Blocker.DuplicateUnique : undefined;
+}
+
+/** What stops an attachment being played: the Dynasty phase (unless the game's rules allow it), then `getPlayBlocker`. */
+export function getAttachmentPlayBlocker(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[]): Blocker | undefined {
+    if(
+        !ignoredBlockers.includes(Blocker.WrongPhase) &&
+        context.game.currentPhase === Phase.Dynasty &&
+        !context.game.rules.dynastyPhaseCanPlayAttachments
+    ) {
+        return Blocker.WrongPhase;
+    }
+    return getPlayBlocker(context.source, context, ignoredBlockers, context.playType);
 }

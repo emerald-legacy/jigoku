@@ -34,25 +34,23 @@ class HenshinDisciple extends DrawCard {
             !!(this.game.isDuringConflict(element) && this.game.currentConflict?.ring?.isContested());
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKeys.air,
             prettyName: '+2 Political',
             element: Element.Air
-        });
-        symbols.push({
+        },
+        {
             key: elementKeys.earth,
             prettyName: '+2 Military',
             element: Element.Earth
-        });
-        symbols.push({
+        },
+        {
             key: elementKeys.fire,
             prettyName: 'Pride',
             element: Element.Fire
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

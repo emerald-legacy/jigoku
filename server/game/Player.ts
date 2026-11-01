@@ -412,36 +412,19 @@ export class Player extends GameObject {
         return this.findCard(list, (card) => card.uuid === uuid);
     }
 
-    findCardInPlayByUuid(uuid: string): DrawCard | undefined {
-        return this.findCard(this.cardsInPlay, (card) => card.uuid === uuid);
-    }
-
     /** The first matching card in the list, or attached to a card in it. */
     findCard<Card extends BaseCard>(cardList: Card[], predicate: (card: Card | DrawCard) => boolean): Card | DrawCard | undefined {
-        const cards = this.findCards(cardList, predicate);
-        if(!cards || cards.length === 0) {
-            return undefined;
-        }
-
-        return cards[0];
+        return this.findCards(cardList, predicate)[0];
     }
 
     findCards<Card extends BaseCard>(cardList: Card[], predicate: (card: Card | DrawCard) => boolean): Array<Card | DrawCard> {
-        if(!cardList) {
-            return [];
-        }
-
         const cardsToReturn: Array<Card | DrawCard> = [];
 
         for(const card of cardList) {
             if(predicate(card)) {
                 cardsToReturn.push(card);
             }
-
-            const attachments = card.attachments;
-            if(attachments) {
-                cardsToReturn.push(...attachments.filter(predicate));
-            }
+            cardsToReturn.push(...card.attachments.filter(predicate));
         }
 
         return cardsToReturn;
@@ -557,7 +540,7 @@ export class Player extends GameObject {
     }
 
     getNumberOfOpponentsFaceupProvinces(predicate: (card: ProvinceCard) => boolean = () => true): number {
-        return (this.opponent && this.opponent.getNumberOfFaceupProvinces(predicate)) || 0;
+        return this.opponent?.getNumberOfFaceupProvinces(predicate) ?? 0;
     }
 
     getNumberOfFacedownProvinces(predicate: (card: ProvinceCard) => boolean = () => true): number {
@@ -565,7 +548,7 @@ export class Player extends GameObject {
     }
 
     getNumberOfOpponentsFacedownProvinces(predicate: (card: ProvinceCard) => boolean = () => true): number {
-        return (this.opponent && this.opponent.getNumberOfFacedownProvinces(predicate)) || 0;
+        return this.opponent?.getNumberOfFacedownProvinces(predicate) ?? 0;
     }
 
     getNumberOfCardsInPlay(predicate: (card: DrawCard) => boolean): number {
@@ -1185,7 +1168,7 @@ export class Player extends GameObject {
                 attachment.leavesPlay(targetLocation);
                 attachment.owner.moveCard(
                     attachment,
-                    attachment.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile
+                    attachment.discardPile
                 );
             }
 
@@ -1210,7 +1193,7 @@ export class Player extends GameObject {
         }
 
         if(toProvince) {
-            if([Location.DynastyDeck].includes(location)) {
+            if(location === Location.DynastyDeck) {
                 card.facedown = true;
             }
             if(!this.takenDynastyMulligan && card.isDynasty) {

@@ -46,11 +46,9 @@ export default class IchigoKun extends DrawCard {
             }));
     }
 
-    public override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({ key: VULNERABLE_ELEMENT, prettyName: 'Restricted Ring', element: Element.Fire });
-        return symbols;
-    }
+    protected override printedElementSymbols = [
+        { key: VULNERABLE_ELEMENT, prettyName: 'Restricted Ring', element: Element.Fire }
+    ];
 
     private getModifiers(context: AbilityContext, modifiers: { military: number; glory: number }) {
         return multiple([

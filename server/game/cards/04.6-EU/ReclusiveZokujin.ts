@@ -19,15 +19,13 @@ class ReclusiveZokujin extends DrawCard {
         });
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Conflict Type',
             element: Element.Earth
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

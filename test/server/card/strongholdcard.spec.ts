@@ -68,17 +68,6 @@ describe('StrongholdCard', () => {
         });
     });
 
-    describe('getInfluence()', () => {
-        it('returns the influence pool from card data', () => {
-            expect(card.getInfluence()).toBe(12);
-        });
-
-        it('returns the correct value when influence pool differs', () => {
-            const other = new StrongholdCard(owner, { ...cardData, influence_pool: 8 });
-            expect(other.getInfluence()).toBe(8);
-        });
-    });
-
     describe('getProvinceStrengthBonus()', () => {
         it('returns the strength bonus as an integer', () => {
             expect(card.getProvinceStrengthBonus()).toBe(3);

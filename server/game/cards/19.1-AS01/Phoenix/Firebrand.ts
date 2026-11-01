@@ -21,18 +21,16 @@ export default class Firebrand extends DrawCard {
             .chatText((context) => msg`resolve the ${context.game.rings.fire} effect`);
     }
 
-    public override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: ELEMENT_TO_RETURN,
             prettyName: 'Ring to return',
             element: Element.Fire
-        });
-        symbols.push({
+        },
+        {
             key: ELEMENT_TO_RESOLVE,
             prettyName: 'Ring to resolve',
             element: Element.Fire
-        });
-        return symbols;
-    }
+        }
+    ];
 }

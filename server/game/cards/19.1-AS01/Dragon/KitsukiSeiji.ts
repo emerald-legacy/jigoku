@@ -43,15 +43,13 @@ export default class KitsukiSeiji extends DrawCard {
             .chatText((context) => msg`put the fate that would go on the ${this.getCurrentElementSymbol(ELEMENT_KEY)} ring on ${context.chatTarget()} instead`);
     }
 
-    public override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: ELEMENT_KEY,
             prettyName: 'Ring',
             element: Element.Water
-        });
-        return symbols;
-    }
+        }
+    ];
 
     private fateRecipientIsSeijisRing(recipient?: Player | BaseCard | Ring) {
         return (

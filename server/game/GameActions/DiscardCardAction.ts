@@ -47,7 +47,7 @@ export class DiscardCardAction<Context extends AbilityContext = AbilityContext> 
             this.checkForRefillProvince(card, event, additionalProperties);
             card.controller.moveCard(
                 card,
-                card.isDynasty ? Location.DynastyDiscardPile : Location.ConflictDiscardPile
+                card.discardPile
             );
         }
     }

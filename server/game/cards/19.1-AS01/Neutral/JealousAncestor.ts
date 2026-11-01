@@ -37,9 +37,7 @@ export default class JealousAncestor extends DrawCard {
         }
     }
 
-    public override getPrintedElementSymbols() {
-        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
-    }
+    protected override printedElementSymbols = claimedRingSymbols([elementSymbol]);
 
     private restrictParentController(targetController: Players.Self | Players.Opponent, effect: EffectFactory) {
         this.persistentEffect({

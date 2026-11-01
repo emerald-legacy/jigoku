@@ -36,15 +36,13 @@ class AsakoAzunami extends DrawCard {
             .chatText(() => msg`replace the ${this.getCurrentElementSymbol(elementKey)} ring effect with bowing and readying two characters`);
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Resolved Ring',
             element: Element.Water
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

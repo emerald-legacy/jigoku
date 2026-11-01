@@ -6,13 +6,10 @@ type WsSpy = jasmine.SpyObj<{ send: (data: string) => void }> & { readyState: nu
 
 type WsSocketCtx = {
     ws: WsSpy | null;
-    running: boolean;
     registered: boolean;
     listenAddress: string;
     protocol: string;
-    heartbeatInterval: ReturnType<typeof setInterval> | null;
     reconnectDelay: number;
-    reconnectTimer: ReturnType<typeof setTimeout> | null;
     handlers: jasmine.SpyObj<LobbyHandlers>;
     send?: (command: string, arg?: unknown) => void;
     onMessage?: (msg: string) => void;
@@ -33,13 +30,10 @@ function makeCtx(overrides: Partial<WsSocketCtx> = {}): WsSocketCtx {
     const ctx: WsSocketCtx = Object.create(WsSocket.prototype);
     Object.assign(ctx, {
         ws: null,
-        running: true,
         registered: false,
         listenAddress: 'host',
         protocol: 'ws',
-        heartbeatInterval: null,
         reconnectDelay: 1000,
-        reconnectTimer: null,
         handlers: jasmine.createSpyObj<LobbyHandlers>('handlers', ['onStartGame', 'onSpectator', 'onGameSync', 'onFailedConnect', 'onCloseGame', 'onCardData']),
         ...overrides
     });

@@ -13,15 +13,13 @@ class SeekerOfKnowledge extends DrawCard {
         });
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Add Element',
             element: Element.Air
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

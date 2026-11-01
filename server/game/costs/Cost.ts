@@ -3,10 +3,17 @@ import type { MsgArg } from '../GameChat.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 import type { Event } from '../Events/Event.js';
 
-export type Result = {
-    canCancel?: boolean;
-    cancelled?: boolean;
-};
+/** What paying an ability's costs records: whether paying was cancelled or may be, the cost events, which costs are paid. */
+export interface CostResults {
+    cancelled: boolean;
+    canCancel: boolean;
+    events: Event[];
+    playCosts: boolean;
+    triggerCosts: boolean;
+}
+
+/** The part of the cost results a cost reads and sets. */
+export type Result = Partial<Pick<CostResults, 'canCancel' | 'cancelled'>>;
 
 /** A format with its args; the paid card or cards are `{0}`. */
 export type CostMessage = [] | [string] | [string, MsgArg];

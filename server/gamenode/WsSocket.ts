@@ -53,17 +53,13 @@ export function stringifyWithoutCycles(value: unknown): string {
 
 export class WsSocket {
     private ws: WebSocket | null = null;
-    private running = false;
     private registered = false;
-    private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
     private reconnectDelay = ONE_SECOND;
-    private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
 
     constructor(private listenAddress: string, private protocol: string, private handlers: LobbyHandlers) {
-        this.running = true;
         process.nextTick(() => this.connect());
 
-        this.heartbeatInterval = setInterval(() => {
+        setInterval(() => {
             if(this.registered) {
                 logger.debug(`${env.gameNodeName} sending HEARTBEAT`);
                 this.send('HEARTBEAT');
@@ -103,16 +99,8 @@ export class WsSocket {
     }
 
     private scheduleReconnect() {
-        if(!this.running) {
-            return;
-        }
-
         logger.info(`${env.gameNodeName} reconnecting in ${this.reconnectDelay}ms`);
-        this.reconnectTimer = setTimeout(() => {
-            if(this.running) {
-                this.connect();
-            }
-        }, this.reconnectDelay);
+        setTimeout(() => this.connect(), this.reconnectDelay);
 
         this.reconnectDelay = Math.min(this.reconnectDelay * 2, MAX_RECONNECT_DELAY);
     }
@@ -196,19 +184,6 @@ export class WsSocket {
             }
         } catch(e) {
             logger.error(`${env.gameNodeName} failed to handle ${message.command}: ${e instanceof Error ? e.stack : e}`);
-        }
-    }
-
-    public close() {
-        this.running = false;
-        if(this.heartbeatInterval) {
-            clearInterval(this.heartbeatInterval);
-        }
-        if(this.reconnectTimer) {
-            clearTimeout(this.reconnectTimer);
-        }
-        if(this.ws) {
-            this.ws.close();
         }
     }
 }

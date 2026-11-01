@@ -15,15 +15,13 @@ class VoidAcolyte extends DrawCard {
             .placeFate();
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Ring',
             element: Element.Void
-        });
-        return symbols;
-    }
+        }
+    ];
 
 }
 

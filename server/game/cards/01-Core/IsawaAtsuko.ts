@@ -21,15 +21,13 @@ class IsawaAtsuko extends DrawCard {
             .chatText('give friendly characters +1/+1 and opposing characters -1/-1');
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Contested Ring',
             element: Element.Void
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

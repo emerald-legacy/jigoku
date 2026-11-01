@@ -1,13 +1,13 @@
 import { msg } from './GameChat.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { CardType, Location, Phase, Blocker, RestrictionType } from './Constants.js';
+import { CardType, Location, RestrictionType, type Blocker } from './Constants.js';
 import { payTargetDependentFateCost } from './costs/fateAndHonorCosts.js';
 import { attach } from './GameActions/GameActions.js';
 import type BaseCard from './BaseCard.js';
 import type DrawCard from './DrawCard.js';
 import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
-import { getPlayBlocker } from './playActionHelpers.js';
+import { getAttachmentPlayBlocker } from './playActionHelpers.js';
 
 export class PlayAttachmentAction extends PlayCardSourceAction {
     override title = 'Play this attachment';
@@ -27,14 +27,7 @@ export class PlayAttachmentAction extends PlayCardSourceAction {
     }
 
     override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
-        if(
-            !ignoredBlockers.includes(Blocker.WrongPhase) &&
-            context.game.currentPhase === Phase.Dynasty &&
-            !context.game.rules.dynastyPhaseCanPlayAttachments
-        ) {
-            return Blocker.WrongPhase;
-        }
-        return getPlayBlocker(context.source, context, ignoredBlockers, context.playType) ?? super.meetsRequirements(context, ignoredBlockers);
+        return getAttachmentPlayBlocker(context, ignoredBlockers) ?? super.meetsRequirements(context, ignoredBlockers);
     }
 
     override displayMessage(context: AbilityContext) {

@@ -18,9 +18,7 @@ class ImpulsiveNovice extends DrawCard {
         });
     }
 
-    override getPrintedElementSymbols() {
-        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols(elementSymbols)];
-    }
+    protected override printedElementSymbols = claimedRingSymbols(elementSymbols);
 }
 
 

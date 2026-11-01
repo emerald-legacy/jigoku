@@ -6,8 +6,8 @@ describe('the Player', function() {
         this.game = jasmine.createSpyObj('game', ['getOtherPlayer', 'playerDecked', 'emitEvent', 'addMessage']);
         this.game.rules = rulesFor('stronghold');
         this.player = new Player('1', {username: 'Player 1', settings: {}}, true, this.game);
-        this.attachment = { id: '1', label: 'Attachment', uuid: '1111', type: 'attachment' };
-        this.cardWithNoAttachments = { id: '2', label: 'Character', type: 'character', uuid: '2222' };
+        this.attachment = { id: '1', label: 'Attachment', uuid: '1111', type: 'attachment', attachments: [] };
+        this.cardWithNoAttachments = { id: '2', label: 'Character', type: 'character', uuid: '2222', attachments: [] };
         this.cardWithAttachment = { id: '3', label: 'Character', type: 'character', uuid: '3333', attachments: [] };
         this.cardWithAttachment.attachments.push(this.attachment);
 
@@ -17,10 +17,10 @@ describe('the Player', function() {
         this.player.cardsInPlay.push(this.cardWithAttachment);
     });
 
-    describe('the findCardInPlayByUuid() function', function() {
+    describe('the findCardByUuid() function on the cards in play', function() {
         describe('when called for a card that isn\'t in play', function() {
             it('should return undefined', function() {
-                this.card = this.player.findCardInPlayByUuid('notinplay');
+                this.card = this.player.findCardByUuid(this.player.cardsInPlay, 'notinplay');
 
                 expect(this.card).toBe(undefined);
             });
@@ -28,7 +28,7 @@ describe('the Player', function() {
 
         describe('when called for a card that is in play', function() {
             beforeEach(function() {
-                this.card = this.player.findCardInPlayByUuid('2222');
+                this.card = this.player.findCardByUuid(this.player.cardsInPlay, '2222');
             });
 
             it('should return the card', function() {
@@ -39,7 +39,7 @@ describe('the Player', function() {
 
         describe('when called for an attachment that is on a card in play', function() {
             beforeEach(function() {
-                this.card = this.player.findCardInPlayByUuid('1111');
+                this.card = this.player.findCardByUuid(this.player.cardsInPlay, '1111');
             });
 
             it('should return the attachment', function() {

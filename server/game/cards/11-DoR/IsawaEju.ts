@@ -28,9 +28,7 @@ class IsawaEju extends DrawCard {
             .refillFaceup((context) => ({ target: context.target.controller, location: context.target.location }));
     }
 
-    override getPrintedElementSymbols() {
-        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
-    }
+    protected override printedElementSymbols = claimedRingSymbols([elementSymbol]);
 }
 
 

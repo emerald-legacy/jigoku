@@ -24,3 +24,4 @@ export { Blocker } from './Constants/Blocker.js';
 export { RestrictionType } from './Constants/RestrictionType.js';
 export { RestrictionScope } from './Constants/RestrictionScope.js';
 export { RemainingCards } from './Constants/RemainingCards.js';
+export { type Faction, isFactionName } from './Constants/Faction.js';

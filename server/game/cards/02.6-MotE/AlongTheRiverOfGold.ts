@@ -21,13 +21,11 @@ export default class AlongTheRiverOfGold extends ProvinceCard {
             .chatText('switch {0}\'s military and political skill');
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: ELEMENT_KEY,
             prettyName: 'Province Element',
             element: Element.Water
-        });
-        return symbols;
-    }
+        }
+    ];
 }

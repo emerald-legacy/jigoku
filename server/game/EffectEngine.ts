@@ -113,7 +113,7 @@ export class EffectEngine {
                 effect.match === card &&
                 effect.duration !== Duration.Persistent &&
                 !effect.canChangeZoneOnce &&
-                (!effect.canChangeZoneNTimes || effect.canChangeZoneNTimes === 0)
+                !effect.canChangeZoneNTimes
         );
         for(const effect of this.effects) {
             if(effect.match === card && effect.canChangeZoneOnce) {

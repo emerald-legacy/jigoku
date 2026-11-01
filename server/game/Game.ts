@@ -265,9 +265,6 @@ export class Game {
         return this.gameChat.messages;
     }
 
-    /**
-     * Checks if a player is a spectator
-     */
     isSpectator(player: Player | Spectator): player is Spectator {
         return player.constructor === Spectator;
     }
@@ -287,9 +284,6 @@ export class Game {
         this.invalidatePlayerCaches();
     }
 
-    /**
-     * Get all players (not spectators) in the game
-     */
     getPlayers(): Player[] {
         if(!this._playersCache) {
             this._playersCache = Object.values(this.playersAndSpectators).filter((player): player is Player => !this.isSpectator(player));
@@ -297,9 +291,6 @@ export class Game {
         return this._playersCache;
     }
 
-    /**
-     * Returns the Player object (not spectator) for a name
-     */
     getPlayerByName(playerName: string): Player | undefined {
         const player = this.playersAndSpectators[playerName];
         if(player && !this.isSpectator(player)) {
@@ -308,23 +299,14 @@ export class Game {
         return undefined;
     }
 
-    /**
-     * Get all players (not spectators) with the first player at index 0
-     */
     getPlayersInFirstPlayerOrder(): Player[] {
         return [...this.getPlayers()].sort((a, b) => Number(!!b.firstPlayer) - Number(!!a.firstPlayer));
     }
 
-    /**
-     * Get all players and spectators in the game
-     */
     getPlayersAndSpectators(): Record<string, Player | Spectator> {
         return this.playersAndSpectators;
     }
 
-    /**
-     * Get all spectators in the game
-     */
     getSpectators(): Spectator[] {
         if(!this._spectatorsCache) {
             this._spectatorsCache = Object.values(this.playersAndSpectators).filter((player) => this.isSpectator(player));
@@ -332,16 +314,10 @@ export class Game {
         return this._spectatorsCache;
     }
 
-    /**
-     * Gets the current First Player
-     */
     getFirstPlayer(): Player | undefined {
         return this.getPlayers().find((p) => p.firstPlayer);
     }
 
-    /**
-     * Gets a player other than the one passed (usually their opponent)
-     */
     getOtherPlayer(player: Player): Player | undefined {
         return this.getPlayers().find((p) => {
             return p.name !== player.name;
@@ -358,19 +334,12 @@ export class Game {
         return this.cardsByUuid.get(cardId);
     }
 
-    /**
-     * Returns all cards from anywhere in the game matching the passed predicate
-     */
     findAnyCardsInAnyList<Card extends BaseCard>(predicate: (card: BaseCard) => card is Card): Card[];
     findAnyCardsInAnyList(predicate: (card: BaseCard) => boolean): BaseCard[];
     findAnyCardsInAnyList(predicate: (card: BaseCard) => boolean): BaseCard[] {
         return this.allCards.filter(predicate);
     }
 
-    /**
-     * Returns all cards (i.e. characters) which matching the passed predicated
-     * function from either players 'in play' area.
-     */
     findAnyCardsInPlay(predicate: (card: DrawCard) => boolean): DrawCard[] {
         let foundCards: DrawCard[] = [];
 
@@ -381,9 +350,7 @@ export class Game {
         return foundCards;
     }
 
-    /**
-     * Returns if a card is in play (characters, attachments, provinces, holdings) that has the passed trait
-     */
+    /** In play here: characters, attachments, provinces and holdings. */
     isTraitInPlay(trait: Trait): boolean {
         return this.getPlayers().some((player) => player.isTraitInPlay(trait));
     }
@@ -454,9 +421,6 @@ export class Game {
         this.getPlayers().forEach((player) => player.stopClock());
     }
 
-    /**
-     * This function is called from the client whenever a card is clicked
-     */
     cardClicked(sourcePlayer: string, cardId: string): void {
         this.input.cardClicked(sourcePlayer, cardId);
     }
@@ -543,9 +507,6 @@ export class Game {
         this.queueStep(new GameWonPrompt(this, winner));
     }
 
-    /**
-     * Designate a player as First Player
-     */
     setFirstPlayer(firstPlayer: Player): void {
         if(!this.initialFirstPlayer) {
             this.initialFirstPlayer = firstPlayer.name;
@@ -559,23 +520,14 @@ export class Game {
         }
     }
 
-    /**
-     * Changes a Player variable and displays a message in chat
-     */
     changeStat(playerName: string, stat: string, value: number): void {
         this.input.changeStat(playerName, stat, value);
     }
 
-    /**
-     * This function is called by the client every time a player enters a chat message
-     */
     chat(playerName: string, message: string): void {
         this.input.chat(playerName, message);
     }
 
-    /**
-     * This is called by the client when a player clicks 'Concede'
-     */
     concede(playerName: string): void {
         this.input.concede(playerName);
     }
@@ -621,10 +573,6 @@ export class Game {
         this.prompts.promptForHonorBid(activePromptTitle, costHandler, prohibitedBids, duel);
     }
 
-    /**
-     * This function is called by the client whenever a player clicks a button
-     * in a prompt
-     */
     menuButton(playerName: string, arg: MenuArg, uuid: string, method?: string | null): boolean {
         return this.input.menuButton(playerName, arg, uuid, method);
     }
@@ -659,6 +607,7 @@ export class Game {
         });
 
         this.playersAndSpectators = players;
+        this.invalidatePlayerCaches();
 
         let playerWithNoStronghold: Player | null = null;
 
@@ -1067,10 +1016,6 @@ export class Game {
         return this.serializer.getState(activePlayerName, sharedState);
     }
 
-    getHiddenInfoFingerprint(): string {
-        return this.serializer.getHiddenInfoFingerprint();
-    }
-
     /**
      * Numbers the state about to be sent and logs the hidden card identities (hands + facedown provinces)
      * for the replay when they changed since the last entry. Returns the state's number, or undefined once
@@ -1078,10 +1023,6 @@ export class Game {
      */
     recordHiddenInfo(): number | undefined {
         return this.serializer.recordHiddenInfo();
-    }
-
-    getHiddenInfo(): Record<string, unknown> {
-        return this.serializer.getHiddenInfo();
     }
 
     getSummary(activePlayerName?: string): GameSummary | undefined {

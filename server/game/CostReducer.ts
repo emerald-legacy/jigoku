@@ -31,7 +31,7 @@ export class CostReducer {
         private source: BaseCard,
         properties: CostReducerProps
     ) {
-        this.amount = properties.amount || 1;
+        this.amount = properties.amount ?? 1;
         this.costFloor = properties.costFloor || 0;
         this.match = properties.match;
         this.cardType = properties.cardType;

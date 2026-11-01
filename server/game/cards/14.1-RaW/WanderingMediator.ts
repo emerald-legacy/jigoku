@@ -15,15 +15,13 @@ class WanderingMediator extends DrawCard {
                 .moveToConflict();
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Province Element',
             element: Element.Air
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

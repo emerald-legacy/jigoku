@@ -1,6 +1,6 @@
 import { GameObject } from './GameObject.js';
 import type { PrintedKeyword } from './KeywordParser.js';
-import { Location, Duration, type Trait } from './Constants.js';
+import { Location, Duration, type Trait, type Faction } from './Constants.js';
 import type Game from './Game.js';
 import type Player from './Player.js';
 import type { ActiveEffect } from './Effects/ActiveEffect.js';
@@ -39,7 +39,7 @@ export class EffectSource extends GameObject {
         return new Set();
     }
 
-    public isFaction(_faction: string) {
+    public isFaction(_faction: Faction) {
         return false;
     }
 

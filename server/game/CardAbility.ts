@@ -51,7 +51,7 @@ function isMsgArg(value: unknown): value is MsgArg {
     );
 }
 
-const DefaultLocationForType: Record<string, Location> = {
+const DefaultLocationForType: Partial<Record<CardType, Location>> = {
     event: Location.Hand,
     holding: Location.Provinces,
     province: Location.Provinces,
@@ -99,7 +99,7 @@ export class CardAbility extends ResolvableAbility {
         this.limit.registerEvents(card.game);
         this.limit.ability = this;
         this.location = this.buildLocation(card, properties.location);
-        this.printedAbility = properties.printedAbility === false ? false : true;
+        this.printedAbility = properties.printedAbility !== false;
         this.attachmentText = !!properties.attachmentText;
         this.cannotBeCancelled = properties.cannotBeCancelled;
         this.cannotTargetFirst = !!properties.cannotTargetFirst;
@@ -203,28 +203,18 @@ export class CardAbility extends ResolvableAbility {
     }
 
     override getCosts(context: AbilityContext, playCosts = true, triggerCosts = true): Cost[] {
-        let costs = super.getCosts(context, playCosts);
+        const costs = super.getCosts(context, playCosts);
+        if(context.subResolution) {
+            return costs;
+        }
         // "an additional cost to trigger an ability": keywords aren't triggered abilities
         const withTriggerCosts = triggerCosts && !this.isKeywordAbility();
-        if(!context.subResolution && withTriggerCosts && context.player.anyEffect(EffectName.AdditionalTriggerCost)) {
-            const additionalTriggerCosts = context.player
-                .getEffects(EffectName.AdditionalTriggerCost)
-                .map((effect) => effect(context));
-            costs = costs.concat(...additionalTriggerCosts);
-        }
-        if(!context.subResolution && withTriggerCosts && context.source.anyEffect(EffectName.AdditionalTriggerCost)) {
-            const additionalTriggerCosts = context.source
-                .getEffects(EffectName.AdditionalTriggerCost)
-                .map((effect) => effect(context));
-            costs = costs.concat(...additionalTriggerCosts);
-        }
-        if(!context.subResolution && playCosts && context.player.anyEffect(EffectName.AdditionalPlayCost)) {
-            const additionalPlayCosts = context.player
-                .getEffects(EffectName.AdditionalPlayCost)
-                .map((effect) => effect(context));
-            return costs.concat(...additionalPlayCosts);
-        }
-        return costs;
+        const additionalCosts = [
+            ...(withTriggerCosts ? context.player.getEffects(EffectName.AdditionalTriggerCost) : []),
+            ...(withTriggerCosts ? context.source.getEffects(EffectName.AdditionalTriggerCost) : []),
+            ...(playCosts ? context.player.getEffects(EffectName.AdditionalPlayCost) : [])
+        ];
+        return costs.concat(...additionalCosts.map((effect) => effect(context)));
     }
 
     override getReducedCost(context: AbilityContext): number {
@@ -279,7 +269,7 @@ export class CardAbility extends ResolvableAbility {
         const messageArgs: MsgArg[] = [context.player, ' ' + messageVerb + ' ', context.source, gainedAbility, origin];
         const costMessages = this.cost
             .map((cost) => {
-                const costMsg = cost.getCostMessage && cost.getCostMessage(context);
+                const costMsg = cost.getCostMessage?.(context);
                 if(costMsg && costMsg.length !== 0) {
                     const paid = cost.getActionName ? context.costs[cost.getActionName(context)] : undefined;
                     let card: MsgArg = isMsgArg(paid) ? paid : undefined;

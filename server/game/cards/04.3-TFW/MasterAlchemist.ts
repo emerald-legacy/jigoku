@@ -30,13 +30,11 @@ export default class MasterAlchemist extends DrawCard {
             }));
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: ELEMENT,
             prettyName: 'Ring for Fate',
             element: Element.Fire
-        });
-        return symbols;
-    }
+        }
+    ];
 }

@@ -220,14 +220,7 @@ export class SkillCalculator {
             const latestSetEffect = setEffects[setEffects.length - 1];
             // a dash is NaN
             const setAmount = isEffectOf(latestSetEffect, names.setSkill) ? latestSetEffect.getValue(this.card) : NaN;
-            return [
-                StatModifier.fromEffect(
-                    setAmount,
-                    latestSetEffect,
-                    true,
-                    `Set by ${StatModifier.getEffectName(latestSetEffect)}`
-                )
-            ];
+            return [StatModifier.setBy(setAmount, latestSetEffect)];
         }
 
         const modifierEffects = rawEffects.filter((effect) => isEffectOfAny(effect, names.modifiers));
@@ -323,14 +316,7 @@ export class SkillCalculator {
         if(setEffects.length > 0) {
             const latestSetEffect = setEffects[setEffects.length - 1];
             const setAmount = latestSetEffect.getValue(this.card);
-            return [
-                StatModifier.fromEffect(
-                    setAmount,
-                    latestSetEffect,
-                    true,
-                    `Set by ${StatModifier.getEffectName(latestSetEffect)}`
-                )
-            ];
+            return [StatModifier.setBy(setAmount, latestSetEffect)];
         }
 
         const baseEffects = gloryEffects.filter((effect) => isEffectOf(effect, EffectName.SetBaseGlory));
@@ -382,14 +368,7 @@ export class SkillCalculator {
         if(setEffects.length > 0) {
             const latestSetEffect = setEffects[setEffects.length - 1];
             const setAmount = latestSetEffect.getValue(this.card);
-            return [
-                StatModifier.fromEffect(
-                    setAmount,
-                    latestSetEffect,
-                    true,
-                    `Set by ${StatModifier.getEffectName(latestSetEffect)}`
-                )
-            ];
+            return [StatModifier.setBy(setAmount, latestSetEffect)];
         }
 
         const copyEffect = strengthEffects.filter((effect) => isEffectOf(effect, EffectName.CopyCharacter)).at(-1);

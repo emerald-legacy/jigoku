@@ -34,13 +34,11 @@ export default class OtterFisherman extends DrawCard {
             });
     }
 
-    public override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: ELEMENT_KEY,
             prettyName: 'Ring',
             element: Element.Water
-        });
-        return symbols;
-    }
+        }
+    ];
 }

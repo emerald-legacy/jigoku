@@ -31,15 +31,13 @@ class IsawaTsuke extends DrawCard {
         );
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Ring Effect',
             element: Element.Fire
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

@@ -1,4 +1,9 @@
 import { DiscardAtRandomAction } from '../../../build/server/game/GameActions/DiscardAtRandomAction.js';
+import BaseCard from '../../../build/server/game/BaseCard.js';
+
+// fake cards that pick their discard pile as real cards do
+const discardPile = Object.getOwnPropertyDescriptor(BaseCard.prototype, 'discardPile');
+const fakeCard = (name, isDynasty) => Object.defineProperty({ name, isDynasty }, 'discardPile', discardPile);
 
 describe('DiscardAtRandomAction', function() {
     beforeEach(function() {
@@ -47,9 +52,9 @@ describe('DiscardAtRandomAction', function() {
 
     describe('eventHandler()', function() {
         beforeEach(function() {
-            this.cardA = { name: 'Card A', isDynasty: false };
-            this.cardB = { name: 'Card B', isDynasty: false };
-            this.cardC = { name: 'Card C', isDynasty: false };
+            this.cardA = fakeCard('Card A', false);
+            this.cardB = fakeCard('Card B', false);
+            this.cardC = fakeCard('Card C', false);
             this.player.hand = [this.cardA, this.cardB, this.cardC];
             this.event = { player: this.player, amount: 2 };
         });

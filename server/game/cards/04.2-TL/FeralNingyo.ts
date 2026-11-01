@@ -29,15 +29,13 @@ class FeralNingyo extends DrawCard {
                 : msg`put ${context.source} into play into the conflict and return ${context.chatTarget()} to the deck at the end of the conflict`);
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Conflict Type',
             element: Element.Water
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

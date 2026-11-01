@@ -24,13 +24,11 @@ export default class AdeptOfTheWaves extends DrawCard {
             .chatText((context) => msg`grant Covert during ${this.getCurrentElementSymbol(COVERT_ELEMENT)} conflicts to ${context.chatTarget()}`);
     }
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: COVERT_ELEMENT,
             prettyName: 'Contested Ring',
             element: Element.Water
-        });
-        return symbols;
-    }
+        }
+    ];
 }

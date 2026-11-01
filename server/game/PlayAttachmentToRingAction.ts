@@ -1,13 +1,13 @@
 import { msg } from './GameChat.js';
 import type { AbilityContext } from './AbilityContext.js';
 import { PlayCardSourceAction } from './PlayCardSourceAction.js';
-import { Phase, PlayType, TargetMode, Blocker } from './Constants.js';
+import { TargetMode, type Blocker } from './Constants.js';
 import { payTargetDependentFateCost } from './costs/fateAndHonorCosts.js';
 import { attachToRing } from './GameActions/GameActions.js';
 import type Ring from './Ring.js';
 import type DrawCard from './DrawCard.js';
 import { createCardPlayedEvent } from './Events/cardPlayedEvent.js';
-import { getPlayBlocker } from './playActionHelpers.js';
+import { getAttachmentPlayBlocker } from './playActionHelpers.js';
 
 export class PlayAttachmentToRingAction extends PlayCardSourceAction {
     override title = 'Play this attachment';
@@ -21,14 +21,7 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
     }
 
     override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
-        if(
-            !ignoredBlockers.includes(Blocker.WrongPhase) &&
-            context.game.currentPhase === Phase.Dynasty &&
-            !context.game.rules.dynastyPhaseCanPlayAttachments
-        ) {
-            return Blocker.WrongPhase;
-        }
-        return getPlayBlocker(context.source, context, ignoredBlockers, PlayType.PlayFromHand) ?? super.meetsRequirements(context, ignoredBlockers);
+        return getAttachmentPlayBlocker(context, ignoredBlockers) ?? super.meetsRequirements(context, ignoredBlockers);
     }
 
     override canResolveTargets() {
@@ -40,7 +33,7 @@ export class PlayAttachmentToRingAction extends PlayCardSourceAction {
     }
 
     override executeHandler(context: AbilityContext<DrawCard>) {
-        const cardPlayedEvent = createCardPlayedEvent(context, context.source, PlayType.PlayFromHand);
+        const cardPlayedEvent = createCardPlayedEvent(context, context.source, context.playType);
         context.game.openEventWindow([
             attachToRing({ attachment: context.source }).getEvent(context.ring, context),
             cardPlayedEvent

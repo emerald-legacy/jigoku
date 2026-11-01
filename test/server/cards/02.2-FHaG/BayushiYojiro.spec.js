@@ -75,11 +75,11 @@ describe('Bayushi Yojiro', function() {
                 expect(this.youngHarrier.isHonored).toBe(true);
                 expect(this.youngHarrier.militarySkill).toBe(1);
                 expect(this.youngHarrier.politicalSkill).toBe(1);
-                expect(this.youngHarrier.getMilitaryModifiers().some(modifier =>
+                expect(this.youngHarrier.militarySkillSummary.modifiers.some(modifier =>
                     modifier.name === 'Honored Token (Bayushi Yojiro)' &&
                     modifier.amount === 0
                 )).toBe(true);
-                expect(this.youngHarrier.getPoliticalModifiers().some(modifier =>
+                expect(this.youngHarrier.politicalSkillSummary.modifiers.some(modifier =>
                     modifier.name === 'Honored Token (Bayushi Yojiro)' &&
                     modifier.amount === 0
                 )).toBe(true);
@@ -98,11 +98,11 @@ describe('Bayushi Yojiro', function() {
                 expect(this.youngHarrier.isTainted).toBe(true);
                 expect(this.youngHarrier.militarySkill).toBe(1);
                 expect(this.youngHarrier.politicalSkill).toBe(1);
-                expect(this.youngHarrier.getMilitaryModifiers().some(modifier =>
+                expect(this.youngHarrier.militarySkillSummary.modifiers.some(modifier =>
                     modifier.name === 'Tainted Token (Bayushi Yojiro)' &&
                     modifier.amount === 0
                 )).toBe(true);
-                expect(this.youngHarrier.getPoliticalModifiers().some(modifier =>
+                expect(this.youngHarrier.politicalSkillSummary.modifiers.some(modifier =>
                     modifier.name === 'Tainted Token (Bayushi Yojiro)' &&
                     modifier.amount === 0
                 )).toBe(true);

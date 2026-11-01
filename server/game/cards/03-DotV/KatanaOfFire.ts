@@ -22,9 +22,7 @@ class KatanaOfFire extends DrawCard {
         return fireRingBonus + this.controller.getNumberOfCardsInPlay((card) => card.hasTrait(Trait.Fire));
     }
 
-    override getPrintedElementSymbols() {
-        return [...super.getPrintedElementSymbols(), ...claimedRingSymbols([elementSymbol])];
-    }
+    protected override printedElementSymbols = claimedRingSymbols([elementSymbol]);
 }
 
 

@@ -19,15 +19,13 @@ class IsawaSkycaller extends DrawCard {
     }
 
 
-    override getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Contested Ring',
             element: Element.Air
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

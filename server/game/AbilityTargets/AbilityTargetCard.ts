@@ -92,11 +92,10 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
             context.targets[this.name] = [];
             return;
         }
-        const chooser = this.chooserNow(context, targetResults);
-        if(!chooser) {
+        const player = this.chooserNow(context, targetResults);
+        if(!player) {
             return;
         }
-        const { player } = chooser;
         const hidden = player === context.choosingPlayerOverride ? this.cardsHiddenFrom(player, context) : [];
         if(hidden.length > 0) {
             const chosen = this.selector.formatSelectParam(selectBlindly(this.selector, hidden, context, !!this.properties.cardCondition));
@@ -123,10 +122,6 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
                 return true;
             }
         };
-        if(!player) {
-            // a solo game has no opponent to choose
-            return;
-        }
         context.game.promptForSelect(player, Object.assign(promptProperties, otherProperties));
     }
 
