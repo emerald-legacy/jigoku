@@ -97,8 +97,8 @@ export function cardMenuClick(menuItem: MenuItem, game: Game, player: Player, ca
             }
             game.addMessage(msg`${player} ${card.isBroken ? 'unbreaks' : 'breaks'} ${card}`);
             card.isBroken = card.isBroken ? false : true;
-            if(card.location === Location.StrongholdProvince && card.isBroken && player.opponent) {
-                game.recordWinner(player.opponent, 'conquest');
+            if(card.location === Location.StrongholdProvince && card.isBroken && card.controller.opponent) {
+                game.recordWinner(card.controller.opponent, 'conquest');
             }
             return;
         case 'move_conflict':

@@ -201,6 +201,7 @@ export class GameInputHandler {
         } else {
             this.game.addMessage(msg`${player} sets ${stat} to ${player[stat]} (${(value > 0 ? '+' : '') + value})`);
         }
+        this.game.checkGameState(true);
     }
 
     chat(playerName: string, message: string): void {

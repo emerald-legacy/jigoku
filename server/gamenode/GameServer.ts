@@ -153,7 +153,7 @@ export class GameServer implements GameRouter, LobbyHandlers {
 
         if(game) {
             game.addMessage(
-                msg`A Server error has occured processing your game state, apologies.  Your game may now be in an inconsistent state, or you may be able to continue.  The error has been logged.`
+                msg`A Server error has occurred processing your game state, apologies.  Your game may now be in an inconsistent state, or you may be able to continue.  The error has been logged.`
             );
         }
     }

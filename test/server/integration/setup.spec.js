@@ -246,3 +246,23 @@ describe('setup phase', function() {
         });
     });
 });
+
+describe('Setup with Breeze of Dawn Lodge', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    stronghold: 'breeze-of-dawn-lodge'
+                },
+                skipAutoFirstPlayer: true
+            });
+        });
+
+        it('records the Lodge\'s player as the initial first player', function() {
+            expect(this.player1.player.firstPlayer).toBe(true);
+            expect(this.game.initialFirstPlayer).toBe('player1');
+            expect(this.game.getSaveState().initialFirstPlayer).toBe('player1');
+        });
+    });
+});

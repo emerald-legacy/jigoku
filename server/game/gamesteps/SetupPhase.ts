@@ -43,6 +43,7 @@ export class SetupPhase extends PhaseStep {
             firstPlayer.stronghold?.stealFirstPlayerDuringSetupWithMsg &&
             !opponent.stronghold?.stealFirstPlayerDuringSetupWithMsg
         ) {
+            this.game.setFirstPlayer(firstPlayer);
             return;
         }
 
@@ -50,8 +51,7 @@ export class SetupPhase extends PhaseStep {
             !firstPlayer.stronghold?.stealFirstPlayerDuringSetupWithMsg &&
             opponent.stronghold?.stealFirstPlayerDuringSetupWithMsg
         ) {
-            firstPlayer.firstPlayer = false;
-            opponent.firstPlayer = true;
+            this.game.setFirstPlayer(opponent);
             this.game.addMessage([opponent.stronghold.stealFirstPlayerDuringSetupWithMsg, [opponent]]);
             return;
         }

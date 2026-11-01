@@ -32,5 +32,11 @@ describe('Manual mode conflict result', function() {
             expect(this.game.rings.air.isConsideredClaimed(this.player2.player)).toBe(true);
             expect(this.game.rings.air.isConsideredClaimed(this.player1.player)).toBe(false);
         });
+
+        it('says who won once', function() {
+            this.player1.clickPrompt('Defender Won');
+            const results = this.getChatLogs(10).filter((line) => line.includes('won a military conflict'));
+            expect(results).toEqual(['player2 won a military conflict']);
+        });
     });
 });

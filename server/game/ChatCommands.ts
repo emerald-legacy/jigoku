@@ -1,4 +1,3 @@
-import { isEnumValue } from './utils/helpers.js';
 import { msg } from './GameChat.js';
 import { rollDie } from './utils/random.js';
 import { discardAtRandom, moveCard, reveal } from './GameActions/GameActions.js';
@@ -12,6 +11,9 @@ import type Ring from './Ring.js';
 type CommandHandler = (player: Player, args: string[]) => boolean | void;
 
 const MAX_DIE_SIDES = 1000;
+
+/** Commands that work outside manual mode: they change no game state. */
+const FREE_COMMANDS = new Set(['/stop-clocks', '/start-clocks', '/modify-clock', '/roll', '/disconnectme', '/manual']);
 
 export class ChatCommands {
     game: Game;
@@ -53,6 +55,9 @@ export class ChatCommands {
         if(!player || !Object.prototype.hasOwnProperty.call(this.commands, command)) {
             return false;
         }
+        if(!this.game.manualMode && !FREE_COMMANDS.has(command)) {
+            return true;
+        }
 
         return this.commands[command].call(this, player, args) !== false;
     }
@@ -83,20 +88,36 @@ export class ChatCommands {
     draw(player: Player, args: string[]): void {
         const num = this.getNumberOrDefault(args[1], 1);
 
-        this.game.addMessage(msg`${player} uses the /draw command to draw ${num} cards to their hand`);
+        this.game.addMessage(msg`${player} uses the /draw command to draw ${num} card${num === 1 ? '' : 's'} to their hand`);
 
         player.drawCardsToHand(num);
     }
 
     claimFavor(player: Player, args: string[]): void {
         const requested = args[1] ?? '';
-        const type = isEnumValue(FavorType, requested) ? requested : FavorType.Military;
-        this.game.addMessage(msg`${player} uses /claim-favor to claim the emperor's ${type} favor`);
-        player.claimImperialFavor(type);
-        const otherPlayer = player.opponent;
-        if(otherPlayer) {
-            otherPlayer.loseImperialFavor();
+        const sovereign = this.game.rules.imperialFavorSovereign;
+        player.opponent?.loseImperialFavor();
+        if(!this.game.rules.imperialFavorHasSides) {
+            player.imperialFavor = FavorType.Both;
+            this.game.addMessage(msg`${player} uses /claim-favor to claim the ${sovereign} favor`);
+            return;
         }
+        const claim = (type: FavorType) => {
+            player.imperialFavor = type;
+            this.game.addMessage(msg`${player} uses /claim-favor to claim the ${sovereign} ${type} favor`);
+        };
+        if(!requested || requested === FavorType.Military || requested === FavorType.Political) {
+            claim(requested === FavorType.Political ? FavorType.Political : FavorType.Military);
+            return;
+        }
+        this.game.promptWithHandlerMenu(player, {
+            activePromptTitle: 'Which side of the Imperial Favor would you like to claim?',
+            source: 'Imperial Favor',
+            options: [
+                { text: 'Military', handler: () => claim(FavorType.Military) },
+                { text: 'Political', handler: () => claim(FavorType.Political) }
+            ]
+        });
     }
 
     discardFavor(player: Player): void {

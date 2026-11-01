@@ -26,3 +26,26 @@ describe('Changing fate and honor by hand', function() {
         });
     });
 });
+
+describe('Changing honor by hand to a winning total', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 24
+                },
+                player2: {
+                    honor: 10
+                }
+            });
+            this.game.manualMode = true;
+        });
+
+        it('ends the game at once', function() {
+            this.game.changeStat('player1', 'honor', 1);
+            expect(this.player1.honor).toBe(25);
+            expect(this.game.winner).toBe(this.player1.player);
+        });
+    });
+});

@@ -678,7 +678,9 @@ export class ConflictFlow extends BaseStepWithPipeline {
                 const effects = this.conflict.getEffects(EffectName.ForceConflictUnopposed);
                 const forcedUnopposed = effects.length !== 0;
 
-                this.showConflictResult();
+                if(!this.#resultChosenManually) {
+                    this.showConflictResult();
+                }
                 this.game.recordConflictWinner(this.conflict);
 
                 if((this.conflict.isAttackerTheWinner() && this.conflict.defenders.length === 0) || forcedUnopposed) {
