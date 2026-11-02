@@ -47,7 +47,7 @@
     "devDependencies": {
         "@eslint/js": "10.0.1",
         "@types/bcrypt": "6.0.0",
-        "@types/jasmine": "6.0.0",
+        "@types/jasmine": "7.0.0",
         "@types/jsonwebtoken": "9.0.10",
         "@types/node": "26.6.5",
         "@types/ws": "8.18.2",
