@@ -33,7 +33,7 @@
         "node": ">=26.0.0"
     },
     "dependencies": {
-        "axios": "1.20.0",
+        "axios": "1.21.0",
         "bcrypt": "6.0.0",
         "cross-env": "10.1.0",
         "jsonwebtoken": "9.0.3",
@@ -49,10 +49,10 @@
         "@types/bcrypt": "6.0.0",
         "@types/jasmine": "7.0.0",
         "@types/jsonwebtoken": "9.0.10",
-        "@types/node": "26.6.5",
+        "@types/node": "26.6.6",
         "@types/ws": "8.18.2",
-        "@typescript-eslint/eslint-plugin": "8.72.0",
-        "@typescript-eslint/parser": "8.72.0",
+        "@typescript-eslint/eslint-plugin": "8.72.1",
+        "@typescript-eslint/parser": "8.72.1",
         "eslint": "10.13.0",
         "eslint-plugin-jasmine": "4.2.2",
         "globals": "17.13.0",
