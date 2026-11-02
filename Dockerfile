@@ -1,4 +1,4 @@
-FROM node:26.11-alpine3.23@sha256:f1394b3ffc021bc3f4aaf363e70a8d9667f7a9a63538bc824d7cc583129fffad AS builder
+FROM node:26.12-alpine3.23@sha256:2ae3a23c9c5d2129398f4844c7c43400c061faf6973852f0fa837323bff9a5a8 AS builder
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ ENV BUILD_VERSION=$BUILD_VERSION
 RUN mkdir -p server/logs && npx tsc
 
 # Production stage
-FROM node:26.11-alpine3.23@sha256:f1394b3ffc021bc3f4aaf363e70a8d9667f7a9a63538bc824d7cc583129fffad
+FROM node:26.12-alpine3.23@sha256:2ae3a23c9c5d2129398f4844c7c43400c061faf6973852f0fa837323bff9a5a8
 # Install runtime dependencies
 
 WORKDIR /app
