@@ -27,6 +27,7 @@ const TEN_SECONDS = 10_000;
 const ONE_SECOND = 1_000;
 const MAX_RECONNECT_DELAY = 5_000;
 const OUTBOX_LIMIT = 200;
+const OUTBOX_MAX_LENGTH = 16 * 1024 * 1024;
 
 /** Game results the lobby must not miss: kept while the link is down and sent after the next HELLO. */
 const OUTBOX_COMMANDS: ReadonlySet<OutboundMessage['command']> = new Set(['GAMEWIN', 'PLAYERLEFT', 'GAMEERROR']);
@@ -73,7 +74,7 @@ export class WsSocket {
     private ws: WebSocket | null = null;
     private registered = false;
     private reconnectDelay = ONE_SECOND;
-    private outbox: string[] = [];
+    private outbox: { command: OutboundMessage['command']; message: string }[] = [];
 
     constructor(private listenAddress: string, private protocol: string, private handlers: LobbyHandlers) {
         process.nextTick(() => this.connect());
@@ -144,11 +145,15 @@ export class WsSocket {
         }
     }
 
+    /** Bounded by count and total length; the oldest GAMEERROR (its debug data can be megabytes) goes first, then the oldest message. */
     private queue(command: OutboundMessage['command'], message: string) {
-        this.outbox.push(message);
-        if(this.outbox.length > OUTBOX_LIMIT) {
-            this.outbox.shift();
-            logger.warn(`${env.gameNodeName} outbox full, dropped the oldest message`);
+        this.outbox.push({ command, message });
+        let length = this.outbox.reduce((sum, queued) => sum + queued.message.length, 0);
+        while(this.outbox.length > OUTBOX_LIMIT || length > OUTBOX_MAX_LENGTH) {
+            const errorIndex = this.outbox.findIndex((queued) => queued.command === 'GAMEERROR');
+            const [dropped] = this.outbox.splice(Math.max(errorIndex, 0), 1);
+            length -= dropped.message.length;
+            logger.warn(`${env.gameNodeName} outbox full, dropped a queued ${dropped.command}`);
         }
         logger.info(`${env.gameNodeName} WebSocket not open, queued ${command} (${this.outbox.length} queued)`);
     }
@@ -160,7 +165,7 @@ export class WsSocket {
         const messages = this.outbox;
         this.outbox = [];
         logger.info(`${env.gameNodeName} sending ${messages.length} queued messages`);
-        for(const message of messages) {
+        for(const { message } of messages) {
             try {
                 this.ws.send(message);
             } catch(err) {

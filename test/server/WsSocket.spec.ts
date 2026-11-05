@@ -10,7 +10,7 @@ type WsSocketCtx = {
     listenAddress: string;
     protocol: string;
     reconnectDelay: number;
-    outbox: string[];
+    outbox: { command: string; message: string }[];
     handlers: jasmine.SpyObj<LobbyHandlers>;
     send?: (command: string, arg?: unknown) => void;
     onMessage?: (msg: string) => void;
@@ -40,6 +40,10 @@ function makeCtx(overrides: Partial<WsSocketCtx> = {}): WsSocketCtx {
         ...overrides
     });
     return ctx;
+}
+
+function queued(ctx: WsSocketCtx): string[] {
+    return ctx.outbox.map((message) => message.message);
 }
 
 function expectNoHandlerCalled(ctx: WsSocketCtx): void {
@@ -76,7 +80,7 @@ describe('WsSocket.send', () => {
         call('send', ctx, 'PLAYERLEFT', { gameId: 'g1' });
         call('send', ctx, 'GAMEERROR', { gameId: 'g2' });
         expect(ws.send).not.toHaveBeenCalled();
-        expect(ctx.outbox).toEqual([
+        expect(queued(ctx)).toEqual([
             JSON.stringify({ command: 'GAMEWIN', arg: { winner: 'alice' } }),
             JSON.stringify({ command: 'PLAYERLEFT', arg: { gameId: 'g1' } }),
             JSON.stringify({ command: 'GAMEERROR', arg: { gameId: 'g2' } })
@@ -86,7 +90,7 @@ describe('WsSocket.send', () => {
     it('queues GAMEWIN when ws is null', () => {
         const ctx = makeCtx({ ws: null });
         call('send', ctx, 'GAMEWIN', { winner: 'alice' });
-        expect(ctx.outbox).toEqual([JSON.stringify({ command: 'GAMEWIN', arg: { winner: 'alice' } })]);
+        expect(queued(ctx)).toEqual([JSON.stringify({ command: 'GAMEWIN', arg: { winner: 'alice' } })]);
     });
 
     it('keeps only the newest 200 queued messages', () => {
@@ -95,8 +99,32 @@ describe('WsSocket.send', () => {
             call('send', ctx, 'GAMEWIN', { winner: `p${game}` });
         }
         expect(ctx.outbox.length).toBe(200);
-        expect(ctx.outbox[0]).toBe(JSON.stringify({ command: 'GAMEWIN', arg: { winner: 'p2' } }));
-        expect(ctx.outbox[199]).toBe(JSON.stringify({ command: 'GAMEWIN', arg: { winner: 'p201' } }));
+        expect(queued(ctx)[0]).toBe(JSON.stringify({ command: 'GAMEWIN', arg: { winner: 'p2' } }));
+        expect(queued(ctx)[199]).toBe(JSON.stringify({ command: 'GAMEWIN', arg: { winner: 'p201' } }));
+    });
+
+    it('drops the oldest GAMEERROR first when the outbox is full', () => {
+        const ctx = makeCtx({ ws: makeWs(false) });
+        call('send', ctx, 'GAMEWIN', { winner: 'p0' });
+        call('send', ctx, 'GAMEERROR', { gameId: 'e1' });
+        for(let game = 1; game <= 199; game++) {
+            call('send', ctx, 'GAMEWIN', { winner: `p${game}` });
+        }
+        expect(ctx.outbox.length).toBe(200);
+        expect(ctx.outbox.map((message) => message.command)).not.toContain('GAMEERROR');
+        expect(queued(ctx)[0]).toBe(JSON.stringify({ command: 'GAMEWIN', arg: { winner: 'p0' } }));
+    });
+
+    it('keeps the queued messages under 16 MB, dropping GAMEERRORs before results', () => {
+        const ctx = makeCtx({ ws: makeWs(false) });
+        const debugData = 'x'.repeat(6 * 1024 * 1024);
+        call('send', ctx, 'GAMEWIN', { winner: 'alice' });
+        call('send', ctx, 'GAMEERROR', { gameId: 'e1', debugData });
+        call('send', ctx, 'PLAYERLEFT', { gameId: 'g1' });
+        call('send', ctx, 'GAMEERROR', { gameId: 'e2', debugData });
+        call('send', ctx, 'GAMEERROR', { gameId: 'e3', debugData });
+        expect(ctx.outbox.map((message) => message.command)).toEqual(['GAMEWIN', 'PLAYERLEFT', 'GAMEERROR', 'GAMEERROR']);
+        expect(ctx.outbox.map((message) => JSON.parse(message.message).arg.gameId)).toEqual([undefined, 'g1', 'e2', 'e3']);
     });
 
     it('catches errors from ws.send and continues', () => {
