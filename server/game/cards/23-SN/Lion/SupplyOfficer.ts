@@ -12,8 +12,7 @@ export default class SupplyOfficer extends DrawCard {
                 name: 'characterInConflict',
                 activePromptTitle: 'Choose a participating character to send home',
                 cardType: CardType.Character,
-                controller: Players.Self,
-                cardCondition: (card) => card.isParticipating()
+                cardCondition: (card, context) => card.isParticipatingFor(context.player)
             })
             .target({
                 name: 'characterAtHome',

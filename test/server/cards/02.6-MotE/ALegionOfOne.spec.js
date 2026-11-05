@@ -194,3 +194,43 @@ describe('A Legion Of One', function() {
         });
     });
 });
+
+describe('A Legion Of One with a character on the other side than its controller', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['miya-mystic', 'endless-plains-skirmisher'],
+                    hand: ['a-legion-of-one']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar']
+                }
+            });
+            this.mystic = this.player1.findCardByName('miya-mystic');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.legion = this.player1.findCardByName('a-legion-of-one');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.mystic],
+                defenders: [this.scholar]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('chooses the character alone on your side, not your character on the enemy side', function() {
+            this.player2.pass();
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard(this.legion);
+            expect(this.player1).toBeAbleToSelect(this.mystic);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher1);
+        });
+    });
+});

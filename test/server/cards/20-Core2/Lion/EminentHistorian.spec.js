@@ -65,3 +65,49 @@ describe('Eminent Historian', function() {
         });
     });
 });
+
+describe('Eminent Historian with characters on the other side than their controller', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 10,
+                    inPlay: ['eminent-historian', 'doji-whisperer', 'endless-plains-skirmisher']
+                },
+                player2: {
+                    honor: 10,
+                    inPlay: ['solemn-scholar', 'endless-plains-skirmisher']
+                }
+            });
+            this.historian = this.player1.findCardByName('eminent-historian');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.whisperer],
+                defenders: [this.scholar]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('chooses a character on your side, whoever controls it', function() {
+            this.player2.pass();
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard(this.historian);
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            expect(this.player1).toBeAbleToSelect(this.skirmisher2);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher1);
+            this.player1.clickCard(this.skirmisher2);
+            expect(this.skirmisher2.isHonored).toBe(true);
+        });
+    });
+});

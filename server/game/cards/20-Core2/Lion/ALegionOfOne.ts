@@ -1,4 +1,4 @@
-import { CardType, Players, ConflictType } from '../../../Constants.js';
+import { CardType, ConflictType } from '../../../Constants.js';
 import { modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, removeFate } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -10,9 +10,8 @@ export default class ALegionOfOne extends DrawCard {
         this.conflictAction('Give a solitary character +3/+0', { conflictType: ConflictType.Military })
             .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
                 cardCondition: (card, context) =>
-                    card.isParticipating() &&
+                    card.isParticipatingFor(context.player) &&
                     this.game.currentConflict !== null &&
                     this.game.currentConflict.getNumberOfParticipantsFor(context.player) === 1
             }, cardLastingEffect({

@@ -1,4 +1,4 @@
-import { CardType, Players } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import { cannotReceiveDishonorToken } from '../../../effects.js';
 import { honor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -15,8 +15,7 @@ export default class EminentHistorian extends DrawCard {
             .ifCondition((context) => !context.player.opponent?.isMoreHonorable())
             .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
-                cardCondition: (card) => card.isParticipating()
+                cardCondition: (card, context) => card.isParticipatingFor(context.player)
             }, honor());
     }
 }

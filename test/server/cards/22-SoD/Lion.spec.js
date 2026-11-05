@@ -710,3 +710,48 @@ describe('SoD - Lion: The Stranger limit', function () {
         });
     });
 });
+
+describe('SoD - Lion: Ikoma Natsuko with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['ancient-master', 'endless-plains-skirmisher']
+                },
+                player2: {
+                    inPlay: ['ikoma-natsuko', 'endless-plains-skirmisher']
+                }
+            });
+            this.ancientMaster = this.player1.findCardByName('ancient-master');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.natsuko = this.player2.findCardByName('ikoma-natsuko');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+            this.player2.player.imperialFavor = 'military';
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.ancientMaster],
+                defenders: [this.natsuko]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('chooses a character on the enemy side, whoever controls it', function () {
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player2.clickCard(this.natsuko);
+            expect(this.player2).toBeAbleToSelect(this.ancientMaster);
+            expect(this.player2).toBeAbleToSelect(this.skirmisher2);
+            expect(this.player2).not.toBeAbleToSelect(this.skirmisher1);
+            this.player2.clickCard(this.skirmisher2);
+            expect(this.skirmisher2.bowed).toBe(true);
+            expect(this.skirmisher2.isParticipating()).toBe(false);
+        });
+    });
+});
