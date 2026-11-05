@@ -69,3 +69,44 @@ describe('Kitsu Warrior', function () {
         });
     });
 });
+
+describe('Kitsu Warrior and a Secluded Shrine ring', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    dynastyDeck: ['secluded-shrine'],
+                    inPlay: ['doji-whisperer']
+                },
+                player2: {
+                    inPlay: ['kitsu-warrior']
+                }
+            });
+            this.secludedShrine = this.player1.placeCardInProvince('secluded-shrine', 'province 1');
+            this.dojiWhisperer = this.player1.findCardByName('doji-whisperer');
+            this.kitsu = this.player2.findCardByName('kitsu-warrior');
+
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.noMoreActions();
+            this.player1.clickCard(this.secludedShrine);
+            this.player1.clickRing('fire');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                ring: 'fire',
+                attackers: [this.dojiWhisperer],
+                defenders: [this.kitsu]
+            });
+        });
+
+        // ruling #666: the Shrine's ring has no conflict type until a player claims it (Shiotome Encampment got this fix in round 11)
+        it('does not count the contested Shrine ring as a claimed military ring', function() {
+            expect(this.game.rings.fire.isConsideredClaimed(this.player1.player)).toBe(true);
+            expect(this.game.rings.fire.isClaimed()).toBe(false);
+            expect(this.kitsu.politicalSkill).toBe(2);
+            expect(this.kitsu.militarySkill).toBe(2);
+        });
+    });
+});

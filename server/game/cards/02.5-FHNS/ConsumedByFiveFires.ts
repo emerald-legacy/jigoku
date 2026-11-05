@@ -1,7 +1,7 @@
 import { removeFate } from '../../GameActions/GameActions.js';
 import { msg, type MsgArg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import { CardType, EventName, Location } from '../../Constants.js';
+import { CardType, Location } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import * as GameActions from '../../GameActions/GameActions.js';
 import type { HandlerMenuOption } from '../../gamesteps/HandlerMenuPrompt.js';
@@ -78,14 +78,7 @@ class ConsumedByFiveFires extends DrawCard {
                 return true;
             },
             onCancel: () => {
-                this.game.addMessage(msg`${context.player} chooses to: ${messages}`);
-                const keys = Object.keys(targets);
-                const events = this.game.resolveActions([removeFate({ target: opponent.cardsInPlay.filter((card) => keys.includes(card.uuid)) })], context);
-                events.forEach((event) => {
-                    if(event.is(EventName.OnMoveFate) && event.card) {
-                        event.fate = targets[event.card.uuid];
-                    }
-                });
+                this.removeChosenFate(context, targets, messages);
                 return true;
             }
         });

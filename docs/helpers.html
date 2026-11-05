@@ -1118,23 +1118,42 @@ class ThirdTowerGuard extends DrawCard {
   </div>
 
   <div class="ref" id="he-countClaimedRings" data-name="countClaimedRings">
-    <h3><code>countClaimedRings(game, predicate?)</code> <span class="kind">Count</span> <a class="anchor" href="#he-countClaimedRings">#</a></h3>
-    <p>"for each claimed ring": the number of rings claimed by any player that pass <code>predicate</code>.</p>
+    <h3><code>countClaimedRings(game, type?)</code> <span class="kind">Count</span> <a class="anchor" href="#he-countClaimedRings">#</a></h3>
+    <p>"for each claimed ring" / "for each [conflict-military] ring that is claimed": the number of rings claimed by any player, of <code>type</code> if given.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>game</code></td><td><code>Game</code></td><td>required</td><td><code>this.game</code>.</td></tr>
-        <tr><td><code>predicate</code></td><td><code>(ring: Ring) =&gt; boolean</code></td><td>every ring</td><td>Which claimed rings count.</td></tr>
+        <tr><td><code>type</code></td><td><code>ConflictType</code></td><td>any type</td><td>Count only claimed rings of this type (<a href="#he-isClaimedRingOfType"><code>isClaimedRingOfType</code></a>).</td></tr>
       </tbody>
     </table>
     <ul class="edge">
-      <li>Uses <code>isConsideredClaimed()</code>, so effects that make a ring count as claimed apply. For one player's rings use <code>player.getClaimedRings()</code>.</li>
+      <li>Without <code>type</code> it uses <code>isConsideredClaimed()</code>, so a ring Secluded Shrine makes count as claimed counts too (ruling #357). For one player's rings use <code>player.getClaimedRings()</code>.</li>
+      <li>With <code>type</code>, a ring only considered claimed has no type until a player claims it (ruling #666), so it doesn't count.</li>
     </ul>
     <pre><code>// Ishiken Initiate: This character gets +1[conflict-military] and +1[conflict-political] for each claimed ring.
 this.persistentEffect({
     effect: modifyBothSkills(() =&gt; countClaimedRings(this.game))
-});</code></pre>
+});
+// Kitsu Warrior: For each [conflict-military] ring that is claimed, this character gets +2[conflict-military]. …
+modifyMilitarySkill(() =&gt; 2 * countClaimedRings(this.game, ConflictType.Military))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/IshikenInitiate.ts">Ishiken Initiate</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.2-TL/TeachingOfTheElements.ts">Teachings of the Elements</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.6-EU/KitsuWarrior.ts">Kitsu Warrior</a></p>
+  </div>
+
+  <div class="ref" id="he-isClaimedRingOfType" data-name="isClaimedRingOfType">
+    <h3><code>isClaimedRingOfType(ring, type, player?)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-isClaimedRingOfType">#</a></h3>
+    <p>"a claimed [conflict-military] ring": the ring is claimed (by <code>player</code>, if given) and has <code>type</code>. A ring only considered claimed (Secluded Shrine) has no type until a player claims it (ruling #666).</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>ring</code></td><td><code>Ring</code></td><td>required</td><td>The ring to check.</td></tr>
+        <tr><td><code>type</code></td><td><code>ConflictType</code></td><td>required</td><td>The ring's type.</td></tr>
+        <tr><td><code>player</code></td><td><code>Player | null</code></td><td>any player</td><td>Whose claimed ring pool it must be in.</td></tr>
+      </tbody>
+    </table>
+    <pre><code>// Shiotome Encampment: Action: If you have a [conflict-military] ring in your claimed ring pool, choose a Cavalry character – ready that character.
+.ifCondition((context) =&gt; Object.values(this.game.rings).some((ring) =&gt; isClaimedRingOfType(ring, ConflictType.Military, context.player)))</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/ShiotomeEncampment.ts">Shiotome Encampment</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.6-EU/KitsuWarrior.ts">Kitsu Warrior</a> (through <code>countClaimedRings</code>)</p>
   </div>
 
   <div class="ref" id="he-hasClaimedAnyRing" data-name="hasClaimedAnyRing">

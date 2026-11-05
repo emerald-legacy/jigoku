@@ -28,6 +28,18 @@ describe('Consumed by Five Fires', function() {
             expect(this.getChatLogs(5)).toContain('player1 chooses to: remove 3 fate from Doji Challenger and remove 2 fate from Doji Whisperer');
         });
 
+        it('in manual mode, Cancel Prompt removes the fate chosen so far', function() {
+            this.game.manualMode = true;
+            this.player1.clickCard('consumed-by-five-fires');
+            this.player1.clickCard(this.challenger);
+            this.player1.clickPrompt('2');
+            this.player1.clickPrompt('Cancel Prompt');
+            expect(this.challenger.fate).toBe(1);
+            expect(this.whisperer.fate).toBe(3);
+            expect(this.getChatLogs(5)).toContain('player1 chooses to: remove 2 fate from Doji Challenger');
+            expect(this.player2).toHavePrompt('Action Window');
+        });
+
         it('lets the player stop before 5 fate are chosen', function() {
             this.player1.clickCard('consumed-by-five-fires');
             expect(this.player1).not.toHavePromptButton('Done');

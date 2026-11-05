@@ -28,16 +28,30 @@ describe('Assemble the Council', function () {
             expect(this.player1).toBeAbleToSelect(this.meditationsOnOrthodoxy);
         });
 
-        it('can choose no character: the card still goes to the bottom of the deck', function () {
+        it('must choose at least one character', function () {
+            this.noMoreActions();
+            this.player1.clickPrompt('Pass Conflict');
+            this.player1.clickPrompt('Yes');
+            this.player1.clickCard(this.meditationsOnOrthodoxy);
+            expect(this.player1).toHavePrompt('Choose characters');
+            expect(this.player1).not.toHavePromptButton('Done');
+            this.player1.clickCard(this.adept);
+            expect(this.player1).toHavePromptButton('Done');
+            this.player1.clickPrompt('Done');
+            expect(this.adept.bowed).toBe(false);
+            expect(this.solemn.bowed).toBe(true);
+            expect(this.meditationsOnOrthodoxy.location).toBe('conflict deck');
+        });
+
+        it('cannot be triggered when no character can be readied', function () {
             this.adept.ready();
             this.solemn.ready();
             this.noMoreActions();
             this.player1.clickPrompt('Pass Conflict');
             this.player1.clickPrompt('Yes');
-            expect(this.player1).toHavePrompt('Triggered Abilities');
-            this.player1.clickCard(this.meditationsOnOrthodoxy);
-            this.player1.clickPrompt('Done');
-            expect(this.meditationsOnOrthodoxy.location).toBe('conflict deck');
+            expect(this.getChatLogs(3)).toContain('player1 has chosen to pass their conflict opportunity');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.meditationsOnOrthodoxy.location).toBe('hand');
         });
 
         it('if triggered, readies 2 characters', function () {

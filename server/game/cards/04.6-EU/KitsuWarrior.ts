@@ -9,8 +9,8 @@ class KitsuWarrior extends DrawCard {
     override setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                modifyMilitarySkill(() => 2 * countClaimedRings(this.game, (ring) => ring.isConflictType(ConflictType.Military))),
-                modifyPoliticalSkill(() => 2 * countClaimedRings(this.game, (ring) => ring.isConflictType(ConflictType.Political)))
+                modifyMilitarySkill(() => 2 * countClaimedRings(this.game, ConflictType.Military)),
+                modifyPoliticalSkill(() => 2 * countClaimedRings(this.game, ConflictType.Political))
             ]
         });
     }

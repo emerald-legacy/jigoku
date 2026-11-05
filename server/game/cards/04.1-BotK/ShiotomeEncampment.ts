@@ -1,5 +1,6 @@
 import { ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
+import { isClaimedRingOfType } from '../claimedRings.js';
 import { CardType, ConflictType, Trait } from '../../Constants.js';
 
 class ShiotomeEncampment extends DrawCard {
@@ -8,13 +9,7 @@ class ShiotomeEncampment extends DrawCard {
     override setupCardAbilities() {
         this.action('Ready a Cavalry character')
             .ifCondition((context) =>
-                Object.values(this.game.rings).some(
-                    (ring) =>
-                        // a contested ring considered claimed (Secluded Shrine) has no type until claimed (ruling #666)
-                        ring.isConsideredClaimed(context.player) &&
-                        ring.isClaimed() &&
-                        ring.isConflictType(ConflictType.Military)
-                ))
+                Object.values(this.game.rings).some((ring) => isClaimedRingOfType(ring, ConflictType.Military, context.player)))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait(Trait.Cavalry)
