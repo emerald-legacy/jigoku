@@ -295,6 +295,8 @@ describe('The Crashing Wave', function() {
                 });
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
                 expect(this.player1).not.toBeAbleToSelect(this.yuikimi);
+                expect(this.player2).toHavePrompt('Triggered Abilities');
+                expect(this.player2).toBeAbleToSelect(this.wave);
             });
 
             it('should allow the conflict to continue even if your only attacker dies', function() {

@@ -86,8 +86,12 @@ describe('Kaiu Scout', function () {
             this.adeptOfTheWaves1.facedown = false;
             this.adeptOfTheWaves.facedown = false;
             this.solemnScholar.facedown = false;
+            const province2 = this.player1.provinces['province 2'];
+            province2.dynastyCards[0].facedown = true;
 
             this.player1.clickCard(this.kaiu);
+            expect(this.player1).toHavePrompt('Kaiu Scout');
+            expect(this.player1).toBeAbleToSelect(province2.provinceCard);
             expect(this.player1).not.toBeAbleToSelect(this.sd1);
         });
 

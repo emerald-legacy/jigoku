@@ -47,6 +47,7 @@ describe('Yasuki Oguri 2', function() {
                 province: this.fields
             });
             this.player2.clickCard(this.yasuki);
+            expect(this.player2).toBeAbleToSelect(this.whisperer);
             expect(this.player2).not.toBeAbleToSelect(this.doomed);
         });
 

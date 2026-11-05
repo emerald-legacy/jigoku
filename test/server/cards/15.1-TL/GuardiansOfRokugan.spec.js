@@ -96,6 +96,7 @@ describe('Guardians of Rokugan', function() {
             this.player2.clickCard(this.guardians);
             this.player2.clickPrompt('Brash Samurai');
             expect(this.getChatLogs(7)).not.toContain('player2 is shuffling their dynasty deck');
+            expect(this.player2.player.dynastyDeck.slice(0, 4)).toEqual([this.kisada, this.storehouse, this.scholar, this.challenger]);
         });
 
         it('should shuffle if you look at your whole deck', function() {

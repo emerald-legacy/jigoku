@@ -116,6 +116,8 @@ describe('Hiruma Signaller', function() {
                 });
                 this.player2.clickCard(this.hirumaSignaller);
                 expect(this.player2).not.toHavePrompt('Hiruma Signaller');
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.hirumaSignaller.location).toBe('play area');
             });
 
             it('should not be able to trigger while attacking', function() {
@@ -128,6 +130,8 @@ describe('Hiruma Signaller', function() {
                 this.player1.pass();
                 this.player2.clickCard(this.hirumaSignaller);
                 expect(this.player2).not.toHavePrompt('Hiruma Signaller');
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.hirumaSignaller.location).toBe('play area');
             });
         });
     });

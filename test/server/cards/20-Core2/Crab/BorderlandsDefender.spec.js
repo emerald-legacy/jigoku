@@ -31,6 +31,9 @@ describe('Borderlands Defender', function () {
             this.player2.pass();
             this.player1.clickCard(this.admitDefeat);
             expect(this.player1).not.toHavePrompt('Admit Defeat');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.admitDefeat.location).toBe('hand');
+            expect(this.borderlandsDefender.isParticipating()).toBe(true);
         });
 
         it('should not be able to be sent home by opponent\'s card effects as a defender', function () {
@@ -42,6 +45,9 @@ describe('Borderlands Defender', function () {
             this.player2.pass();
             this.player1.clickCard(this.rout);
             expect(this.player1).not.toHavePrompt('Rout');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.rout.location).toBe('hand');
+            expect(this.borderlandsDefender.isParticipating()).toBe(true);
         });
 
         it('should be able to be sent home by your own card effects as a defender', function () {

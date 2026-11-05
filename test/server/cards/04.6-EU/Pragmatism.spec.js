@@ -99,7 +99,7 @@ describe('Pragmatism', function() {
                     expect(this.borderlandsDefender.politicalSkill).toBe(this.borderlandsDefender.getBasePoliticalSkill() + 2);
                 });
 
-                it('attached character can be honored', function () {
+                it('attached character cannot be honored', function () {
                     this.player2.clickCard(this.shamefulDisplay);
                     expect(this.player2).toHavePrompt('Shameful Display');
                     expect(this.player2).toHavePrompt('Select two characters');
@@ -114,7 +114,7 @@ describe('Pragmatism', function() {
                     expect(this.player2).toBeAbleToSelect(this.keeperInitiate);
                 });
 
-                it('attached character can be dishonored', function () {
+                it('attached character cannot be dishonored', function () {
                     this.player2.clickCard(this.shamefulDisplay);
                     expect(this.player2).toHavePrompt('Shameful Display');
                     expect(this.player2).toHavePrompt('Select two characters');
