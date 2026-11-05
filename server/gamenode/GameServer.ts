@@ -1,5 +1,4 @@
 import { msg } from '../game/GameChat.js';
-import axios from 'axios';
 import fs from 'fs';
 import http from 'http';
 import https from 'https';
@@ -324,8 +323,17 @@ export class GameServer implements GameRouter, LobbyHandlers {
         this.wsSocket.send('GAMEWIN', { game: saveState, winner: winner.name, reason: reason });
 
         if(env.analyticsUrl) {
-            void axios
-                .post(`${env.analyticsUrl}/${env.environment}`, saveState, { timeout: ANALYTICS_TIMEOUT })
+            void fetch(`${env.analyticsUrl}/${env.environment}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(saveState),
+                signal: AbortSignal.timeout(ANALYTICS_TIMEOUT)
+            })
+                .then((response) => {
+                    if(!response.ok) {
+                        logger.warn(`Game report failed: HTTP ${response.status}`);
+                    }
+                })
                 .catch((err: unknown) => logger.warn(`Game report failed: ${err instanceof Error ? err.message : String(err)}`));
         }
     }

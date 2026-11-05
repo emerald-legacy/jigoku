@@ -1,7 +1,7 @@
 import { GameServer } from '../../server/gamenode/GameServer.js';
-import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import { callMethod } from '../helpers/methodaccess.js';
+import { logger } from '../../server/logger.js';
 
 type GameMethods = {
     addAlert: (kind: string, msg: [string, unknown[]]) => void;
@@ -569,16 +569,29 @@ describe('GameServer replay hidden-info log', () => {
 
     it('posts the game report with a timeout', () => {
         const { game, ctx } = makeCase();
-        const post = spyOn(axios, 'post').and.returnValue(Promise.resolve());
+        const timeout = spyOn(AbortSignal, 'timeout').and.callThrough();
+        const post = spyOn(globalThis, 'fetch').and.returnValue(Promise.resolve(new Response(null, { status: 200 })));
 
         call('gameWon', ctx, game, 'honor', { name: 'alice' });
 
-        expect(post).toHaveBeenCalledWith(jasmine.any(String), jasmine.anything(), jasmine.objectContaining({ timeout: 10_000 }));
+        expect(timeout).toHaveBeenCalledWith(10_000);
+        expect(post).toHaveBeenCalledWith(jasmine.any(String), jasmine.objectContaining({ method: 'POST', signal: jasmine.any(AbortSignal) }));
+    });
+
+    it('warns when the game report gets an error status', async () => {
+        const { game, ctx } = makeCase();
+        const warn = spyOn(logger, 'warn');
+        spyOn(globalThis, 'fetch').and.returnValue(Promise.resolve(new Response(null, { status: 503 })));
+
+        call('gameWon', ctx, game, 'honor', { name: 'alice' });
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        expect(warn.calls.allArgs().map((args) => String(args[0]))).toContain('Game report failed: HTTP 503');
     });
 
     it('sends the log to both players with the winning state, not at gameWon', () => {
         const { aliceSocket, bobSocket, game, ctx } = makeCase();
-        spyOn(axios, 'post').and.returnValue(Promise.resolve());
+        spyOn(globalThis, 'fetch').and.returnValue(Promise.resolve(new Response(null, { status: 200 })));
         game.getState.and.returnValue({});
         game.recordHiddenInfo.and.returnValue(5);
 
