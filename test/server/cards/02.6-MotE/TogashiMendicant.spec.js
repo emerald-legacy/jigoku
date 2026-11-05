@@ -48,6 +48,15 @@ describe('Togashi Mendicant', function() {
             expect(this.player1.player.dynastyDeck).toEqual([this.kanjo, this.whisperer, this.tsukune]);
         });
 
+        it('says how many cards it rearranges when fewer than 3 are left', function () {
+            this.player1.moveCard(this.kanjo, 'dynasty deck');
+            this.player1.moveCard(this.tsukune, 'dynasty deck');
+            reachFatePhase.call(this);
+            this.player1.clickCard(this.mendicant);
+            expect(this.player1).toHavePrompt('Which card do you want to be on top?');
+            expect(this.getChatLogs(5)).toContain('player1 uses Togashi Mendicant to rearrange the top 2 cards of their dynasty deck');
+        });
+
         it('should finish after one choice with 2 cards in the deck', function() {
             this.player1.moveCard(this.kanjo, 'dynasty deck');
             this.player1.moveCard(this.tsukune, 'dynasty deck');

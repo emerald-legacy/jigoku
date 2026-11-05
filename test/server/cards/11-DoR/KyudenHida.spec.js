@@ -56,6 +56,13 @@ describe('Kyuden Hida', function () {
                 expect(this.getChatLogs(2)).toContain('player1 plays Hida Kisada with 2 additional fate');
                 expect(this.getChatLogs(2)).toContain('player1 discards Favorable Ground and Imperial Storehouse');
             });
+
+            it('says how many cards it looks at when fewer than 3 are left', function () {
+                this.player1.reduceDeckToNumber('dynasty deck', 2);
+                this.player1.clickCard(this.kyudenHida);
+                expect(this.player1).toHavePromptButton('Hida Kisada');
+                expect(this.getChatLogs(3)).toContain('player1 uses Kyūden Hida, bowing Kyūden Hida to look at the top two cards of their dynasty deck');
+            });
         });
 
         describe('Kyuden Hida\'s ability', function () {

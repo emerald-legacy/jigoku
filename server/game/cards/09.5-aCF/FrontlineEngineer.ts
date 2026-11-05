@@ -3,6 +3,7 @@ import DrawCard from '../../DrawCard.js';
 import { CardType, DeckType } from '../../Constants.js';
 import { modifyGlory } from '../../effects.js';
 import { deckSearch, placeInProvince } from '../../GameActions/GameActions.js';
+import { topCards } from '../topCards.js';
 
 class FrontlineEngineer extends DrawCard {
     static id = 'frontline-engineer';
@@ -26,7 +27,7 @@ class FrontlineEngineer extends DrawCard {
                     gameAction: placeInProvince({ destination: province.location, discard: 'all' })
                 }))
             })
-            .chatText('look at the top five cards of their dynasty deck');
+            .chatText((context) => msg`look at the ${topCards(5, context.player.dynastyDeck.length, true)} of their dynasty deck`);
     }
 
     getHoldingsInPlay() {

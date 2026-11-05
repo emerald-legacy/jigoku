@@ -109,6 +109,13 @@ describe('Frontline Engineer', function() {
                 expect(this.player2).not.toHavePromptButton('Imperial Storehouse');
             });
 
+            it('says how many cards it looks at when fewer than 5 are left', function () {
+                this.player2.reduceDeckToNumber('dynasty deck', 3);
+                this.player2.clickCard(this.frontlineEngineerDefender);
+                expect(this.player2).toHavePrompt('Choose a holding');
+                expect(this.getChatLogs(5)).toContain('player2 uses Frontline Engineer to look at the top three cards of their dynasty deck');
+            });
+
             it('should put the chosen holding face up in the defending province and discard the card there', function () {
                 this.player2.clickCard(this.frontlineEngineerDefender);
                 expect(this.player2).toHavePrompt('Choose a holding');

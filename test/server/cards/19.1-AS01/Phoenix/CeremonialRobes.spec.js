@@ -79,6 +79,13 @@ describe('Ceremonial Robes', function () {
             expect(this.getChatLogs(5)).toContain('player1 discards Solemn Scholar');
         });
 
+        it('says how many cards it looks at when fewer than 3 are left', function () {
+            this.player1.reduceDeckToNumber('dynasty deck', 2);
+            this.player1.clickCard(this.robes);
+            this.player1.clickCard(this.prov1);
+            expect(this.getChatLogs(5)).toContain('player1 uses Ceremonial Robes to look at the top 2 cards of their dynasty deck');
+        });
+
         it('filters cards, put 1 in a non-sh province, and make players lose honor when discarding a spirit', function () {
             this.player1.player.moveCard(this.kami, 'dynasty deck');
             this.player1.player.moveCard(this.solemn, 'dynasty deck');

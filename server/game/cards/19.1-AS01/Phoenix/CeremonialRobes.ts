@@ -4,6 +4,7 @@ import { assignRoles, chatMessage, conditional, discardCard, loseHonor, moveCard
 import { targetList } from '../../../GameActions/GameAction.js';
 import { CardType, Location, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { topCards } from '../../topCards.js';
 
 
 export default class CeremonialRobes extends DrawCard {
@@ -50,6 +51,6 @@ export default class CeremonialRobes extends DrawCard {
                     'discard': (context, card) => msg`${context.player} discards ${card}`
                 }
             })))
-            .chatText('look at the top 3 cards of their dynasty deck');
+            .chatText((context) => msg`look at the ${topCards(3, context.player.dynastyDeck.length)} of their dynasty deck`);
     }
 }

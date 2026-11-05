@@ -64,6 +64,14 @@ describe('Unyielding Sensei', function() {
                 expect(this.getChatLogs(1)).toContain('player1 puts Kitsu Warrior into a facedown province');
             });
 
+            it('says it looks at the top card when only one is left', function () {
+                this.player1.reduceDeckToNumber('dynasty deck', 1);
+                this.player1.clickCard(this.sensei);
+                this.player1.clickCard(this.p1);
+                expect(this.player1).toHavePromptButton('Kitsu Warrior');
+                expect(this.getChatLogs(2)).toContain('player1 uses Unyielding Sensei to look at the top card of their dynasty deck');
+            });
+
             it('should not shuffle', function() {
                 expect(this.player1.player.dynastyDeck[0]).toBe(this.kitsuWarrior);
                 this.player1.clickCard(this.sensei);

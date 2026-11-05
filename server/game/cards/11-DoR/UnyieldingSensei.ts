@@ -2,6 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType, Players, Location, DeckType, RemainingCards } from '../../Constants.js';
 import { moveCard } from '../../GameActions/GameActions.js';
+import { topCards } from '../topCards.js';
 
 class UnyieldingSensei extends DrawCard {
     static id = 'unyielding-sensei';
@@ -29,7 +30,7 @@ class UnyieldingSensei extends DrawCard {
                     faceup: true
                 }))
             })
-            .chatText('look at the top two cards of their dynasty deck');
+            .chatText((context) => msg`look at the ${topCards(2, context.player.dynastyDeck.length, true)} of their dynasty deck`);
     }
 }
 

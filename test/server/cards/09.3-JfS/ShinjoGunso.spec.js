@@ -106,7 +106,7 @@ describe('Shinjo Gunso', function () {
 
                 expect(this.hidaGuardian.location).toBe('play area');
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Shinjo Gunsō to search the top 5 cards of their dynasty deck for a character that costs 2 or less and put it into play'
+                    'player1 uses Shinjo Gunsō to search the top 2 cards of their dynasty deck for a character that costs 2 or less and put it into play'
                 );
                 expect(this.getChatLogs(5)).toContain('player1 puts Hida Guardian into play');
                 expect(this.getChatLogs(5)).toContain('player1 discards Borderlands Defender');

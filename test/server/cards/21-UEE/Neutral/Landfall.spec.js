@@ -49,6 +49,12 @@ describe('Landfall', function() {
             expect(this.player2).toHavePromptButton('Aranat');
         });
 
+        it('says it looks at the top card when only one is left', function () {
+            this.player2.reduceDeckToNumber('dynasty deck', 1);
+            this.player2.clickCard(this.landfall);
+            expect(this.getChatLogs(3)).toContain('player2 uses Landfall to look at the top card of their dynasty deck');
+        });
+
         it('should put a card faceup into each non-stronghold province, each province once', function() {
             this.player2.clickCard(this.landfall);
             this.player2.clickPrompt('Kakita Yoshi');

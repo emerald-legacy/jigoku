@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { DeckType, Phase } from '../../Constants.js';
 import { rearrangeDeck } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
+import { topCards } from '../topCards.js';
 
 class TogashiMendicant extends DrawCard {
     static id = 'togashi-mendicant';
@@ -11,7 +13,7 @@ class TogashiMendicant extends DrawCard {
                 onPhaseStarted: (event, context) => event.phase === Phase.Fate && context.player.dynastyDeck.length > 0
             })
             .gameAction(rearrangeDeck({ amount: 3, deck: DeckType.Dynasty }))
-            .chatText('rearrange the top 3 cards of their dynasty deck');
+            .chatText((context) => msg`rearrange the ${topCards(3, context.player.dynastyDeck.length)} of their dynasty deck`);
     }
 }
 

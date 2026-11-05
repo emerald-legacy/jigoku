@@ -2,6 +2,8 @@ import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType, DeckType } from '../../Constants.js';
 import { perConflictOpportunity } from '../../AbilityLimit.js';
 import { moveCard } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
+import { topCards } from '../topCards.js';
 
 class OurFoeDoesNotWait extends DrawCard {
     static id = 'our-foe-does-not-wait';
@@ -26,7 +28,7 @@ class OurFoeDoesNotWait extends DrawCard {
                     destination: context.target.location
                 })
             }))
-            .chatText('look at the top eight cards of their dynasty deck')
+            .chatText((context) => msg`look at the ${topCards(8, context.player.dynastyDeck.length, true)} of their dynasty deck`)
             .max(perConflictOpportunity(1));
     }
 }

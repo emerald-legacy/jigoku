@@ -50,6 +50,12 @@ describe('Miya Library', function () {
                 expect(this.miyaSatoshi.location).toBe('play area');
             });
 
+            it('says how many cards it searches when fewer than 4 are left', function () {
+                this.player1.reduceDeckToNumber('dynasty deck', 2);
+                this.player1.clickCard(this.miyaLibrary);
+                expect(this.getChatLogs(1)).toContain('player1 uses Miya Library to search the top two cards of their dynasty deck for an Imperial character');
+            });
+
             it('should not let you select an imperial holding', function () {
                 this.player1.clickCard(this.miyaLibrary);
                 expect(this.player1).not.toBeAbleToSelect('Kanjo District');

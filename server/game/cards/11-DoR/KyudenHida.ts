@@ -3,6 +3,7 @@ import { CardType, Location, Phase, PlayType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
 import { cardMenu, moveCard, multiple, playCard, sequential } from '../../GameActions/GameActions.js';
+import { topCards } from '../topCards.js';
 
 export default class KyudenHida extends StrongholdCard {
     static id = 'kyuden-hida';
@@ -52,6 +53,6 @@ export default class KyudenHida extends StrongholdCard {
                     ])
                 })];
             }))
-            .chatText('look at the top three cards of their dynasty deck');
+            .chatText((context) => msg`look at the ${topCards(3, context.player.dynastyDeck.length, true)} of their dynasty deck`);
     }
 }

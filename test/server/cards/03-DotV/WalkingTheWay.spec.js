@@ -29,6 +29,13 @@ describe('Walking the Way', function() {
             expect(this.player1).not.toHavePromptButton('Take nothing');
         });
 
+        it('says how many cards it looks at when fewer than 3 are left', function () {
+            this.player1.reduceDeckToNumber('dynasty deck', 2);
+            this.player1.clickCard(this.walkingTheWay);
+            expect(this.player1).toHavePrompt('Choose a card to place in a province');
+            expect(this.getChatLogs(3)).toContain('player1 plays Walking the Way to look at the top two cards of their dynasty deck');
+        });
+
         it('should replace a card in a province with the chosen card, faceup, then shuffle', function() {
             this.player1.clickCard(this.walkingTheWay);
             this.player1.clickPrompt('Favorable Ground');

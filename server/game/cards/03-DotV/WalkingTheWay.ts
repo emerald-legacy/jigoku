@@ -4,6 +4,7 @@ import { Location, Players, CardType, DeckType, TargetMode } from '../../Constan
 import DrawCard from '../../DrawCard.js';
 import { controlsShugenja } from '../controlsShugenja.js';
 import { placeInProvince } from '../../GameActions/GameActions.js';
+import { topCards } from '../topCards.js';
 
 class WalkingTheWay extends DrawCard {
     static id = 'walking-the-way';
@@ -37,7 +38,7 @@ class WalkingTheWay extends DrawCard {
                     }
                 })
             })
-            .chatText('look at the top three cards of their dynasty deck');
+            .chatText((context) => msg`look at the ${topCards(3, context.player.dynastyDeck.length, true)} of their dynasty deck`);
     }
 }
 

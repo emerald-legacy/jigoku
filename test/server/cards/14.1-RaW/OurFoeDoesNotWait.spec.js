@@ -48,6 +48,14 @@ describe('Our Foe Does Not Wait', function() {
                 expect(this.player1).toBeAbleToSelect(this.ourFoe);
             });
 
+            it('says how many cards it looks at when fewer than 8 are left', function () {
+                this.player1.reduceDeckToNumber('dynasty deck', 3);
+                this.player1.clickCard(this.ourFoe);
+                this.player1.clickCard(this.p1);
+                expect(this.player1).toHavePrompt('Select a card to reveal');
+                expect(this.getChatLogs(3)).toContain('player1 plays Our Foe Does Not Wait to look at the top three cards of their dynasty deck');
+            });
+
             it('should let you trigger a non-stronghold province', function() {
                 this.player1.clickCard(this.ourFoe);
                 expect(this.player1).toHavePrompt('Choose a province');

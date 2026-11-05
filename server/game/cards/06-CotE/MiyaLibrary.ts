@@ -2,6 +2,8 @@
 import { CardType, DeckType, Location, RemainingCards, Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { moveCard, placeInProvince, rearrangeDeck, sequential } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
+import { topCards } from '../topCards.js';
 
 class MiyaLibrary extends DrawCard {
     static id = 'miya-library';
@@ -31,7 +33,7 @@ class MiyaLibrary extends DrawCard {
                     activePromptTitle: 'Select the card you would like to place on top of your dynasty deck'
                 }).resolve(context.player, context)
             })
-            .chatText('search the top four cards of their dynasty deck for an Imperial character');
+            .chatText((context) => msg`search the ${topCards(4, context.player.dynastyDeck.length, true)} of their dynasty deck for an Imperial character`);
     }
 }
 

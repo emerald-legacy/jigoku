@@ -46,6 +46,17 @@ describe('Visit the Khubi Square', function() {
             expect(this.getChatLogs(5)).toContain('player2 puts Hida Guardian into play');
         });
 
+        it('says how many cards it searches when fewer than 5 are left', function () {
+            this.player2.reduceDeckToNumber('dynasty deck', 2);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                province: this.khubi
+            });
+            this.player2.clickCard(this.khubi);
+            expect(this.getChatLogs(5)).toContain('player2 uses Visit the Khubi Square to search the top 2 cards of their dynasty deck for a character that costs 2 or less and put it into play');
+        });
+
         it('should not trigger when a conflict is declared against another province', function() {
             const otherProvince = this.player2.findCardByName('shameful-display', 'province 2');
             this.noMoreActions();

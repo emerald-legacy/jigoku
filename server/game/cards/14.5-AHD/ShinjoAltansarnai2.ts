@@ -2,6 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, ConflictType } from '../../Constants.js';
 import { cardMenu, putIntoConflict, sequential, shuffleDeck } from '../../GameActions/GameActions.js';
+import { topCards } from '../topCards.js';
 
 class ShinjoAltansarnai2 extends DrawCard {
     static id = 'shinjo-altansarnai-2';
@@ -35,7 +36,7 @@ class ShinjoAltansarnai2 extends DrawCard {
                     target: context.player
                 }))
             ]))
-            .chatText('search the top 8 cards of their dynasty deck for a character that costs 3 or less and put it into the conflict');
+            .chatText((context) => msg`search the ${topCards(8, context.player.dynastyDeck.length)} of their dynasty deck for a character that costs 3 or less and put it into the conflict`);
     }
 }
 
