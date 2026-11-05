@@ -21,7 +21,7 @@ class WildStallion extends DrawCard {
                 const hasAny = Array.isArray(t) ? t.length > 0 : !!t;
                 return hasAny
                     ? msg`move ${context.chatTarget()} and ${context.source} into the conflict`
-                    : msg`move ${context.chatTarget()}${context.source} into the conflict`;
+                    : msg`move ${context.source} into the conflict`;
             });
     }
 }

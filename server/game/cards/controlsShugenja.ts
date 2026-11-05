@@ -1,7 +1,7 @@
-import { CardType, Trait } from '../Constants.js';
+import { Trait } from '../Constants.js';
 import type Player from '../Player.js';
 
 /** "Play only if you control a Shugenja character." */
 export function controlsShugenja(player: Player): boolean {
-    return player.charactersInPlay.some((card) => card.type === CardType.Character && card.hasTrait(Trait.Shugenja));
+    return player.charactersInPlay.some((card) => card.hasTrait(Trait.Shugenja));
 }

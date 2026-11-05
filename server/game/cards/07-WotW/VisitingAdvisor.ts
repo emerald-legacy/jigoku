@@ -21,7 +21,7 @@ class VisitingAdvisor extends DrawCard {
                 const hasAny = Array.isArray(t) ? t.length > 0 : !!t;
                 return hasAny
                     ? msg`send ${context.chatTarget()} and ${context.source} home`
-                    : msg`send ${context.chatTarget()}${context.source} home`;
+                    : msg`send ${context.source} home`;
             });
     }
 }
