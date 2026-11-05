@@ -19,6 +19,7 @@ import { DeckSchema, ShortCardDataSchema, type GameSummary, type PendingGameDTO,
 import * as env from '../env.js';
 
 const MAX_DEBUG_DATA_LENGTH = 4 * 1024 * 1024;
+const ANALYTICS_TIMEOUT = 10_000;
 
 /** Validates a client command's arguments; undefined when they don't match. */
 type GameCommand = (args: unknown[]) => ((game: Game, player: string) => void) | undefined;
@@ -322,7 +323,7 @@ export class GameServer implements GameRouter, LobbyHandlers {
 
         if(env.analyticsUrl) {
             void axios
-                .post(`${env.analyticsUrl}/${env.environment}`, saveState)
+                .post(`${env.analyticsUrl}/${env.environment}`, saveState, { timeout: ANALYTICS_TIMEOUT })
                 .catch((err: unknown) => logger.warn(`Game report failed: ${err instanceof Error ? err.message : String(err)}`));
         }
     }
@@ -379,11 +380,7 @@ export class GameServer implements GameRouter, LobbyHandlers {
     onGameSync(callback: (summaries: GameSummary[]) => void) {
         const gameSummaries: GameSummary[] = [];
         for(const game of this.games.values()) {
-            const retGame = game.getSummary();
-            if(retGame) {
-                retGame.password = game.password;
-                gameSummaries.push(retGame);
-            }
+            gameSummaries.push({ ...game.getSummary(), password: game.password });
         }
 
         logger.info(`syncing ${gameSummaries.length} games`);

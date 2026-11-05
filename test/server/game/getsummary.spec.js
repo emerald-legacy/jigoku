@@ -27,6 +27,15 @@ describe('the Game', () => {
     });
 
     describe('getSummary function', () => {
+        it('should not include the chat', () => {
+            game.addMessage('a chat line');
+
+            var state = game.getSummary('');
+
+            expect(game.gameChat.messages.length).toBe(1);
+            expect(state.messages).toBeUndefined();
+        });
+
         describe('when there are no players', () => {
             it('should return basic empty state', () => {
                 var state = game.getSummary('');
@@ -62,6 +71,23 @@ describe('the Game', () => {
                     expect(Object.keys(state.players).length).toBe(2);
                     expect(state.players[player1.name].name).toBe(player1.name);
                     expect(state.players[player2.name].name).toBe(player2.name);
+                });
+
+                describe('and leaves', () => {
+                    beforeEach(() => {
+                        player2.left = true;
+                    });
+
+                    afterEach(() => {
+                        player2.left = false;
+                    });
+
+                    it('should still summarise the game, without that player', () => {
+                        var state = game.getSummary('');
+
+                        expect(state.name).toBe('Test Game');
+                        expect(Object.keys(state.players)).toEqual([player1.name]);
+                    });
                 });
             });
         });

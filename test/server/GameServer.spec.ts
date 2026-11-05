@@ -436,18 +436,21 @@ describe('GameServer.onSpectator', () => {
 });
 
 describe('GameServer.onGameSync', () => {
-    it('builds a summary array (skipping games whose summary returns undefined) and injects the game password', () => {
+    it('builds a summary array and injects the game password', () => {
         const callback = jasmine.createSpy('callback');
         const g1 = makeGame({ id: 'g1' });
         g1.password = 'secret';
         g1.getSummary.and.returnValue({ id: 'g1' });
         const g2 = makeGame({ id: 'g2' });
-        g2.getSummary.and.returnValue(undefined); // simulates "all left" → summary returns undefined
+        g2.getSummary.and.returnValue({ id: 'g2' });
         const ctx = makeCtx({ games: new Map([['g1', g1], ['g2', g2]]) });
 
         call('onGameSync', ctx, callback);
 
-        expect(callback.calls.mostRecent().args[0]).toEqual([jasmine.objectContaining({ id: 'g1', password: 'secret' })]);
+        expect(callback.calls.mostRecent().args[0]).toEqual([
+            jasmine.objectContaining({ id: 'g1', password: 'secret' }),
+            jasmine.objectContaining({ id: 'g2' })
+        ]);
     });
 });
 
@@ -562,6 +565,15 @@ describe('GameServer replay hidden-info log', () => {
         expect(game.recordHiddenInfo).toHaveBeenCalledTimes(2);
         expect(sentStates(aliceSocket)).toEqual([jasmine.objectContaining({ stateSeq: 7 }), jasmine.objectContaining({ stateSeq: 8 })]);
         expect(sentStates(bobSocket)).toEqual([jasmine.objectContaining({ stateSeq: 7 }), jasmine.objectContaining({ stateSeq: 8 })]);
+    });
+
+    it('posts the game report with a timeout', () => {
+        const { game, ctx } = makeCase();
+        const post = spyOn(axios, 'post').and.returnValue(Promise.resolve());
+
+        call('gameWon', ctx, game, 'honor', { name: 'alice' });
+
+        expect(post).toHaveBeenCalledWith(jasmine.any(String), jasmine.anything(), jasmine.objectContaining({ timeout: 10_000 }));
     });
 
     it('sends the log to both players with the winning state, not at gameWon', () => {

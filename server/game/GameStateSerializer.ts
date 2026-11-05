@@ -232,14 +232,14 @@ export class GameStateSerializer {
         return info;
     }
 
-    getSummary(activePlayerName?: string): GameSummary | undefined {
+    getSummary(activePlayerName?: string): GameSummary {
         const game = this.game;
         const playerSummaries: Record<string, PlayerSummary> = {};
 
         for(const player of game.getPlayers()) {
             let deck: { name?: string; selected?: boolean } | undefined;
             if(player.left) {
-                return;
+                continue;
             }
 
             if(activePlayerName === player.name && player.deck) {
@@ -267,7 +267,6 @@ export class GameStateSerializer {
             gameType: game.gameType,
             id: game.id,
             manualMode: game.manualMode,
-            messages: game.gameChat.messages,
             name: game.name,
             owner: game.owner,
             players: playerSummaries,

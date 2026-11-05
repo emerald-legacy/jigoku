@@ -1025,7 +1025,7 @@ export class Game {
         return this.serializer.recordHiddenInfo();
     }
 
-    getSummary(activePlayerName?: string): GameSummary | undefined {
+    getSummary(activePlayerName?: string): GameSummary {
         return this.serializer.getSummary(activePlayerName);
     }
 }
