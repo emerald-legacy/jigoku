@@ -50,6 +50,15 @@ describe('Tattered Missive', function() {
             expect(this.getChatLogs(5)).toContain('player1 is shuffling their conflict deck');
         });
 
+        it('says it looks at the top card when only one is left', function() {
+            this.player1.reduceDeckToNumber('conflict deck', 1);
+            this.player1.playAttachment(this.missive, this.whisperer);
+            this.player2.pass();
+            this.player1.clickCard(this.missive);
+            expect(this.player1).toHavePromptButton('Banzai!');
+            expect(this.getChatLogs(5)).toContain('player1 uses Tattered Missive, bowing Doji Whisperer to look at the top card of their conflict deck');
+        });
+
         it('cannot be used while the attached character is bowed', function() {
             this.player1.playAttachment(this.missive, this.whisperer);
             this.player2.pass();

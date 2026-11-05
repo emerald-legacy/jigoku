@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { DeckType, Phase } from '../../Constants.js';
 import { rearrangeDeck } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
+import { topCards } from '../topCards.js';
 
 class HirumaKogoe extends DrawCard {
     static id = 'hiruma-kogoe';
@@ -11,7 +13,7 @@ class HirumaKogoe extends DrawCard {
                 onPhaseStarted: (event, context) => event.phase === Phase.Draw && context.player.opponent && context.player.honor < context.player.opponent.honor
             })
             .gameAction(rearrangeDeck({ amount: 3, deck: DeckType.Conflict }))
-            .chatText('rearrange the top 3 cards of their conflict deck');
+            .chatText((context) => msg`rearrange the ${topCards(3, context.player.conflictDeck.length)} of their conflict deck`);
     }
 }
 

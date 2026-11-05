@@ -11,6 +11,7 @@ import {
 import type { ChooseActionProperties } from '../../../GameActions/ChooseGameAction.js';
 import DrawCard from '../../../DrawCard.js';
 import { playableFromUnderneath } from '../../cardsUnderneath.js';
+import { topCards } from '../../topCards.js';
 
 export default class SandRoadMerchant extends DrawCard {
     static id = 'sand-road-merchant';
@@ -60,6 +61,6 @@ export default class SandRoadMerchant extends DrawCard {
                     };
                 })
             ]))
-            .chatText('look at the top two cards of their opponent\'s conflict deck');
+            .chatText((context) => msg`look at the ${topCards(2, context.player.opponent?.conflictDeck.length ?? 0, true)} of their opponent's conflict deck`);
     }
 }

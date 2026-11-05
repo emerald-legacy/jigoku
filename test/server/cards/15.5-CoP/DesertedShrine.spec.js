@@ -127,6 +127,19 @@ describe('Deserted Shrine', function() {
             expect(this.getChatLogs(5)).toContain('player2 uses Deserted Shrine to discard the top 10 cards of player1\'s Dynasty deck');
         });
 
+        it('says how many cards it discards when fewer than 10 are left', function() {
+            this.player1.reduceDeckToNumber('dynasty deck', 3);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.akodoKage],
+                type: 'political',
+                province: this.shrine
+            });
+            this.player2.clickCard(this.shrine);
+            this.player2.clickPrompt('player1\'s Dynasty');
+            expect(this.getChatLogs(5)).toContain('player2 uses Deserted Shrine to discard the top 3 cards of player1\'s Dynasty deck');
+        });
+
         it('should discard the top 10 cards - player1 conflict', function() {
             this.noMoreActions();
             this.initiateConflict({

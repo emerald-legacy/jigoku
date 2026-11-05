@@ -69,6 +69,18 @@ describe('Sand Road Merchant', function() {
             expect(this.player1).toHavePrompt('Policy Debate');
         });
 
+        it('says it looks at the top card when only one is left', function() {
+            this.player2.reduceDeckToNumber('conflict deck', 1);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.merchant],
+                type: 'political'
+            });
+            this.player1.clickCard(this.merchant);
+            expect(this.player1).toHavePrompt('Select a card to reveal');
+            expect(this.getChatLogs(5)).toContain('player1 uses Sand Road Merchant to look at the top card of their opponent\'s conflict deck');
+        });
+
         it('doesn\'t ask the opponent about a second card when their deck had only one', function() {
             this.player2.reduceDeckToNumber('conflict deck', 0);
             this.player2.moveCard(this.policyDebate, 'conflict deck');

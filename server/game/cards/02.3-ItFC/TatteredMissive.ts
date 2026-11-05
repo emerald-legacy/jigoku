@@ -2,6 +2,8 @@ import DrawCard from '../../DrawCard.js';
 import { Location, Trait } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
 import { moveCard } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
+import { topCards } from '../topCards.js';
 
 class TatteredMissive extends DrawCard {
     static id = 'tattered-missive';
@@ -21,7 +23,7 @@ class TatteredMissive extends DrawCard {
                     destination: Location.Hand
                 })
             })
-            .chatText('look at the top 5 cards of their conflict deck');
+            .chatText((context) => msg`look at the ${topCards(5, context.player.conflictDeck.length)} of their conflict deck`);
     }
 }
 

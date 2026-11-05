@@ -74,6 +74,19 @@ describe('Compass', function() {
                 expect(this.player1).toHavePromptButton('Conflict Deck');
             });
 
+            it('says how many cards it looks at when the decks are short', function() {
+                this.player1.reduceDeckToNumber('dynasty deck', 1);
+                this.player1.reduceDeckToNumber('conflict deck', 2);
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.shinjoOutrider]
+                });
+                this.player1.clickCard(this.compass);
+                expect(this.getChatLogs(1)).toContain('player1 uses Compass to look at the top 2 cards of one of their decks');
+                this.player1.clickPrompt('Dynasty Deck');
+                expect(this.getChatLogs(1)).toContain('player1 chooses to look at the top card of their dynasty deck');
+            });
+
             it('should prompt to choose what to place on the bottom of the top 3 cards', function() {
                 this.noMoreActions();
                 this.initiateConflict({

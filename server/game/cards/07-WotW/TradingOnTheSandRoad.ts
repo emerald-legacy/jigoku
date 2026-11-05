@@ -2,6 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { canPlayFromOpponents, canPlayFromOwn } from '../../effects.js';
 import { Location, Duration, Phase, Players } from '../../Constants.js';
+import { topCards } from '../topCards.js';
 
 class TradingOnTheSandRoad extends DrawCard {
     static id = 'trading-on-the-sand-road';
@@ -14,11 +15,11 @@ class TradingOnTheSandRoad extends DrawCard {
             .cancel()
             .lookAt((context)=> ({
                 target: context.player.conflictDeck.slice(0, 4),
-                message: (context, cards) => msg`${context.player} removes the top ${cards.length} cards from their conflict deck from the game: ${cards}`
+                message: (context, cards) => msg`${context.player} removes the ${topCards(cards.length, cards.length)} from their conflict deck from the game: ${cards}`
             }))
             .lookAt((context)=> ({
                 target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [],
-                message: (context, cards) => msg`${context.player.opponent} removes the top ${cards.length} cards from their conflict deck from the game: ${cards}`
+                message: (context, cards) => msg`${context.player.opponent} removes the ${topCards(cards.length, cards.length)} from their conflict deck from the game: ${cards}`
             }))
             .playerLastingEffect((context) => ({
                 target: Players.Self,
@@ -52,7 +53,7 @@ class TradingOnTheSandRoad extends DrawCard {
                 target: context.player.opponent ? context.player.opponent.conflictDeck.slice(0, 4) : [],
                 destination: Location.RemovedFromGame
             }))
-            .chatText('remove the top 4 cards from each player\'s deck and make them playable by both players until the end of the round')
+            .chatText((context) => msg`remove the ${topCards(4, Math.max(context.player.conflictDeck.length, context.player.opponent?.conflictDeck.length ?? 0))} from each player's deck and make them playable by both players until the end of the round`)
             // its effects use its triggering condition
             .cannotBeMirrored();
     }

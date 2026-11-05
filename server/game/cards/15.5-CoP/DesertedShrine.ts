@@ -1,7 +1,10 @@
+import type { AbilityContext } from '../../AbilityContext.js';
+import type DrawCard from '../../DrawCard.js';
 import type { CardGameAction } from '../../GameActions/CardGameAction.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
 import { discardCard } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
+import { topCards } from '../topCards.js';
 
 export default class DesertedShrine extends ProvinceCard {
     static id = 'deserted-shrine';
@@ -52,6 +55,14 @@ export default class DesertedShrine extends ProvinceCard {
 
                 return Object.fromEntries(choices);
             })
-            .chatText((context) => msg`discard the top 10 cards of ${context.select} deck`);
+            .chatText((context) => msg`discard the ${topCards(10, this.chosenDeck(context).length)} of ${context.select} deck`);
+    }
+
+    private chosenDeck(context: AbilityContext): DrawCard[] {
+        const player = [context.player, context.player.opponent].find((player) => player && context.select?.startsWith(`${player.name}'s `));
+        if(!player) {
+            return [];
+        }
+        return context.select?.endsWith('Dynasty') ? player.dynastyDeck : player.conflictDeck;
     }
 }

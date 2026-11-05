@@ -506,6 +506,17 @@ describe('Excellence Attained', function () {
             expect(this.player2).toHavePrompt('Choose defenders');
         });
 
+        it('says it searches the top card when only one is left', function () {
+            this.player2.reduceDeckToNumber('conflict deck', 1);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.adeptOfTheWaves]
+            });
+            this.player2.clickCard(this.excellence);
+            expect(this.player2).toHavePromptButton('Take nothing');
+            expect(this.getChatLogs(3)).toContain('player2 uses Excellence, Attained to search the top card of their conflict deck for an attachment and put it into play');
+        });
+
         it('should prompt to choose a character to attach to', function () {
             this.noMoreActions();
             this.initiateConflict({

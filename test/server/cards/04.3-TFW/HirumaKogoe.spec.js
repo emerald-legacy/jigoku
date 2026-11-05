@@ -32,6 +32,16 @@ describe('Hiruma Kogoe', function () {
                 expect(this.player1).toBeAbleToSelect(this.kogoe);
             });
 
+            it('says how many cards it rearranges when fewer than 3 are left', function () {
+                this.player2.player.honor = 11;
+                this.player1.reduceDeckToNumber('conflict deck', 0);
+                this.player1.moveCard(this.fan, 'conflict deck');
+                this.player1.moveCard(this.katana, 'conflict deck');
+                this.nextPhase();
+                this.player1.clickCard(this.kogoe);
+                expect(this.getChatLogs(3)).toContain('player1 uses Hiruma Kogoe to rearrange the top 2 cards of their conflict deck');
+            });
+
             it('should not trigger if even honor', function () {
                 this.player2.player.honor = 5;
                 this.nextPhase();

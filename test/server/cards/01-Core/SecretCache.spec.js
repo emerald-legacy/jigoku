@@ -37,6 +37,13 @@ describe('Secret Cache', function() {
                 expect(this.getChatLogs(3)).toContain('player2 takes 1 card');
                 expect(this.getChatLogs(2)).toContain('player2 is shuffling their conflict deck');
             });
+
+            it('says how many cards it looks at when fewer than 5 are left', function() {
+                this.player2.reduceDeckToNumber('conflict deck', 3);
+                this.player2.clickCard('secret-cache');
+                expect(this.player2).toHavePrompt('Secret Cache');
+                expect(this.getChatLogs(3)).toContain('player2 uses Secret Cache to look at the top 3 cards of their conflict deck');
+            });
         });
     });
 });

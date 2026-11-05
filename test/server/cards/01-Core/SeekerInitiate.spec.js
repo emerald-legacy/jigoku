@@ -59,6 +59,21 @@ describe('Seeker Initiate', function() {
                 expect(this.assassination.location).toBe('conflict deck');
             });
 
+            it('says it looks at the top card when only one is left', function() {
+                this.player1.reduceDeckToNumber('conflict deck', 1);
+                this.initiateConflict({
+                    type: 'political',
+                    ring: 'air',
+                    province: 'entrenched-position',
+                    attackers: [this.whisperer],
+                    defenders: []
+                });
+                this.noMoreActions();
+                this.player1.clickPrompt('Gain 2 Honor');
+                this.player1.clickCard(this.initiate);
+                expect(this.getChatLogs(3)).toContain('player1 uses Seeker Initiate to look at the top card of their conflict deck');
+            });
+
             it('does not trigger after you claim a ring that does not match your role\'s element', function() {
                 this.initiateConflict({
                     type: 'political',

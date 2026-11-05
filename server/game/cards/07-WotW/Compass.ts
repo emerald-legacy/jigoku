@@ -3,6 +3,7 @@ import DrawCard from '../../DrawCard.js';
 import { CardType, DeckType, Location, TargetMode } from '../../Constants.js';
 import { deckSearch, moveCard, rearrangeDeck } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
+import { topCards } from '../topCards.js';
 
 class Compass extends DrawCard {
     static id = 'compass';
@@ -22,7 +23,7 @@ class Compass extends DrawCard {
                     'Conflict Deck': this.lookAtTopThree(DeckType.Conflict, Location.ConflictDeck)
                 }
             })
-            .chatText('look at the top 3 cards of one of their decks');
+            .chatText((context) => msg`look at the ${topCards(3, Math.max(context.player.dynastyDeck.length, context.player.conflictDeck.length))} of one of their decks`);
     }
 
     private lookAtTopThree(deck: DeckType, location: Location.DynastyDeck | Location.ConflictDeck) {
@@ -38,7 +39,7 @@ class Compass extends DrawCard {
                 takesNothingMessage: () => undefined,
                 remainingCardsHandler: (context, _event, cards) => this.placeOnTop(context, cards, deck, location)
             }),
-            message: (context: AbilityContext) => msg`${context.player} chooses to look at the top 3 cards of their ${location}`
+            message: (context: AbilityContext) => msg`${context.player} chooses to look at the ${topCards(3, (deck === DeckType.Dynasty ? context.player.dynastyDeck : context.player.conflictDeck).length)} of their ${location}`
         };
     }
 
