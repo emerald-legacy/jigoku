@@ -1,7 +1,7 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import { conditional, moveToConflict, sendHome } from '../../GameActions/GameActions.js';
+import { moveToConflict, sendHome } from '../../GameActions/GameActions.js';
 
 class Dispatch extends DrawCard {
     static id = 'dispatch';
@@ -12,18 +12,7 @@ class Dispatch extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isFaction('unicorn'),
                 controller: Players.Self,
-                gameAction: conditional({
-                    condition: (_context, properties) => {
-                        const target = properties.target;
-                        if(!target || !Array.isArray(target)) {
-                            return false;
-                        }
-                        const first = target[0];
-                        return first.isCard() && first.isDrawCard() && first.inConflict;
-                    },
-                    trueGameAction: sendHome(),
-                    falseGameAction: moveToConflict()
-                }),
+                gameAction: (card) => card.inConflict ? sendHome() : moveToConflict(),
                 message: (_context, card, player) => msg`${player} chooses to ${card.inConflict ? 'send' : 'move'} ${card} ${card.inConflict ? 'home' : 'into the conflict'}`
             })
             .chatText('choose a unicorn character they control to move into a conflict or home');

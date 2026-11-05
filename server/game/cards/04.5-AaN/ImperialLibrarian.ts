@@ -1,13 +1,13 @@
 import { modifyGlory } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import { Players } from '../../Constants.js';
+import { CardType, Players } from '../../Constants.js';
 
 class ImperialLibrarian extends DrawCard {
     static id = 'imperial-librarian';
 
     override setupCardAbilities() {
         this.persistentEffect({
-            match: (card, context) => !!context && card !== context.source,
+            match: (card, context) => card.type === CardType.Character && card !== context?.source,
             targetController: Players.Any,
             effect: modifyGlory(1)
         });
