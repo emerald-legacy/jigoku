@@ -1,4 +1,3 @@
-import WebSocket from 'ws';
 import * as env from '../env.js';
 import { logger } from '../logger.js';
 import {
@@ -82,24 +81,24 @@ export class WsSocket {
 
         this.ws = new WebSocket(url);
 
-        this.ws.on('open', () => {
+        this.ws.addEventListener('open', () => {
             logger.info(`${env.gameNodeName} connected to lobby`);
             this.reconnectDelay = ONE_SECOND;
             this.handlers.onGameSync((games) => this.onGameSync(games));
         });
 
-        this.ws.on('message', (data: WebSocket.RawData) => {
-            this.onMessage(data.toString());
+        this.ws.addEventListener('message', (event) => {
+            this.onMessage(typeof event.data === 'string' ? event.data : String(event.data));
         });
 
-        this.ws.on('close', () => {
+        this.ws.addEventListener('close', () => {
             logger.info(`${env.gameNodeName} disconnected from lobby`);
             this.registered = false;
             this.scheduleReconnect();
         });
 
-        this.ws.on('error', (err: Error) => {
-            logger.error(`WebSocket error: ${err.message}`);
+        this.ws.addEventListener('error', (event) => {
+            logger.error(`WebSocket error: ${event.message || 'connection failed'}`);
         });
     }
 
