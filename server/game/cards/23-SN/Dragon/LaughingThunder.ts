@@ -1,4 +1,3 @@
-import type BaseCard from '../../../BaseCard.js';
 import { CardType, Duration, Location, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import type { GameAction } from '../../../GameActions/GameAction.js';
@@ -24,7 +23,7 @@ export default class LaughingThunder extends DrawCard {
                 controller: Players.Self,
                 location: Location.Hand,
                 cardCondition: (card, context) => card.hasTrait(Trait.Kiho) &&
-                    attach({ attachment: this.getDummyAttachment(card) }).canAffect(context.source, context)
+                    attach({ attachment: card, ignoreType: true }).canAffect(context.source, context)
             })
             .gameAction(sequential((context) => {
                 const gameActions: GameAction[] = [];
@@ -53,21 +52,4 @@ export default class LaughingThunder extends DrawCard {
             }))
             .chatText('claim the effects of {0} as its own');
     }
-
-
-    getDummyAttachment(card: BaseCard) {
-        const DummyKihoAttachment = new DrawCard(this.owner, {
-            cost: '0',
-            glory: '0',
-            side: 'conflict',
-            text: '',
-            type: CardType.Attachment,
-            name: card.name,
-            id: card.id,
-            traits: ['kiho']
-        });
-
-        return DummyKihoAttachment;
-    }
-
 }
