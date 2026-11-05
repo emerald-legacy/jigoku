@@ -1,5 +1,5 @@
 import { msg } from '../GameChat.js';
-import type Game from '../Game.js';
+import type { AbilityContext } from '../AbilityContext.js';
 import type Player from '../Player.js';
 import { AllPlayerPrompt } from './AllPlayerPrompt.js';
 
@@ -13,11 +13,11 @@ export class FateBidPrompt extends AllPlayerPrompt {
     menuTitle: string;
 
     constructor(
-        game: Game,
+        private context: AbilityContext,
         menuTitle: string,
         private bidHandler: (result: Result) => void
     ) {
-        super(game);
+        super(context.game);
         this.menuTitle = menuTitle || 'Choose a bid';
     }
 
@@ -54,7 +54,7 @@ export class FateBidPrompt extends AllPlayerPrompt {
 
     override activePrompt(player: Player) {
         const buttons: Array<{ text: string; arg: string }> = [];
-        for(let i = 0, max = player.fate; i <= max; i++) {
+        for(let i = 0, max = player.getSpendableFate(this.context); i <= max; i++) {
             const text = i.toString();
             buttons.push({ text, arg: text });
         }
@@ -72,7 +72,7 @@ export class FateBidPrompt extends AllPlayerPrompt {
 
     override menuCommand(player: Player, bid: string) {
         const parsed = parseInt(bid, 10);
-        const amount = isNaN(parsed) ? 0 : parsed;
+        const amount = isNaN(parsed) ? 0 : Math.min(Math.max(parsed, 0), player.getSpendableFate(this.context));
 
         this.game.addMessage(msg`${player} has decided how much fate to spend.`);
         this.bids.set(player, amount);
