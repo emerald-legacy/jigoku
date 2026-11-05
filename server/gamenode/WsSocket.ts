@@ -54,6 +54,21 @@ export function stringifyWithoutCycles(value: unknown): string {
     });
 }
 
+/** An error and its causes on one line, with their codes (e.g. ECONNREFUSED). */
+function describeError(error: unknown): string {
+    const parts: string[] = [];
+    let current: unknown = error;
+    while(current instanceof Error && parts.length < 5) {
+        const code = 'code' in current && current.code !== undefined ? ` [${String(current.code)}]` : '';
+        parts.push(`${current.name}: ${current.message || '(no message)'}${code}`);
+        current = current.cause;
+    }
+    if(current !== undefined && current !== null && !(current instanceof Error)) {
+        parts.push(String(current));
+    }
+    return parts.join(' <- ');
+}
+
 export class WsSocket {
     private ws: WebSocket | null = null;
     private registered = false;
@@ -91,14 +106,15 @@ export class WsSocket {
             this.onMessage(typeof event.data === 'string' ? event.data : String(event.data));
         });
 
-        this.ws.addEventListener('close', () => {
-            logger.info(`${env.gameNodeName} disconnected from lobby`);
+        this.ws.addEventListener('close', (event) => {
+            logger.info(`${env.gameNodeName} disconnected from lobby (code ${event.code}${event.reason ? `, reason "${event.reason}"` : ''}, ${event.wasClean ? 'clean' : 'not clean'})`);
             this.registered = false;
             this.scheduleReconnect();
         });
 
         this.ws.addEventListener('error', (event) => {
-            logger.error(`WebSocket error: ${event.message || 'connection failed'}`);
+            const cause = describeError(event.error);
+            logger.error(`WebSocket error: ${event.message || 'connection failed'}${cause ? ` (${cause})` : ''}`);
         });
     }
 
