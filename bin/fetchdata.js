@@ -1,5 +1,4 @@
 /*eslint no-console:0 */
-import axios from 'axios';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,8 +14,12 @@ if(env !== 'beta' && env !== 'prod') {
 
 const host = env === 'beta' ? 'https://beta-emeralddb.herokuapp.com/api/' : 'https://www.emeralddb.org/api/';
 
-function apiRequest(path) {
-    return axios.get(host + path).then((res) => res.data);
+async function apiRequest(path) {
+    const response = await fetch(host + path);
+    if(!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+    }
+    return response.json();
 }
 
 apiRequest('cards')
