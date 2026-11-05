@@ -27,6 +27,10 @@ type OutboundArg<Command extends OutboundMessage['command']> = Extract<OutboundM
 const TEN_SECONDS = 10_000;
 const ONE_SECOND = 1_000;
 const MAX_RECONNECT_DELAY = 5_000;
+const OUTBOX_LIMIT = 200;
+
+/** Game results the lobby must not miss: kept while the link is down and sent after the next HELLO. */
+const OUTBOX_COMMANDS: ReadonlySet<OutboundMessage['command']> = new Set(['GAMEWIN', 'PLAYERLEFT', 'GAMEERROR']);
 
 // Error payloads carry game debug data, which can contain references back to the
 // Game object. Replace cycles instead of throwing so the report still gets sent.
@@ -55,6 +59,7 @@ export class WsSocket {
     private ws: WebSocket | null = null;
     private registered = false;
     private reconnectDelay = ONE_SECOND;
+    private outbox: string[] = [];
 
     constructor(private listenAddress: string, private protocol: string, private handlers: LobbyHandlers) {
         process.nextTick(() => this.connect());
@@ -106,15 +111,46 @@ export class WsSocket {
     }
 
     public send<Command extends OutboundMessage['command']>(command: Command, ...[arg]: OutboundArg<Command>): void {
-        if(!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+        const open = this.ws?.readyState === WebSocket.OPEN;
+        if(!open && !OUTBOX_COMMANDS.has(command)) {
             logger.debug(`Cannot send ${command}, WebSocket not open`);
             return;
         }
 
         try {
-            this.ws.send(stringifyWithoutCycles({ command, arg }));
+            const message = stringifyWithoutCycles({ command, arg });
+            if(this.ws && open) {
+                this.ws.send(message);
+            } else {
+                this.queue(command, message);
+            }
         } catch(err) {
             logger.error(`Error sending message: ${err}`);
+        }
+    }
+
+    private queue(command: OutboundMessage['command'], message: string) {
+        this.outbox.push(message);
+        if(this.outbox.length > OUTBOX_LIMIT) {
+            this.outbox.shift();
+            logger.warn(`${env.gameNodeName} outbox full, dropped the oldest message`);
+        }
+        logger.info(`${env.gameNodeName} WebSocket not open, queued ${command} (${this.outbox.length} queued)`);
+    }
+
+    private flushOutbox() {
+        if(!this.ws || this.ws.readyState !== WebSocket.OPEN || this.outbox.length === 0) {
+            return;
+        }
+        const messages = this.outbox;
+        this.outbox = [];
+        logger.info(`${env.gameNodeName} sending ${messages.length} queued messages`);
+        for(const message of messages) {
+            try {
+                this.ws.send(message);
+            } catch(err) {
+                logger.error(`Error sending queued message: ${err}`);
+            }
         }
     }
 
@@ -130,6 +166,7 @@ export class WsSocket {
             protocolVersion: PROTOCOL_VERSION,
             games: games
         });
+        this.flushOutbox();
     }
 
     private parseMsg(msg: string) {

@@ -10,6 +10,7 @@ type WsSocketCtx = {
     listenAddress: string;
     protocol: string;
     reconnectDelay: number;
+    outbox: string[];
     handlers: jasmine.SpyObj<LobbyHandlers>;
     send?: (command: string, arg?: unknown) => void;
     onMessage?: (msg: string) => void;
@@ -34,6 +35,7 @@ function makeCtx(overrides: Partial<WsSocketCtx> = {}): WsSocketCtx {
         listenAddress: 'host',
         protocol: 'ws',
         reconnectDelay: 1000,
+        outbox: [],
         handlers: jasmine.createSpyObj<LobbyHandlers>('handlers', ['onStartGame', 'onSpectator', 'onGameSync', 'onFailedConnect', 'onCloseGame', 'onCardData']),
         ...overrides
     });
@@ -59,11 +61,42 @@ describe('WsSocket.send', () => {
         call('send', ctx, 'HEARTBEAT');
     });
 
-    it('skips send when ws.readyState is not OPEN', () => {
+    it('drops HEARTBEAT when ws.readyState is not OPEN', () => {
         const ws = makeWs(false);
         const ctx = makeCtx({ ws });
         call('send', ctx, 'HEARTBEAT');
         expect(ws.send).not.toHaveBeenCalled();
+        expect(ctx.outbox).toEqual([]);
+    });
+
+    it('queues GAMEWIN, PLAYERLEFT and GAMEERROR while ws is not OPEN', () => {
+        const ws = makeWs(false);
+        const ctx = makeCtx({ ws });
+        call('send', ctx, 'GAMEWIN', { winner: 'alice' });
+        call('send', ctx, 'PLAYERLEFT', { gameId: 'g1' });
+        call('send', ctx, 'GAMEERROR', { gameId: 'g2' });
+        expect(ws.send).not.toHaveBeenCalled();
+        expect(ctx.outbox).toEqual([
+            JSON.stringify({ command: 'GAMEWIN', arg: { winner: 'alice' } }),
+            JSON.stringify({ command: 'PLAYERLEFT', arg: { gameId: 'g1' } }),
+            JSON.stringify({ command: 'GAMEERROR', arg: { gameId: 'g2' } })
+        ]);
+    });
+
+    it('queues GAMEWIN when ws is null', () => {
+        const ctx = makeCtx({ ws: null });
+        call('send', ctx, 'GAMEWIN', { winner: 'alice' });
+        expect(ctx.outbox).toEqual([JSON.stringify({ command: 'GAMEWIN', arg: { winner: 'alice' } })]);
+    });
+
+    it('keeps only the newest 200 queued messages', () => {
+        const ctx = makeCtx({ ws: makeWs(false) });
+        for(let game = 1; game <= 201; game++) {
+            call('send', ctx, 'GAMEWIN', { winner: `p${game}` });
+        }
+        expect(ctx.outbox.length).toBe(200);
+        expect(ctx.outbox[0]).toBe(JSON.stringify({ command: 'GAMEWIN', arg: { winner: 'p2' } }));
+        expect(ctx.outbox[199]).toBe(JSON.stringify({ command: 'GAMEWIN', arg: { winner: 'p201' } }));
     });
 
     it('catches errors from ws.send and continues', () => {
@@ -203,5 +236,26 @@ describe('WsSocket.onGameSync', () => {
             protocolVersion: PROTOCOL_VERSION,
             games
         }));
+    });
+
+    it('sends the queued messages right after HELLO, in order', () => {
+        const ws = makeWs(false);
+        const ctx = makeCtx({ ws });
+        call('send', ctx, 'GAMEWIN', { winner: 'alice' });
+        call('send', ctx, 'PLAYERLEFT', { gameId: 'g1' });
+        ws.readyState = 1;
+        call('onGameSync', ctx, []);
+        const sent = ws.send.calls.allArgs().map(([data]) => JSON.parse(data).command);
+        expect(sent).toEqual(['HELLO', 'GAMEWIN', 'PLAYERLEFT']);
+        expect(ctx.outbox).toEqual([]);
+    });
+
+    it('keeps the queued messages when HELLO could not be sent', () => {
+        const ws = makeWs(false);
+        const ctx = makeCtx({ ws });
+        call('send', ctx, 'GAMEWIN', { winner: 'alice' });
+        call('onGameSync', ctx, []);
+        expect(ws.send).not.toHaveBeenCalled();
+        expect(ctx.outbox.length).toBe(1);
     });
 });
