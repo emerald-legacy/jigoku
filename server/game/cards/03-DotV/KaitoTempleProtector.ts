@@ -23,7 +23,7 @@ class KaitoTempleProtector extends DrawCard {
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source
             }, cardLastingEffect((context) => ({
                 target: context.source,
-                effect: copyBaseSkillEffects(context.target)
+                effect: copyBaseSkillEffects(context.target, { overrideModifiers: true })
             })))
             .chatText('change his base skills to equal {0}\'s current skills');
     }

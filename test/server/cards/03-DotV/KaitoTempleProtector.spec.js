@@ -142,7 +142,8 @@ describe('Kaito Temple Protector\'s set skills', function() {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['bayushi-kachiko', 'bayushi-yunako']
+                    inPlay: ['bayushi-kachiko', 'bayushi-yunako'],
+                    hand: ['fine-katana', 'ornate-fan']
                 },
                 player2: {
                     inPlay: ['kaito-temple-protector']
@@ -150,6 +151,8 @@ describe('Kaito Temple Protector\'s set skills', function() {
             });
             this.kachiko = this.player1.findCardByName('bayushi-kachiko');
             this.yunako = this.player1.findCardByName('bayushi-yunako');
+            this.fineKatana = this.player1.findCardByName('fine-katana');
+            this.ornateFan = this.player1.findCardByName('ornate-fan');
             this.kaitoTempleProtector = this.player2.findCardByName('kaito-temple-protector');
             this.noMoreActions();
             this.initiateConflict({
@@ -169,6 +172,17 @@ describe('Kaito Temple Protector\'s set skills', function() {
             expect(this.game.currentConflict).toBeNull();
             expect(this.kaitoTempleProtector.militarySkill).toBe(3);
             expect(this.kaitoTempleProtector.politicalSkill).toBe(3);
+        });
+
+        // ruling #388: the set values override modifiers applied afterwards
+        it('are not modified by later modifiers', function() {
+            this.player1.playAttachment(this.fineKatana, this.kaitoTempleProtector);
+            this.player2.pass();
+            this.player1.playAttachment(this.ornateFan, this.kaitoTempleProtector);
+            expect(this.fineKatana.parent).toBe(this.kaitoTempleProtector);
+            expect(this.ornateFan.parent).toBe(this.kaitoTempleProtector);
+            expect(this.kaitoTempleProtector.militarySkill).toBe(3);
+            expect(this.kaitoTempleProtector.politicalSkill).toBe(6);
         });
 
         // ruling #413: skills that have been set cannot be switched
