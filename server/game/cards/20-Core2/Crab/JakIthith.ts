@@ -30,7 +30,7 @@ export default class JakIthith extends DrawCard {
                 cardType: CardType.Attachment,
                 controller: Players.Any,
                 cardCondition: (card, context) =>
-                    !!card.parentCharacter?.isParticipating() && card.parentCharacter.controller !== context.player
+                    !!context.player.opponent && !!card.parentCharacter?.isParticipatingFor(context.player.opponent)
             })
             // "to an eligible character you control, if able": only eligible characters can be chosen
             .ifAble()

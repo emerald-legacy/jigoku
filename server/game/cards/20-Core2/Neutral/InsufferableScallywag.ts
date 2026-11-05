@@ -19,14 +19,15 @@ export default class InsufferableScallywag extends DrawCard {
             .target({
                 name: CHARACTER,
                 cardType: CardType.Character,
-                controller: Players.Opponent,
                 cardCondition: (card, context) =>
-                    card.glory > context.source.glory && card.isParticipating()
+                    card.glory > context.source.glory &&
+                    !!context.player.opponent &&
+                    card.isParticipatingFor(context.player.opponent)
             })
             .select({
                 name: 'select',
                 dependsOn: CHARACTER,
-                player: Players.Opponent
+                player: (context) => context.targets[CHARACTER].controller === context.player ? Players.Self : Players.Opponent
             }, {
                 'Dishonor this character': dishonor(theTarget),
                 'Move this character home': sendHome(theTarget)

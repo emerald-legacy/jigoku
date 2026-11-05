@@ -1,5 +1,5 @@
 import DrawCard from '../../../DrawCard.js';
-import { Players, CardType } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import { gainAbility, modifyMilitarySkill } from '../../../effects.js';
 import { injure } from '../../../GameActions/GameActions.js';
 
@@ -12,8 +12,7 @@ export default class RavingLunatic extends DrawCard {
             effect: gainAbility.conflictAction('Injure a character', (ability) => ability
                 .target({
                     cardType: CardType.Character,
-                    controller: Players.Opponent,
-                    cardCondition: (card) => card.isParticipating()
+                    cardCondition: (card, context) => !!context.player.opponent && card.isParticipatingFor(context.player.opponent)
                 }, injure((context) => ({
                     target: [context.target, context.source]
                 }))))

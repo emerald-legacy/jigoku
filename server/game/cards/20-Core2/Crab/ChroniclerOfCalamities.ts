@@ -16,8 +16,8 @@ export default class ChroniclerOfCalamities extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card !== context.source &&
-                    card.isParticipating() &&
-                    card.controller !== context.player &&
+                    !!context.player.opponent &&
+                    card.isParticipatingFor(context.player.opponent) &&
                     (context.game.currentConflict?.getCharacters(context.player) ?? [])
                         .some((myCard) => card.costAtMost(myCard.getCost()))
             })

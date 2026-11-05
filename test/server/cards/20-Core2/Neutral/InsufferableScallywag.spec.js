@@ -82,3 +82,51 @@ describe('Insufferable Scallywag', function() {
         });
     });
 });
+
+describe('Insufferable Scallywag with characters on the other side than their controller', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['insufferable-scallywag', 'endless-plains-skirmisher']
+                },
+                player2: {
+                    inPlay: ['doji-challenger', 'endless-plains-skirmisher']
+                }
+            });
+            this.scallywag = this.player1.findCardByName('insufferable-scallywag');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+            this.scallywag.fate = 1;
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.scallywag],
+                defenders: [this.challenger]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+            this.player2.pass();
+        });
+
+        it('chooses a character on the enemy side, whoever controls it, and its controller selects', function() {
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard(this.scallywag);
+            expect(this.player1).toBeAbleToSelect(this.challenger);
+            expect(this.player1).toBeAbleToSelect(this.skirmisher1);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher2);
+
+            this.player1.clickCard(this.skirmisher1);
+            expect(this.player1).toHavePromptButton('Dishonor this character');
+            expect(this.player1).toHavePromptButton('Move this character home');
+            this.player1.clickPrompt('Move this character home');
+            expect(this.skirmisher1.isParticipating()).toBe(false);
+        });
+    });
+});

@@ -12,16 +12,22 @@ export default class CastOutTheShadow extends DrawCard {
             .target({
                 name: 'character',
                 cardType: CardType.Character,
-                controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating() && (card.isTainted || card.hasTrait(Trait.Corrupt))
+                cardCondition: (card, context) =>
+                    !!context.player.opponent &&
+                    card.isParticipatingFor(context.player.opponent) &&
+                    (card.isTainted || card.hasTrait(Trait.Corrupt))
             })
             .select({
                 name: 'select',
                 dependsOn: 'character',
-                player: Players.Opponent
+                player: (context) => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
             }, {
                 'Sacrifice this character': sacrifice((context) => ({ target: context.targets.character })),
-                'Give opponent 2 honor': takeHonor({ amount: 2 })
+                // you cannot give yourself honor: with your own character, only the sacrifice is left
+                'Give opponent 2 honor': takeHonor((context) => ({
+                    amount: 2,
+                    target: context.targets.character.controller === context.player ? [] : context.player.opponent
+                }))
             });
     }
 }

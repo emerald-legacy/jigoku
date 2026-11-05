@@ -302,3 +302,49 @@ describe('Jak\'ithith status tokens', function() {
         });
     });
 });
+
+describe('Jak\'Ithith with attachments on the other side than their controller', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer', 'endless-plains-skirmisher'],
+                    hand: ['fine-katana']
+                },
+                player2: {
+                    inPlay: ['jak-ithith', 'endless-plains-skirmisher'],
+                    hand: ['ornate-fan']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.katana = this.player1.findCardByName('fine-katana');
+            this.jakithit = this.player2.findCardByName('jak-ithith');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+            this.fan = this.player2.findCardByName('ornate-fan');
+
+            this.player1.playAttachment(this.katana, this.skirmisher1);
+            this.player2.playAttachment(this.fan, this.skirmisher2);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.whisperer],
+                defenders: [this.jakithit],
+                type: 'military'
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+            this.noMoreActions();
+        });
+
+        it('chooses an attachment on the enemy side, whoever controls it', function() {
+            expect(this.getChatLogs(10)).toContain('player2 won a military conflict 8 vs 3');
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.jakithit);
+            expect(this.player2).toBeAbleToSelect(this.fan);
+            expect(this.player2).not.toBeAbleToSelect(this.katana);
+        });
+    });
+});
