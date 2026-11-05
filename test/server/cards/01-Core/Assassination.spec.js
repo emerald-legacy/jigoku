@@ -52,6 +52,8 @@ describe('Assassination', function () {
             it('should not be playable outside a conflict', function () {
                 this.player1.clickCard(this.assassination);
                 expect(this.player1).not.toHavePrompt('Assassination');
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.assassination.location).toBe('hand');
             });
         });
 

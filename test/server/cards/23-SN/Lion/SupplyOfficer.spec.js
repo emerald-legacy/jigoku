@@ -57,31 +57,7 @@ describe('Supply Officer', function () {
             expect(this.getChatLogs(5)).toContain('Doji Challenger is readied');
         });
 
-        it('cancel movement', function () {
-            this.noMoreActions();
-            this.initiateConflict({
-                attackers: [this.challenger],
-                defenders: [this.mystic]
-            });
-
-            this.challenger.bow();
-            this.player2.playAttachment(this.grasp, this.mystic);
-
-            this.player1.clickCard(this.supply);
-            this.player1.clickCard(this.challenger);
-            this.player1.clickCard(this.supply);
-
-            this.player2.clickCard(this.mystic);
-
-            expect(this.supply.isParticipating()).toBe(false);
-            expect(this.challenger.isParticipating()).toBe(false);
-            expect(this.challenger.bowed).toBe(false);
-
-            expect(this.getChatLogs(5)).toContain('player1 uses Supply Officer to switch Doji Challenger and Supply Officer');
-            expect(this.getChatLogs(5)).toContain('Doji Challenger is readied');
-        });
-
-        it('cancel movement in should still ready', function () {
+        it('readies the character sent home when the move in is cancelled', function () {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.challenger],
@@ -150,6 +126,45 @@ describe('Supply Officer with characters on the other side than their controller
             this.player1.clickCard(this.challenger);
             expect(this.skirmisher2.isParticipating()).toBe(false);
             expect(this.challenger.isParticipating()).toBe(true);
+        });
+    });
+});
+
+describe('Supply Officer when the send-home is prevented', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['supply-officer', 'matsu-berserker'],
+                    hand: ['dead-eyes']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.supply = this.player1.findCardByName('supply-officer');
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.deadEyes = this.player1.playAttachment('dead-eyes', this.berserker);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.berserker],
+                defenders: [this.whisperer]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.deadEyes);
+            this.player2.pass();
+            this.berserker.bow();
+        });
+
+        it('cannot switch a character that cannot be moved home', function () {
+            expect(this.berserker.isParticipating()).toBe(true);
+            this.player1.clickCard(this.supply);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.berserker.isParticipating()).toBe(true);
+            expect(this.supply.isParticipating()).toBe(false);
+            expect(this.berserker.bowed).toBe(true);
         });
     });
 });

@@ -87,3 +87,43 @@ describe('Adorned Barcha', function() {
         });
     });
 });
+
+describe('Adorned Barcha on a character that cannot move to the conflict', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['iuchi-shahai', 'moto-youth'],
+                    hand: ['adorned-barcha']
+                },
+                player2: {
+                    inPlay: ['miya-mystic'],
+                    hand: ['pacifism']
+                }
+            });
+            this.motoyouth = this.player1.findCardByName('moto-youth');
+            this.iuchishahai = this.player1.findCardByName('iuchi-shahai');
+            this.miyamystic = this.player2.findCardByName('miya-mystic');
+            this.player1.pass();
+            this.player2.playAttachment('pacifism', this.iuchishahai);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.motoyouth],
+                defenders: [this.miyamystic],
+                type: 'military'
+            });
+            this.player2.pass();
+            this.barcha = this.player1.playAttachment('adorned-barcha', this.iuchishahai);
+            this.player2.pass();
+        });
+
+        it('still bows the chosen character (#784)', function() {
+            this.player1.clickCard(this.barcha);
+            expect(this.player1).toBeAbleToSelect(this.miyamystic);
+            this.player1.clickCard(this.miyamystic);
+            expect(this.miyamystic.bowed).toBe(true);
+            expect(this.iuchishahai.isParticipating()).toBe(false);
+        });
+    });
+});

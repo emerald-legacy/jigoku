@@ -228,18 +228,19 @@ describe('Divine Ancestry - Reactions', function() {
                 expect(this.getChatLogs(5)).toContain('player1 is shuffling their conflict deck');
             });
 
-            // This locks the engine in a loop.
-            // it('infinite reshuffling', function() {
-            //     this.player1.reduceDeckToNumber('conflict deck', 0);
-            //     this.player1.conflictDiscard.forEach(card => this.player1.moveCard(card, 'hand'));
-            //     expect(this.player1.conflictDiscard.length).toBe(0);
+            it('draws from an empty deck with an empty discard pile without looping', function() {
+                this.player1.reduceDeckToNumber('conflict deck', 0);
+                this.player1.conflictDiscard.forEach((card) => this.player1.moveCard(card, 'hand'));
+                expect(this.player1.conflictDiscard.length).toBe(0);
 
-            //     let honor = this.player1.honor;
-            //     this.player1.clickCard(this.advisor);
-            //     expect(this.player1.honor).toBe(honor);
-            //     expect(this.getChatLogs(5)).toContain('player1 is shuffling their conflict deck');
-            //     expect(this.player1.conflictDiscard.length).toBe(0);
-            // });
+                const honor = this.player1.honor;
+                this.player1.clickCard(this.advisor);
+                expect(this.player1.honor).toBe(honor);
+                expect(this.getChatLogs(5)).toContain('player1 is shuffling their conflict deck');
+                expect(this.player1.conflictDiscard.length).toBe(0);
+                expect(this.player1.conflictDeck.length).toBe(0);
+                expect(this.player2).toHavePrompt('Action Window');
+            });
         });
     });
 });

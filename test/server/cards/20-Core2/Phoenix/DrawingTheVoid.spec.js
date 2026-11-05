@@ -129,3 +129,33 @@ describe('Drawing the Void with an empty opponent hand', function () {
         });
     });
 });
+
+describe('Drawing the Void twice in a round', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['akodo-kaede', 'miya-mystic'],
+                    hand: ['drawing-the-void', 'drawing-the-void']
+                },
+                player2: {
+                    hand: ['regal-bearing', 'reprieve']
+                }
+            });
+            [this.drawingTheVoid, this.drawingTheVoid2] = this.player1.filterCardsByName('drawing-the-void');
+        });
+
+        it('can be played once per round (Max 1 per round)', function () {
+            this.player1.clickCard(this.drawingTheVoid);
+            this.player1.clickPrompt('Regal Bearing');
+            expect(this.drawingTheVoid.location).toBe('conflict discard pile');
+            this.player2.pass();
+            expect(this.player1).toHavePrompt('Action Window');
+            this.player1.clickCard(this.drawingTheVoid2);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.drawingTheVoid2.location).toBe('hand');
+            expect(this.player2.hand.length).toBe(1);
+        });
+    });
+});

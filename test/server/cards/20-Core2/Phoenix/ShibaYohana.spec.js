@@ -80,6 +80,7 @@ describe('Shiba Yohana', function () {
                 this.player2.clickCard(this.shibaYohana);
                 this.player2.clickCard(this.kuwananHonored);
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.shibaYohana.location).toBe('conflict discard pile');
             });
 
             it('survives kill', function () {

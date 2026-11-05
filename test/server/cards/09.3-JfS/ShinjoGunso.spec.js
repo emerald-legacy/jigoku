@@ -43,6 +43,20 @@ describe('Shinjo Gunso', function () {
                 expect(this.player1).toBeAbleToSelect(this.gunso);
             });
 
+            it('should resolve before the province refills (#787)', function () {
+                for(const card of this.player1.player.getDynastyCardsInProvince('province 1').filter((card) => card !== this.gunso)) {
+                    this.player1.moveCard(card, 'dynasty discard pile');
+                }
+                this.player1.clickCard(this.gunso);
+                this.player1.clickPrompt('0');
+                this.player1.clickCard(this.gunso);
+                expect(this.player1).toHavePromptButton('Hida Guardian');
+                expect(this.player1.player.getDynastyCardsInProvince('province 1').length).toBe(0);
+                this.player1.clickPrompt('Hida Guardian');
+                expect(this.hidaGuardian.location).toBe('play area');
+                expect(this.player1.player.getDynastyCardsInProvince('province 1').length).toBe(1);
+            });
+
             it('should allow you to put a character into play from the top 5 cards', function () {
                 this.player1.clickCard(this.gunso);
                 this.player1.clickPrompt('0');

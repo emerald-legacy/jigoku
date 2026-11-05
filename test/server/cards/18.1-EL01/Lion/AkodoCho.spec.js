@@ -32,7 +32,7 @@ describe('Akodo Cho', function () {
             expect(this.player1).toHavePrompt('Action Window');
         });
 
-        it('should bow an attachment to let you choose a character', function () {
+        it('should let you choose any participating character', function () {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.cho],
@@ -58,7 +58,6 @@ describe('Akodo Cho', function () {
 
             this.player2.pass();
             this.player1.clickCard(this.cho);
-            this.player1.clickCard(this.pilot);
             this.player1.clickCard(this.challenger);
 
             expect(this.player2).toHavePrompt('Select one');
@@ -76,7 +75,6 @@ describe('Akodo Cho', function () {
 
             this.player2.pass();
             this.player1.clickCard(this.cho);
-            this.player1.clickCard(this.pilot);
             this.player1.clickCard(this.challenger);
 
             this.player2.clickPrompt('Discard an attachment from this character');
@@ -100,7 +98,6 @@ describe('Akodo Cho', function () {
 
             this.player2.pass();
             this.player1.clickCard(this.cho);
-            this.player1.clickCard(this.pilot);
             this.player1.clickCard(this.challenger);
 
             this.player2.clickPrompt('Bow this character');
@@ -118,7 +115,6 @@ describe('Akodo Cho', function () {
 
             this.player2.pass();
             this.player1.clickCard(this.cho);
-            this.player1.clickCard(this.pilot);
             this.player1.clickCard(this.dojiWhisperer);
             expect(this.dojiWhisperer.bowed).toBe(true);
             expect(this.getChatLogs(5)).toContain('player1 uses Akodo Cho to bow Doji Whisperer');
@@ -134,7 +130,6 @@ describe('Akodo Cho', function () {
 
             this.player2.pass();
             this.player1.clickCard(this.cho);
-            this.player1.clickCard(this.pilot);
             this.player1.clickCard(this.cho);
 
             expect(this.player1).toHavePrompt('Select one');

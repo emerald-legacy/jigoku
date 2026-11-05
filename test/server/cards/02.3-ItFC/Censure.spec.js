@@ -75,3 +75,42 @@ describe('Censure', function() {
         });
     });
 });
+
+describe('Censure and an event ability gained by a character', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['illustrious-plagiarist', 'doji-challenger']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['censure'],
+                    conflictDiscard: ['banzai']
+                }
+            });
+            this.plagiarist = this.player1.findCardByName('illustrious-plagiarist');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.banzai = this.player2.findCardByName('banzai');
+            this.player2.player.imperialFavor = 'military';
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.plagiarist);
+            this.player1.clickCard(this.banzai);
+            this.player2.pass();
+        });
+
+        it('cannot cancel it, as it is a character ability (#211)', function() {
+            this.player1.clickCard(this.plagiarist);
+            this.player1.clickCard(this.challenger);
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.challenger.getMilitarySkill()).toBe(5);
+            expect(this.player2.findCardByName('censure').location).toBe('hand');
+        });
+    });
+});

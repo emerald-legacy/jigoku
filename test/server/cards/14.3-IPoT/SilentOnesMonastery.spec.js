@@ -1,5 +1,3 @@
-import * as costs from '../../../../build/server/game/costs/index.js';
-
 describe('Silent Ones Monastery', function() {
     integration(function() {
         describe('functionality from an opponent standpoint', function () {
@@ -33,14 +31,6 @@ describe('Silent Ones Monastery', function() {
                 this.silentOnesMonastery = this.player2.findCardByName('silent-ones-monastery', 'province 1');
                 this.dispatch = this.player2.placeCardInProvince('dispatch-to-nowhere', 'province 4');
                 this.city = this.player2.findCardByName('city-of-the-open-hand');
-                // the FFG version of the stronghold: "Steal an honor"
-                this.city.abilities.actions = [];
-                this.city.declareAbilities(() => {
-                    this.city.action('Steal an honor')
-                        .condition((context) => !!(context.player.opponent && context.player.isLessHonorable()))
-                        .cost(costs.bowSelf())
-                        .takeHonor();
-                });
             });
 
             it('should limit the phate gained by the opponent in one phase to 2', function() {
@@ -193,9 +183,9 @@ describe('Silent Ones Monastery', function() {
 
                 this.player1.pass();
                 this.player2.clickCard(this.city);
-                expect(this.player1.honor).toBe(p1Honor - 1);
+                expect(this.player1.honor).toBe(p1Honor);
                 expect(this.player2.honor).toBe(p2Honor + 1);
-                expect(this.getChatLogs(5)).toContain('player2 uses City of the Open Hand, bowing City of the Open Hand to take 1 honor from player1');
+                expect(this.getChatLogs(5)).toContain('player2 uses City of the Open Hand, bowing City of the Open Hand to gain 1 honor');
             });
         });
         describe('when the owner starts a new dynasty phase with A Season of War', function () {

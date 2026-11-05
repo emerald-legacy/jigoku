@@ -83,6 +83,26 @@ describe('Enforce Propriety', function () {
                 'player1 refuses to appease the fortunes - the effects of A Perfect Cut are canceled'
             );
         });
+
+        it('only offers the cancel when the initiator has no fate left', function () {
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.matsuBerserker],
+                defenders: []
+            });
+
+            this.player2.pass();
+            this.player1.player.fate = 0;
+            this.player1.clickCard(this.perfectCut);
+            this.player1.clickCard(this.matsuBerserker);
+            this.player2.clickCard(this.enforcePropriety);
+            expect(this.player1).toHavePrompt('Select one');
+            expect(this.player1).toHavePromptButton('Let the effects be canceled');
+            expect(this.player1).not.toHavePromptButton('Give 1 fate to player2');
+            this.player1.clickPrompt('Let the effects be canceled');
+            expect(this.matsuBerserker.militarySkill).toBe(3);
+            expect(this.player1.fate).toBe(0);
+        });
     });
 });
 

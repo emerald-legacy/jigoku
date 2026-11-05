@@ -52,7 +52,7 @@ describe('A War on Two Fronts', function() {
                 expect(this.player1).toBeAbleToSelect(this.war);
             });
 
-            it('should trigger on your mil attack when equally honorable', function() {
+            it('should not trigger on your mil attack when equally honorable', function() {
                 this.player2.honor = this.player1.honor;
                 this.noMoreActions();
 
@@ -65,7 +65,7 @@ describe('A War on Two Fronts', function() {
                 expect(this.player2).toHavePrompt('Choose Defenders');
             });
 
-            it('should trigger on your mil attack when less honorable', function() {
+            it('should not trigger on your mil attack when less honorable', function() {
                 this.player2.honor = this.player1.honor + 1;
                 this.noMoreActions();
 

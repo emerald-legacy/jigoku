@@ -14,7 +14,7 @@ describe('showing the top card of a conflict deck', function () {
 
             it('still shows the owner\'s top card to the opponent', function () {
                 this.player1.clickCard(this.artisanAcademy);
-                expect(this.player1.player.conflictDeck.length).toBeGreaterThan(0);
+                expect(this.player1.player.conflictDeck.length).toBe(8);
                 expect(this.player1.player.isTopConflictCardShown(this.player2.player)).toBe(true);
             });
         });

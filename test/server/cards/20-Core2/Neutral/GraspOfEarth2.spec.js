@@ -142,6 +142,7 @@ describe('Grasp of Earth 2', function () {
                 this.player2.clickCard(this.motoYouth);
                 expect(this.player1).not.toHavePrompt('Any interrupts?');
                 expect(this.player1).not.toBeAbleToSelect(this.solemnScholar);
+                expect(this.motoYouth.inConflict).toBe(true);
             });
 
             it('only stops the movement, allows other effects', function () {

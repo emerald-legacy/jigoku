@@ -148,8 +148,9 @@ describe('Paths Not Taken at a province with printed strength X', function () {
                 attackers: [this.whisperer],
                 defenders: []
             });
-            expect(this.roar.getBaseStrength()).toBeGreaterThan(3);
+            expect(this.roar.getBaseStrength()).toBe(6);
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
         });
     });
 });

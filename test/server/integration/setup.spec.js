@@ -145,7 +145,7 @@ describe('setup phase', function() {
 
                 it('should leave no card selectable for the player who decided', function() {
                     expect(this.player1.currentActionTargets).toEqual([]);
-                    expect(this.player2.currentActionTargets.length).toBeGreaterThan(0);
+                    expect(this.player2.currentActionTargets.length).toBe(4);
                 });
 
                 it('should not shuffle the dynasty deck', function() {
@@ -208,7 +208,7 @@ describe('setup phase', function() {
 
                 it('should leave no card selectable for the player who decided', function() {
                     expect(this.player1.currentActionTargets).toEqual([]);
-                    expect(this.player2.currentActionTargets.length).toBeGreaterThan(0);
+                    expect(this.player2.currentActionTargets.length).toBe(4);
                 });
 
                 it('should not shuffle the conflict deck', function() {

@@ -104,3 +104,54 @@ describe('Daughter of War', function() {
         });
     });
 });
+
+describe('Two Daughters of War on one character', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 10,
+                    dynastyDiscard: ['eager-scout', 'doji-whisperer'],
+                    inPlay: ['doji-hotaru'],
+                    hand: ['daughter-of-war', 'daughter-of-war']
+                },
+                player2: {
+                    inPlay: ['vanguard-warrior'],
+                    hand: ['noble-sacrifice']
+                }
+            });
+            this.eagerScout = this.player1.findCardByName('eager-scout');
+            this.dojiWhisperer = this.player1.findCardByName('doji-whisperer');
+            this.dojiHotaru = this.player1.findCardByName('doji-hotaru');
+            [this.daughter1, this.daughter2] = this.player1.filterCardsByName('daughter-of-war');
+            this.player1.moveCard(this.eagerScout, 'dynasty deck');
+            this.player1.moveCard(this.dojiWhisperer, 'dynasty deck');
+            this.dojiHotaru.dishonor();
+            this.vanguard = this.player2.findCardByName('vanguard-warrior');
+            this.vanguard.honor();
+
+            this.player1.playAttachment(this.daughter1, this.dojiHotaru);
+            this.player2.pass();
+            this.player1.playAttachment(this.daughter2, this.dojiHotaru);
+        });
+
+        it('each trigger when the character leaves play (#910)', function() {
+            this.player2.clickCard('noble-sacrifice');
+            this.player2.clickCard(this.dojiHotaru);
+            this.player2.clickCard(this.vanguard);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.daughter1);
+            expect(this.player1).toBeAbleToSelect(this.daughter2);
+            this.player1.clickCard(this.daughter1);
+            this.player1.clickPrompt('Eager Scout');
+            expect(this.eagerScout.location).toBe('play area');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.daughter2);
+            this.player1.clickCard(this.daughter2);
+            this.player1.clickPrompt('Doji Whisperer');
+            expect(this.dojiWhisperer.location).toBe('play area');
+            expect(this.dojiHotaru.location).toBe('dynasty discard pile');
+        });
+    });
+});

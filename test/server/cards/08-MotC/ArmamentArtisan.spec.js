@@ -27,6 +27,7 @@ describe('Armament Artisan', function() {
                 this.player1.pass();
                 this.player2.clickCard('way-of-the-crane');
                 this.player2.clickCard(this.challenger);
+                expect(this.challenger.isHonored).toBe(true);
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
             });
 

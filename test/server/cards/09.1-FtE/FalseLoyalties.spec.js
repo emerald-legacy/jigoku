@@ -1,4 +1,4 @@
-describe('False Loyalites', function() {
+describe('False Loyalties', function() {
     integration(function() {
         describe('False Loyalites\'s ability', function() {
             beforeEach(function() {

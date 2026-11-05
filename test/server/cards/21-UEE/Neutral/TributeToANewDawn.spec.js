@@ -159,9 +159,9 @@ describe('Tribute to a New Dawn without attachments of your own', function () {
             expect(this.player1).toHavePrompt('Choose up to 2 attachments to keep');
             this.player1.clickCard(this.fineKatana);
             this.player1.clickPrompt('Done');
-            if(this.player2.currentButtons.includes('Done')) {
-                this.player2.clickPrompt('Done');
-            }
+            expect(this.player2).toHavePrompt('Choose up to 2 attachments to keep');
+            expect(this.player2.currentButtons).toEqual(['Done']);
+            this.player2.clickPrompt('Done');
 
             expect(this.fineKatana.location).toBe('play area');
             expect(this.ornateFan.location).toBe('removed from game');

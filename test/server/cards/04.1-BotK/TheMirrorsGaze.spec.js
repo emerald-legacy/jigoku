@@ -467,7 +467,7 @@ describe('The Mirror\'s Gaze and events whose effects use their triggering condi
             for(const id of ['trading-on-the-sand-road', 'supporting-cast', 'disrupted-supply-lines', 'know-the-terrain']) {
                 const card = this.player2.findCardByName(id);
                 const abilities = [...card.abilities.actions, ...card.abilities.reactions];
-                expect(abilities.length).toBeGreaterThan(0);
+                expect(abilities.length).toBe(1);
                 expect(abilities.every((ability) => ability.cannotBeMirrored)).toBe(true);
             }
         });

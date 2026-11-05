@@ -65,3 +65,41 @@ describe('Fushicho', function() {
         });
     });
 });
+
+describe('Fushicho and a second copy', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['fushicho'],
+                    dynastyDiscard: ['fushicho', 'adept-of-the-waves']
+                },
+                player2: {
+                    inPlay: ['mirumoto-raitsugu']
+                }
+            });
+            this.fushicho = this.player1.findCardByName('fushicho', 'play area');
+            this.fushicho2 = this.player1.findCardByName('fushicho', 'dynasty discard pile');
+            this.adeptOfTheWaves = this.player1.findCardByName('adept-of-the-waves');
+            this.mirumotoRaitsugu = this.player2.findCardByName('mirumoto-raitsugu');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.fushicho],
+                defenders: [this.mirumotoRaitsugu]
+            });
+            this.player2.clickCard(this.mirumotoRaitsugu);
+            this.player2.clickCard(this.fushicho);
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('5');
+        });
+
+        it('cannot put another copy of itself into play (#316)', function() {
+            this.player1.clickCard(this.fushicho);
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).toBeAbleToSelect(this.adeptOfTheWaves);
+            expect(this.player1).not.toBeAbleToSelect(this.fushicho2);
+        });
+    });
+});

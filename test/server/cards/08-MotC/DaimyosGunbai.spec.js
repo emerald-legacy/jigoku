@@ -177,3 +177,44 @@ describe('Daimyo\'s Gunbai', function () {
         });
     });
 });
+
+describe('Daimyo\'s Gunbai cancelled by Hida Kisada', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['daimyo-s-gunbai']
+                },
+                player2: {
+                    inPlay: ['hida-kisada', 'solemn-scholar']
+                }
+            });
+
+            this.dojiChallenger = this.player1.findCardByName('doji-challenger');
+            this.daimyosGunbai = this.player1.findCardByName('daimyo-s-gunbai');
+            this.solemnScholar = this.player2.findCardByName('solemn-scholar');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.dojiChallenger],
+                defenders: [this.solemnScholar]
+            });
+            this.player2.pass();
+        });
+
+        it('stays in hand and can be used again (#628)', function () {
+            this.player1.clickCard(this.daimyosGunbai);
+            this.player1.clickCard(this.dojiChallenger);
+            this.player2.clickCard(this.solemnScholar);
+            expect(this.getChatLogs(5)).toContain('player1 attempts to initiate Daimyō\'s Gunbai\'s ability, but Hida Kisada cancels it');
+            expect(this.daimyosGunbai.location).toBe('hand');
+            this.player2.pass();
+            this.player1.clickCard(this.daimyosGunbai);
+            expect(this.player1).toHavePrompt('Daimyō\'s Gunbai');
+            this.player1.clickCard(this.dojiChallenger);
+            expect(this.player2).toHavePrompt('Daimyō\'s Gunbai');
+        });
+    });
+});

@@ -74,3 +74,56 @@ describe('Isawa Uona', function () {
         });
     });
 });
+
+describe('Isawa Uona rulings', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shinjo-outrider'],
+                    hand: ['voice-of-honor']
+                },
+                player2: {
+                    fate: 5,
+                    inPlay: ['isawa-uona', 'shiba-peacemaker', 'kitsu-spiritcaller'],
+                    hand: ['trick-of-the-light'],
+                    dynastyDiscard: ['asahina-artisan']
+                }
+            });
+            this.uona = this.player2.findCardByName('isawa-uona');
+            this.peacemaker = this.player2.findCardByName('shiba-peacemaker');
+            this.spiritcaller = this.player2.findCardByName('kitsu-spiritcaller');
+            this.artisan = this.player2.findCardByName('asahina-artisan');
+            this.outrider = this.player1.findCardByName('shinjo-outrider');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.outrider],
+                defenders: [this.peacemaker]
+            });
+        });
+
+        it('triggers when the Air event is cancelled (#411)', function () {
+            this.outrider.honor();
+            this.player2.clickCard('trick-of-the-light');
+            this.player2.clickCard(this.peacemaker);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard('voice-of-honor');
+            expect(this.getChatLogs(5)).toContain('player1 plays Voice of Honor to cancel the effects of Trick of the Light');
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.uona);
+            this.player2.clickCard(this.uona);
+            this.player2.clickCard(this.outrider);
+            expect(this.outrider.bowed).toBe(true);
+        });
+
+        it('does not trigger when an Air card is put into play (#754)', function () {
+            this.player2.clickCard(this.spiritcaller);
+            this.player2.clickCard(this.artisan);
+            expect(this.artisan.isParticipating()).toBe(true);
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+    });
+});

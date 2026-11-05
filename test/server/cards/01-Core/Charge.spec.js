@@ -40,10 +40,14 @@ describe('Charge!', function() {
                 });
 
                 it('should not allow selecting a character which is unable to participate in the conflict due to a dash', function() {
+                    expect(this.player1).toHavePrompt('Choose a character');
+                    expect(this.player1).toBeAbleToSelect(this.shibaTsukune);
                     expect(this.player1).not.toBeAbleToSelect(this.naiveStudent);
                 });
 
                 it('should not allow selecting a character which is unable to participate in the conflict due to a constant ability', function() {
+                    expect(this.player1).toHavePrompt('Choose a character');
+                    expect(this.player1).toBeAbleToSelect(this.shibaTsukune);
                     expect(this.player1).not.toBeAbleToSelect(this.shibaPeacemaker1);
                 });
 
@@ -62,7 +66,8 @@ describe('Charge!', function() {
                         this.player1.clickCard('charge', 'hand');
 
                         expect(this.player1).not.toHavePrompt('Choose a character');
-                        expect(this.game.currentActionWindow).not.toBe(null);
+                        expect(this.player1).toHavePrompt('Conflict Action Window');
+                        expect(this.player1.findCardByName('charge', 'hand').location).toBe('hand');
                     });
                 });
             });

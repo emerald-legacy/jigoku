@@ -26,12 +26,14 @@ describe('A Perfect Cut', function() {
             it('should not be playable during a political conflict', function() {
                 this.initiateConflict({
                     type: 'political',
-                    attackers: [this.togashiInitiate],
+                    attackers: [this.togashiInitiate, this.kitsukiShomon],
                     defenders: []
                 });
                 this.player2.pass();
                 this.player1.clickCard(this.aPerfectCut);
                 expect(this.player1).not.toHavePrompt('A Perfect Cut');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.aPerfectCut.location).toBe('hand');
             });
 
             it('should not be playable on a non-bushi character', function() {

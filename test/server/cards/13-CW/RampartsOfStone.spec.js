@@ -57,6 +57,44 @@ describe('Ramparts of Stone', function() {
                 expect(this.courtGames.location).toBe('conflict discard pile');
             });
 
+            it('cannot choose to bow when every participating character is bowed (#828)', function() {
+                this.outrider.bow();
+                this.moto.bow();
+                this.player2.clickCard(this.ramparts);
+                expect(this.player1).toHavePrompt('Ramparts of Stone');
+                expect(this.player1.currentButtons).not.toContain('Bow all participating characters');
+                expect(this.player1).toBeAbleToSelect(this.katana);
+                this.player1.clickCard(this.fingerOfJade);
+                this.player1.clickCard(this.katana);
+                this.player1.clickCard(this.courtGames);
+                this.player1.clickPrompt('Done');
+                expect(this.katana.location).toBe('conflict discard pile');
+                expect(this.wayfinder.bowed).toBe(false);
+            });
+
+            it('cannot choose to discard with an empty hand (#828)', function() {
+                for(const card of [this.fingerOfJade, this.courtGames, this.katana, this.player1.findCardByName('assassination')]) {
+                    this.player1.moveCard(card, 'conflict discard pile');
+                }
+                this.player2.clickCard(this.ramparts);
+                expect(this.player1).not.toHavePrompt('Ramparts of Stone');
+                expect(this.outrider.bowed).toBe(true);
+                expect(this.moto.bowed).toBe(true);
+                expect(this.getChatLogs(3)).toContain('player2 plays Ramparts of Stone to bow Shinjo Outrider and Aggressive Moto');
+            });
+
+            it('may discard the last two cards instead of bowing (#829)', function() {
+                this.player1.moveCard(this.fingerOfJade, 'conflict discard pile');
+                this.player1.moveCard('assassination', 'conflict discard pile');
+                this.player2.clickCard(this.ramparts);
+                this.player1.clickPrompt('Discard three cards from hand');
+                expect(this.player1.hand.length).toBe(0);
+                expect(this.katana.location).toBe('conflict discard pile');
+                expect(this.courtGames.location).toBe('conflict discard pile');
+                expect(this.outrider.bowed).toBe(false);
+                expect(this.getChatLogs(3)).toContain('player1 discards Court Games and Fine Katana');
+            });
+
             it('finger of jade should not be able to cancel it', function() {
                 this.player2.pass();
                 this.player1.playAttachment(this.fingerOfJade, this.outrider);

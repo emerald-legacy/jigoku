@@ -2,52 +2,9 @@ describe('Back-Alley Hideaway', function() {
     integration(function() {
         function assassinate(player, target) {
             player.clickCard('assassination');
-            if(player.currentButtons.includes('Pay costs first')) {
-                player.clickPrompt('Pay costs first');
-            }
+            expect(player).toHavePromptButton('Pay costs first');
+            player.clickPrompt('Pay costs first');
             player.clickCard(target);
-        }
-
-        function advanceToDynasty(flow) {
-            let guard = 0;
-            while(flow.game.currentPhase !== 'dynasty' && guard++ < 80) {
-                let acted = false;
-                for(const p of [flow.player1, flow.player2]) {
-                    if(flow.game.currentPhase === 'dynasty') {
-                        break;
-                    }
-                    const menuTitle = p.currentPrompt().menuTitle;
-                    const buttons = p.currentButtons;
-                    if(menuTitle === 'Choose an effect to resolve') {
-                        p.clickPrompt('Don\'t resolve');
-                        acted = true;
-                    } else if(buttons.includes('Pass')) {
-                        p.clickPrompt('Pass');
-                        acted = true;
-                    } else if(buttons.includes('Pass Conflict')) {
-                        p.clickPrompt('Pass Conflict');
-                        if(p.currentButtons.includes('Yes')) {
-                            p.clickPrompt('Yes');
-                        }
-                        acted = true;
-                    } else if(buttons.includes('Done')) {
-                        p.clickPrompt('Done');
-                        acted = true;
-                    } else if(buttons.includes('End Round')) {
-                        p.clickPrompt('End Round');
-                        acted = true;
-                    } else if(menuTitle && menuTitle.indexOf('Imperial Favor') >= 0 && !menuTitle.startsWith('Waiting')) {
-                        p.clickPrompt('military');
-                        acted = true;
-                    } else if(buttons.length === 1 && buttons[0]) {
-                        p.clickPrompt(buttons[0]);
-                        acted = true;
-                    }
-                }
-                if(!acted) {
-                    break;
-                }
-            }
         }
 
         describe('Place character in Hideaway interrupt', function() {
@@ -194,7 +151,14 @@ describe('Back-Alley Hideaway', function() {
             });
 
             it('plays the stored character into play and sacrifices the holding', function() {
-                advanceToDynasty(this.flow);
+                this.noMoreActions();
+                this.player1.clickPrompt('Don\'t resolve');
+                this.advancePhases('fate');
+                this.player1.clickPrompt('Done');
+                this.player1.clickPrompt('Done');
+                this.player2.clickPrompt('Done');
+                this.player2.clickPrompt('End Round');
+                this.player1.clickPrompt('End Round');
                 expect(this.game.currentPhase).toBe('dynasty');
 
                 this.player2.clickCard(this.manipulator);
@@ -251,7 +215,13 @@ describe('Back-Alley Hideaway', function() {
             });
 
             it('stays in play when the play is cancelled', function() {
-                advanceToDynasty(this.flow);
+                this.advancePhases('fate');
+                this.player2.clickPrompt('Done');
+                this.player1.clickPrompt('Done');
+                this.player2.clickPrompt('Done');
+                this.player2.clickPrompt('End Round');
+                this.player1.clickPrompt('End Round');
+                expect(this.game.currentPhase).toBe('dynasty');
                 this.player2.clickCard(this.ibuki);
                 this.player2.clickCard(this.ibuki);
                 this.player2.clickPrompt('Cancel');
@@ -260,7 +230,13 @@ describe('Back-Alley Hideaway', function() {
             });
 
             it('gets Toshi Ranbo\'s extra fate when played in the dynasty phase (EmeraldDB ruling)', function() {
-                advanceToDynasty(this.flow);
+                this.advancePhases('fate');
+                this.player2.clickPrompt('Done');
+                this.player1.clickPrompt('Done');
+                this.player2.clickPrompt('Done');
+                this.player2.clickPrompt('End Round');
+                this.player1.clickPrompt('End Round');
+                expect(this.game.currentPhase).toBe('dynasty');
                 this.player2.clickCard(this.ibuki);
                 this.player2.clickCard(this.ibuki);
                 this.player2.clickPrompt('0');

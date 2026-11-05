@@ -21,7 +21,6 @@ describe('Quarrelsome Youth', function() {
                 this.yoshi = this.player1.findCardByName('kakita-yoshi');
                 this.toturi = this.player1.findCardByName('akodo-toturi');
                 this.mount = this.player1.findCardByName('favored-mount');
-                this.crane = this.player1.findCardByName('way-of-the-crane');
                 this.kuwanan = this.player2.findCardByName('doji-kuwanan');
 
                 this.player1.playAttachment(this.mount, this.toturi);
@@ -55,31 +54,36 @@ describe('Quarrelsome Youth', function() {
             it('should not make your opponent discard a card at random if you have more cards when youth loses conflict as an attacker', function() {
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.yoshi);
+                expect(this.player1.player.hand.length).toBe(3);
+                expect(this.player2.player.hand.length).toBe(2);
                 this.noMoreActions();
-                expect(this.player1).not.toBeAbleToSelect(this.youth);
-                const player2hand = this.player2.player.hand.length;
-                expect(this.player2.player.hand.length).toBe(player2hand);
+                expect(this.getChatLogs(5)).toContain('player2 won a military conflict 5 vs 3');
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player2.player.hand.length).toBe(2);
             });
 
             it('should not make your opponent discard a card at random if you have equal cards when youth loses conflict as an attacker', function() {
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.yoshi);
                 this.player2.pass();
-                this.player1.clickCard(this.crane);
-                this.player1.clickCard(this.yoshi);
+                this.player1.playAttachment('way-of-the-dragon', this.toturi);
+                expect(this.player1.player.hand.length).toBe(2);
+                expect(this.player2.player.hand.length).toBe(2);
                 this.noMoreActions();
-                expect(this.player1).not.toBeAbleToSelect(this.youth);
-                const player2hand = this.player2.player.hand.length;
-                expect(this.player2.player.hand.length).toBe(player2hand);
+                expect(this.getChatLogs(5)).toContain('player2 won a military conflict 5 vs 3');
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player2.player.hand.length).toBe(2);
             });
 
             it('should not make your opponent discard a card at random if youth wins conflict as an attacker', function() {
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.mount);
+                expect(this.player1.player.hand.length).toBe(0);
+                expect(this.player2.player.hand.length).toBe(2);
                 this.noMoreActions();
-                expect(this.player1).not.toBeAbleToSelect(this.youth);
-                const player2hand = this.player2.player.hand.length;
-                expect(this.player2.player.hand.length).toBe(player2hand);
+                expect(this.getChatLogs(5)).toContain('player1 won a military conflict 10 vs 5');
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player2.player.hand.length).toBe(2);
             });
 
             it('should not make your opponent discard a card at random if youth loses conflict as a defender', function() {
@@ -100,11 +104,13 @@ describe('Quarrelsome Youth', function() {
                     defenders: [this.youth]
                 });
 
+                expect(this.player1.player.hand.length).toBe(0);
+                expect(this.player2.player.hand.length).toBe(2);
                 this.noMoreActions();
 
-                expect(this.player1).not.toBeAbleToSelect(this.youth);
-                const player2hand = this.player2.player.hand.length;
-                expect(this.player2.player.hand.length).toBe(player2hand);
+                expect(this.getChatLogs(5)).toContain('player2 won a military conflict 5 vs 1');
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player2.player.hand.length).toBe(2);
             });
         });
     });
