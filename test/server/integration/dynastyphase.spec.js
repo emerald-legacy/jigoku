@@ -249,5 +249,41 @@ describe('dynasty phase', function() {
                 expect(this.getChatLogs(5)).toContain('Akodo Gunsō enters play with 2 additional fate due to Akodo Gunsō');
             });
         });
+
+        describe('stronghold and province actions', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'dynasty',
+                    player1: {
+                        stronghold: 'hayaken-no-shiro',
+                        inPlay: ['matsu-berserker', 'doji-hotaru'],
+                        provinces: ['magistrate-station']
+                    }
+                });
+                this.hayaken = this.player1.findCardByName('hayaken-no-shiro');
+                this.berserker = this.player1.findCardByName('matsu-berserker');
+                this.hotaru = this.player1.findCardByName('doji-hotaru');
+                this.station = this.player1.findCardByName('magistrate-station');
+                this.station.facedown = false;
+                this.berserker.bowed = true;
+                this.hotaru.honor();
+                this.hotaru.bowed = true;
+            });
+
+            it('lets the player use a stronghold action', function() {
+                expect(this.player1).toHavePrompt('Play cards from provinces');
+                this.player1.clickCard(this.hayaken);
+                this.player1.clickCard(this.berserker);
+                expect(this.berserker.bowed).toBe(false);
+                expect(this.hayaken.bowed).toBe(true);
+            });
+
+            it('lets the player use a province action that can be used outside a conflict', function() {
+                expect(this.player1).toHavePrompt('Play cards from provinces');
+                this.player1.clickCard(this.station);
+                this.player1.clickCard(this.hotaru);
+                expect(this.hotaru.bowed).toBe(false);
+            });
+        });
     });
 });

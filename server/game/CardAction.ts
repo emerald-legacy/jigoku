@@ -41,6 +41,9 @@ export class CardAction extends CardAbility {
 
             case CardType.Character:
             case CardType.Attachment:
+            case CardType.Stronghold:
+            case CardType.Province:
+            case CardType.Role:
                 return rules.dynastyPhaseActionsFromCardsInPlay;
 
             default:
