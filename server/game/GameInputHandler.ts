@@ -1,7 +1,7 @@
 import { msg } from './GameChat.js';
 import * as MenuCommands from './MenuCommands.js';
 import type { MenuItem } from './MenuCommands.js';
-import { ActionWindowName, Phase } from './Constants.js';
+import { ActionWindowName, type Location, Phase } from './Constants.js';
 import { isEnumValue } from './utils/helpers.js';
 import { resolvePackId } from './CardPackUtil.js';
 import type Game from './Game.js';
@@ -9,12 +9,8 @@ import type BaseCard from './BaseCard.js';
 import type { DeckDTO } from '../gamenode/LobbyProtocol.js';
 import type { MenuArg } from './gamesteps/Step.js';
 
-const CHANGEABLE_STATS = ['fate', 'honor'] as const;
-type ChangeableStat = (typeof CHANGEABLE_STATS)[number];
-
-function isChangeableStat(stat: string): stat is ChangeableStat {
-    return CHANGEABLE_STATS.some((changeable) => changeable === stat);
-}
+export const CHANGEABLE_STATS = ['fate', 'honor'] as const;
+export type ChangeableStat = (typeof CHANGEABLE_STATS)[number];
 
 const TOGGLE_TIMER_SETTINGS = new Set([
     'events', 'eventsInDeck'
@@ -48,7 +44,7 @@ export class GameInputHandler {
 
     facedownCardClicked(
         playerName: string,
-        location: string,
+        location: Location,
         controllerName: string,
         isProvince: boolean = false
     ): void {
@@ -57,11 +53,7 @@ export class GameInputHandler {
         if(!player || !controller) {
             return;
         }
-        const list = controller.getSourceList(location);
-        if(!list) {
-            return;
-        }
-        const card = list.find((card: BaseCard) => !isProvince === !card.isProvince);
+        const card = controller.getSourceList(location).find((card: BaseCard) => !isProvince === !card.isProvince);
         if(card) {
             this.game.pipeline.handleCardClicked(player, card);
         }
@@ -168,7 +160,7 @@ export class GameInputHandler {
         }
     }
 
-    drop(playerName: string, cardId: string, source: string, target: string): void {
+    drop(playerName: string, cardId: string, source: Location, target: Location): void {
         const player = this.game.getPlayerByName(playerName);
 
         if(!player) {
@@ -178,12 +170,9 @@ export class GameInputHandler {
         player.drop(cardId, source, target);
     }
 
-    changeStat(playerName: string, stat: string, value: number): void {
+    changeStat(playerName: string, stat: ChangeableStat, value: number): void {
         const player = this.game.getPlayerByName(playerName);
         if(!player) {
-            return;
-        }
-        if(!isChangeableStat(stat)) {
             return;
         }
         if(!Number.isInteger(value) || Math.abs(value) > 1) {

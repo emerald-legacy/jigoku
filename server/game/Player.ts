@@ -360,7 +360,8 @@ export class Player extends GameObject {
 
     getSourceList(source: DrawCardPile): DrawCard[];
     getSourceList(source: Location.ProvinceDeck): ProvinceCard[];
-    getSourceList(source: string): BaseCard[];
+    getSourceList(source: Location): BaseCard[];
+    getSourceList(hostUuid: string): BaseCard[];
     getSourceList(source: string): BaseCard[] {
         return this.zones.getSourceList(source);
     }
@@ -876,13 +877,12 @@ export class Player extends GameObject {
     }
 
 
-    drop(cardId: string, source: string, target: string): void {
+    drop(cardId: string, source: Location, target: Location): void {
         const sourceList = this.getSourceList(source);
         const card = this.findCardByUuid(sourceList, cardId);
 
         if(
             !this.game.manualMode ||
-            !isEnumValue(Location, target) ||
             source === target ||
             !this.isLegalLocationForCard(card, target) ||
             !card ||
@@ -899,13 +899,13 @@ export class Player extends GameObject {
             return;
         }
 
-        const revealingPiles: string[] = [
+        const revealingPiles: Location[] = [
             Location.PlayArea,
             Location.DynastyDiscardPile,
             Location.ConflictDiscardPile,
             Location.RemovedFromGame
         ];
-        const hiddenSources: string[] = [
+        const hiddenSources: Location[] = [
             Location.Hand,
             Location.ConflictDeck,
             Location.DynastyDeck,

@@ -723,7 +723,10 @@ describe('GameServer.onGameMessage', () => {
             stopNonChessClocks: jasmine.createSpy('stopNonChessClocks'),
             continue: jasmine.createSpy('continue'),
             cardClicked: jasmine.createSpy('cardClicked'),
-            menuButton: jasmine.createSpy('menuButton')
+            menuButton: jasmine.createSpy('menuButton'),
+            drop: jasmine.createSpy('drop'),
+            changeStat: jasmine.createSpy('changeStat'),
+            facedownCardClicked: jasmine.createSpy('facedownCardClicked')
         });
         const ctx = makeCtx({ userGameMap: new Map([['alice', game]]), sendGameState: jasmine.createSpy('sendGameState') });
         const socket = { user: { username: 'alice' }, id: 's1' };
@@ -748,6 +751,32 @@ describe('GameServer.onGameMessage', () => {
         call('onGameMessage', ctx, socket, 'cardClicked', { uuid: 'card-uuid' });
         expect(game.cardClicked).not.toHaveBeenCalled();
         expect(game.stopNonChessClocks).not.toHaveBeenCalled();
+    });
+
+    it('passes a drop between known locations through', () => {
+        const { game, ctx, socket } = setup();
+        call('onGameMessage', ctx, socket, 'drop', 'card-uuid', 'hand', 'conflict discard pile');
+        expect(game.drop).toHaveBeenCalledWith('alice', 'card-uuid', 'hand', 'conflict discard pile');
+    });
+
+    it('rejects a drop from or to an unknown location', () => {
+        const { game, ctx, socket } = setup();
+        call('onGameMessage', ctx, socket, 'drop', 'card-uuid', 'hand', 'graveyard');
+        call('onGameMessage', ctx, socket, 'drop', 'card-uuid', 'card-uuid', 'hand');
+        expect(game.drop).not.toHaveBeenCalled();
+    });
+
+    it('rejects a facedown click on an unknown location', () => {
+        const { game, ctx, socket } = setup();
+        call('onGameMessage', ctx, socket, 'facedownCardClicked', 'graveyard', 'bob', false);
+        expect(game.facedownCardClicked).not.toHaveBeenCalled();
+    });
+
+    it('accepts only fate and honor as changeable stats', () => {
+        const { game, ctx, socket } = setup();
+        call('onGameMessage', ctx, socket, 'changeStat', 'honor', 1);
+        call('onGameMessage', ctx, socket, 'changeStat', 'gold', 1);
+        expect(game.changeStat).toHaveBeenCalledOnceWith('alice', 'honor', 1);
     });
 
     it('rejects names inherited from Object.prototype', () => {

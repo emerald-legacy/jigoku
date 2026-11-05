@@ -520,7 +520,7 @@ class PlayerInteractionWrapper {
         this.checkUnserializableGameState();
     }
 
-    dragCard(card: BaseCard, targetLocation: string): void {
+    dragCard(card: BaseCard, targetLocation: Location): void {
         this.game.drop(this.player.name, card.uuid, card.location, targetLocation);
         this.game.continue();
         this.checkUnserializableGameState();

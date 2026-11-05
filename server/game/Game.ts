@@ -37,7 +37,7 @@ import Ring from './Ring.js';
 import { Conflict } from './Conflict.js';
 import type { Duel } from './Duel.js';
 import { ConflictFlow } from './gamesteps/conflict/ConflictFlow.js';
-import { GameInputHandler } from './GameInputHandler.js';
+import { type ChangeableStat, GameInputHandler } from './GameInputHandler.js';
 import { GameStateSerializer } from './GameStateSerializer.js';
 import type { FormattedDeck, HiddenInfoChange } from './GameStateSerializer.js';
 import type { MenuItem } from './MenuCommands.js';
@@ -427,7 +427,7 @@ export class Game {
 
     facedownCardClicked(
         playerName: string,
-        location: string,
+        location: Location,
         controllerName: string,
         isProvince: boolean = false
     ): void {
@@ -454,7 +454,7 @@ export class Game {
         this.input.showDynastyDeck(playerName);
     }
 
-    drop(playerName: string, cardId: string, source: string, target: string): void {
+    drop(playerName: string, cardId: string, source: Location, target: Location): void {
         this.input.drop(playerName, cardId, source, target);
     }
 
@@ -520,7 +520,7 @@ export class Game {
         }
     }
 
-    changeStat(playerName: string, stat: string, value: number): void {
+    changeStat(playerName: string, stat: ChangeableStat, value: number): void {
         this.input.changeStat(playerName, stat, value);
     }
 

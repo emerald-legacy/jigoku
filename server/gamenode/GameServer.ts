@@ -6,7 +6,9 @@ import https from 'https';
 import * as socketio from 'socket.io';
 import { z } from 'zod';
 
+import { Location } from '../game/Constants.js';
 import Game from '../game/Game.js';
+import { CHANGEABLE_STATS } from '../game/GameInputHandler.js';
 import { cards as cardLibrary } from '../game/cards/index.js';
 import type { GameRouter } from '../game/GameRouter.js';
 import type Player from '../game/Player.js';
@@ -584,12 +586,12 @@ export class GameServer implements GameRouter, LobbyHandlers {
 
     private static readonly GAME_COMMANDS: Record<string, GameCommand> = {
         cardClicked: command(z.tuple([z.string()]), (g, p, [cardId]) => g.cardClicked(p, cardId)),
-        changeStat: command(z.tuple([z.string(), z.number()]), (g, p, [stat, value]) => g.changeStat(p, stat, value)),
+        changeStat: command(z.tuple([z.enum(CHANGEABLE_STATS), z.number()]), (g, p, [stat, value]) => g.changeStat(p, stat, value)),
         chat: command(z.tuple([z.string()]), (g, p, [message]) => g.chat(p, message)),
         concede: command(z.tuple([]), (g, p) => g.concede(p)),
-        drop: command(z.tuple([z.string(), z.string(), z.string()]), (g, p, [cardId, source, target]) => g.drop(p, cardId, source, target)),
+        drop: command(z.tuple([z.string(), z.enum(Location), z.enum(Location)]), (g, p, [cardId, source, target]) => g.drop(p, cardId, source, target)),
         facedownCardClicked: command(
-            z.tuple([z.string(), z.string(), z.boolean().nullish()]),
+            z.tuple([z.enum(Location), z.string(), z.boolean().nullish()]),
             (g, p, [location, controllerName, isProvince]) => g.facedownCardClicked(p, location, controllerName, isProvince ?? undefined)
         ),
         menuButton: command(z.tuple([MenuArgSchema, z.string(), z.string().nullish()]), (g, p, [arg, uuid, method]) => {

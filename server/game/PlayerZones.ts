@@ -36,7 +36,8 @@ export class PlayerZones {
     /** The pile at `source`; a pile unknown so far is empty (custom piles are keyed by the uuid of the card they belong to). */
     getSourceList(source: DrawCardPile): DrawCard[];
     getSourceList(source: Location.ProvinceDeck): ProvinceCard[];
-    getSourceList(source: string): BaseCard[];
+    getSourceList(source: Location): BaseCard[];
+    getSourceList(hostUuid: string): BaseCard[];
     getSourceList(source: string): BaseCard[] {
         switch(source) {
             case Location.Hand:
