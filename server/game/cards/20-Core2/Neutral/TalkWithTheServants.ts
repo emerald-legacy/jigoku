@@ -17,7 +17,8 @@ export default class TalkWithTheServants extends DrawCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()
             }))
-            .if((context) => context.costs.dishonor instanceof DrawCard)
+            // a skipped optional cost stores []
+            .if((context) => !!context.costs.dishonor && !Array.isArray(context.costs.dishonor))
                 .discardAtRandom((context) => ({ amount: 2, target: context.player.opponent }))
             .otherwise()
                 .chosenDiscard((context) => ({ amount: 2, target: context.player.opponent }))

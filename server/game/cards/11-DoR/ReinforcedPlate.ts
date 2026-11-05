@@ -7,7 +7,7 @@ class ReinforcedPlate extends DrawCard {
 
     override setupCardAbilities() {
         this.whileAttached({
-            condition: (context) => context.source.parentCharacter !== null && context.source.parentCharacter !== undefined && context.source.parentCharacter.isParticipating() && this.game.isDuringConflict(ConflictType.Military),
+            condition: (context) => !!context.source.parentCharacter?.isParticipating() && this.game.isDuringConflict(ConflictType.Military),
             effect: immunity({
                 appliesTo: RestrictionScope.OpponentsEvents
             })

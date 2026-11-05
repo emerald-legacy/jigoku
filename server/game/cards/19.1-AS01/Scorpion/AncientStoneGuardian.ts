@@ -55,21 +55,22 @@ export default class AncientStoneGuardian extends DrawCard {
     }
 
     private dishonorAndDraw(target?: BaseCard | []): GameAction[] {
-        return target instanceof DrawCard
-            ? [
-                dishonor({ target: target }),
-                conditional({
-                    // "to": only if this dishonor resolved (Kitsuki Shomon can redirect it)
-                    condition: (context) => context.events.some((event) =>
-                        event.is(EventName.OnCardDishonored) && event.card === target && event.isFullyResolved()),
-                    trueGameAction: draw({ target: target.controller })
-                })
-            ]
-            : [];
+        if(Array.isArray(target) || !target?.isDrawCard()) {
+            return [];
+        }
+        return [
+            dishonor({ target: target }),
+            conditional({
+                // "to": only if this dishonor resolved (Kitsuki Shomon can redirect it)
+                condition: (context) => context.events.some((event) =>
+                    event.is(EventName.OnCardDishonored) && event.card === target && event.isFullyResolved()),
+                trueGameAction: draw({ target: target.controller })
+            })
+        ];
     }
 
     private effectsForCard(context: TriggeredAbilityContext, target?: BaseCard | []) {
-        if(target instanceof DrawCard) {
+        if(!Array.isArray(target) && target?.isDrawCard()) {
             return context.game.gameChat.nested(msg`. ${target.controller} dishonors ${target}${' to draw a card'}`);
         }
         return '';

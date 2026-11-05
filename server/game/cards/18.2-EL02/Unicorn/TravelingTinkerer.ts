@@ -23,7 +23,7 @@ export default class TravelingTinkerer extends DrawCard {
     }
 
     private switchChangesSkills(attachment: BaseCard): boolean {
-        return attachment.parent instanceof DrawCard && attachment.parent.type === CardType.Character &&
+        return !!attachment.parentCharacter &&
             printedBonus(attachment.cardData.military_bonus) !== printedBonus(attachment.cardData.political_bonus);
     }
 }

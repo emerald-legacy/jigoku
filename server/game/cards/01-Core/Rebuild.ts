@@ -9,6 +9,7 @@ class Rebuild extends DrawCard {
     override setupCardAbilities() {
         this.action('Put a holding into play from your discard')
             .cost(costs.shuffleIntoDeck({
+                cardType: [CardType.Character, CardType.Holding, CardType.Event],
                 location: Location.Provinces,
                 cardCondition: (card) => !!card.controller.getProvinceCardInProvince(card.location) && !card.controller.getProvinceCardInProvince(card.location)?.isBroken
             }))
@@ -18,7 +19,7 @@ class Rebuild extends DrawCard {
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self
             }, moveCard((context) => ({
-                destination: context.costs.moveCardStateWhenChosen instanceof DrawCard ? context.costs.moveCardStateWhenChosen.location : Location.ProvinceOne
+                destination: context.costs.moveCardStateWhenChosen?.location
             })))
             .chatText('replace it with {0}')
             .cannotTargetFirst()
