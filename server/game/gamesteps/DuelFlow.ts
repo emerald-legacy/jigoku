@@ -109,6 +109,7 @@ export class DuelFlow extends BaseStepWithPipeline {
         super.abort();
         if(this.game.currentDuel === this.duel) {
             this.game.currentDuel = this.duel.previousDuel ?? null;
+            this.game.emitEvent(EventName.OnDuelFinished, { duel: this.duel });
         }
         this.duel.cleanup();
     }

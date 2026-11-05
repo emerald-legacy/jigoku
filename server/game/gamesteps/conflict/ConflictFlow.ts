@@ -853,9 +853,14 @@ export class ConflictFlow extends BaseStepWithPipeline {
 
     override abort(): void {
         super.abort();
-        if(this.game.currentConflict === this.conflict) {
-            this.game.updateCurrentConflict(null);
+        if(this.game.currentConflict !== this.conflict) {
+            return;
         }
+        this.conflict.provincesAtEnd = this.conflict.getConflictProvinces();
+        this.game.updateCurrentConflict(null);
+        // like a conflict that failed to initiate: effects and limits end, nothing reacts
+        this.game.emitEvent(EventName.OnConflictFinished, { conflict: this.conflict });
+        this.resetCards();
     }
 
     completeConflict(): void {
