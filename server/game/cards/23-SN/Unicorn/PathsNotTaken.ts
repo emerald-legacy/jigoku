@@ -1,7 +1,7 @@
 import { perConflict } from '../../../AbilityLimit.js';
 import { sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import { Players, CardType, Trait } from '../../../Constants.js';
+import { CardType, Trait } from '../../../Constants.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 
 export default class PathsNotTaken extends DrawCard {
@@ -14,7 +14,6 @@ export default class PathsNotTaken extends DrawCard {
             })
             .target({
                 cardType: CardType.Character,
-                controller: Players.Opponent,
                 cardCondition: (card, context) => !!context.player.opponent &&
                     card.isParticipatingFor(context.player.opponent) &&
                     card.costLessThan(this.getSkillThreshold(context))

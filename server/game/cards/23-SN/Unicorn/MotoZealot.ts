@@ -12,13 +12,12 @@ export default class MotoZealot extends DrawCard {
             .target({
                 name: 'character',
                 cardType: CardType.Character,
-                controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating()
+                cardCondition: (card, context) => !!context.player.opponent && card.isParticipatingFor(context.player.opponent)
             })
             .select({
                 name: 'select',
                 dependsOn: 'character',
-                player: Players.Opponent
+                player: (context) => context.targets.character.controller === context.player ? Players.Self : Players.Opponent
             }, {
                 'Injure this character': injure((context) => ({ target: context.targets.character })),
                 'Place 1 fate on opponent\'s character': placeFate()

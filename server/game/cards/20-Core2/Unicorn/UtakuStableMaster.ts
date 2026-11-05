@@ -11,7 +11,8 @@ function participatingCavGlory(conflict: Conflict, player: Player): number {
     return Math.max(
         -1,
         ...conflict
-            .getParticipants((card) => card.controller === player && card.hasTrait(Trait.Cavalry))
+            .getCharacters(player)
+            .filter((card) => card.hasTrait(Trait.Cavalry))
             .map((x) => x.glory)
     );
 }

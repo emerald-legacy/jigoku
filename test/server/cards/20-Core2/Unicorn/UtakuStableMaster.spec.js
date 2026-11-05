@@ -56,3 +56,57 @@ describe('Utaku Stable Master', function() {
         });
     });
 });
+
+describe('Utaku Stable Master with Cavalry on the other side than their controller', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['utaku-stable-master', 'doji-whisperer', 'endless-plains-skirmisher']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar', 'endless-plains-skirmisher']
+                }
+            });
+            this.stableMaster = this.player1.findCardByName('utaku-stable-master');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                ring: 'air',
+                attackers: [this.whisperer],
+                defenders: [this.scholar]
+            });
+        });
+
+        it('is not usable when the only participating Cavalry you control is on the enemy side', function() {
+            this.player2.pass();
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+            this.player2.pass();
+
+            this.player1.clickCard(this.stableMaster);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.scholar.bowed).toBe(false);
+        });
+
+        it('counts an opponent\'s Cavalry on your side', function() {
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+
+            this.player1.clickCard(this.stableMaster);
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).toBeAbleToSelect(this.scholar);
+            this.player1.clickCard(this.scholar);
+            expect(this.scholar.bowed).toBe(true);
+            expect(this.getChatLogs(3)).toContain('player1 uses Utaku Stable Master to bow Solemn Scholar');
+        });
+    });
+});

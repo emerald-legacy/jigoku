@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { modifyGlory, modifyMilitarySkill, setBaseMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect, multiple } from '../../../GameActions/GameActions.js';
-import { CardType, Element, Players } from '../../../Constants.js';
+import { CardType, Element } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 const VULNERABLE_ELEMENT = 'ichigo-kun-fire';
@@ -24,8 +24,7 @@ export default class IchigoKun extends DrawCard {
             .target({
                 name: 'otherCharacter',
                 cardType: CardType.Character,
-                controller: Players.Self,
-                cardCondition: (card, context) => card.isParticipating() && card !== context.source
+                cardCondition: (card, context) => card.isParticipatingFor(context.player) && card !== context.source
             })
             .moveToConflict()
             .chatText((context) => msg`move ${context.source} to the conflict`)

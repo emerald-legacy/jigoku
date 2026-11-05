@@ -90,3 +90,52 @@ describe('Moto Zealot', function () {
         });
     });
 });
+
+describe('Moto Zealot with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['moto-zealot', 'endless-plains-skirmisher']
+                },
+                player2: {
+                    inPlay: ['doji-challenger', 'endless-plains-skirmisher']
+                }
+            });
+            this.zealot = this.player1.findCardByName('moto-zealot');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                ring: 'air',
+                attackers: [this.zealot],
+                defenders: [this.challenger]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+            this.player2.pass();
+        });
+
+        it('chooses a character on the enemy side, whoever controls it, and its controller selects', function () {
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard(this.zealot);
+            expect(this.player1).toBeAbleToSelect(this.challenger);
+            expect(this.player1).toBeAbleToSelect(this.skirmisher1);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher2);
+
+            this.player1.clickCard(this.skirmisher1);
+            expect(this.player1).toHavePromptButton('Injure this character');
+            expect(this.player1).toHavePromptButton('Place 1 fate on opponent\'s character');
+            this.player1.clickPrompt('Place 1 fate on opponent\'s character');
+            expect(this.zealot.fate).toBe(1);
+        });
+    });
+});
