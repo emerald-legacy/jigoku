@@ -1,9 +1,8 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { modifyPoliticalSkill } from '../../effects.js';
-import { cardLastingEffect, honor, removeFate, resolveAbility } from '../../GameActions/GameActions.js';
+import { cardLastingEffect, removeFate } from '../../GameActions/GameActions.js';
 import { CardType, EventName } from '../../Constants.js';
-import { CardAbility } from '../../CardAbility.js';
 
 class CaptivatingStory extends DrawCard {
     static id = 'captivating-story';
@@ -26,14 +25,8 @@ class CaptivatingStory extends DrawCard {
                 gameAction: removeFate({ target: context.target })
             }))
             .thenIf((context) => context.events.some((event) => event.name === EventName.OnMoveFate && event.isFullyResolved()))
-            .gameAction(resolveAbility((context) => ({
-                target: context.source,
-                subResolution: true,
-                ability: new CardAbility(context.source, {
-                    title: 'Honor this character',
-                    gameAction: honor({ target: context.target })
-                })
-            })));
+            .honor((context) => ({ target: context.target }))
+            .message((context) => msg`${context.player} honors ${context.target}`);
     }
 }
 

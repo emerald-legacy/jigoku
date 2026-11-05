@@ -176,7 +176,7 @@ describe('Captivating Story', function() {
             expect(this.yoshi.isHonored).toBe(true);
             expect(this.getChatLogs(5)).toContain('player1 plays Captivating Story to give Kakita Yoshi +1political for each faceup province they control (+3political)');
             expect(this.getChatLogs(5)).toContain('player1 chooses to remove a fate from Kakita Yoshi to honor them');
-            expect(this.getChatLogs(5)).toContain('player1 resolves Captivating Story to honor Kakita Yoshi');
+            expect(this.getChatLogs(5)).toContain('player1 honors Kakita Yoshi');
         });
 
         it('should not discard the fate to honor the character if you say no', function() {
@@ -265,7 +265,7 @@ describe('Captivating Story', function() {
             expect(this.yoshi.isHonored).toBe(true);
             expect(this.getChatLogs(5)).toContain('player1 plays Captivating Story to give Kakita Yoshi +1political for each faceup province they control (+0political)');
             expect(this.getChatLogs(5)).toContain('player1 chooses to remove a fate from Kakita Yoshi to honor them');
-            expect(this.getChatLogs(5)).toContain('player1 resolves Captivating Story to honor Kakita Yoshi');
+            expect(this.getChatLogs(5)).toContain('player1 honors Kakita Yoshi');
         });
     });
 });
@@ -307,6 +307,47 @@ describe('Captivating Story with a character on the other side than its controll
             expect(this.player1).toHavePrompt('Choose a character');
             expect(this.player1).toBeAbleToSelect(this.yoshi);
             expect(this.player1).not.toBeAbleToSelect(this.skirmisher);
+        });
+    });
+});
+
+describe('Captivating Story and event cancels', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-yoshi'],
+                    hand: ['captivating-story']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['forged-edict']
+                }
+            });
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.story = this.player1.findCardByName('captivating-story');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.edict = this.player2.findCardByName('forged-edict');
+            this.player1.findCardByName('shameful-display', 'province 1').facedown = false;
+            this.yoshi.fate = 1;
+            this.noMoreActions();
+            this.initiateConflict({ attackers: [this.yoshi], defenders: [], type: 'political' });
+            this.player2.pass();
+            this.player1.clickCard(this.story);
+            this.player1.clickCard(this.yoshi);
+        });
+
+        it('offers one cancel window, not a second one for the honor', function() {
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.edict);
+            this.player2.pass();
+            this.player1.clickPrompt('Yes');
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.yoshi.fate).toBe(0);
+            expect(this.yoshi.isHonored).toBe(true);
+            expect(this.edict.location).toBe('hand');
         });
     });
 });
