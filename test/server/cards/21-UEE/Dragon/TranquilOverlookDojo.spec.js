@@ -52,7 +52,7 @@ describe('Tranquil Overlook Dojo', function() {
                 this.player1.clickPrompt('Let Go');
                 expect(this.letGo.location).toBe('conflict discard pile');
                 expect(this.banzai.location).toBe('hand');
-                expect(this.getChatLogs(5)).toContain('player1 discards Let Go');
+                expect(this.getChatLogs(5)).toContain('player1 chooses Let Go to be discarded');
                 expect(this.getChatLogs(5)).toContain('Duel Effect: reveal 2 random cards from player2\'s hand and discard 1 of them');
             });
 

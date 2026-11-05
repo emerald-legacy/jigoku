@@ -178,7 +178,7 @@ describe('SoD - Scorpion', function () {
                 expect(this.player1).toBeAbleToSelect(this.pressure);
                 this.player1.clickCard(this.pressure);
                 expect(this.getChatLogs(5)).toContain('player1 plays Pressure to move a character home and prevent it from participating in the conflict');
-                expect(this.getChatLogs(5)).toContain('player1 chooses Keeper Initiate');
+                expect(this.getChatLogs(5)).toContain('player1 chooses to move Keeper Initiate home');
                 expect(this.keeper.isParticipating()).toBe(false);
 
                 expect(this.player2).toHavePrompt('Conflict Action Window');
@@ -539,7 +539,7 @@ describe('SoD - Scorpion', function () {
                 expect(this.player1.honor).toBe(honor1);
                 expect(this.player2.honor).toBe(honor2);
 
-                expect(this.getChatLogs(5)).toContain('player1 plays We Know, bowing Bayushi Rumormonger to replace Brash Samurai honored status token with a dishonored status token');
+                expect(this.getChatLogs(5)).toContain('player1 plays We Know, bowing Bayushi Rumormonger to replace Brash Samurai\'s honored status token with a dishonored status token');
                 expect(this.getChatLogs(5)).not.toContain('player1 loses 2 honor');
             });
 

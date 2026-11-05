@@ -8,7 +8,7 @@ class StudentOfTheTao extends DrawCard {
     static id = 'student-of-the-tao';
 
     override setupCardAbilities() {
-        this.action('Move in/out the conflict')
+        this.action('Send a character home')
             .condition((context) => context.game.currentConflict?.getConflictProvinces().some((a) => a.isElement(this.getCurrentElementSymbol(elementKey))) ?? false)
             .target({
                 controller: Players.Opponent,

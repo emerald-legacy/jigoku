@@ -65,6 +65,7 @@ describe('Yasuki Oguri', function() {
                 this.player2.clickCard(this.oguri);
                 expect(this.oguri.militarySkill).toBe(this.mil + 1);
                 expect(this.oguri.politicalSkill).toBe(this.pol + 1);
+                expect(this.getChatLogs(3)).toContain('player2 uses Yasuki Oguri to give Yasuki Oguri +1military/+1political until the end of the conflict');
             });
         });
 

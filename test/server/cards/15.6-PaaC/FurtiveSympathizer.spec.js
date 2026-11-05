@@ -56,7 +56,7 @@ describe('Furtive Sympathizer', function() {
             expect(this.toshimoko.politicalSkill).toBe(3);
             expect(this.toshimoko.militarySkill).toBe(4);
 
-            expect(this.getChatLogs(5)).toContain('player1 uses Furtive Sympathizer to switch all participating character\'s base military and political skill');
+            expect(this.getChatLogs(5)).toContain('player1 uses Furtive Sympathizer to switch each participating character\'s base military and political skills');
         });
 
         it('should not trigger if honored', function() {

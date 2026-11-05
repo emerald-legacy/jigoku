@@ -34,6 +34,7 @@ describe('Severed From the Stream', function() {
                 expect(this.game.rings.air.claimedBy).toBe(this.player1.player.name);
                 expect(this.game.rings.fire.claimedBy).toBe(this.player1.player.name);
                 expect(this.game.rings.void.claimed).toBe(false);
+                expect(this.getChatLogs(3)).toContain('player2 returns the Void Ring to the unclaimed ring pool');
             });
 
             it('should not count bowed characters in the glory count', function() {
@@ -48,6 +49,7 @@ describe('Severed From the Stream', function() {
                 expect(this.game.rings.air.claimed).toBe(false);
                 expect(this.game.rings.fire.claimed).toBe(false);
                 expect(this.game.rings.void.claimedBy).toBe(this.player2.player.name);
+                expect(this.getChatLogs(3)).toContain('player1 returns the Air Ring and Fire Ring to the unclaimed ring pool');
             });
 
             it('should count the imperial palace in the glory count', function() {
@@ -109,6 +111,7 @@ describe('Severed From the Stream with Secluded Shrine', function() {
             this.player1.clickCard('severed-from-the-stream');
             expect(this.game.rings.void.claimed).toBe(false);
             expect(this.game.rings.fire.claimedBy).toBe(this.player1.player.name);
+            expect(this.getChatLogs(3)).toContain('player2 returns the Void Ring to the unclaimed ring pool');
         });
     });
 });

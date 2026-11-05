@@ -13,7 +13,7 @@ class FurtiveSympathizer extends DrawCard {
                 target: context.game.currentConflict?.getParticipants().filter((a) => canSwitchSkills(a)) ?? [],
                 effect: switchBaseSkills()
             }))
-            .chatText('switch all participating character\'s base military and political skill');
+            .chatText('switch each participating character\'s base military and political skills');
     }
 }
 

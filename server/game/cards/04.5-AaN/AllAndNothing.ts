@@ -1,4 +1,5 @@
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 import { cancel, resolveRingEffect } from '../../GameActions/GameActions.js';
 import { Element } from '../../Constants.js';
 
@@ -23,7 +24,7 @@ class AllAndNothing extends DrawCard {
                 })
             })))
             .draw()
-            .chatText('resolve {0} effect instead of the void effect')
+            .chatText((context) => msg`resolve the ${context.ring}'s effect instead of the void effect and draw 1 card`)
             .cannotBeMirrored();
     }
 }

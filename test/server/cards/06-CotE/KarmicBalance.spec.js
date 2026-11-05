@@ -30,6 +30,7 @@ describe('Karmic Balance', function() {
                 expect(this.player1).toHavePrompt('Action Window');
                 this.player1.clickCard(this.karmicBalance);
                 expect(this.player2).toHavePrompt('Action Window');
+                expect(this.getChatLogs(10)).toContain('player1 plays Karmic Balance to make each player shuffle their hand and conflict discard pile into their conflict deck and draw 4 cards');
             });
 
             describe('if it resolves', function() {

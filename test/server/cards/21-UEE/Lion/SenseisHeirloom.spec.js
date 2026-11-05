@@ -28,6 +28,7 @@ describe('Sensei\'s Heirloom', function () {
             expect(this.player1).toHavePromptButton('Supernatural Storm (4)');
 
             this.player1.clickPrompt('Supernatural Storm (4)');
+            expect(this.getChatLogs(5)).toContain('player1 uses Sensei\'s Heirloom to look at the top 4 cards of their conflict deck');
             expect(this.getChatLogs(5)).toContain('player1 takes 1 card');
         });
     });

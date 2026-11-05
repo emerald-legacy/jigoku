@@ -43,7 +43,7 @@ function actionVersion(self: TranquilOverlookDojo, limit: AbilityLimit, type: Du
                             cards: revealedCards,
                             targets: true,
                             player: Players.Self,
-                            message: (_context, card, player) => msg`${player} discards ${card}`,
+                            message: (_context, card, player) => msg`${player} chooses ${card} to be discarded`,
                             gameAction: discardCard()
                         })
                     ];

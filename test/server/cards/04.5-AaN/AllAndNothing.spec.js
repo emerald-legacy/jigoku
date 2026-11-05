@@ -39,7 +39,7 @@ describe('All and Nothing', function() {
                 this.isawaKaede = this.player1.clickCard('isawa-kaede');
                 this.player1.clickPrompt('Honor Isawa Kaede');
                 expect(this.isawaKaede.isHonored).toBe(true);
-                expect(this.getChatLogs(5)).toContain('player1 plays All and Nothing to resolve Fire Ring effect instead of the void effect');
+                expect(this.getChatLogs(5)).toContain('player1 plays All and Nothing to resolve the Fire Ring\'s effect instead of the void effect and draw 1 card');
                 expect(this.allAndNothing.location).toBe('conflict discard pile');
                 expect(this.player1.hand.length).toBe(this.handSize);
                 expect(this.player1.conflictDeck.length).toBe(this.deckSize - 1);

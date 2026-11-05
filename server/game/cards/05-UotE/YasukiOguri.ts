@@ -13,7 +13,7 @@ class YasukiOguri extends DrawCard {
                 onCardPlayed: (event, context) => event.player === context.player.opponent && event.card.type === CardType.Event && context.source.isDefending()
             })
             .cardLastingEffect({ effect: modifyBothSkills(1) })
-            .chatText(() => msg`give him +1${'military'}/+1${'political'}`)
+            .chatText((context) => msg`give ${context.source} +1${'military'}/+1${'political'} until the end of the conflict`)
             .limit(unlimited());
     }
 }

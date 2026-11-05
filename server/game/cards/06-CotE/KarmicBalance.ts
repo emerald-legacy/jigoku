@@ -19,7 +19,7 @@ class KarmicBalance extends DrawCard {
             }))
             .draw((context) => ({ target: context.game.getPlayers(), amount: 4 }))
             .moveCard((context) => ({ target: context.source, destination: Location.RemovedFromGame }))
-            .chatText('shuffle hand and discard pile into conflict deck and draw 4 cards');
+            .chatText('make each player shuffle their hand and conflict discard pile into their conflict deck and draw 4 cards');
     }
 }
 
