@@ -14,7 +14,7 @@ class TwinSisterBlades extends DrawCard {
                 .draw((context) => ({
                     amount: this.getNumberOfCards(context)
                 }))
-                .chatText((context) => this.getNumberOfCards(context) === 2 ? msg`draw 2 card${'s'}` : msg`draw a card`))
+                .chatText((context) => this.getNumberOfCards(context) === 2 ? msg`draw 2 cards` : msg`draw a card`))
         });
     }
 

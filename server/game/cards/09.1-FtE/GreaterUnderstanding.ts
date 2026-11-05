@@ -6,8 +6,8 @@ class GreaterUnderstanding extends RingAttachment {
     override setupCardAbilities() {
         this.reaction('Resolve the attached ring\'s effect')
             .when({
-                onMoveFate: (event) => event.recipient === this.parent,
-                onPlaceFateOnUnclaimedRings: () => this.parent?.isRing() && this.parent.isUnclaimed()
+                onMoveFate: (event, context) => event.recipient === context.source.parent,
+                onPlaceFateOnUnclaimedRings: (_event, context) => context.source.parent?.isRing() && context.source.parent.isUnclaimed()
             })
             .resolveRingEffect((context) => ({ target: context.source.parent ?? [] }));
     }

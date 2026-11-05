@@ -11,8 +11,8 @@ class SoshiDiviner extends DrawCard {
             .condition((context) => context.game.isDuringConflict())
             .target({
                 name: 'cardInProvince',
-                location: [Location.Provinces, Location.PlayArea],
-                cardCondition: (card) => card.isInProvince() && card.location !== Location.StrongholdProvince && card.type !== CardType.Province && card.type !== CardType.Stronghold
+                location: [Location.Provinces],
+                cardCondition: (card) => card.isInProvince() && card.location !== Location.StrongholdProvince && card.type !== CardType.Province
             })
             .target({
                 name: 'province',

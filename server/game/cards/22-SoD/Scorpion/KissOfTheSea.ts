@@ -1,6 +1,23 @@
 import { EffectName } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
+const SKILL_EFFECTS: ReadonlySet<EffectName> = new Set([
+    EffectName.ModifyBothSkills,
+    EffectName.ModifyMilitarySkill,
+    EffectName.ModifyMilitarySkillMultiplier,
+    EffectName.ModifyBaseMilitarySkillMultiplier,
+    EffectName.ModifyBasePoliticalSkillMultiplier,
+    EffectName.SwitchAttachmentSkillModifiers,
+    EffectName.ModifyPoliticalSkill,
+    EffectName.ModifyPoliticalSkillMultiplier,
+    EffectName.SwitchBaseSkills,
+    EffectName.SetMilitarySkill,
+    EffectName.SetPoliticalSkill,
+    EffectName.SetBaseMilitarySkill,
+    EffectName.SetBasePoliticalSkill,
+    EffectName.SetBaseDash
+]);
+
 export default class KissOfTheSea extends DrawCard {
     static id = 'kiss-of-the-sea';
 
@@ -8,23 +25,6 @@ export default class KissOfTheSea extends DrawCard {
         this.reaction('Bow attached character')
             .when({
                 onEffectApplied: (event, context) => {
-                    const effects: string[] = [
-                        EffectName.ModifyBothSkills,
-                        EffectName.ModifyMilitarySkill,
-                        EffectName.ModifyMilitarySkillMultiplier,
-                        EffectName.ModifyBaseMilitarySkillMultiplier,
-                        EffectName.ModifyBasePoliticalSkillMultiplier,
-                        EffectName.SwitchAttachmentSkillModifiers,
-                        EffectName.ModifyPoliticalSkill,
-                        EffectName.ModifyPoliticalSkillMultiplier,
-                        EffectName.SwitchBaseSkills,
-                        EffectName.SetMilitarySkill,
-                        EffectName.SetPoliticalSkill,
-                        EffectName.SetBaseMilitarySkill,
-                        EffectName.SetBasePoliticalSkill,
-                        EffectName.SetBaseDash
-                    ];
-
                     if(!event.effectTypes) {
                         return false;
                     }
@@ -38,12 +38,7 @@ export default class KissOfTheSea extends DrawCard {
                         return false;
                     }
 
-                    for(let i = 0; i < event.effectTypes.length; i++) {
-                        if(effects.includes(event.effectTypes[i])) {
-                            return true;
-                        }
-                    }
-                    return false;
+                    return event.effectTypes.some((type) => SKILL_EFFECTS.has(type));
                 }
             })
             .bow((context) => ({

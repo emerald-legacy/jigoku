@@ -2,6 +2,11 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { modifyBothSkills } from '../../effects.js';
 import { CardType, Players, Trait } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+
+function weakerOpponents(context: AbilityContext, militarySkill: number): DrawCard[] {
+    return context.game.currentConflict?.getCharacters(context.player.opponent).filter((card) => card.militarySkill <= militarySkill) ?? [];
+}
 
 class WildfireKick extends DrawCard {
     static id = 'wildfire-kick';
@@ -17,13 +22,12 @@ class WildfireKick extends DrawCard {
                 cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Monk)
             })
             .cardLastingEffect((context) => ({
-                target: this.game.currentConflict?.getCharacters(context.player.opponent).filter((card) => card.militarySkill <= (context.target?.militarySkill ?? 0) && card !== context.source) ?? [],
+                target: weakerOpponents(context, context.target?.militarySkill ?? 0),
                 effect: modifyBothSkills(-2)
             }))
             .chatText((context) => {
                 const targetMs = context.target.militarySkill;
-                const affected = this.game.currentConflict?.getCharacters(context.player.opponent).filter((card) => card.militarySkill <= targetMs && card !== context.source) ?? [];
-                return msg`give ${context.player.opponent}'s participating characters -2${'military'}/-2${'political'} if their military skill is equal to or lower than ${targetMs}. This affects: ${affected}`;
+                return msg`give ${context.player.opponent}'s participating characters -2${'military'}/-2${'political'} if their military skill is equal to or lower than ${targetMs}. This affects: ${weakerOpponents(context, targetMs)}`;
             });
     }
 }
