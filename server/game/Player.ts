@@ -878,12 +878,13 @@ export class Player extends GameObject {
 
 
     drop(cardId: string, source: Location, target: Location): void {
-        const sourceList = this.getSourceList(source);
-        const card = this.findCardByUuid(sourceList, cardId);
+        const card = this.findDroppedCard(cardId, source);
 
         if(
             !this.game.manualMode ||
             source === target ||
+            target === Location.Underneath ||
+            target === Location.UnderneathStronghold ||
             !this.isLegalLocationForCard(card, target) ||
             !card ||
             card.location !== source
@@ -912,7 +913,8 @@ export class Player extends GameObject {
             Location.ProvinceDeck
         ];
         let display: string | BaseCard = 'a card';
-        if((card.isFaceup() && !hiddenSources.includes(source)) || revealingPiles.includes(target)) {
+        const visible = card.isFaceup() && !card.anyEffect(EffectName.HideWhenFaceUp) && !hiddenSources.includes(source);
+        if(visible || revealingPiles.includes(target)) {
             display = card;
         }
 
@@ -921,7 +923,19 @@ export class Player extends GameObject {
             card.removedByEphemeral = false;
         }
         this.moveCard(card, target);
+        if(source === Location.UnderneathStronghold && this.stronghold && card.location !== source) {
+            this.stronghold.childCards = this.stronghold.childCards.filter((child) => child !== card);
+        }
         this.game.checkGameState(true);
+    }
+
+    /** An underneath card is found through its host: those piles are keyed by the host's uuid. */
+    private findDroppedCard(cardId: string, source: Location): BaseCard | undefined {
+        if(source !== Location.Underneath) {
+            return this.findCardByUuid(this.getSourceList(source), cardId);
+        }
+        const card = this.game.findAnyCardInAnyList(cardId);
+        return card?.host && this.getSourceList(card.host.uuid).includes(card) ? card : undefined;
     }
 
     isLegalLocationForCard(card: BaseCard | undefined, location: Location): boolean {
