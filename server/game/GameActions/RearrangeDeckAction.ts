@@ -62,6 +62,10 @@ export class RearrangeDeckAction<Context extends AbilityContext = AbilityContext
     }
 
     #chooseNext(context: Context, remaining: DrawCard[], ordered: DrawCard[], title: string, done: (ordered: DrawCard[]) => void): void {
+        if(remaining.length <= 1) {
+            done([...ordered, ...remaining]);
+            return;
+        }
         context.game.promptWithHandlerMenu(context.player, {
             activePromptTitle: title,
             context,
@@ -69,11 +73,7 @@ export class RearrangeDeckAction<Context extends AbilityContext = AbilityContext
             cardHandler: (card) => {
                 const chosen = [...ordered, card];
                 const rest = remaining.filter((other) => other !== card);
-                if(rest.length > 1) {
-                    this.#chooseNext(context, rest, chosen, `Which card do you want to be the ${ORDINALS[chosen.length]} card?`, done);
-                    return;
-                }
-                done([...chosen, ...rest]);
+                this.#chooseNext(context, rest, chosen, `Which card do you want to be the ${ORDINALS[chosen.length]} card?`, done);
             }
         });
     }

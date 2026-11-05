@@ -107,15 +107,14 @@ describe('Truthseeker', function() {
                 expect(topCards[2]).toBe(this.banzai);
             });
 
-            it('should still prompt with a single card in the deck', function () {
+            it('puts a single card back without an order prompt', function () {
                 this.player1.reduceDeckToNumber('conflict deck', 0);
                 this.fineKatana = this.player1.moveCard('fine-katana', 'conflict deck');
                 this.player1.clickCard(this.truthseeker);
                 this.player1.clickPrompt('1');
                 this.player1.clickCard(this.truthseeker);
                 this.player1.clickPrompt('player1\'s Conflict Deck');
-                expect(this.player1).toHavePrompt('Select the card you would like to place on top of the deck');
-                this.player1.clickPrompt('Fine Katana');
+                expect(this.player1).not.toHavePrompt('Select the card you would like to place on top of the deck');
                 expect(this.player1.conflictDeck.length).toBe(1);
                 expect(this.player1.conflictDeck[0]).toBe(this.fineKatana);
                 expect(this.player2).toHavePrompt('Play cards from provinces');

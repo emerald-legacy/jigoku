@@ -182,8 +182,9 @@ export function discardCardsUpToVariableX(amountDerivable: Derivable<number, Abi
         },
         resolve(context, result) {
             const amount = derive(amountDerivable, context);
+            const shown = Math.min(amount, context.player.hand.length);
             context.game.promptForSelect(context.player, {
-                activePromptTitle: 'Choose up to ' + Math.min(amount, context.player.hand.length) + ' card' + (amount === 1 ? '' : 's') + ' to discard',
+                activePromptTitle: 'Choose up to ' + shown + ' card' + (shown === 1 ? '' : 's') + ' to discard',
                 context: context,
                 mode: TargetMode.UpTo,
                 numCards: amount,

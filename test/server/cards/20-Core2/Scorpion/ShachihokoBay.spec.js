@@ -193,3 +193,41 @@ describe('Shachihoko Bay broken by its own player while attacking', function () 
         });
     });
 });
+
+describe('Shachihoko Bay returning a single card', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker'],
+                    hand: ['censure', 'levy']
+                },
+                player2: {
+                    provinces: ['shachihoko-bay']
+                }
+            });
+            this.levy = this.player1.findCardByName('levy', 'hand');
+            this.censure = this.player1.findCardByName('censure', 'hand');
+            this.player1.player.conflictDeck.slice().forEach((card) => this.player1.moveCard(card, 'conflict discard pile'));
+            this.player1.player.moveCard(this.censure, 'conflict deck');
+            this.player1.player.moveCard(this.levy, 'conflict deck');
+            this.shachihokoBay = this.player2.findCardByName('shachihoko-bay');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: ['matsu-berserker'],
+                defenders: [],
+                jumpTo: 'afterConflict'
+            });
+        });
+
+        it('puts the card back without an order prompt and says "1 card"', function () {
+            this.player2.clickCard(this.shachihokoBay);
+            this.player2.clickPrompt('Levy');
+            this.player2.clickPrompt('Done');
+            expect(this.player2).not.toHavePrompt('Which card do you want to be on top?');
+            expect(this.player1.conflictDeck).toEqual([this.censure]);
+            expect(this.getChatLogs(5)).toContain('player2 returns 1 card to the top of player1\'s deck');
+        });
+    });
+});

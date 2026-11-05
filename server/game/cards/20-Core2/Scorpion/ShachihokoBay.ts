@@ -42,7 +42,7 @@ export default class ShachihokoBay extends ProvinceCard {
         }
         rearrangeDeck({
             cards,
-            message: (context, ordered) => msg`${context.player} returns ${ordered.length} cards to the top of ${attacker}'s deck`
+            message: (context, ordered) => msg`${context.player} returns ${ordered.length} card${ordered.length === 1 ? '' : 's'} to the top of ${attacker}'s deck`
         }).resolve(attacker, context);
     }
 }
