@@ -33,7 +33,7 @@ export default class ShosuroTechnique extends DrawCard {
             .chatText((context) => {
                 const shinobi = context.targets.shinobi;
                 const enemy = context.targets.enemy;
-                return msg`set the ${'military'} of ${shinobi.name} to ${enemy.militarySkill}${'military'} (equal to ${enemy.name}). There's no blade as keen as surprise`;
+                return msg`set the ${'military'} of ${shinobi} to ${enemy.militarySkill}${'military'} (equal to ${enemy}). There's no blade as keen as surprise`;
             });
     }
 }

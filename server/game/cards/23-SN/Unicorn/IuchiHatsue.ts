@@ -18,7 +18,7 @@ export default class IuchiHatsue extends DrawCard {
             effect: modifyBothSkills(2)
         });
 
-        this.conflictAction('Switch 2 characters you control', { evenFromHome: true })
+        this.conflictAction('Switch a participating character with one at home', { evenFromHome: true })
             .target({
                 name: 'characterInConflict',
                 activePromptTitle: 'Choose a participating character to send home',

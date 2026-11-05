@@ -6,7 +6,7 @@ class WaningHostilities extends DrawCard {
     static id = 'waning-hostilities';
 
     override setupCardAbilities() {
-        this.reaction('Both players may only declare 1 conflict opportunity this turn')
+        this.reaction('Each player has 1 conflict opportunity this phase')
             .when({
                 onPhaseStarted: (event) => event.phase === Phase.Conflict
             })
@@ -15,7 +15,7 @@ class WaningHostilities extends DrawCard {
                 target: Players.Any,
                 effect: setMaxConflicts(1)
             })
-            .chatText('limit both players to a single conflict this turn');
+            .chatText('limit both players to a single conflict this phase');
     }
 }
 

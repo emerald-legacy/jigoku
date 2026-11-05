@@ -7,7 +7,7 @@ export default class PrivilegedPosition extends DrawCard {
     static id = 'privileged-position';
 
     public override setupCardAbilities() {
-        this.reaction('Your opponent may only declare 1 conflict opportunity this turn')
+        this.reaction('Opponent may only declare 1 conflict this round')
             .when({
                 onHonorDialsRevealed: (event, context) =>
                     event.isHonorBid &&
@@ -19,6 +19,6 @@ export default class PrivilegedPosition extends DrawCard {
                 target: context.player.opponent,
                 effect: setMaxDeclaredConflicts(1)
             }))
-            .chatText((context) => msg`limit ${context.player.opponent ?? context.player} to a single conflict this turn`);
+            .chatText((context) => msg`limit ${context.player.opponent ?? context.player} to a single conflict this round`);
     }
 }

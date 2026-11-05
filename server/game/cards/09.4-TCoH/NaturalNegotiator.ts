@@ -14,7 +14,7 @@ class NaturalNegotiator extends DrawCard {
             myControl: true
         });
 
-        this.action('Switch attached characters base skills')
+        this.action('Switch the attached character\'s base skills')
             .condition((context) => context.game.isDuringConflict() &&
                 !!context.source.parentCharacter && canSwitchSkills(context.source.parentCharacter))
             .cost(costs.giveHonorToOpponent())

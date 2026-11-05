@@ -21,7 +21,7 @@ export default class UtakuStableMaster extends DrawCard {
     static id = 'utaku-stable-master';
 
     override setupCardAbilities() {
-        this.conflictAction('Bow participating character with lower glory than participating cavalry', { evenFromHome: true })
+        this.conflictAction('Bow a participating character with equal or lower glory than a Cavalry on your side', { evenFromHome: true })
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>

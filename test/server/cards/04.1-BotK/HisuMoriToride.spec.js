@@ -88,7 +88,7 @@ describe('Hisu Mori Toride under Waning Hostilities', function() {
         it('is not offered, as an additional conflict changes nothing (EmeraldDB ruling)', function() {
             this.noMoreActions();
             this.player2.clickCard('waning-hostilities');
-            expect(this.getChatLogs(3)).toContain('player2 plays Waning Hostilities to limit both players to a single conflict this turn');
+            expect(this.getChatLogs(3)).toContain('player2 plays Waning Hostilities to limit both players to a single conflict this phase');
             this.player1.playAttachment('fine-katana', 'matsu-berserker');
             this.noMoreActions();
             this.initiateConflict({
@@ -122,7 +122,7 @@ describe('Hisu Mori Toride under Privileged Position', function() {
         });
 
         it('is not offered after the only conflict player1 may declare', function() {
-            expect(this.getChatLogs(6)).toContain('player2 plays Privileged Position to limit player1 to a single conflict this turn');
+            expect(this.getChatLogs(6)).toContain('player2 plays Privileged Position to limit player1 to a single conflict this round');
             this.noMoreActions();
             this.player1.playAttachment('fine-katana', 'matsu-berserker');
             this.noMoreActions();

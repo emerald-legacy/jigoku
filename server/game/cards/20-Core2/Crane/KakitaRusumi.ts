@@ -20,7 +20,7 @@ export default class KakitaRusumi extends DrawCard {
                 deck: DeckType.Dynasty,
                 cardCondition: (card) =>
                     card.type === CardType.Character && card.costAtMost(2) && card.isFaction('crane'),
-                message: (context, cards) => msg`${context.player} puts ${cards} into play ${statusOfIntern(context)}`,
+                message: (context, cards) => msg`${context.player} puts ${cards} into play${context.source.isHonored ? ' honored' : ''}`,
                 gameAction: putIntoConflict((context) => ({ status: statusOfIntern(context) }))
             })
             .chatText('search their dynasty deck for a character to put into play')

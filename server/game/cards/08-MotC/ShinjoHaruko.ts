@@ -6,7 +6,7 @@ class ShinjoHaruko extends DrawCard {
     static id = 'shinjo-haruko';
 
     override setupCardAbilities() {
-        this.action('Move a honored character into the conflict')
+        this.action('Move an honored character to the conflict')
             .condition((context) => context.source.isParticipating())
             .target({
                 cardType: CardType.Character,

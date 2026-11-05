@@ -105,6 +105,10 @@ describe('Shosuro Technique', function () {
                 expect(this.getChatLogs(5)).toContain(
                     'player2 plays Shosuro Technique to set the military of Shosuro Sadako to 5military (equal to Bayushi Aramoro). There\'s no blade as keen as surprise'
                 );
+                const index = this.getChatLogs(5).findIndex((line) => line.includes('no blade as keen'));
+                const linked = cardUuids(this.game.messages.slice(-5)[index].message);
+                expect(linked).toContain(this.sadako.uuid);
+                expect(linked).toContain(this.aramoro.uuid);
             });
 
             it('should not work in pol', function () {
@@ -169,3 +173,18 @@ describe('Shosuro Technique with characters on the other side than their control
         });
     });
 });
+
+function cardUuids(item) {
+    if(Array.isArray(item)) {
+        return item.flatMap(cardUuids);
+    }
+    if(item instanceof Object) {
+        if('uuid' in item) {
+            return [item.uuid];
+        }
+        if('message' in item) {
+            return cardUuids(item.message);
+        }
+    }
+    return [];
+}
