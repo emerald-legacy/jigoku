@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, RemainingCards, TargetMode } from '../../Constants.js';
 import { moveCard } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
+import { topCards } from '../topCards.js';
 
 class ShrewdYasuki extends DrawCard {
     static id = 'shrewd-yasuki';
@@ -19,7 +21,7 @@ class ShrewdYasuki extends DrawCard {
                 remainingCards: RemainingCards.BottomRandom,
                 reveal: false
             })
-            .chatText('look at the top two cards of their conflict deck');
+            .chatText((context) => msg`look at the ${topCards(2, context.player.conflictDeck.length, true)} of their conflict deck`);
     }
 }
 

@@ -36,6 +36,13 @@ describe('Yasuki Hatsu', function() {
                 expect(this.player1).toHavePromptButton('Ornate Fan');
             });
 
+            it('says it looks at the top card when only one is left', function() {
+                this.player1.reduceDeckToNumber('conflict deck', 1);
+                this.player1.clickCard(this.hatsu);
+                expect(this.player1).toHavePrompt('Select a card to reveal');
+                expect(this.getChatLogs(3)).toContain('player1 uses Yasuki Hatsu to look at the top card of their deck');
+            });
+
             it('should reveal the chosen attachment', function() {
                 this.player1.clickCard(this.hatsu);
                 this.player1.clickPrompt('Ornate Fan');

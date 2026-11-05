@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, TargetMode, Trait } from '../../Constants.js';
 import { moveCard } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
+import { topCards } from '../topCards.js';
 
 class KiAlignment extends DrawCard {
     static id = 'ki-alignment';
@@ -21,7 +23,7 @@ class KiAlignment extends DrawCard {
                     destination: Location.Hand
                 })
             })
-            .chatText('look at the top eight cards of their deck for up to two kihos');
+            .chatText((context) => msg`look at the ${topCards(8, context.player.conflictDeck.length, true)} of their deck for up to two kihos`);
     }
 }
 

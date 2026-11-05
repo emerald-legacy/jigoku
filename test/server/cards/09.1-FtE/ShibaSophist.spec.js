@@ -48,6 +48,14 @@ describe('Shiba Sophist', function() {
                 expect(this.player1).toHaveDisabledPromptButton('Cloud the Mind');
             });
 
+            it('says it looks at the top card when only one is left', function () {
+                this.player1.reduceDeckToNumber('conflict deck', 1);
+                this.player2.pass();
+                this.player1.clickCard(this.shibaSophistP1);
+                expect(this.player1).toHavePromptButton('Take nothing');
+                expect(this.getChatLogs(3)).toContain('player1 uses Shiba Sophist to look at the top card of their deck');
+            });
+
             it('should work if the ring has multiple elements', function () {
                 this.player2.pass();
                 this.player1.clickCard(this.favorableGround);

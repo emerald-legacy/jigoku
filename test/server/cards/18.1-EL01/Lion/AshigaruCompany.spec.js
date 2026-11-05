@@ -78,5 +78,13 @@ describe('Ashigaru Company', function() {
             expect(this.getChatLogs(5)).toContain('player1 takes Ayubune Pilot');
             expect(this.getChatLogs(5)).toContain('player1 puts 4 cards on the bottom of their conflict deck');
         });
+
+        it('says how many cards it looks at when fewer than 5 are left', function() {
+            this.player1.reduceDeckToNumber('conflict deck', 3);
+            this.player1.clickCard(this.company1);
+            this.player1.clickCard(this.doomed);
+            this.player1.clickCard(this.company1);
+            expect(this.getChatLogs(5)).toContain('player1 uses Ashigaru Company to look at the top three cards of their deck');
+        });
     });
 });

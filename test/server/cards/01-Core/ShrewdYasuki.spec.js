@@ -55,6 +55,15 @@ describe('Shrewd Yasuki', function() {
                 this.player1.clickCard('shrewd-yasuki');
                 expect(this.player1).toHavePrompt('Shrewd Yasuki');
             });
+
+            it('says it looks at the top card when only one is left', function() {
+                this.player1.reduceDeckToNumber('conflict deck', 1);
+                this.player2.clickCard(this.favorableGround);
+                this.player2.clickCard('bayushi-liar');
+                this.player1.clickCard('shrewd-yasuki');
+                expect(this.player1).toHavePrompt('Shrewd Yasuki');
+                expect(this.getChatLogs(3)).toContain('player1 uses Shrewd Yasuki to look at the top card of their conflict deck');
+            });
         });
 
         describe('when the other player has a holding in play', function() {

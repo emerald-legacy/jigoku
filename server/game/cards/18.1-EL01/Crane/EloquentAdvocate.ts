@@ -1,6 +1,8 @@
 import DrawCard from '../../../DrawCard.js';
 import { moveCard } from '../../../GameActions/GameActions.js';
 import { ConflictType, Location, RemainingCards, TargetMode } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { topCards } from '../../topCards.js';
 
 class EloquentAdvocate extends DrawCard {
     static id = 'eloquent-advocate';
@@ -21,7 +23,7 @@ class EloquentAdvocate extends DrawCard {
                 remainingCards: RemainingCards.BottomRandom,
                 reveal: false
             })
-            .chatText('look at the top two cards of their conflict deck');
+            .chatText((context) => msg`look at the ${topCards(2, context.player.conflictDeck.length, true)} of their conflict deck`);
     }
 }
 

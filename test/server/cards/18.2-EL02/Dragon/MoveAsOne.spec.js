@@ -77,6 +77,16 @@ describe('Move as One', function() {
             expect(this.getChatLogs(5)).toContain('player1 puts 7 cards on the bottom of their conflict deck');
         });
 
+        it('says how many cards it looks at when fewer than 8 are left', function() {
+            this.player1.reduceDeckToNumber('conflict deck', 1);
+            this.initiateConflict({
+                attackers: [this.ancientMaster]
+            });
+            this.player1.clickCard(this.alignment);
+            expect(this.player1).toHavePromptButton('Take nothing');
+            expect(this.getChatLogs(5)).toContain('player1 plays Move as One to look at the top card of their deck for a kiho');
+        });
+
         it('should be max 1 per conflict: a second copy found by the first can\'t react to the same declaration', function() {
             this.initiateConflict({
                 attackers: [this.ancientMaster]

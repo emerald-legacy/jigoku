@@ -124,6 +124,13 @@ describe('Earnest Sculptor', function () {
                 expect(this.player1).toHaveDisabledPromptButton('A New Name');
             });
 
+            it('says how many cards it looks at when fewer than 8 are left', function () {
+                this.player1.reduceDeckToNumber('conflict deck', 3);
+                this.player1.clickCard(this.earnestSculptor);
+                expect(this.player1).toHavePrompt('Select a card to reveal');
+                expect(this.getChatLogs(3)).toContain('player1 uses Earnest Sculptor to look at the top 3 cards of their deck');
+            });
+
             it('should reveal the chosen attachment', function () {
                 this.player1.clickCard(this.earnestSculptor);
                 this.player1.clickPrompt('Cloud the Mind');

@@ -83,6 +83,16 @@ describe('Ki Alignment', function() {
             expect(this.getChatLogs(5)).toContain('player1 is shuffling their conflict deck');
         });
 
+        it('says how many cards it looks at when fewer than 8 are left', function() {
+            this.player1.reduceDeckToNumber('conflict deck', 5);
+            this.initiateConflict({
+                attackers: [this.ancientMaster]
+            });
+            this.player1.clickCard(this.alignment);
+            expect(this.player1).toHavePromptButton('Take nothing');
+            expect(this.getChatLogs(5)).toContain('player1 plays Ki Alignment to look at the top five cards of their deck for up to two kihos');
+        });
+
         it('should be able to trigger a grabbed Ki Alignment', function() {
             this.initiateConflict({
                 attackers: [this.ancientMaster]

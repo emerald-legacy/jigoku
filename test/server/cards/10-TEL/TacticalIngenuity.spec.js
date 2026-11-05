@@ -58,6 +58,21 @@ describe('Tactical Ingenuity', function() {
             expect(this.wayOfTheLion.location).toBe('hand');
         });
 
+        it('says how many cards it looks at when fewer than 4 are left', function() {
+            this.player1.reduceDeckToNumber('conflict deck', 2);
+            this.player1.playAttachment(this.tacticalIngenuity, this.zentaro);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.zentaro],
+                defenders: []
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.zentaro);
+            expect(this.player1).toHavePromptButton('Take nothing');
+            expect(this.getChatLogs(3)).toContain('player1 uses Akodo Zentarō\'s gained ability from Tactical Ingenuity to look at the top two cards of their deck');
+        });
+
         it('should not be blocked by Cloud the Mind',function() {
             this.player1.playAttachment(this.tacticalIngenuity, this.zentaro);
             this.player2.playAttachment('cloud-the-mind', this.zentaro);

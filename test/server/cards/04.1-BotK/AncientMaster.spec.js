@@ -61,6 +61,20 @@ describe('Ancient Master', function () {
                 expect(this.player1.player.hand.length).toBe(handsize + 1);
             });
 
+            it('says how many cards it looks at when fewer than 5 are left', function () {
+                this.player1.reduceDeckToNumber('conflict deck', 2);
+                this.player1.clickCard(this.ancientMaster);
+                this.player1.clickPrompt('Play Ancient Master as an attachment');
+                this.player1.clickCard(this.nitenMaster);
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.nitenMaster]
+                });
+                this.player1.clickCard(this.ancientMaster);
+                expect(this.player1).toHavePrompt('Ancient Master');
+                expect(this.getChatLogs(3)).toContain('player1 uses Ancient Master to look at the top two cards of their deck');
+            });
+
             it('should trigger its reaction and find tattoos', function () {
                 this.player1.clickCard(this.ancientMaster);
                 this.player1.clickPrompt('Play Ancient Master as an attachment');

@@ -2,6 +2,8 @@ import DrawCard from '../../../DrawCard.js';
 import { Location, RemainingCards, Trait } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { moveCard } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
+import { topCards } from '../../topCards.js';
 
 class MoveAsOne extends DrawCard {
     static id = 'move-as-one';
@@ -20,7 +22,7 @@ class MoveAsOne extends DrawCard {
                     destination: Location.Hand
                 })
             })
-            .chatText('look at the top eight cards of their deck for a kiho')
+            .chatText((context) => msg`look at the ${topCards(8, context.player.conflictDeck.length, true)} of their deck for a kiho`)
             .max(perConflict(1));
     }
 }

@@ -55,6 +55,21 @@ describe('Eloquent Advocate', function() {
             expect(this.getChatLogs(5)).toContain('player2 puts 1 card on the bottom of their conflict deck');
         });
 
+        it('says it looks at the top card when only one is left', function() {
+            this.player2.reduceDeckToNumber('conflict deck', 1);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.borderRider],
+                defenders: [this.advocate],
+                type: 'political'
+            });
+
+            this.noMoreActions();
+            this.player2.clickCard(this.advocate);
+            expect(this.player2).toHavePrompt('Select a card');
+            expect(this.getChatLogs(5)).toContain('player2 uses Eloquent Advocate to look at the top card of their conflict deck');
+        });
+
         it('should not react to losing a pol conflict', function() {
             this.noMoreActions();
             this.initiateConflict({

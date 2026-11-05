@@ -1,6 +1,8 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType, Location } from '../../Constants.js';
 import { moveCard } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
+import { topCards } from '../topCards.js';
 
 class YasukiHatsu extends DrawCard {
     static id = 'yasuki-hatsu';
@@ -16,7 +18,7 @@ class YasukiHatsu extends DrawCard {
                     destination: Location.Hand
                 })
             })
-            .chatText('look at the top five cards of their deck');
+            .chatText((context) => msg`look at the ${topCards(5, context.player.conflictDeck.length, true)} of their deck`);
     }
 }
 

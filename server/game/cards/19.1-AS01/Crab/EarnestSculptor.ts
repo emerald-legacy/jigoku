@@ -4,6 +4,7 @@ import { CardType, Location, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 import { msg } from '../../../GameChat.js';
 import { isReducibleAttachmentPlay } from '../../attachmentPlay.js';
+import { topCards } from '../../topCards.js';
 
 export default class EarnestSculptor extends DrawCard {
     static id = 'earnest-sculptor';
@@ -17,7 +18,7 @@ export default class EarnestSculptor extends DrawCard {
                     destination: Location.Hand
                 })
             })
-            .chatText('look at the top 8 cards of their deck');
+            .chatText((context) => msg`look at the ${topCards(8, context.player.conflictDeck.length)} of their deck`);
 
         this.interrupt('Reduce cost of next Jade card')
             .when({

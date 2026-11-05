@@ -2,6 +2,8 @@ import { CardType, Location, Trait } from '../../Constants.js';
 import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
+import { topCards } from '../topCards.js';
 
 export default class AncientMaster extends DrawCard {
     static id = 'ancient-master';
@@ -22,7 +24,7 @@ export default class AncientMaster extends DrawCard {
                     destination: Location.Hand
                 })
             })
-            .chatText('look at the top five cards of their deck')
+            .chatText((context) => msg`look at the ${topCards(5, context.player.conflictDeck.length, true)} of their deck`)
             .attachmentText();
     }
 }

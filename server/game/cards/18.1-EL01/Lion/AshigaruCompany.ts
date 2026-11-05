@@ -1,6 +1,8 @@
 import DrawCard from '../../../DrawCard.js';
 import { CardType, Location, RemainingCards, Trait } from '../../../Constants.js';
 import { moveCard } from '../../../GameActions/GameActions.js';
+import { msg } from '../../../GameChat.js';
+import { topCards } from '../../topCards.js';
 
 class AshigaruCompany extends DrawCard {
     static id = 'ashigaru-company';
@@ -18,7 +20,7 @@ class AshigaruCompany extends DrawCard {
                 }),
                 remainingCards: RemainingCards.BottomRandom
             })
-            .chatText('look at the top five cards of their deck');
+            .chatText((context) => msg`look at the ${topCards(5, context.player.conflictDeck.length, true)} of their deck`);
     }
 }
 

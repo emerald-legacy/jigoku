@@ -31,6 +31,13 @@ describe('Agasha Swordsmith', function() {
                 expect(this.player1.conflictDeck.at(-1)).toBe(this.fineKatana);
             });
 
+            it('says it looks at the top card when only one is left', function() {
+                this.player1.reduceDeckToNumber('conflict deck', 1);
+                this.player1.clickCard(this.agashaSwordsmith);
+                expect(this.player1).toHavePromptButton('Ornate Fan');
+                expect(this.getChatLogs(3)).toContain('player1 uses Agasha Swordsmith to look at the top card of their deck');
+            });
+
             it('should reveal the chosen attachment', function() {
                 this.player1.clickCard(this.agashaSwordsmith);
                 this.player1.clickPrompt('Ornate Fan');
