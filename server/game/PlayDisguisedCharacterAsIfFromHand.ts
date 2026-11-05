@@ -1,5 +1,5 @@
 import type { AbilityContext } from './AbilityContext.js';
-import { PlayType, type Blocker } from './Constants.js';
+import { Blocker, PlayType } from './Constants.js';
 import { PlayDisguisedCharacterAction } from './PlayDisguisedCharacterAction.js';
 import { PlayIntoLocation } from './PlayCharacterAction.js';
 import { asIfFromHandBlockers, type AsIfFromHandOptions, PlayCharacterAsIfFromHand } from './PlayCharacterAsIfFromHand.js';
@@ -19,7 +19,8 @@ export class PlayDisguisedCharacterAsIfFromHand extends PlayDisguisedCharacterAc
     }
 
     override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []) {
-        return super.meetsRequirements(context, asIfFromHandBlockers(ignoredBlockers));
+        const blockers = asIfFromHandBlockers(ignoredBlockers);
+        return super.meetsRequirements(context, this.options.facedown ? blockers.concat(Blocker.Facedown) : blockers);
     }
 
     override executeHandler(context: AbilityContext<DrawCard>) {

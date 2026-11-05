@@ -81,6 +81,9 @@ export class PlayDisguisedCharacterAction extends PlayCardSourceAction {
     }
 
     public override meetsRequirements(context: AbilityContext<DrawCard>, ignoredBlockers: Blocker[] = []): Blocker {
+        if(!ignoredBlockers.includes(Blocker.Facedown) && this.card.isFacedown()) {
+            return Blocker.Facedown;
+        }
         if(!ignoredBlockers.includes(Blocker.WrongPhase) && context.game.currentPhase !== Phase.Conflict) {
             return Blocker.WrongPhase;
         }
