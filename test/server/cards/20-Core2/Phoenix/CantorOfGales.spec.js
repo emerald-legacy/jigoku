@@ -120,3 +120,50 @@ describe('Cantor of Gales\'s ability gained through Contemplative Wisdom', funct
         });
     });
 });
+
+describe('Cantor of Gales with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['cantor-of-gales', 'endless-plains-skirmisher', 'doji-challenger']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar', 'endless-plains-skirmisher']
+                }
+            });
+            this.cantor = this.player1.findCardByName('cantor-of-gales');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger],
+                defenders: [this.scholar]
+            });
+            expect(this.game.currentConflict.attackerSkill).toBe(3);
+        });
+
+        it('does not contribute when your only honored participant is on the enemy side', function () {
+            this.skirmisher1.honor();
+            this.player2.pass();
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+            expect(this.game.currentConflict.attackerSkill).toBe(3);
+        });
+
+        it('contributes when an opponent\'s honored character is on your side', function () {
+            this.skirmisher2.honor();
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            // Challenger 3 + honored Skirmisher 4 + Cantor's base 2
+            expect(this.game.currentConflict.attackerSkill).toBe(9);
+        });
+    });
+});

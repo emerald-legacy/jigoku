@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Players, Trait } from '../../../Constants.js';
+import { CardType, Trait } from '../../../Constants.js';
 import { modifyBothSkills } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -21,8 +21,7 @@ export default class AsakoShun extends DrawCard {
         this.conflictAction('Give a skill penalty to a participating character')
             .target({
                 cardType: CardType.Character,
-                controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating()
+                cardCondition: (card, context) => !!context.player.opponent && card.isParticipatingFor(context.player.opponent)
             }, cardLastingEffect((context) => ({
                 effect: modifyBothSkills(penalty(context))
             })))

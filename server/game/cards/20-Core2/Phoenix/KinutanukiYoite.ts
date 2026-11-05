@@ -1,4 +1,4 @@
-import { CardType, Players, Trait } from '../../../Constants.js';
+import { CardType, Trait } from '../../../Constants.js';
 import { injure } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -16,9 +16,10 @@ export default class KinutanukiYoite extends DrawCard {
             .target({
                 activePromptTitle: 'Choose a character',
                 cardType: CardType.Character,
-                controller: Players.Opponent,
                 cardCondition: (card, context) =>
-                    card.isParticipating() && card.militarySkill <= context.source.militarySkill
+                    !!context.player.opponent &&
+                    card.isParticipatingFor(context.player.opponent) &&
+                    card.militarySkill <= context.source.militarySkill
             }, injure());
     }
 }

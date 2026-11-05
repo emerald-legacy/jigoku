@@ -9,7 +9,7 @@ export default class CantorOfGales extends DrawCard {
         this.persistentEffect({
             condition: (context) =>
                 context.source.isAtHome() &&
-                context.player.cardsInPlay.some((card) => card.isParticipating() && card.isHonored),
+                (context.game.currentConflict?.getCharacters(context.player).some((card) => card.isHonored) ?? false),
             effect: changePlayerSkillModifier((_player, context) => {
                 const source = context.source;
                 if(!source.isDrawCard()) {
