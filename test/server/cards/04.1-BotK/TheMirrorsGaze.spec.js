@@ -585,3 +585,56 @@ describe('The Mirror\'s Gaze and events ruling #376 doesn\'t exclude', function 
         });
     });
 });
+
+describe('The Mirror\'s Gaze and duel abilities', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['asahina-storyteller', 'brash-samurai'],
+                    hand: ['the-mirror-s-gaze']
+                },
+                player2: {
+                    fate: 5,
+                    inPlay: ['kakita-toshimoko'],
+                    hand: ['policy-debate', 'destiny-revealed', 'banzai']
+                }
+            });
+            this.brash = this.player1.findCardByName('brash-samurai');
+            this.toshimoko = this.player2.findCardByName('kakita-toshimoko');
+            this.destiny = this.player2.findCardByName('destiny-revealed');
+            this.mirrorGaze = this.player1.playAttachment('the-mirror-s-gaze', 'asahina-storyteller');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.brash],
+                defenders: [this.toshimoko]
+            });
+        });
+
+        it('can\'t copy a Duel Strike ability (ruling #1122)', function () {
+            this.player2.clickCard('policy-debate');
+            this.player2.clickCard(this.toshimoko);
+            this.player2.clickCard(this.brash);
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('5');
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.destiny);
+            this.player2.clickCard(this.destiny);
+            expect(this.toshimoko.fate).toBe(1);
+            expect(this.getChatLogs(3)).toContain('player2 places a fate from their fate pool on Kakita Toshimoko');
+            // the next window is for Policy Debate itself, not Destiny Revealed's Duel Strike
+            expect(this.player1).toHavePrompt('Any reactions to the effects of Policy Debate or Policy Debate being played?');
+            expect(this.player1).toBeAbleToSelect(this.mirrorGaze);
+        });
+
+        it('still copies an opponent\'s other event', function () {
+            this.player2.clickCard('banzai');
+            this.player2.clickCard(this.toshimoko);
+            this.player2.clickPrompt('Done');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.mirrorGaze);
+        });
+    });
+});
