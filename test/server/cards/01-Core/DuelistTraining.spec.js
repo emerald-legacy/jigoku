@@ -44,6 +44,18 @@ describe('Duelist Training', function () {
                 );
             });
 
+            it('can duel when both participants are already bowed (#84)', function () {
+                this.giverOfGifts1.bow();
+                this.seppunGuardsman.bow();
+                this.player1.clickCard(this.giverOfGifts1);
+                this.player1.clickPrompt('Initiate a duel to bow');
+                expect(this.player1).toHavePrompt('Giver of Gifts');
+                expect(this.player1).toBeAbleToSelect(this.seppunGuardsman);
+                this.player1.clickCard(this.seppunGuardsman);
+                expect(this.player1).toHavePrompt('Honor Bid');
+                expect(this.player2).toHavePrompt('Honor Bid');
+            });
+
             it('should offer players a choice of how to pay the difference in bids', function () {
                 this.player1.clickCard(this.giverOfGifts1);
                 this.player1.clickPrompt('Initiate a duel to bow');

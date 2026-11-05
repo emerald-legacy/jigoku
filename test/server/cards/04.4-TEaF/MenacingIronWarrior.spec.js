@@ -10,7 +10,8 @@ describe('Menacing Iron Warrior', function() {
                         provinces: ['public-forum']
                     },
                     player2: {
-                        inPlay: ['menacing-iron-warrior', 'kakita-kaezin', 'doji-whisperer']
+                        inPlay: ['menacing-iron-warrior', 'kakita-kaezin', 'doji-whisperer'],
+                        hand: ['retreat']
                     }
                 });
 
@@ -74,6 +75,16 @@ describe('Menacing Iron Warrior', function() {
                     this.player1.clickCard(this.asahinaArtisan);
                     expect(this.player1).not.toHavePrompt('Asahina Artisan');
                     expect(this.player1).not.toBeAbleToSelect(this.dojiChallenger);
+                });
+
+                it('keeps the effect after Menacing Iron Warrior leaves the conflict (#381)', function() {
+                    this.player1.pass();
+                    this.player2.clickCard('retreat');
+                    this.player2.clickCard(this.menacingIronWarrior);
+                    expect(this.menacingIronWarrior.isParticipating()).toBe(false);
+                    this.player1.clickCard(this.asahinaArtisan);
+                    expect(this.player1).not.toHavePrompt('Asahina Artisan');
+                    expect(this.player1).toHavePrompt('Conflict Action Window');
                 });
 
                 it('should prevent equal military skill chars from triggering abilities', function() {
