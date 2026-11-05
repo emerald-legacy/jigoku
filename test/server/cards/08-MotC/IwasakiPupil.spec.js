@@ -67,3 +67,35 @@ describe('Iwasaki Pupil', function() {
         });
     });
 });
+
+describe('Iwasaki Pupil and a bid of 0', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    honor: 11,
+                    inPlay: ['iwasaki-pupil']
+                },
+                player2: {
+                    honor: 11,
+                    hand: ['contingency-plan']
+                }
+            });
+            this.contingencyPlan = this.player2.findCardByName('contingency-plan');
+        });
+
+        it('does not apply its minimum of 1 card to a bid of 0 (#937)', function() {
+            const playerOneHandSize = this.player1.player.hand.length;
+            const playerTwoHandSize = this.player2.player.hand.length;
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.player2.clickCard(this.contingencyPlan);
+            this.player2.clickPrompt('Decrease honor bid');
+            expect(this.player2.player.honorBid).toBe(0);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.player1.player.hand.length).toBe(playerOneHandSize + 1);
+            expect(this.player2.player.hand.length).toBe(playerTwoHandSize - 1);
+        });
+    });
+});

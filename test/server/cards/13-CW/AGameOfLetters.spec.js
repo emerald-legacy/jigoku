@@ -97,7 +97,25 @@ describe('A Game of Letters', function() {
             expect(this.dojiWhisperer.isDishonored).toBe(false);
         });
 
-        it('should apply the same effect as the token (non-participating target)', function() {
+        it('should not let you choose a non-participating character', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.yoshi, this.keepsakes],
+                defenders: [],
+                type: 'political'
+            });
+
+            this.player2.clickCard(this.game);
+            this.player2.clickCard(this.dojiWhisperer);
+            expect(this.player2).toBeAbleToSelect(this.yoshi);
+            expect(this.player2).not.toBeAbleToSelect(this.fumiki);
+            this.player2.clickCard(this.yoshi);
+            expect(this.yoshi.isHonored).toBe(false);
+            expect(this.yoshi.isDishonored).toBe(false);
+            expect(this.fumiki.isDishonored).toBe(false);
+        });
+
+        it('should apply the same effect as a token on a non-participating character', function() {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.yoshi, this.fumiki, this.keepsakes],

@@ -622,3 +622,56 @@ describe('SoD - Two-Folded Virtue played from an opponent\'s deck', function () 
         });
     });
 });
+
+describe('SoD - Crane - Asahina Momoko', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 5,
+                    honor: 10,
+                    inPlay: ['asahina-momoko', 'doji-whisperer'],
+                    hand: ['cloud-the-mind', 'cloud-the-mind', 'cloud-the-mind']
+                },
+                player2: {
+                    fate: 3,
+                    inPlay: ['adept-of-the-waves', 'doji-challenger'],
+                    hand: ['cloud-the-mind']
+                }
+            });
+            this.momoko = this.player1.findCardByName('asahina-momoko');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            [this.cloud1, this.cloud2, this.cloud3] = this.player1.filterCardsByName('cloud-the-mind');
+            this.adept = this.player2.findCardByName('adept-of-the-waves');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+        });
+
+        it('gains honor for the first two Spells in a round only', function () {
+            this.player1.playAttachment(this.cloud1, this.challenger);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.momoko);
+            expect(this.player1.honor).toBe(11);
+            this.player2.pass();
+            this.player1.playAttachment(this.cloud2, this.adept);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.momoko);
+            expect(this.player1.honor).toBe(12);
+            this.player2.pass();
+            this.player1.playAttachment(this.cloud3, this.whisperer);
+            expect(this.cloud3.parent).toBe(this.whisperer);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Action Window');
+            expect(this.player1.honor).toBe(12);
+        });
+
+        it('does not react to an opponent\'s Spell', function () {
+            this.player1.pass();
+            const cloud = this.player2.playAttachment('cloud-the-mind', this.whisperer);
+            expect(cloud.parent).toBe(this.whisperer);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.player1.honor).toBe(10);
+        });
+    });
+});
