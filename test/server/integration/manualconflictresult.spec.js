@@ -33,6 +33,11 @@ describe('Manual mode conflict result', function() {
             expect(this.game.rings.air.isConsideredClaimed(this.player1.player)).toBe(false);
         });
 
+        it('gives no reason when no winner is chosen by hand', function() {
+            this.player1.clickPrompt('No Winner');
+            expect(this.getChatLogs(10)).toContain('There is no winner or loser for this conflict');
+        });
+
         it('says who won once', function() {
             this.player1.clickPrompt('Defender Won');
             const results = this.getChatLogs(10).filter((line) => line.includes('won a military conflict'));

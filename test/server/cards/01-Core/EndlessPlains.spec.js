@@ -72,7 +72,7 @@ describe('Endless Plains', function() {
             expect(this.whisperer.isDefending()).toBe(true);
             expect(this.player2).toHavePrompt('Conflict Action Window');
             this.noMoreActions();
-            expect(this.getChatLogs(5)).toContain('There is no winner or loser for this conflict because both sides have 0 skill');
+            expect(this.getChatLogs(5)).toContain('There is no winner or loser for this conflict');
             expect(this.game.rings.air.claimed).toBe(false);
         });
 
