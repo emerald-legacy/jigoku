@@ -1,7 +1,6 @@
 const js = require('@eslint/js');
 const jasmine = require('eslint-plugin-jasmine');
-const tseslint = require('@typescript-eslint/eslint-plugin');
-const tsparser = require('@typescript-eslint/parser');
+const { plugin: tseslint, parser: tsparser } = require('typescript-eslint');
 const globals = require('globals');
 
 module.exports = [

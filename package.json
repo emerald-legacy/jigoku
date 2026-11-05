@@ -6,7 +6,7 @@
     "main": "build/server/gamenode/index.js",
     "scripts": {
         "test": "npm run jasmine -- --parallel=auto",
-        "jasmine": "tsc -p tsconfig.test.json --noCheck && cross-env JASMINE_CONFIG_PATH=./jasmine.json DOMAIN=localhost ENVIRONMENT=test GAME_NODE_NAME=test GAME_NODE_SOCKET_IO_PORT=9500 HTTPS=false LOBBY_PORT=4000 LOBBY_WS_URL=ws://localhost:6000 SECRET=testsecret jasmine",
+        "jasmine": "tsc -p tsconfig.test.json --noCheck && JASMINE_CONFIG_PATH=./jasmine.json DOMAIN=localhost ENVIRONMENT=test GAME_NODE_NAME=test GAME_NODE_SOCKET_IO_PORT=9500 HTTPS=false LOBBY_PORT=4000 LOBBY_WS_URL=ws://localhost:6000 SECRET=testsecret jasmine",
         "lint": "eslint server/ test/",
         "typecheck": "tsc --noEmit && tsc -p tsconfig.test.json --noEmit"
     },
@@ -46,15 +46,12 @@
         "@types/jsonwebtoken": "9.0.10",
         "@types/node": "26.6.6",
         "@types/ws": "8.18.2",
-        "@typescript-eslint/eslint-plugin": "8.72.1",
-        "@typescript-eslint/parser": "8.72.1",
-        "cross-env": "10.1.0",
         "eslint": "10.13.0",
         "eslint-plugin-jasmine": "4.2.2",
         "globals": "17.13.0",
         "jasmine": "7.0.0",
-        "prettier": "3.9.10",
-        "typescript": "6.0.3"
+        "typescript": "6.0.3",
+        "typescript-eslint": "8.72.1"
     },
     "volta": {
         "node": "26.8.2"
