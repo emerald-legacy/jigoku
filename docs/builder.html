@@ -162,7 +162,7 @@ this.forcedReaction('Can\'t be discarded or remove fate')
             cardCannot(RestrictionType.DiscardFromPlay)
         ]
     })
-    .chatText('stop him being discarded or losing fate in this phase');</code></pre>
+    .chatText((context) =&gt; msg`stop ${context.source} being discarded or losing fate this phase`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/SteadfastSamurai.ts">Steadfast Samurai</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/03-DotV/HidaAmoro.ts">Hida Amoro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.2-TL/MaraudingOni.ts">Marauding Oni</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.5-AaN/KuniLaboratory.ts">Kuni Laboratory</a></p>
   </div>
 
@@ -227,8 +227,8 @@ this.reaction('Take 1 honor')
 this.wouldInterrupt('Cancel an event')
     .when({
         onInitiateAbilityEffects: (event, context) =&gt; event.card.type === CardType.Event &amp;&amp; context.player.opponent &amp;&amp;
-            context.player.getNumberOfCardsInPlay((card) =&gt; card.isHonored) &gt;
-            context.player.opponent.getNumberOfCardsInPlay((card) =&gt; card.isHonored)
+            context.player.inPlay({ attachments: true }).filter((card) =&gt; card.isHonored).length &gt;
+            context.player.opponent.inPlay({ attachments: true }).filter((card) =&gt; card.isHonored).length
     })
     .cancel()
     .cannotBeMirrored();</code></pre>
@@ -721,7 +721,7 @@ this.action('Play this from the discard pile')
       </tbody>
     </table>
     <ul class="edge">
-      <li>In the Dynasty phase an action is usable only with <code>phase(Phase.Dynasty)</code> or <a href="#b-evenDuringDynasty"><code>evenDuringDynasty()</code></a>, or by card type: characters, attachments and holdings when the game's rules allow actions from cards in play then, events when the rules allow that event. Province, stronghold and role actions are not usable in the Dynasty phase otherwise.</li>
+      <li>In the Dynasty phase an action is usable only with <code>phase(Phase.Dynasty)</code> or <a href="#b-evenDuringDynasty"><code>evenDuringDynasty()</code></a>, or by card type: characters, attachments, holdings, strongholds, provinces and roles when the game's rules allow actions from cards in play then, events when the rules allow that event. Other card types' actions are not usable in the Dynasty phase otherwise.</li>
       <li>A compile error on a triggered ability.</li>
     </ul>
     <pre><code>// Miya Mystic: Action: During the conflict phase, sacrifice this character. …
@@ -746,7 +746,7 @@ this.action('Sacrifice to discard an attachment')
     </ul>
     <pre><code>// Magistrate's Intervention: Play only if you control a Courtier or Magistrate character. …
 this.action('Dishonor a character')
-    .playOnlyIf((context) =&gt; context.player.cardsInPlay.some((card) =&gt; card.type === CardType.Character &amp;&amp; (card.hasTrait(Trait.Courtier) || card.hasTrait(Trait.Magistrate))))
+    .playOnlyIf((context) =&gt; context.player.charactersInPlay.some((card) =&gt; card.type === CardType.Character &amp;&amp; (card.hasTrait(Trait.Courtier) || card.hasTrait(Trait.Magistrate))))
     .target({ … }, dishonor())</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/MagistratesIntervention.ts">Magistrate's Intervention</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Blackmail.ts">Blackmail</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/DevelopingMasterpiece.ts">Developing Masterpiece</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/Censure.ts">Censure</a></p>
   </div>
@@ -1900,7 +1900,7 @@ this.action('Steal a fate')
     </table>
     <pre><code>// Court Mask: Action: Return this attachment to your hand and dishonor attached character.
 .dishonor((context) =&gt; ({ target: context.source.parentCharacter ?? [] }))</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CourtMask.ts">Court Mask</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/TheArtOfPeace.ts">The Art of Peace</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.3-TFW/InsultToInjury.ts">Insult to Injury</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/UnspokenEttiquette.ts">Unspoken Etiquette</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CourtMask.ts">Court Mask</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/TheArtOfPeace.ts">The Art of Peace</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.3-TFW/InsultToInjury.ts">Insult to Injury</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/UnspokenEtiquette.ts">Unspoken Etiquette</a></p>
   </div>
   <div class="ref" id="b-honor" data-name="honor">
     <h3><code>honor(properties?)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-honor">#</a></h3>
@@ -1996,7 +1996,7 @@ this.action('Steal a fate')
     </table>
     <pre><code>// Niten: … return this attachment to your hand - put an attachment from your hand into play attached to the same character. (Max 1 per round.)
 .attach((context) =&gt; ({
-    target: context.costs.captureParentCost ?? context.source.parentCharacter ?? [],
+    target: capturedParent(context) ?? [],
     attachment: context.target
 }))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/Niten.ts">Niten</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/Logistics.ts">Logistics</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/CallingInFavors.ts">Calling in Favors</a></p>
@@ -2735,7 +2735,7 @@ this.action('Wield the power of the void')
       <li>A blank effect that also blanks traits removes the printed ones. For several traits use <code>hasSomeTrait(…)</code> or <code>hasEveryTrait(…)</code>.</li>
     </ul>
     <pre><code>// Magistrate's Intervention: Play only if you control a Courtier or Magistrate character.
-    .playOnlyIf((context) =&gt; context.player.cardsInPlay.some((card) =&gt; card.type === CardType.Character &amp;&amp; (card.hasTrait(Trait.Courtier) || card.hasTrait(Trait.Magistrate))))</code></pre>
+    .playOnlyIf((context) =&gt; context.player.charactersInPlay.some((card) =&gt; card.type === CardType.Character &amp;&amp; (card.hasTrait(Trait.Courtier) || card.hasTrait(Trait.Magistrate))))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/MagistratesIntervention.ts">Magistrate's Intervention</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AgainstTheWaves.ts">Against the Waves</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsceticVisionary.ts">Ascetic Visionary</a></p>
   </div>
 

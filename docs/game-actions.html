@@ -914,7 +914,7 @@ this.reaction('Draw 2 cards and return 1')
       <li>Legal when <code>cardsToLookAt</code> isn't 0 and the deck has cards, even if no card matches: then nothing is taken and the remaining cards are still handled.</li>
       <li>The taken cards are also stored in <code>context.deckSearchSelected</code> and <code>event.selectedCards</code>.</li>
       <li>With <code>RemainingCards.Shuffle</code> the cards in the prompt are sorted by name, so their order isn't shown.</li>
-      <li>Raises <code>onDeckSearch</code> (<code>event.amount</code>). Chat: "look at the top <em>N</em> cards of their deck" or "search their deck" ("<em>player</em>'s deck" for another player's).</li>
+      <li>Raises <code>onDeckSearch</code> (<code>event.amount</code>). Chat: "look at the top <em>N</em> cards of their deck", with <em>N</em> capped at the cards in the deck ("the top card" for 1), or "search their deck" ("<em>player</em>'s deck" for another player's).</li>
       <li>Builder shortcut: <code>.deckSearch(…)</code>.</li>
     </ul>
     <pre><code>// Earnest Sculptor: Action: Search the top 8 cards of your conflict deck for a Spell, reveal it, and add it to your hand. Shuffle.
@@ -926,7 +926,7 @@ this.action('Search top 8 card for a spell')
             destination: Location.Hand
         })
     })
-    .chatText('look at the top 8 cards of their deck');</code></pre>
+    .chatText((context) =&gt; msg`look at the ${topCards(8, context.player.conflictDeck.length)} of their deck`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crab/EarnestSculptor.ts">Earnest Sculptor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Unicorn/UtakuTakeko.ts">Utaku Takeko</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crab/CinderSalamander.ts">Cinder Salamander</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.3-JfS/ShinjoGunso.ts">Shinjo Gunsō</a></p>
   </div>
 <div class="ref" id="ga-discardAtRandom" data-name="discardAtRandom">
@@ -1084,7 +1084,7 @@ this.reaction('Rearrange top 3 cards of dynasty deck')
         onPhaseStarted: (event, context) =&gt; event.phase === Phase.Fate &amp;&amp; context.player.dynastyDeck.length &gt; 0
     })
     .gameAction(rearrangeDeck({ amount: 3, deck: DeckType.Dynasty }))
-    .chatText('rearrange the top 3 cards of their dynasty deck');</code></pre>
+    .chatText((context) =&gt; msg`rearrange the ${topCards(3, context.player.dynastyDeck.length)} of their dynasty deck`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.6-MotE/TogashiMendicant.ts">Togashi Mendicant</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/Compass.ts">Compass</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.2-HiF/ShojusDiviner.ts">Shoju's Diviner</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.3-TFW/HirumaKogoe.ts">Hiruma Kogoe</a></p>
   </div>
 <div class="ref" id="ga-shuffleDeck" data-name="shuffleDeck">

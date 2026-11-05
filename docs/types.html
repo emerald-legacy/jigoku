@@ -812,12 +812,13 @@ effect: delayedEffect({
         </tbody>
       </table>
   <pre><code>// Kiss of the Sea: Reaction: After a triggered ability changes the [conflict-military] or [conflict-political] skill of attached character while it is participating in a conflict – bow attached character. …
+const SKILL_EFFECTS: ReadonlySet&lt;EffectName&gt; = new Set([
+    EffectName.ModifyBothSkills,
+    EffectName.ModifyMilitarySkill,
+    …
+]);
+…
 onEffectApplied: (event, context) =&gt; {
-    const effects: string[] = [
-        EffectName.ModifyBothSkills,
-        EffectName.ModifyMilitarySkill,
-        …
-    ];
     if(!event.effectTypes) {
         return false;
     }
@@ -2964,8 +2965,8 @@ this.wouldInterrupt('Take Fate')
   <pre><code>// Greater Understanding: Attach to a ring. Reaction: After fate is placed on attached ring - resolve that ring's effect as if you were the attacking player.
 this.reaction('Resolve the attached ring\'s effect')
     .when({
-        onMoveFate: (event) =&gt; event.recipient === this.parent,
-        onPlaceFateOnUnclaimedRings: () =&gt; this.parent?.isRing() &amp;&amp; this.parent.isUnclaimed()
+        onMoveFate: (event, context) =&gt; event.recipient === context.source.parent,
+        onPlaceFateOnUnclaimedRings: (_event, context) =&gt; context.source.parent?.isRing() &amp;&amp; context.source.parent.isUnclaimed()
     })</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/GreaterUnderstanding.ts">Greater Understanding</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/KitsukiSeiji.ts">Kitsuki Seiji</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/GreaterUnderstanding2.ts">Greater Understanding</a></p>
 </div>

@@ -731,7 +731,8 @@ this.action('Contribute printed military skill')
             contributeToConflict((_card, context) =&gt; context.player),
             changeContributionFunction((card) =&gt; card.printedMilitarySkill)
         ]
-    }));</code></pre>
+    }))
+    .chatText(…);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.2-BoB/HirumaYoshino.ts">Hiruma Yoshino</a></p>
   </div>
 <div class="ref" id="ef-changePlayerGloryModifier" data-name="changePlayerGloryModifier">
@@ -769,7 +770,7 @@ this.persistentEffect({
 this.persistentEffect({
     condition: (context) =&gt;
         context.source.isAtHome() &amp;&amp;
-        context.player.cardsInPlay.some((card) =&gt; card.isParticipating() &amp;&amp; card.isHonored),
+        (context.game.currentConflict?.getCharacters(context.player).some((card) =&gt; card.isHonored) ?? false),
     effect: changePlayerSkillModifier((_player, context) =&gt; {
         const source = context.source;
         if(!source.isDrawCard()) {
@@ -832,7 +833,7 @@ this.conflictAction('Military duel to add skill')
 this.persistentEffect({
     condition: (context) =&gt; {
         const symbol = this.getCurrentElementSymbol(elementKey);
-        return context.player.cardsInPlay.some((card) =&gt; card.isParticipating()) &amp;&amp;
+        return context.player.charactersInPlay.some((card) =&gt; card.isParticipating()) &amp;&amp;
             this.game.isDuringConflict(symbol) &amp;&amp;
             !context.source.isParticipating() &amp;&amp; !context.source.bowed;
     },
@@ -859,7 +860,7 @@ this.persistentEffect({
     <pre><code>// Ceremonial Robes: This character gets +1 glory for each Spirit character you control.
 this.persistentEffect({
     effect: modifyGlory((_character, context) =&gt;
-        context.player.cardsInPlay.reduce(
+        context.player.charactersInPlay.reduce(
             (sum, card) =&gt; (card.type === CardType.Character &amp;&amp; card.hasTrait(Trait.Spirit) ? sum + 1 : sum),
             0
         )
@@ -1396,9 +1397,10 @@ this.persistentEffect({
 this.action('Opponent\'s characters at home can\'t use abilities')
     .condition((context) =&gt; this.game.isDuringConflict() &amp;&amp; context.player.opponent !== undefined)
     .cardLastingEffect((context) =&gt; ({
-        target: (context.player.opponent?.cardsInPlay ?? []).filter((card) =&gt; !card.isParticipating()),
+        target: (context.player.opponent?.charactersInPlay ?? []).filter((card) =&gt; !card.isParticipating()),
         effect: cannotTriggerAbilities()
-    }));</code></pre>
+    }))
+    .chatText(…);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Tranquility.ts">Tranquility</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/HirumaAmbusher.ts">Hiruma Ambusher</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/HighKick.ts">High Kick</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/KakitaDojo.ts">Kakita Dōjō</a></p>
   </div>
 <div class="ref" id="ef-cardCannot" data-name="cardCannot">
@@ -1430,7 +1432,8 @@ this.forcedReaction('Can\'t be discarded or remove fate')
             cardCannot(RestrictionType.RemoveFate),
             cardCannot(RestrictionType.DiscardFromPlay)
         ]
-    });
+    })
+    .chatText((context) =&gt; msg`stop ${context.source} being discarded or losing fate this phase`);
 
 // Above Question: Attached character cannot be chosen as a target of an opponent's event.
 this.whileAttached({
@@ -1777,7 +1780,7 @@ this.whileAttached({
     <pre><code>// Study the Natural World: Action: During a conflict in which you control an attacking Scholar character - the
 // contested ring gains each of the attacked province's elements. …
 this.action('Add elements to the conflict ring')
-    .condition((context) =&gt; context.player.anyCardsInPlay((card) =&gt; card.isAttacking() &amp;&amp; card.hasTrait(Trait.Scholar)))
+    .condition((context) =&gt; context.player.inPlay({ attachments: true }).some((card) =&gt; card.isAttacking() &amp;&amp; card.hasTrait(Trait.Scholar)))
     .ringLastingEffect((context) =&gt; ({
         target: context.game.currentConflict?.ring,
         effect: addElement(this.getElementsOfAttackedProvinces(context))
@@ -1893,7 +1896,8 @@ this.reaction('Count a ring as claimed')
     }, ringLastingEffect((context) =&gt; ({
         duration: Duration.UntilEndOfPhase,
         effect: considerRingAsClaimed((player) =&gt; player === context.player)
-    })));</code></pre>
+    })))
+    .chatText('make it so that they are considered to have claimed {0} until the end of the phase');</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/03-DotV/SecludedShrine.ts">Secluded Shrine</a></p>
   </div>
 </section>
@@ -2121,7 +2125,8 @@ this.interrupt('Force defenders to assign first')
         max: context.event.attackerMatrix?.maximumNumberOfAttackers ?? 0,
         gameAction: (amount) =&gt; playerLastingEffect({ effect: defendersChosenFirstDuringConflict(amount) }),
         …
-    }));</code></pre>
+    }))
+    .chatText(…);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/SevenStingsKeep.ts">Seven Stings Keep</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Unicorn/UnderTheNewMoon.ts">Under the New Moon</a></p>
   </div>
 <div class="ref" id="ef-forceConflictDeclarationType" data-name="forceConflictDeclarationType">
@@ -2371,13 +2376,14 @@ this.reaction('Make all conflicts military')
       <li><code>setMaxConflicts(0)</code> does nothing (0 is treated as "not set"); use <code>playerCannot</code> or <code>cannotDeclareConflictsOfType</code> to stop all conflicts.</li>
     </ul>
     <pre><code>// Waning Hostilities: Reaction: After the conflict phase begins - for this phase, each player has only one opportunity to declare a conflict, and may only declare a single conflict.
-this.reaction('Both players may only declare 1 conflict opportunity this turn')
+this.reaction('Each player has 1 conflict opportunity this phase')
     .when({ onPhaseStarted: (event) =&gt; event.phase === Phase.Conflict })
     .playerLastingEffect({
         duration: Duration.UntilEndOfPhase,
         target: Players.Any,
         effect: setMaxConflicts(1)
-    })</code></pre>
+    })
+    .chatText('limit both players to a single conflict this phase');</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/WaningHostilities.ts">Waning Hostilities</a></p>
   </div>
 <div class="ref" id="ef-setMaxDeclaredConflicts" data-name="setMaxDeclaredConflicts">
@@ -3762,7 +3768,7 @@ this.action('Take control of a character')
     .target({
         cardType: CardType.Character,
         controller: Players.Opponent,
-        cardCondition: (card, context) =&gt; !card.anotherUniqueInPlay(context.player) &amp;&amp; card.costLessThan(3)
+        cardCondition: (card, context) =&gt; !card.anotherUniqueInPlay(context.player) &amp;&amp; card.costAtMost(2)
     }, cardLastingEffect((context) =&gt; ({
         effect: takeControl(context.player)
     })))</code></pre>

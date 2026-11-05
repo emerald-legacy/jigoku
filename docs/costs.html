@@ -152,7 +152,8 @@ this.action('Search top 5 cards')
 this.action('Steal fate from a character')
     .phase(Phase.Conflict)
     .cost(costs.bowSelf())
-    .target({ … }, removeFate((context) =&gt; ({ recipient: context.player })));</code></pre>
+    .target({ … }, removeFate((context) =&gt; ({ recipient: context.player })))
+    .chatText('take 1 fate from {0} — evil begone');</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/ParanoidHososhi.ts">Paranoid Hōsōshi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsahinaArtisan.ts">Asahina Artisan</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CityOfTheOpenHand.ts">City of the Open Hand</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DaimyosFavor.ts">Daimyō's Favor</a></p>
   </div>
 
@@ -221,7 +222,8 @@ this.wouldInterrupt('Cancel an event')
     <pre><code>// Young Harrier: Action: Dishonor this character – each [clan-crane] character you control cannot be dishonored until the end of the phase.
 this.action('Prevent other characters from being dishonored')
     .cost(costs.dishonorSelf())
-    .cardLastingEffect((context) =&gt; ({ … effect: cardCannot(RestrictionType.Dishonor) }));</code></pre>
+    .cardLastingEffect((context) =&gt; ({ … effect: cardCannot(RestrictionType.Dishonor) }))
+    .chatText('prevent Crane characters from being dishonored this phase');</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/YoungHarrier.ts">Young Harrier</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/BayushiAramoro.ts">Bayushi Aramoro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/YasukiProcurer.ts">Yasuki Procurer</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ViceProprietor.ts">Vice Proprietor</a></p>
   </div>
 
@@ -253,7 +255,7 @@ this.wouldInterrupt('Cancel a spell')
 this.reaction('Remove a fate from attached character and force opponent to discard a participating character')
     .when({ afterConflict: (event, context) =&gt; … })
     .cost(costs.removeFateFromParent())
-    .target({ player: Players.Opponent, controller: Players.Opponent, … }, discardFromPlay());</code></pre>
+    .target({ …, player: Players.Opponent, controller: Players.Opponent, … }, discardFromPlay());</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.6-MotE/OniMask.ts">Oni Mask</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/HonedNodachi.ts">Honed Nodachi</a></p>
   </div>
 
@@ -310,7 +312,7 @@ this.action('Put an attachment into play')
     .cost(captureParentCost())
     .cost(costs.returnSelfToHand())
     .target({ cardType: CardType.Attachment, controller: Players.Self, location: Location.Hand, … })
-    .attach((context) =&gt; ({ target: context.costs.captureParentCost ?? context.source.parentCharacter ?? [], attachment: context.target }))
+    .attach((context) =&gt; ({ target: capturedParent(context) ?? [], attachment: context.target }))
     .max(perRound(1));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/Niten.ts">Niten</a></p>
   </div>
@@ -714,6 +716,7 @@ this.reaction('Return all fate from a character then discard them')
     <pre><code>// Rebuild: Action: Shuffle a card in one of your unbroken provinces back into your dynasty deck. Choose a holding in your dynasty discard pile – put that holding into play in that province.
 this.action('Put a holding into play from your discard')
     .cost(costs.shuffleIntoDeck({
+        cardType: [CardType.Character, CardType.Holding, CardType.Event],
         location: Location.Provinces,
         cardCondition: (card) =&gt; !!card.controller.getProvinceCardInProvince(card.location) &amp;&amp; !card.controller.getProvinceCardInProvince(card.location)?.isBroken
     }))
@@ -723,7 +726,7 @@ this.action('Put a holding into play from your discard')
         location: Location.DynastyDiscardPile,
         controller: Players.Self
     }, moveCard((context) =&gt; ({
-        destination: context.costs.moveCardStateWhenChosen instanceof DrawCard ? context.costs.moveCardStateWhenChosen.location : Location.ProvinceOne
+        destination: context.costs.moveCardStateWhenChosen?.location
     })))
     .chatText('replace it with {0}')
     .cannotTargetFirst()
@@ -748,7 +751,7 @@ this.action('Put a holding into play from your discard')
 this.action('Force opponent to discard cards to match your hand size')
     .cost(costs.taint({ cardCondition: (card) =&gt; {
         return card.type === CardType.Province &amp;&amp; !(card.isProvinceCard() &amp;&amp; card.isBroken);
-    } }))
+    }}))
     …</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/UnveiledCorruption.ts">Unveiled Corruption</a></p>
   </div>
@@ -946,7 +949,8 @@ this.reaction('Prevent a ring from being used for a conflict')
         // the target is checked before the cost is paid; any ring lets the ability be triggered
         target: context.costs.ringPaidFateTo || context.game.rings.air,
         effect: cannotDeclareRing(() =&gt; true)
-    }));</code></pre>
+    }))
+    .chatText((context) =&gt; msg`prevent conflicts from being declared with the ${context.costs.ringPaidFateTo}`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KitsukiInvestigator.ts">Kitsuki Investigator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Dragon/YoungIseZumi.ts">Young Ise Zumi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsceticVisionary.ts">Ascetic Visionary</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/TogashiInitiate.ts">Togashi Initiate</a></p>
   </div>
 
@@ -1039,10 +1043,11 @@ super(card, [payTargetDependentFateCost('target', ignoreType)], { … });</code>
     </ul>
     <pre><code>// Exemplary Negotiator: Action: If you control a dishonored character, discard up to 2 cards from your hand - for each card discarded, each opponent discards 1 random card from their hand.
 this.action('Discard cards to cause opponent to discard')
-    .ifCondition((context) =&gt; context.player.anyCardsInPlay((card) =&gt; card.isDishonored))
+    .ifCondition((context) =&gt; context.player.inPlay({ attachments: true }).some((card) =&gt; card.isDishonored))
     .cost(costs.discardCardsUpToVariableX(() =&gt; 2))
     .discardAtRandom((context) =&gt; ({
-        amount: context.costs.discardCardsUpToVariableX?.length || 1
+        // 1 while the cost is unpaid, so the effect is legal before the cards are chosen
+        amount: context.costs.discardCardsUpToVariableX?.length ?? 1
     }))
     .chatText((context) =&gt; msg`discard ${context.costs.discardCardsUpToVariableX} to make ${context.player.opponent} discard ${(context.costs.discardCardsUpToVariableX ?? []).length} card${(context.costs.discardCardsUpToVariableX ?? []).length &gt; 1 ? 's' : ''} at random`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.2-BoB/DishonorableAssault.ts">Dishonorable Assault</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crane/ExemplaryNegotiator.ts">Exemplary Negotiator</a></p>
@@ -1071,7 +1076,8 @@ this.action('Draw a card')
         target: context.costs.optionalOpponentLoseHonorPaid &amp;&amp; context.player.opponent
             ? [context.player, context.player.opponent]
             : context.player
-    }));</code></pre>
+    }))
+    .chatText(…);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/MerchantOfDesires.ts">Merchant of Desires</a></p>
   </div>
 

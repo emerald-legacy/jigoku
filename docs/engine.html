@@ -83,7 +83,7 @@
         <tr><td><code>CannotPlay</code></td><td>Whether an event can be played.</td></tr>
         <tr><td><code>IfConditionNotMet</code></td><td>The ability's <code>ifCondition()</code> (Countryside Trader, The Mirror's Gaze).</td></tr>
         <tr><td><code>LimitedAlreadyPlayed</code></td><td>The Limited rule, in card abilities; play actions always check it.</td></tr>
-        <tr><td><code>Facedown</code></td><td>That the card is facedown. Only the play actions check it: playing a dynasty character from a province, and adding a duplicate to a unique character.</td></tr>
+        <tr><td><code>Facedown</code></td><td>That the card is facedown. Only the play actions check it: playing a dynasty character from a province, playing a character with Disguised, and adding a duplicate to a unique character. <code>PlayDisguisedCharacterAsIfFromHand</code> with <code>facedown: true</code> skips it (Third Whisker Warrens: the top card of the dynasty deck).</td></tr>
     </tbody>
 </table>
 <p><code>resolveAbility</code> always ignores <code>WrongPlayer</code>, <code>WrongLocation</code>, <code>LimitReached</code>, <code>CannotTrigger</code>, <code>CannotPlay</code> and <code>LimitedAlreadyPlayed</code> (resolving isn't playing); a sub-resolution also ignores <code>MaxReached</code>.</p>
@@ -191,6 +191,14 @@ eventRegistrar.registerTriggerWindow(EventName.OnResolveRingElement, AbilityType
 <ul>
     <li>Affected: Makeshift War Camp and Inventive Buttressing on a province that Saadiyah al-Mozedu or Kitsuki Yaruma turns facedown. The attachment stays and applies again when the province is revealed.</li>
     <li>Not fixed (decision, 2026-10-24).</li>
+</ul>
+
+<h3 id="eng-limit-stronghold-reveal">Facedown cards in the stronghold province are revealed last</h3>
+<p>RRG 1.2 "Reveal facedown dynasty cards": a player's cards are turned faceup one at a time from the leftmost to the rightmost province, and facedown cards in the stronghold province are turned faceup first. <code>DynastyPhase</code> goes through <code>game.getProvinceArray()</code>, which lists the stronghold province last, so its cards are revealed after the other provinces' cards.</p>
+<ul>
+    <li>Only the order of the reveal events (<code>onCardRevealed</code>) and of the reactions to them (Rally) differs; every card is still revealed before <code>onRevealFacedownDynastyCards</code>.</li>
+    <li>Affected: a facedown card in the stronghold province, which is only there after an effect moved it (Recalled Defenses can move a facedown card).</li>
+    <li>Not fixed (decision).</li>
 </ul>
 
 </main>
