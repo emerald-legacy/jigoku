@@ -13,7 +13,7 @@ export default class ShosuroActress extends DrawCard {
                 cardType: CardType.Character,
                 location: [Location.ConflictDiscardPile, Location.DynastyDiscardPile],
                 controller: Players.Opponent,
-                cardCondition: (card) => card.costLessThan(4) && !card.hasTrait(Trait.Shinobi)
+                cardCondition: (card) => card.costAtMost(3) && !card.hasTrait(Trait.Shinobi)
             }, putIntoConflict());
     }
 }
