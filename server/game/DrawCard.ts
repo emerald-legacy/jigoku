@@ -477,15 +477,13 @@ export class DrawCard extends BaseCard {
             return false;
         }
 
-        const baseSkillModifiers = this.skillCalculator.getBaseSkillModifiers();
+        const baseSkills = this.skillCalculator.getBaseSkills();
 
-        if(type === SkillType.Military) {
-            return isNaN(baseSkillModifiers.baseMilitarySkill);
-        } else if(type === SkillType.Political) {
-            return isNaN(baseSkillModifiers.basePoliticalSkill);
+        if(type === SkillType.Military || type === SkillType.Political) {
+            return isNaN(baseSkills[type].skill);
         }
 
-        return isNaN(baseSkillModifiers.baseMilitarySkill) || isNaN(baseSkillModifiers.basePoliticalSkill);
+        return isNaN(baseSkills.military.skill) || isNaN(baseSkills.political.skill);
     }
 
     getContributionToConflict(type: SkillType | ConflictType | undefined): number {
@@ -568,7 +566,7 @@ export class DrawCard extends BaseCard {
     }
 
     getBaseMilitarySkill(): number {
-        return effectiveSkill(this.skillCalculator.getBaseSkillModifiers().baseMilitarySkill);
+        return effectiveSkill(this.skillCalculator.getBaseSkills().military.skill);
     }
 
     get basePoliticalSkill(): number {
@@ -576,7 +574,7 @@ export class DrawCard extends BaseCard {
     }
 
     getBasePoliticalSkill(): number {
-        return effectiveSkill(this.skillCalculator.getBaseSkillModifiers().basePoliticalSkill);
+        return effectiveSkill(this.skillCalculator.getBaseSkills().political.skill);
     }
 
     getContributionToImperialFavor(): number {
