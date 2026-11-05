@@ -22,8 +22,8 @@ export class StrongholdCard extends BaseCard {
         this.childCardHost.add(card, location);
     }
 
-    removeChildCard(card: DrawCard | null, location: Location): void {
-        this.childCardHost.remove(card, location);
+    removeChildCard(card: BaseCard): void {
+        this.childCardHost.remove(card);
     }
 
     override getFate(): number {

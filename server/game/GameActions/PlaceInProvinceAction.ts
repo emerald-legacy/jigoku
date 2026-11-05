@@ -34,11 +34,7 @@ export class PlaceInProvinceAction<Context extends AbilityContext = AbilityConte
         }
         const owner = card.owner;
         const toDiscard: BaseCard[] = discard === 'all' ? owner.getDynastyCardsInProvince(destination) : (discard ?? []);
-        if(card.location === Location.UnderneathStronghold && owner.stronghold) {
-            owner.stronghold.removeChildCard(card, destination);
-        } else {
-            owner.moveCard(card, destination);
-        }
+        owner.moveCard(card, destination);
         if(faceup) {
             card.facedown = false;
         }

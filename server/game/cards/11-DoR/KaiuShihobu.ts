@@ -4,8 +4,23 @@ import { hideWhenFaceUp } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { placeInProvince } from '../../GameActions/GameActions.js';
 
+/** The Shihobu copy that last put each holding under the stronghold. */
+const placedBy = new WeakMap<DrawCard, KaiuShihobu>();
+
 export default class KaiuShihobu extends DrawCard {
     static id = 'kaiu-shihobu';
+
+    override leavesPlay(destination?: Location): void {
+        const holdings = this.game.getPlayers().flatMap((player) => player.getSourceList(Location.UnderneathStronghold))
+            .filter((card) => card.isDrawCard() && placedBy.get(card) === this);
+        for(const card of holdings) {
+            card.owner.moveCard(card, Location.RemovedFromGame);
+        }
+        if(holdings.length > 0) {
+            this.game.addMessage(msg`${holdings} ${holdings.length === 1 ? 'is' : 'are'} removed from the game due to ${this} leaving play`);
+        }
+        super.leavesPlay(destination);
+    }
 
     override setupCardAbilities() {
         this.reaction('Look at your dynasty deck')
@@ -23,6 +38,7 @@ export default class KaiuShihobu extends DrawCard {
                         cards.forEach((card) => {
                             event.player.stronghold?.addChildCard(card, Location.UnderneathStronghold);
                             event.player.moveCard(card, Location.UnderneathStronghold);
+                            placedBy.set(card, this);
                             card.lastingEffect({
                                 until: {
                                     onCardMoved: (event) =>

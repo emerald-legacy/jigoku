@@ -916,9 +916,6 @@ export class Player extends GameObject {
             card.removedByEphemeral = false;
         }
         this.moveCard(card, target);
-        if(source === Location.UnderneathStronghold && this.stronghold && card.location !== source) {
-            this.stronghold.childCards = this.stronghold.childCards.filter((child) => child !== card);
-        }
         this.game.checkGameState(true);
     }
 
@@ -1147,6 +1144,9 @@ export class Player extends GameObject {
         if(!this.isLegalLocationForCard(card, targetLocation) || (targetLocation === Location.Underneath && !options.host) ||
             (card.isDrawCard() && card.isRemovedByEphemeral())) {
             return;
+        }
+        if(card.location === Location.UnderneathStronghold && targetLocation !== Location.UnderneathStronghold) {
+            card.controller.stronghold?.removeChildCard(card);
         }
         this.removeCardFromPile(card);
 

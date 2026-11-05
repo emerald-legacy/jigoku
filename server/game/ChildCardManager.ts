@@ -12,11 +12,7 @@ export class ChildCardManager {
         this.host.controller.moveCard(card, location);
     }
 
-    remove(card: DrawCard | null, location: Location): void {
-        if(!card) {
-            return;
-        }
+    remove(card: BaseCard): void {
         this.childCards = this.childCards.filter((a) => a !== card);
-        this.host.controller.moveCard(card, location);
     }
 }
