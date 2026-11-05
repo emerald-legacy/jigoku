@@ -68,6 +68,24 @@ describe('Floating Fortress', function () {
             );
         });
 
+        it('does not offer a move when it is already in the attacked province', function () {
+            this.player2.placeCardInProvince(this.fortress, 'province 1');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.diplomat],
+                defenders: [this.brash],
+                province: this.sd1
+            });
+
+            this.player2.clickCard(this.fortress);
+            this.player2.clickCard(this.oil);
+            expect(this.player2).not.toHavePrompt('Move this holding to the attacked province?');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.fortress.name).toBe('Fire and Oil');
+            expect(this.fortress.location).toBe('province 1');
+            expect(this.getChatLogs(3)).not.toContain('player2 moves Fire and Oil to Shameful Display');
+        });
+
         it('should not work as the attacking player', function () {
             this.noMoreActions();
             this.player1.passConflict();

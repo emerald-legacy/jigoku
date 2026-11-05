@@ -64,5 +64,17 @@ describe('Akodo Asuka', function () {
             expect(this.player1.findCardByName('banzai').location).toBe('conflict deck');
             expect(this.getChatLogs(5)).toContain('player1 is shuffling their conflict deck');
         });
+
+        it('says "top card" when only one card is left in the deck', function () {
+            this.player1.reduceDeckToNumber('conflict deck', 1);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.akodoAsuka, this.matsuBerserker],
+                defenders: []
+            });
+            this.noMoreActions();
+            this.player1.clickCard(this.akodoAsuka);
+            expect(this.getChatLogs(5)).toContain('player1 uses Akodo Asuka to look at the top card of their conflict deck');
+        });
     });
 });

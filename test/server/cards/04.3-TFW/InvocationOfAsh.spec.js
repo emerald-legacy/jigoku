@@ -36,6 +36,7 @@ describe('Invocation of Ash', function () {
                 this.player1.clickCard(this.ash);
                 this.player1.clickCard(this.rider);
                 expect(this.ash.parent).toBe(this.rider);
+                expect(this.getChatLogs(3)).toContain('player1 uses Invocation of Ash, losing 1 honor to move Invocation of Ash to Border Rider');
             });
 
             it('should remove a fate from a character with fate', function () {
@@ -44,6 +45,7 @@ describe('Invocation of Ash', function () {
                 this.player1.clickCard(this.scout);
                 expect(this.ash.parent).toBe(this.scout);
                 expect(this.scout.fate).toBe(this.initFate - 1);
+                expect(this.getChatLogs(3)).toContain('player1 uses Invocation of Ash, losing 1 honor to move Invocation of Ash to Shinjo Scout, then remove a fate from Shinjo Scout');
             });
         });
     });

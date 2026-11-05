@@ -19,7 +19,9 @@ class TranquilPhilosopher extends DrawCard {
                 })),
                 gainHonor((context) => ({ target: context.player }))
             ]))
-            .chatText((context) => msg`move 1 fate from the ${context.ring} to an unclaimed ring, then gain 1 honor`);
+            .chatText((context) => context.ring.fate > 0 && Object.values(context.game.rings).some((ring) => ring.isUnclaimed() && ring !== context.ring)
+                ? msg`move 1 fate from the ${context.ring} to an unclaimed ring, then gain 1 honor`
+                : msg`choose the ${context.ring} and gain 1 honor`);
     }
 }
 

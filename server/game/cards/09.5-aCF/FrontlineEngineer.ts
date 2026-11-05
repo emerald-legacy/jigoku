@@ -22,8 +22,10 @@ class FrontlineEngineer extends DrawCard {
                     cardsToLookAt: 5,
                     deck: DeckType.Dynasty,
                     cardCondition: (card) => card.type === CardType.Holding,
-                    message: (context, [card]) =>
-                        msg`${context.player} discards ${context.player.getDynastyCardsInProvince(province.location)}, replacing it with ${card}`,
+                    message: (context, [card]) => {
+                        const discarded = context.player.getDynastyCardsInProvince(province.location);
+                        return msg`${context.player} discards ${discarded}, replacing ${discarded.length > 1 ? 'them' : 'it'} with ${card}`;
+                    },
                     gameAction: placeInProvince({ destination: province.location, discard: 'all' })
                 }))
             })

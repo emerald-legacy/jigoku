@@ -3,9 +3,8 @@ import * as costs from '../../../costs/index.js';
 import { copyCard } from '../../../effects.js';
 import {
     cardLastingEffect,
-    chooseAction,
     moveCard,
-    noAction,
+    optional,
     selectAttackedProvince,
     sequential
 } from '../../../GameActions/GameActions.js';
@@ -29,20 +28,18 @@ export default class FloatingFortress extends DrawCard {
                     target: context.source,
                     effect: copyCard(context.target)
                 })),
-                chooseAction({
+                optional((context) => ({
                     activePromptTitle: 'Move this holding to the attacked province?',
-                    choices: {
-                        Yes: selectAttackedProvince((context) => ({
-                            message: (context, province, player) => msg`${player} moves ${context.source} to ${province}`,
-                            subActionProperties: (card) => ({
-                                target: context.source,
-                                destination: card.location
-                            }),
-                            gameAction: moveCard({})
-                        })),
-                        No: noAction()
-                    }
-                })
+                    gameAction: selectAttackedProvince({
+                        cardCondition: (card) => card.location !== context.source.location,
+                        message: (context, province, player) => msg`${player} moves ${context.source} to ${province}`,
+                        subActionProperties: (card) => ({
+                            target: context.source,
+                            destination: card.location
+                        }),
+                        gameAction: moveCard({})
+                    })
+                }))
             ]))
             .chatText((context) => msg`turn ${context.source} into a copy of ${context.chatTarget()}`)
             .max(perConflict(1));

@@ -15,7 +15,9 @@ class InvocationOfAsh extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) => card !== context.source.parentCharacter
             }, attach((context) => ({ attachment: context.source })))
-            .chatText((context) => msg`move ${context.source} to ${context.chatTarget()}, then remove a fate from ${context.chatTarget()}`)
+            .chatText((context) => context.target.getFate() > 0
+                ? msg`move ${context.source} to ${context.chatTarget()}, then remove a fate from ${context.chatTarget()}`
+                : msg`move ${context.source} to ${context.chatTarget()}`)
             .then()
             .removeFate((context) => ({ target: context.target }));
     }

@@ -66,6 +66,7 @@ describe('Tranquil Philosopher', function() {
                 expect(this.player1.player.honor).toBe(honor + 1);
                 expect(this.game.rings.fire.fate).toBe(0);
                 expect(this.player2).toHavePrompt('Action Window');
+                expect(this.getChatLogs(3)).toContain('player1 uses Tranquil Philosopher to choose the Fire Ring and gain 1 honor');
             });
 
             it('can be used when no unclaimed ring has fate', function() {
@@ -76,6 +77,19 @@ describe('Tranquil Philosopher', function() {
                 this.player1.clickCard(this.tranquilPhilosopher);
                 this.player1.clickRing('air');
                 expect(this.player1.player.honor).toBe(honor + 1);
+                expect(this.getChatLogs(3)).toContain('player1 uses Tranquil Philosopher to choose the Air Ring and gain 1 honor');
+            });
+
+            it('only gains 1 honor when no other ring is unclaimed', function() {
+                this.player1.claimRing('air');
+                this.player1.claimRing('earth');
+                this.player2.claimRing('fire');
+                const honor = this.player1.player.honor;
+                this.player1.clickCard(this.tranquilPhilosopher);
+                this.player1.clickRing('void');
+                expect(this.player1.player.honor).toBe(honor + 1);
+                expect(this.game.rings.void.fate).toBe(1);
+                expect(this.getChatLogs(3)).toContain('player1 uses Tranquil Philosopher to choose the Void Ring and gain 1 honor');
             });
         });
     });
