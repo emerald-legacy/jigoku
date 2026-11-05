@@ -15,6 +15,26 @@ function sumModifiers(
     return modifiers.reduce<number>((a, b) => a + (typeof b === 'number' ? b : b(target, context)), 0);
 }
 
+// The modifiers report switched values (Traveling Tinkerer); this is how far the military total is off from the printed one.
+function militarySwitchOffset(target: DrawCard): number {
+    return target.attachments.reduce((offset, attachment) => {
+        const military = parseInt(attachment.cardData.military_bonus ?? '');
+        const political = parseInt(attachment.cardData.political_bonus ?? '');
+        if(isNaN(military) || isNaN(political) || !attachment.isAttachmentBonusModifierSwitchActive()) {
+            return offset;
+        }
+        return offset + military - political;
+    }, 0);
+}
+
+function printedModifiers(target: DrawCard, context: AbilityContext) {
+    const offset = militarySwitchOffset(target);
+    return {
+        military: sumModifiers(target.getEffects(EffectName.AttachmentMilitarySkillModifier), target, context) + offset,
+        political: sumModifiers(target.getEffects(EffectName.AttachmentPoliticalSkillModifier), target, context) - offset
+    };
+}
+
 export default class MirumotoRei extends DrawCard {
     static id = 'mirumoto-rei';
 
@@ -25,33 +45,15 @@ export default class MirumotoRei extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.hasTrait(Trait.Bushi) && card !== context.source
-            }, cardLastingEffect((context) => ({
-                target: context.source,
-                effect: [
-                    modifyMilitarySkill(
-                        context.target
-                            ? sumModifiers(
-                                context.target.getEffects(EffectName.AttachmentMilitarySkillModifier),
-                                context.target,
-                                context
-                            )
-                            : 0
-                    ),
-                    modifyPoliticalSkill(
-                        context.target
-                            ? sumModifiers(
-                                context.target.getEffects(EffectName.AttachmentPoliticalSkillModifier),
-                                context.target,
-                                context
-                            )
-                            : 0
-                    )
-                ]
-            })))
+            }, cardLastingEffect((context) => {
+                const { military, political } = context.target ? printedModifiers(context.target, context) : { military: 0, political: 0 };
+                return {
+                    target: context.source,
+                    effect: [modifyMilitarySkill(military), modifyPoliticalSkill(political)]
+                };
+            }))
             .chatText((context) => {
-                const target = context.target;
-                const military = sumModifiers(target.getEffects(EffectName.AttachmentMilitarySkillModifier), target, context);
-                const political = sumModifiers(target.getEffects(EffectName.AttachmentPoliticalSkillModifier), target, context);
+                const { military, political } = printedModifiers(context.target, context);
                 return msg`give ${context.source} a skill bonus equal to the total attachment skill bonus on ${context.chatTarget()} (${military}${'military'}/${political}${'political'})`;
             });
     }
