@@ -192,17 +192,24 @@ export class ProvinceCard extends BaseCard {
         );
     }
 
+    /** During a conflict (RRG Eligible) nothing is paid, so no attack or declaration costs are checked. */
+    isEligibleToBeAttacked(): boolean {
+        return (
+            !this.isBroken &&
+            !this.anyEffect(EffectName.CannotBeAttacked) &&
+            (this.location !== Location.StrongholdProvince ||
+                this.controller.getProvinces((card) => card.isBroken).length > 2 ||
+                this.controller.anyEffect(EffectName.StrongholdCanBeAttacked))
+        );
+    }
+
     canBeAttacked() {
         const fateCostToAttack = this.getFateCostToAttack();
         const attackers = this.game.currentConflict?.attackers ?? [];
 
         return (
-            !this.isBroken &&
-            !this.anyEffect(EffectName.CannotBeAttacked) &&
-            (!this.controller.opponent || this.controller.opponent.canSpendFate(fateCostToAttack + fateCostToDeclare(attackers), this.game.getFrameworkCostContext(this.controller.opponent))) &&
-            (this.location !== Location.StrongholdProvince ||
-                this.controller.getProvinces((card) => card.isBroken).length > 2 ||
-                this.controller.anyEffect(EffectName.StrongholdCanBeAttacked))
+            this.isEligibleToBeAttacked() &&
+            (!this.controller.opponent || this.controller.opponent.canSpendFate(fateCostToAttack + fateCostToDeclare(attackers), this.game.getFrameworkCostContext(this.controller.opponent)))
         );
     }
 
@@ -291,7 +298,7 @@ export class ProvinceCard extends BaseCard {
         if(
             this.game.isDuringConflict() &&
             !this.isConflictProvince() &&
-            this.canBeAttacked() &&
+            this.isEligibleToBeAttacked() &&
             this.game.currentConflict?.getConflictProvinces().some((a) => a.controller === this.controller)
         ) {
             menu.push({ command: 'move_conflict', text: 'Move Conflict' });

@@ -20,7 +20,7 @@ class DiversionaryManeuver extends DrawCard {
             .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card, context) => !card.isConflictProvince() && card.canBeAttacked() && (context.game.currentConflict?.getConflictProvinces() ?? []).some((a) => a.controller === card.controller)
+                cardCondition: (card, context) => !card.isConflictProvince() && card.isEligibleToBeAttacked() && (context.game.currentConflict?.getConflictProvinces() ?? []).some((a) => a.controller === card.controller)
             })
             .gameAction(sequential([
                 multiple([

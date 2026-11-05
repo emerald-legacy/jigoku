@@ -19,7 +19,7 @@ export class MoveConflictAction<Context extends AbilityContext = AbilityContext>
             !context.game.isDuringConflict() ||
             card.type !== CardType.Province ||
             card.isConflictProvince() ||
-            !card.canBeAttacked() ||
+            !card.isEligibleToBeAttacked() ||
             !context.game.currentConflict || !context.game.currentConflict.getConflictProvinces().some((a) => a.controller === card.controller)
         ) {
             return false;
