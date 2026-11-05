@@ -3,6 +3,7 @@ import { PlayCharacterAsAttachment } from '../../PlayCharacterAsAttachment.js';
 import { changeType, modifyBothSkills } from '../../effects.js';
 import { detach } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
+import { msg } from '../../GameChat.js';
 
 export default class PromisingYouth extends DrawCard {
     static id = 'promising-youth';
@@ -22,6 +23,7 @@ export default class PromisingYouth extends DrawCard {
                 effect: changeType(CardType.Character)
             }))
             .gameAction(detach())
+            .chatText((context) => msg`detach ${context.source} from ${context.event.card} and turn it into a character`)
             .attachmentText();
     }
 }

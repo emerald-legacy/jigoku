@@ -30,6 +30,7 @@ describe('A Matsu Proves Their Worth', function () {
             expect(this.player1).toHavePrompt('Any reactions?');
 
             this.player1.clickCard(this.comingOfAge);
+            expect(this.getChatLogs(3)).toContain('player1 plays A Matsu Proves Their Worth to honor Matsu Berserker, place 1 fate on it, gain 1 honor and draw 1 card if it wins this conflict, or discard it from play if it does not');
 
             this.player2.clickCard(this.kuwanan);
             this.player2.clickPrompt('Done');

@@ -36,6 +36,7 @@ describe('Trick of the Light', function () {
                 expect(this.player1).toHavePrompt('Trick Of The Light');
                 expect(this.player1).toBeAbleToSelect(this.adept);
                 this.player1.clickCard(this.adept);
+                expect(this.getChatLogs(3)).toContain('player1 plays Trick of the Light to blank Adept of the Waves until the end of the conflict');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 this.player2.clickCard(this.adept);
                 expect(this.player2).toHavePrompt('Conflict Action Window');

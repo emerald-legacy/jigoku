@@ -13,7 +13,8 @@ class TrickOfTheLight extends DrawCard {
                 cardCondition: (card) => card.isParticipating()
             }, cardLastingEffect({
                 effect: blank()
-            }));
+            }))
+            .chatText('blank {0} until the end of the conflict');
     }
 }
 

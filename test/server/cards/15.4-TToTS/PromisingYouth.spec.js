@@ -102,6 +102,7 @@ describe('Promising Youth', function () {
                 this.player1.clickCard(this.youth);
                 expect(this.whisperer.location).toBe('dynasty discard pile');
                 expect(this.youth.location).toBe('play area');
+                expect(this.getChatLogs(5)).toContain('player1 uses Promising Youth to detach Promising Youth from Doji Whisperer and turn it into a character');
             });
         });
     });

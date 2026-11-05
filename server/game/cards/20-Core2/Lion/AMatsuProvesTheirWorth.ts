@@ -46,6 +46,7 @@ export default class AMatsuProvesTheirWorth extends DrawCard {
                     ]
                 };
             })
+            .chatText((context) => msg`honor ${context.event.conflict.attackers[0]}, place 1 fate on it, gain 1 honor and draw 1 card if it wins this conflict, or discard it from play if it does not`)
             .max(perConflict(1));
     }
 }
