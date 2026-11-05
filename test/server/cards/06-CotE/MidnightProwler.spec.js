@@ -37,6 +37,15 @@ describe('Midnight Prowler', function() {
                 expect(this.shrineMaiden.location).toBe('conflict deck');
             });
 
+            it('says it looks at the top card when only one is left', function () {
+                this.player2.reduceDeckToNumber('conflict deck', 1);
+                this.noMoreActions();
+                this.player1.clickCard(this.midnightProwler);
+                this.player1.clickPrompt('Shrine Maiden');
+                expect(this.shrineMaiden.location).toBe('conflict discard pile');
+                expect(this.getChatLogs(5)).toContain('player1 uses Midnight Prowler to look at the top card of player2\'s conflict deck');
+            });
+
             it('should let you keep both cards on top of your opponents deck', function () {
                 this.noMoreActions();
                 this.player1.clickCard(this.midnightProwler);

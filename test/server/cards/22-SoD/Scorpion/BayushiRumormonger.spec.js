@@ -44,5 +44,20 @@ describe('Bayushi Rumormonger', function () {
             expect(discarded).toHaveBeenCalledWith(jasmine.objectContaining({ cards: [this.assassination, this.letGo] }));
             expect(this.getChatLogs(5)).toContain('player1 uses Bayushi Rumormonger to discard 2 cards from player2\'s conflict deck');
         });
+
+        it('discards the one card left in the opponent\'s conflict deck', function () {
+            this.player2.reduceDeckToNumber('conflict deck', 1);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.rumormonger, this.toshimoko],
+                defenders: [this.keeper]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.rumormonger);
+
+            expect(this.assassination.location).toBe('conflict discard pile');
+            expect(this.getChatLogs(5)).toContain('player1 uses Bayushi Rumormonger to discard 1 card from player2\'s conflict deck');
+        });
     });
 });

@@ -55,6 +55,11 @@ describe('Alibi Artist', function() {
                     expect(this.getChatLogs(2)).toContain('player1 takes 1 card');
                     expect(this.getChatLogs(1)).not.toContain('player1 puts 1 card on the bottom of their conflict deck');
                 });
+
+                it('says it looks at the top card', function() {
+                    this.player1.clickCard('alibi-artist');
+                    expect(this.getChatLogs(3)).toContain('player1 uses Alibi Artist to look at the top card of their conflict deck');
+                });
             });
 
             describe('if the conflict deck contains 2 cards', function() {

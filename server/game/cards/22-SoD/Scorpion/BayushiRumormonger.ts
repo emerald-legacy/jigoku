@@ -12,7 +12,7 @@ export default class BayushiRumormonger extends DrawCard {
                 target: context.player.opponent?.conflictDeck.slice(0, this.getHighestNumberOfParticipants(context)) ?? []
             }))
             .chatText((context) => {
-                const x = this.getHighestNumberOfParticipants(context);
+                const x = Math.min(this.getHighestNumberOfParticipants(context), context.player.opponent?.conflictDeck.length ?? 0);
                 return msg`discard ${x} card${x === 1 ? '' : 's'} from ${context.player.opponent}'s conflict deck`;
             });
     }

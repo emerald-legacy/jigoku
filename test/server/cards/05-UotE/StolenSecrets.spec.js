@@ -83,6 +83,14 @@ describe('Stolen Secrets', function () {
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                 });
 
+                it('says it looks at the top card when only one is left', function () {
+                    this.player2.reduceDeckToNumber('conflict deck', 1);
+                    this.player1.clickCard(this.stolenSecrets);
+                    this.player1.clickCard(this.favoredNiece);
+                    expect(this.player1).toHavePromptButton(this.kamiUnleashed.name);
+                    expect(this.getChatLogs(5)).toContain('player1 plays Stolen Secrets, removing 1 fate from Favored Niece to look at the top card of player2\'s conflict deck and remove it from the game');
+                });
+
                 describe('if costs are paid', function () {
                     beforeEach(function () {
                         this.player1.clickCard(this.stolenSecrets);
@@ -91,6 +99,10 @@ describe('Stolen Secrets', function () {
 
                     it('should remove a fate from the targeted character', function () {
                         expect(this.favoredNiece.fate).toBe(1);
+                    });
+
+                    it('says it looks at the top 4 cards', function () {
+                        expect(this.getChatLogs(5)).toContain('player1 plays Stolen Secrets, removing 1 fate from Favored Niece to look at the top 4 cards of player2\'s conflict deck and remove one from the game');
                     });
 
                     it('should prompt to choose from (up to) the top 4 cards of your opponent', function () {

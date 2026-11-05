@@ -53,6 +53,14 @@ describe('Shoju\'s Diviner', function() {
             expect(this.getChatLogs(10)).toContain('player1 uses Shoju\'s Diviner to look at the top 8 cards of their conflict deck');
         });
 
+        it('says how many cards it looks at when fewer than 8 are left', function() {
+            this.player1.reduceDeckToNumber('conflict deck', 3);
+            this.player1.clickCard(this.diviner);
+            expect(this.player1).toHavePromptButton('Ready for Battle');
+            expect(this.player1).not.toHavePromptButton('Voice of Honor');
+            expect(this.getChatLogs(10)).toContain('player1 uses Shoju\'s Diviner to look at the top 3 cards of their conflict deck');
+        });
+
         it('should discard the selected cards and put the rest on the deck in the order selected', function() {
             this.player1.clickCard(this.diviner);
             this.player1.clickPrompt('Voice of Honor');

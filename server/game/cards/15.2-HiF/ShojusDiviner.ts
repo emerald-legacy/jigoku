@@ -3,6 +3,7 @@ import DrawCard from '../../DrawCard.js';
 import { gainAbility } from '../../effects.js';
 import { discardCard, rearrangeDeck } from '../../GameActions/GameActions.js';
 import { TargetMode } from '../../Constants.js';
+import { topCards } from '../topCards.js';
 
 class ShojusDiviner extends DrawCard {
     static id = 'shoju-s-diviner';
@@ -24,7 +25,7 @@ class ShojusDiviner extends DrawCard {
                         message: (context, ordered) => msg`${context.player} places ${ordered.length} card${ordered.length > 1 ? 's' : ''} on top of their deck`
                     }).resolve(context.player, context)
                 })
-                .chatText('look at the top 8 cards of their conflict deck'))
+                .chatText((context) => msg`look at the ${topCards(8, context.player.conflictDeck.length)} of their conflict deck`))
         });
     }
 }

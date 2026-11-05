@@ -79,6 +79,23 @@ describe('Isawa Tadaka 2', function() {
                 expect(this.getChatLogs(1)).toContain('player1 uses Isawa Tadaka, removing Adept of the Waves from the game to look at 1 random card in player2\'s hand');
             });
 
+            it('looks at no more cards than the opponent holds', function() {
+                this.player2.moveCard('ornate-fan', 'conflict discard pile');
+                this.player2.moveCard('fine-katana', 'conflict discard pile');
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.isawaTadaka],
+                    defenders: []
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.isawaTadaka);
+                this.player1.clickCard(this.adeptOfTheWaves);
+                this.player1.clickCard(this.solemnScholar);
+                this.player1.clickPrompt('Done');
+                expect(this.solemnScholar.location).toBe('removed from game');
+                expect(this.getChatLogs(5)).toContain('player1 uses Isawa Tadaka, removing Adept of the Waves and Solemn Scholar from the game to look at 1 random card in player2\'s hand');
+            });
+
             it('should prompt to choose a card to discard from that number of randomly chosen cards in your opponent\'s hand', function() {
                 this.noMoreActions();
                 this.initiateConflict({

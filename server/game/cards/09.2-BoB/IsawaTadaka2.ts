@@ -35,7 +35,7 @@ export default class IsawaTadaka2 extends DrawCard {
             }))
             .chatText((context) => {
                 const removed = context.costs.removeFromGame ?? [];
-                const amount = Array.isArray(removed) ? removed.length : 1;
+                const amount = Math.min(Array.isArray(removed) ? removed.length : 1, context.player.opponent?.hand.length ?? 0);
                 return msg`look at ${amount} random card${amount === 1 ? '' : 's'} in ${context.player.opponent}'s hand`;
             });
     }

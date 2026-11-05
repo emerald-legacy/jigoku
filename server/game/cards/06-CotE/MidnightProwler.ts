@@ -2,6 +2,7 @@ import { Location, ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { moveCard } from '../../GameActions/GameActions.js';
 import { msg } from '../../GameChat.js';
+import { topCards } from '../topCards.js';
 
 export default class MidnightProwler extends DrawCard {
     static id = 'midnight-prowler';
@@ -21,6 +22,6 @@ export default class MidnightProwler extends DrawCard {
                 gameAction: moveCard({ destination: Location.ConflictDiscardPile }),
                 message: (_context, card, player) => msg`${player} chooses to discard ${card}`
             }))
-            .chatText((context) => msg`look at the top two cards of ${context.player.opponent}'s conflict deck`);
+            .chatText((context) => msg`look at the ${topCards(2, context.player.opponent?.conflictDeck.length ?? 0, true)} of ${context.player.opponent}'s conflict deck`);
     }
 }

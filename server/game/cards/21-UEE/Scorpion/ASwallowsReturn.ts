@@ -2,6 +2,7 @@ import { msg } from '../../../GameChat.js';
 import { Location, PlayType } from '../../../Constants.js';
 import { cardMenu, discardCard, playCard, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { topCards } from '../../topCards.js';
 
 const CARD_COUNT = 3;
 
@@ -43,7 +44,7 @@ export default class ASwallowsReturn extends DrawCard {
                     discardCard(() => ({ target: rest() }))
                 ];
             }))
-            .chatText((context) => msg`look at the top ${CARD_COUNT} cards of ${context.player.opponent}'s conflict deck`)
+            .chatText((context) => msg`look at the ${topCards(CARD_COUNT, context.player.opponent?.conflictDeck.length ?? 0)} of ${context.player.opponent}'s conflict deck`)
             .cannotBeMirrored();
     }
 }

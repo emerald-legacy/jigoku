@@ -62,6 +62,16 @@ describe('A Swallow\'s Return', function () {
                 );
             });
 
+            it('says it looks at the top card when only one is left', function () {
+                this.player1.reduceDeckToNumber('conflict deck', 1);
+                this.player2.clickCard(this.swallowsReturn);
+                expect(this.player2).not.toHavePromptButton('Assassination');
+                expect(this.player2).not.toHavePromptButton('Honored Blade');
+                expect(this.getChatLogs(3)).toContain(
+                    'player2 plays A Swallow\'s Return to look at the top card of player1\'s conflict deck'
+                );
+            });
+
             it('should discard all three when nothing is played', function () {
                 this.player2.clickCard(this.swallowsReturn);
                 this.player2.clickPrompt('Play nothing');
