@@ -1,5 +1,3 @@
-import * as costs from '../../../../build/server/game/costs/index.js';
-
 describe('Divine Ancestry', function() {
     integration(function() {
         describe('Divine Ancestry\'s ability - draw phase', function() {
@@ -57,7 +55,7 @@ describe('Divine Ancestry - Reactions', function() {
         describe('Divine Ancestry\'s ability - conflict phase', function() {
             beforeEach(function() {
                 this.setupTest({
-                    phase: 'draw',
+                    phase: 'dynasty',
                     player1: {
                         honor: 11,
                         inPlay: ['shiba-tsukune', 'beloved-advisor'],
@@ -66,9 +64,8 @@ describe('Divine Ancestry - Reactions', function() {
                         conflictDiscard: ['divine-ancestry']
                     },
                     player2: {
-                        stronghold: ['city-of-the-open-hand'],
                         honor: 9,
-                        inPlay: ['shrine-maiden'],
+                        inPlay: ['shrine-maiden', 'kakita-asami'],
                         hand: ['noble-sacrifice', 'watch-commander']
                     }
                 });
@@ -76,19 +73,10 @@ describe('Divine Ancestry - Reactions', function() {
                 this.player1.player.promptedActionWindows.draw = true;
                 this.player2.player.promptedActionWindows.draw = true;
 
-                this.city = this.player2.findCardByName('city-of-the-open-hand');
-                // the FFG version of the stronghold: "Steal an honor"
-                this.city.abilities.actions = [];
-                this.city.declareAbilities(() => {
-                    this.city.action('Steal an honor')
-                        .condition((context) => !!(context.player.opponent && context.player.isLessHonorable()))
-                        .cost(costs.bowSelf())
-                        .takeHonor();
-                });
-
                 this.shrineMaiden = this.player2.findCardByName('shrine-maiden');
                 this.sac = this.player2.findCardByName('noble-sacrifice');
                 this.watchCommander = this.player2.findCardByName('watch-commander');
+                this.asami = this.player2.findCardByName('kakita-asami');
 
                 this.shibaTsukune = this.player1.findCardByName('shiba-tsukune');
 
@@ -101,9 +89,7 @@ describe('Divine Ancestry - Reactions', function() {
 
                 this.ancestry = this.player1.findCardByName('divine-ancestry');
 
-                //HACK: the phase starts before the test finishes setting up, so this sometimes ends up in hand and able to be reacted to...
-                //so we'll click it just in case
-                this.player1.clickCard(this.ancestry);
+                this.noMoreActions();
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 this.player1.moveCard(this.ancestry, 'hand');
@@ -193,10 +179,20 @@ describe('Divine Ancestry - Reactions', function() {
             });
 
             it('opponent should not be able to take honor', function() {
+                const honor = this.player1.honor;
+                this.noMoreActions();
+                this.player1.passConflict();
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.asami],
+                    defenders: []
+                });
+
                 this.player1.pass();
-                expect(this.player2).toHavePrompt('Action Window');
-                this.player2.clickCard(this.city);
-                expect(this.player2).toHavePrompt('Action Window');
+                this.player2.clickCard(this.asami);
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.player1.honor).toBe(honor);
             });
 
             it('unopposed and air ring', function() {

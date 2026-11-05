@@ -1,6 +1,3 @@
-import { ResolvableAbility } from '../../../../../build/server/game/ResolvableAbility.js';
-import { putIntoPlay } from '../../../../../build/server/game/GameActions/GameActions.js';
-
 describe('Beguiling Maiko', function () {
     integration(function () {
         beforeEach(function () {
@@ -70,20 +67,20 @@ describe('Beguiling Maiko put into play', function () {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['doji-whisperer'],
+                    inPlay: ['shosuro-isa'],
                     dynastyDiscard: ['beguiling-maiko']
                 }
             });
             this.maiko = this.player1.findCardByName('beguiling-maiko');
-            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.isa = this.player1.findCardByName('shosuro-isa');
         });
 
         it('does not react when put into play', function () {
-            const context = new ResolvableAbility(this.whisperer, {}).createContext(this.player1.player);
-            this.game.queueSimpleStep(() => putIntoPlay().resolve(this.maiko, context));
-            this.game.continue();
+            this.player1.clickCard(this.isa);
+            this.player1.clickCard(this.maiko);
             expect(this.maiko.location).toBe('play area');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Action Window');
         });
     });
 });

@@ -1,14 +1,11 @@
-import { ResolvableAbility } from '../../../../../build/server/game/ResolvableAbility.js';
-import { cardLastingEffect } from '../../../../../build/server/game/GameActions/GameActions.js';
-import { modifyBaseMilitarySkillMultiplier } from '../../../../../build/server/game/effects.js';
-
 describe('Cantor of Gales', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['cantor-of-gales', 'adept-of-the-waves', 'seeker-initiate']
+                    inPlay: ['cantor-of-gales', 'adept-of-the-waves', 'seeker-initiate'],
+                    hand: ['impossible-koan']
                 }
             });
             this.cantor = this.player1.findCardByName('cantor-of-gales');
@@ -50,21 +47,17 @@ describe('Cantor of Gales', function () {
             expect(this.game.currentConflict.attackerSkill).toBe(6);
         });
 
-        it('contributes its base skill, not a fixed 2', function () {
-            const context = new ResolvableAbility(this.cantor, {}).createContext(this.player1.player);
-            this.game.queueSimpleStep(() => cardLastingEffect({
-                duration: 'untilEndOfRound',
-                effect: modifyBaseMilitarySkillMultiplier(2)
-            }).resolve(this.cantor, context));
-            this.game.continue();
-            expect(this.cantor.getBaseMilitarySkill()).toBe(4);
-
+        it('contributes its current base skill, not its printed skill', function () {
             this.initiateConflict({
                 attackers: [this.adeptHonorable],
                 defenders: [],
                 type: 'military'
             });
-            expect(this.game.currentConflict.attackerSkill).toBe(8);
+            this.player2.pass();
+            this.player1.clickCard('impossible-koan');
+            expect(this.cantor.getBaseMilitarySkill()).toBe(1);
+            // Adept: base 1 + 2 glory from honored; Cantor: base 1
+            expect(this.game.currentConflict.attackerSkill).toBe(4);
         });
 
         it('does not work while participating', function () {
