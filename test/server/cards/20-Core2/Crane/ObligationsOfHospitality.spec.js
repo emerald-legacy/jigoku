@@ -148,3 +148,49 @@ describe('Obligations of Hospitality cost and conditions', function () {
         });
     });
 });
+
+describe('Obligations of Hospitality with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 12,
+                    inPlay: ['doji-whisperer', 'endless-plains-skirmisher'],
+                    hand: ['obligations-of-hospitality']
+                },
+                player2: {
+                    honor: 8,
+                    inPlay: ['solemn-scholar', 'endless-plains-skirmisher']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.whisperer],
+                defenders: [this.scholar]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('does not choose the opponent\'s character on your side', function () {
+            this.player2.pass();
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard('obligations-of-hospitality');
+            expect(this.player1).toBeAbleToSelect(this.scholar);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher2);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher1);
+            this.player1.clickCard(this.scholar);
+            expect(this.scholar.controller).toBe(this.player1.player);
+        });
+    });
+});

@@ -1,4 +1,4 @@
-import { CardType, Players } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import { discardFromPlay, injure, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -20,8 +20,10 @@ export default class IkomaYumikosDagger extends DrawCard {
         this.conflictAction('Injure a character')
             .target({
                 cardType: CardType.Character,
-                controller: Players.Opponent,
-                cardCondition: (card, context) => card.isParticipating() && card.costAtMost(context.source.getCost())
+                cardCondition: (card, context) =>
+                    !!context.player.opponent &&
+                    card.isParticipatingFor(context.player.opponent) &&
+                    card.costAtMost(context.source.getCost())
             }, multiple([
                 injure(),
                 injure((context) => ({ target: context.source }))

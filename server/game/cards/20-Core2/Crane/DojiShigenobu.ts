@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { bow, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,12 +11,11 @@ export default class DojiShigenobu extends DrawCard {
         this.conflictAction('Bow a character')
             .cost(costs.bow({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating()
+                cardCondition: (card, context) => card.isParticipatingFor(context.player)
             }))
             .target({
                 cardType: CardType.Character,
-                controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating()
+                cardCondition: (card, context) => !!context.player.opponent && card.isParticipatingFor(context.player.opponent)
             }, bow())
             .then()
             .optional({

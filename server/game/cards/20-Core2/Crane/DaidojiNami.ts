@@ -1,4 +1,4 @@
-import { CardType, Players } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import * as costs from '../../../costs/index.js';
 import { sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -14,8 +14,7 @@ export default class DaidojiNami extends DrawCard {
             }))
             .target({
                 cardType: CardType.Character,
-                controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating()
+                cardCondition: (card, context) => !!context.player.opponent && card.isParticipatingFor(context.player.opponent)
             }, sendHome());
     }
 }

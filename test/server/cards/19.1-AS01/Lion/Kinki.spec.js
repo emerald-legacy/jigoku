@@ -142,3 +142,52 @@ describe('Kinki', function () {
         });
     });
 });
+
+describe('Kinki with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer', 'endless-plains-skirmisher'],
+                    hand: ['kinki']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar', 'endless-plains-skirmisher']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.kinki = this.player1.findCardByName('kinki');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+            this.player1.playAttachment(this.kinki, this.whisperer);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.whisperer],
+                defenders: [this.scholar]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('chooses a character on the enemy side, whoever controls it, and its controller selects', function () {
+            this.player2.pass();
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard(this.kinki);
+            expect(this.player1).toBeAbleToSelect(this.scholar);
+            expect(this.player1).toBeAbleToSelect(this.skirmisher1);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher2);
+            this.player1.clickCard(this.skirmisher1);
+            expect(this.player1).toHavePromptButton('Move this character home');
+            this.player1.clickPrompt('Move this character home');
+            expect(this.skirmisher1.isParticipating()).toBe(false);
+        });
+    });
+});

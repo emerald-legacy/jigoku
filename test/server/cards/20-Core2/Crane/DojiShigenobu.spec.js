@@ -78,3 +78,53 @@ describe('Doji Shigenobu', function () {
         });
     });
 });
+
+describe('Doji Shigenobu with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-shigenobu', 'doji-whisperer', 'endless-plains-skirmisher']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar', 'endless-plains-skirmisher']
+                }
+            });
+            this.shigenobu = this.player1.findCardByName('doji-shigenobu');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.shigenobu, this.whisperer],
+                defenders: [this.scholar]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('bows a character on your side and chooses a character on the enemy side, by side', function () {
+            this.player2.pass();
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard(this.shigenobu);
+            expect(this.player1).toBeAbleToSelect(this.scholar);
+            expect(this.player1).toBeAbleToSelect(this.skirmisher1);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher2);
+            this.player1.clickCard(this.skirmisher1);
+
+            expect(this.player1).toHavePrompt('Select card to bow');
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher1);
+            this.player1.clickCard(this.whisperer);
+            expect(this.skirmisher1.bowed).toBe(true);
+            expect(this.getChatLogs(5)).toContain('player1 uses Dōji Shigenobu, bowing Doji Whisperer to bow Endless Plains Skirmisher');
+        });
+    });
+});

@@ -70,3 +70,48 @@ describe('Daidoji Nami', function() {
         });
     });
 });
+
+describe('Daidoji Nami with characters on the other side than their controller', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer', 'endless-plains-skirmisher']
+                },
+                player2: {
+                    inPlay: ['daidoji-nami', 'doji-challenger', 'endless-plains-skirmisher']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.nami = this.player2.findCardByName('daidoji-nami');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.whisperer],
+                defenders: [this.nami, this.challenger]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('chooses a character on the enemy side, whoever controls it', function() {
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player2.clickCard(this.nami);
+            expect(this.player2).toBeAbleToSelect(this.whisperer);
+            expect(this.player2).toBeAbleToSelect(this.skirmisher2);
+            expect(this.player2).not.toBeAbleToSelect(this.skirmisher1);
+            this.player2.clickCard(this.skirmisher2);
+            expect(this.player2).toHavePrompt('Select card to sacrifice');
+            this.player2.clickCard(this.challenger);
+            expect(this.skirmisher2.isParticipating()).toBe(false);
+        });
+    });
+});

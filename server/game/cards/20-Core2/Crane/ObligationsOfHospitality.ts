@@ -18,8 +18,13 @@ export default class ObligationsOfHospitality extends DrawCard {
             .ifCondition((context) => !!context.player.opponent && context.player.isMoreHonorable())
             .target({
                 cardType: CardType.Character,
+                // taking control of your own character on the enemy side would change nothing
                 controller: Players.Opponent,
-                cardCondition: (card, context) => card.isParticipating() && !card.anotherUniqueInPlay(context.player) && card.costLessThan(3)
+                cardCondition: (card, context) =>
+                    !!context.player.opponent &&
+                    card.isParticipatingFor(context.player.opponent) &&
+                    !card.anotherUniqueInPlay(context.player) &&
+                    card.costLessThan(3)
             }, cardLastingEffect((context) => ({
                 effect: takeControl(context.player)
             })))
