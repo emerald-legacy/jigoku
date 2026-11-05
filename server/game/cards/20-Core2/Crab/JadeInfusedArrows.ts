@@ -21,12 +21,16 @@ export default class JadeInfusedArrows extends DrawCard {
     }
 
     private isAgainstEvil(context: AbilityContext): boolean {
-        return context.player.opponent?.cardsInPlay.some(
+        const opponent = context.player.opponent;
+        if(!opponent) {
+            return false;
+        }
+        return this.game.findAnyCardsInPlay(
             (card) =>
                 card.type === CardType.Character &&
-                card.isParticipating() &&
-                (card.isTainted || card.hasTrait(Trait.Shadowlands))
-        ) ?? false;
+                card.isParticipatingFor(opponent) &&
+                (card.isTainted || card.hasTrait(Trait.Corrupt))
+        ).length > 0;
     }
 
     private bonusAmount(context: AbilityContext): number {
