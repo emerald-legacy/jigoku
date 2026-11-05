@@ -39,6 +39,11 @@ export class DeckChoice {
         return pile ? context.game.gameChat.nested(msg`${pile.player}'s ${pile.name}`) : undefined;
     }
 
+    /** The chosen pile's cards. */
+    chosenCards(context: AbilityContext, select = context.select): DrawCard[] {
+        return this.#piles(context).find((candidate) => candidate.label === select)?.cards ?? [];
+    }
+
     #piles(context: AbilityContext): Pile[] {
         const players = [
             ...(this.options.players !== Players.Opponent ? [context.player] : []),

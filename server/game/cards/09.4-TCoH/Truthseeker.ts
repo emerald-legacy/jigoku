@@ -3,6 +3,7 @@ import DrawCard from '../../DrawCard.js';
 import { Players } from '../../Constants.js';
 import { rearrangeDeck } from '../../GameActions/GameActions.js';
 import { DeckChoice } from '../DeckChoice.js';
+import { topCards } from '../topCards.js';
 
 const decks = new DeckChoice({ players: Players.Any, pile: 'deck' });
 
@@ -23,7 +24,7 @@ class Truthseeker extends DrawCard {
                 amount: 3,
                 activePromptTitle: 'Select the card you would like to place on top of the deck'
             })))
-            .chatText((context) => msg`look at the top 3 cards of ${decks.chosenName(context)}`);
+            .chatText((context) => msg`look at the ${topCards(3, decks.chosenCards(context).length)} of ${decks.chosenName(context)}`);
     }
 }
 

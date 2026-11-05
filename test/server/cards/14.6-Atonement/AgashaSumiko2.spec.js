@@ -189,6 +189,21 @@ describe('Agasha Sumiko 2', function() {
             expect(this.getChatLogs(5)).toContain('player2 discards Fine Katana and Ornate Fan');
         });
 
+        it('chat messages - only 1 card in hand', function () {
+            this.player2.honor = 10;
+            this.player1.honor = 10;
+            this.player2.fate = 10;
+            this.player1.fate = 10;
+            this.player2.moveCard(this.katana2, 'hand');
+
+            this.player2.clickCard(this.swim);
+            this.player2.clickCard(this.sumiko);
+            this.player1.clickCard(this.sumiko);
+
+            expect(this.getChatLogs(5)).toContain('player1 uses Agasha Sumiko to make player2 discard 1 card');
+            expect(this.katana2.location).toBe('conflict discard pile');
+        });
+
         it('chat messages - just 1', function() {
             this.player2.honor = 15;
             this.player1.honor = 10;

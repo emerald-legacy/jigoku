@@ -328,7 +328,7 @@ describe('The Wealth of the Crane', function() {
                 this.player1.moveCard(this.mine, 'dynasty discard pile');
 
                 this.player1.clickCard(this.wealth);
-                expect(this.getChatLogs(1)).toContain('player1 plays The Wealth of the Crane to look at the top ten cards of their dynasty deck');
+                expect(this.getChatLogs(1)).toContain('player1 plays The Wealth of the Crane to look at the top seven cards of their dynasty deck');
                 expect(this.player1).toHavePrompt('The Wealth of the Crane');
                 expect(this.player1).toHavePromptButton('Doji Whisperer');
                 expect(this.player1).not.toHavePromptButton('Kakita Yoshi');
@@ -353,7 +353,7 @@ describe('The Wealth of the Crane', function() {
                 this.player1.moveCard(this.storehouse, 'dynasty discard pile');
 
                 this.player1.clickCard(this.wealth);
-                expect(this.getChatLogs(1)).toContain('player1 plays The Wealth of the Crane to look at the top ten cards of their dynasty deck');
+                expect(this.getChatLogs(1)).toContain('player1 plays The Wealth of the Crane to look at the top four cards of their dynasty deck');
                 expect(this.player1).toHavePrompt('The Wealth of the Crane');
                 expect(this.player1).toHavePromptButton('Doji Whisperer');
                 expect(this.player1).not.toHavePromptButton('Kakita Yoshi');

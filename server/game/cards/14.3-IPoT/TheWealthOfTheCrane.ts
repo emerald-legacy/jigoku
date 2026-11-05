@@ -4,6 +4,8 @@ import { Location, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
 import { placeInProvinces } from '../placeInProvinces.js';
+import { msg } from '../../GameChat.js';
+import { topCards } from '../topCards.js';
 
 class TheWealthOfTheCrane extends DrawCard {
     static id = 'the-wealth-of-the-crane';
@@ -23,7 +25,7 @@ class TheWealthOfTheCrane extends DrawCard {
         this.action('Look at your dynasty deck')
             .condition((context) => context.player.dynastyDeck.length > 0)
             .handler((context) => placeInProvinces(context, context.player.dynastyDeck.slice(0, 10)))
-            .chatText('look at the top ten cards of their dynasty deck')
+            .chatText((context) => msg`look at the ${topCards(10, context.player.dynastyDeck.length, true)} of their dynasty deck`)
             .max(perPhase(1));
     }
 }

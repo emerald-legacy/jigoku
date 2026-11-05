@@ -43,6 +43,13 @@ describe('Starlit Skies', function () {
             expect(this.player2).toHavePrompt('Action Window');
         });
 
+        it('says it looks at the top card when only one is left', function () {
+            this.player1.reduceDeckToNumber('conflict deck', 1);
+            this.player1.clickCard(this.skies);
+            this.player1.clickPrompt('player1\'s Conflict Deck');
+            expect(this.getChatLogs(3)).toContain('player1 uses Starlit Skies to look at the top card of player1\'s conflict deck');
+        });
+
         describe('with two cards in the deck', function () {
             beforeEach(function () {
                 this.player1.reduceDeckToNumber('conflict deck', 2);

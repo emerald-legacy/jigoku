@@ -101,6 +101,14 @@ describe('Kaiu Forges', function() {
                 expect(this.getChatLogs(2)).toContain('player1 is shuffling their dynasty deck');
             });
 
+            it('says how many cards it looks at when fewer than 10 are left', function () {
+                this.player1.reduceDeckToNumber('dynasty deck', 4);
+                this.player1.clickCard(this.kaiuForges);
+                this.player1.clickCard(this.p1);
+                expect(this.player1).toHavePrompt('Choose a holding to swap with a Kaiu Wall');
+                expect(this.getChatLogs(3)).toContain('player1 uses Kaiu Forges to look at the top four cards of their dynasty deck');
+            });
+
             it('should allow you to choose a Kaiu Wall after choosing a holding', function() {
                 expect(this.kaiuForges.location).toBe('province 1');
                 this.player1.clickCard(this.kaiuForges);

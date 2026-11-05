@@ -3,6 +3,7 @@ import { Players } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 import { DeckChoice } from '../DeckChoice.js';
 import { discardBottomTop } from '../discardBottomTop.js';
+import { topCards } from '../topCards.js';
 
 const decks = new DeckChoice({ players: Players.Opponent, pile: 'deck' });
 
@@ -14,7 +15,7 @@ class MagnificentLighthouse extends DrawCard {
             .selectFrom({
                 activePromptTitle: 'Choose which deck to look at:'
             }, decks.choices(discardBottomTop))
-            .chatText((context) => msg`look at the top 3 cards of ${decks.chosenName(context)}`);
+            .chatText((context) => msg`look at the ${topCards(3, decks.chosenCards(context).length)} of ${decks.chosenName(context)}`);
     }
 }
 

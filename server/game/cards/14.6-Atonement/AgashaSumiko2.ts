@@ -36,7 +36,8 @@ export default class AgashaSumiko2 extends DrawCard {
                 messages.push('lose 2 fate');
             }
             if(context.player.opponent.hand.length > context.player.hand.length) {
-                messages.push('discard 2 cards');
+                const amount = Math.min(2, context.player.opponent.hand.length);
+                messages.push(`discard ${amount} card${amount === 1 ? '' : 's'}`);
             }
 
             if(messages.length === 3) {

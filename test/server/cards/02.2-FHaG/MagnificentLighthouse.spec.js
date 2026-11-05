@@ -47,6 +47,10 @@ describe('Magnificent Lighthouse', function() {
                 expect(this.player2).toHavePrompt('Action Window');
             });
 
+            it('says how many cards it looks at', function () {
+                expect(this.getChatLogs(3)).toContain('player1 uses Magnificent Lighthouse to look at the top 3 cards of player2\'s conflict deck');
+            });
+
             it('should report the discarded card and the card put on the bottom', function() {
                 this.player1.clickPrompt('Charge!');
                 this.player1.clickPrompt('Assassination');

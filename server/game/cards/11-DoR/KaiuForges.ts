@@ -3,6 +3,7 @@ import DrawCard from '../../DrawCard.js';
 import { Location, CardType, DeckType, Players, Trait } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import { moveCard, placeInProvince, sequential } from '../../GameActions/GameActions.js';
+import { topCards } from '../topCards.js';
 
 class KaiuForges extends DrawCard {
     static id = 'kaiu-forges';
@@ -23,7 +24,7 @@ class KaiuForges extends DrawCard {
                 cardCondition: (card) => card.type === CardType.Holding,
                 selectedCardsHandler: (context, _event, [cardFromDeck]) => this.swapWithKaiuWall(context, cardFromDeck)
             })
-            .chatText('look at the top ten cards of their dynasty deck');
+            .chatText((context) => msg`look at the ${topCards(10, context.player.dynastyDeck.length, true)} of their dynasty deck`);
     }
 
     private isKaiuWall(card: DrawCard): boolean {

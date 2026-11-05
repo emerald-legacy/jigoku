@@ -77,6 +77,15 @@ describe('Truthseeker', function() {
                 expect(this.player1).not.toHavePromptButton('Assassination');
             });
 
+            it('says how many cards it looks at when fewer than 3 are left', function () {
+                this.player1.reduceDeckToNumber('conflict deck', 2);
+                this.player1.clickCard(this.truthseeker);
+                this.player1.clickPrompt('1');
+                this.player1.clickCard(this.truthseeker);
+                this.player1.clickPrompt('player1\'s Conflict Deck');
+                expect(this.getChatLogs(3)).toContain('player1 uses Truthseeker to look at the top 2 cards of player1\'s conflict deck');
+            });
+
             it('should order the top 3 cards of the opponent\'s deck', function () {
                 this.letGo = this.player2.moveCard('let-go', 'conflict deck');
                 this.banzai = this.player2.moveCard('banzai', 'conflict deck');
