@@ -122,3 +122,50 @@ describe('Shosuro Technique', function () {
         });
     });
 });
+
+describe('Shosuro Technique with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-sadako', 'endless-plains-skirmisher'],
+                    hand: ['shosuro-technique']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar', 'endless-plains-skirmisher']
+                }
+            });
+            this.sadako = this.player1.findCardByName('shosuro-sadako');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.technique = this.player1.findCardByName('shosuro-technique');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.sadako],
+                defenders: [this.scholar]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('chooses a character on the enemy side, whoever controls it', function () {
+            this.player2.pass();
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard(this.technique);
+            this.player1.clickCard(this.sadako);
+            expect(this.player1).toBeAbleToSelect(this.scholar);
+            expect(this.player1).toBeAbleToSelect(this.skirmisher1);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher2);
+            this.player1.clickCard(this.skirmisher1);
+            expect(this.sadako.militarySkill).toBe(3);
+        });
+    });
+});

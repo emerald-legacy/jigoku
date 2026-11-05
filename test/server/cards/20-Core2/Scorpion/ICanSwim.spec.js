@@ -88,3 +88,55 @@ describe('I Can Swim', function() {
         });
     });
 });
+
+describe('I Can Swim with characters on the other side than their controller', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger', 'endless-plains-skirmisher'],
+                    hand: ['i-can-swim']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer', 'endless-plains-skirmisher']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.iCanSwim = this.player1.findCardByName('i-can-swim');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+            this.player1.player.showBid = 3;
+            this.player2.player.showBid = 1;
+            this.whisperer.dishonor();
+            this.skirmisher1.dishonor();
+            this.skirmisher2.dishonor();
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger],
+                defenders: [this.whisperer]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('chooses a dishonored character on their side, whoever controls it', function() {
+            this.player2.pass();
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard(this.iCanSwim);
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            expect(this.player1).toBeAbleToSelect(this.skirmisher1);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher2);
+            this.player1.clickCard(this.skirmisher1);
+            expect(this.skirmisher1.location).toBe('dynasty discard pile');
+            expect(this.getChatLogs(5)).toContain('player1 plays I Can Swim to discard Endless Plains Skirmisher');
+        });
+    });
+});

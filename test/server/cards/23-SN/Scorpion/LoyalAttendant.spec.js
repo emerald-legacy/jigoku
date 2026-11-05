@@ -61,3 +61,49 @@ describe('Loyal Attendant', function () {
     });
 });
 
+describe('Loyal Attendant with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['loyal-attendant', 'endless-plains-skirmisher'],
+                    hand: ['fine-katana', 'fine-katana']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer', 'endless-plains-skirmisher'],
+                    hand: ['ornate-fan']
+                }
+            });
+            this.attendant = this.player1.findCardByName('loyal-attendant');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+            const [katana1, katana2] = this.player1.filterCardsByName('fine-katana');
+            this.player1.playAttachment(katana1, this.skirmisher1);
+            this.player2.pass();
+            this.player1.playAttachment(katana2, this.skirmisher2);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.attendant],
+                defenders: [this.whisperer]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('chooses a character on the enemy side with your attachment, whoever controls it', function () {
+            this.player2.pass();
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard(this.attendant);
+            expect(this.player1).toBeAbleToSelect(this.skirmisher1);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher2);
+            expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+        });
+    });
+});

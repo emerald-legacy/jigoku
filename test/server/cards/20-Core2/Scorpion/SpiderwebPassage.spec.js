@@ -182,3 +182,56 @@ describe('Spiderweb Passage', function () {
         });
     });
 });
+
+describe('Spiderweb Passage with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-sadako', 'endless-plains-skirmisher'],
+                    hand: ['fiery-madness'],
+                    dynastyDiscard: ['spiderweb-passage']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer', 'endless-plains-skirmisher']
+                }
+            });
+            this.sadako = this.player1.findCardByName('shosuro-sadako');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.spiderwebPassage = this.player1.findCardByName('spiderweb-passage');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+            this.player1.moveCard(this.spiderwebPassage, 'province 1');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.sadako],
+                defenders: [this.whisperer]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('chooses a character on the enemy side, whoever controls it, and its controller selects', function () {
+            this.player2.pass();
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard(this.spiderwebPassage);
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            expect(this.player1).toBeAbleToSelect(this.skirmisher1);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher2);
+            this.player1.clickCard(this.skirmisher1);
+            expect(this.player1).toHavePromptButton('Discard 1 random card from hand');
+            expect(this.player1).toHavePromptButton('Discard Endless Plains Skirmisher');
+            this.player1.clickPrompt('Discard 1 random card from hand');
+            expect(this.player1.hand.length).toBe(0);
+            expect(this.skirmisher1.location).toBe('play area');
+            expect(this.getChatLogs(5)).toContain('player1 distracts the Shinobi');
+        });
+    });
+});

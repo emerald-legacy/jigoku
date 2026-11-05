@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { lookAt, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -11,9 +11,11 @@ export default class LoyalAttendant extends DrawCard {
     public override setupCardAbilities() {
         this.conflictAction('Discard a card')
             .target({
-                controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isParticipating() && card.attachments.filter((a) => a.controller === context.player).length > 0
+                cardCondition: (card, context) =>
+                    !!context.player.opponent &&
+                    card.isParticipatingFor(context.player.opponent) &&
+                    card.attachments.some((a) => a.controller === context.player)
             })
             .gameAction(multiple((context) => {
                 const cardNumber = context.target.attachments.length;

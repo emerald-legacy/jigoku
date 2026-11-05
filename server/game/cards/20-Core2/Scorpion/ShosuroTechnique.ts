@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, ConflictType, Players, Trait } from '../../../Constants.js';
+import { CardType, ConflictType, Trait } from '../../../Constants.js';
 import { duelIgnorePrintedSkill, setMilitarySkill } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -18,15 +18,13 @@ export default class ShosuroTechnique extends DrawCard {
                 name: 'shinobi',
                 activePromptTitle: 'Choose a Shinobi you control',
                 cardType: CardType.Character,
-                controller: Players.Self,
-                cardCondition: (card) => card.hasTrait(Trait.Shinobi) && card.isParticipating()
+                cardCondition: (card, context) => card.hasTrait(Trait.Shinobi) && card.isParticipatingFor(context.player)
             })
             .target({
                 name: 'enemy',
                 dependsOn: 'shinobi',
-                controller: Players.Opponent,
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating()
+                cardCondition: (card, context) => !!context.player.opponent && card.isParticipatingFor(context.player.opponent)
             })
             .cardLastingEffect((context) => ({
                 target: context.targets.shinobi,
