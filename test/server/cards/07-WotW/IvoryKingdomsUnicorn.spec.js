@@ -199,7 +199,7 @@ describe('Ivory Kingdoms Unicorn sent home by False Loyalties', function() {
                 phase: 'conflict',
                 player1: {
                     honor: 12,
-                    inPlay: ['ivory-kingdoms-unicorn', 'iuchi-farseer']
+                    inPlay: ['ivory-kingdoms-unicorn', 'iuchi-farseer', 'moto-youth']
                 },
                 player2: {
                     honor: 10,
@@ -208,7 +208,11 @@ describe('Ivory Kingdoms Unicorn sent home by False Loyalties', function() {
             });
             this.unicorn = this.player1.findCardByName('ivory-kingdoms-unicorn');
             this.farseer = this.player1.findCardByName('iuchi-farseer');
+            this.youth = this.player1.findCardByName('moto-youth');
             this.noMoreActions();
+        });
+
+        it('can\'t react: it wasn\'t attacking when the conflict finished (EmeraldDB ruling)', function() {
             this.initiateConflict({
                 attackers: [this.unicorn],
                 defenders: []
@@ -218,9 +222,6 @@ describe('Ivory Kingdoms Unicorn sent home by False Loyalties', function() {
             this.player2.clickCard('false-loyalties');
             this.player2.clickCard(this.unicorn);
             this.player2.clickCard(this.farseer);
-        });
-
-        it('can\'t react: it wasn\'t attacking when the conflict finished (EmeraldDB ruling)', function() {
             expect(this.unicorn.isParticipating()).toBe(false);
             this.player1.clickPrompt('No');
             this.player1.clickPrompt('Don\'t Resolve');
@@ -228,6 +229,40 @@ describe('Ivory Kingdoms Unicorn sent home by False Loyalties', function() {
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.player1).toHavePrompt('Action Window');
         });
+
+        it('can\'t react when moved into the conflict during its resolution (ruling #655)', function() {
+            this.initiateConflict({
+                attackers: [this.farseer, this.youth],
+                defenders: []
+            });
+            this.conflict = this.game.currentConflict;
+            this.noMoreActions();
+            this.player2.clickCard('false-loyalties');
+            this.player2.clickCard(this.farseer);
+            this.player2.clickCard(this.unicorn);
+            expect(this.unicorn.isAttacking()).toBe(true);
+            this.player1.clickPrompt('No');
+            this.player1.clickPrompt('Don\'t Resolve');
+            expect(this.conflict.brokenProvinces.length).toBe(1);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Action Window');
+        });
+
+        it('still reacts when another attacker is switched', function() {
+            this.initiateConflict({
+                attackers: [this.unicorn, this.farseer],
+                defenders: []
+            });
+            this.conflict = this.game.currentConflict;
+            this.noMoreActions();
+            this.player2.clickCard('false-loyalties');
+            this.player2.clickCard(this.farseer);
+            this.player2.clickCard(this.youth);
+            this.player1.clickPrompt('No');
+            this.player1.clickPrompt('Don\'t Resolve');
+            expect(this.conflict.brokenProvinces.length).toBe(1);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.unicorn);
+        });
     });
 });
-

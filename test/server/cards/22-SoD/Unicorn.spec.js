@@ -340,6 +340,44 @@ describe('SoD - Unicorn', function () {
                 expect(this.player2.honor).toBe(honor);
                 expect(this.player1).toHavePrompt('Action Window');
             });
+
+            it('can\'t react when moved into the conflict during its resolution', function () {
+                const honor = this.player2.honor;
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.yokuni],
+                    defenders: [this.youth, this.horde]
+                });
+                this.player2.pass();
+                this.player1.pass();
+                this.player1.clickCard('false-loyalties');
+                this.player1.clickCard(this.youth);
+                this.player1.clickCard(this.tomoe);
+                expect(this.getChatLogs(1)).toContain('player1 plays False Loyalties to switch Moto Youth and Utaku Tomoe');
+                expect(this.tomoe.bowed).toBe(true);
+                expect(this.player2).not.toHavePrompt('Triggered Abilities');
+                expect(this.player2.honor).toBe(honor);
+                expect(this.player1).toHavePrompt('Action Window');
+            });
+
+            it('still reacts when another defender is switched', function () {
+                const honor = this.player2.honor;
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.yokuni],
+                    defenders: [this.tomoe, this.horde]
+                });
+                this.player2.pass();
+                this.player1.pass();
+                this.player1.clickCard('false-loyalties');
+                this.player1.clickCard(this.horde);
+                this.player1.clickCard(this.youth);
+                expect(this.player2).toHavePrompt('Triggered Abilities');
+                this.player2.clickCard(this.tomoe);
+                expect(this.player2.honor).toBe(honor + 2);
+            });
         });
 
         describe('Utaku Tomoe and Palm Strike', function () {
