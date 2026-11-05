@@ -43,7 +43,7 @@ The game server communicates with the lobby server via WebSocket. Configure the 
 
 | Variable | Description |
 |----------|-------------|
-| `LOBBY_WS_URL` | WebSocket URL for lobby (e.g. `ws://lobby:6000`) |
+| `LOBBY_WS_URL` | WebSocket URL for lobby (e.g. `ws://lobby:6100`) |
 | `GAME_NODE_NAME` | Node identity (e.g. `node-1`) |
 | `GAME_NODE_SOCKET_IO_PORT` | Socket.IO port for player connections (e.g. `9500`) |
 | `GAME_NODE_PROXY_PORT` | Optional. External port advertised to the lobby (e.g. `443`); defaults to the Socket.IO port |
