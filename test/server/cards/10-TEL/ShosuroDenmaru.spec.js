@@ -28,6 +28,16 @@ describe('Shosuro Denmaru', function() {
             expect(this.dojiHotaru.glory).toBe(3);
         });
 
+        it('should not set base of your own honored characters', function() {
+            expect(this.shosuroDenmaru.glory).toBe(1);
+            this.shosuroDenmaru.honor();
+            this.dojiHotaru.honor();
+            this.game.checkGameState(true);
+            expect(this.shosuroDenmaru.isHonored).toBe(true);
+            expect(this.shosuroDenmaru.glory).toBe(1);
+            expect(this.dojiHotaru.glory).toBe(0);
+        });
+
         it('should set base of honored opponent characters to 0', function() {
             expect(this.dojiHotaru.glory).toBe(3);
 

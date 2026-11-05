@@ -14,7 +14,7 @@ describe('Oracle of Stone', function() {
                 this.oracleOfStone = this.player1.findCardByName('oracle-of-stone');
             });
 
-            it('should make each player 2 cards', function() {
+            it('should make each player draw 2 cards', function() {
                 const hand = this.player1.hand.length;
                 const conflictDeck = this.player1.conflictDeck.length;
                 const hand2 = this.player2.hand.length;

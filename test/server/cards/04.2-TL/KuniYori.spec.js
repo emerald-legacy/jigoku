@@ -1,6 +1,6 @@
 describe('Kuni Yori', function() {
     integration(function() {
-        describe('', function() {
+        describe('Kuni Yori\'s abilities', function() {
             beforeEach(function() {
                 this.setupTest({
                     phase: 'conflict',

@@ -157,3 +157,49 @@ describe('Retreat to Safety with characters on the other side than their control
         });
     });
 });
+
+describe('Retreat to Safety without a Commander', () => {
+    integration(() => {
+        let player2: IntegrationContext['player2'];
+        let matsuBerserker: DrawCard;
+        let ikomaProdigy: DrawCard;
+        let retreatToSafety: DrawCard;
+        let getChatLogs: (_n: number) => string[];
+
+        beforeEach(function(this: IntegrationContext) {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['border-rider']
+                },
+                player2: {
+                    inPlay: ['matsu-berserker', 'ikoma-prodigy'],
+                    hand: ['retreat-to-safety']
+                }
+            });
+
+            player2 = this.player2;
+            getChatLogs = (n) => this.getChatLogs(n);
+            matsuBerserker = player2.findDrawCard('matsu-berserker');
+            ikomaProdigy = player2.findDrawCard('ikoma-prodigy');
+            retreatToSafety = player2.findDrawCard('retreat-to-safety');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.player1.findDrawCard('border-rider')],
+                defenders: [matsuBerserker, ikomaProdigy]
+            });
+            matsuBerserker.bowed = true;
+        });
+
+        it('sends the characters home without offering to ready one', () => {
+            player2.clickCard(retreatToSafety);
+            player2.clickCard(matsuBerserker);
+            player2.clickCard(ikomaProdigy);
+            player2.clickPrompt('Done');
+            expect(getChatLogs(3)).toContain('player2 plays Retreat to Safety to send Matsu Berserker and Ikoma Prodigy home');
+            expect(player2).not.toHavePrompt('Choose a character to ready');
+            expect(matsuBerserker.bowed).toBe(true);
+        });
+    });
+});

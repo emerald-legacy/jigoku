@@ -10,7 +10,7 @@ describe('Chasing the Sun', function() {
                 },
                 player2: {
                     provinces: ['manicured-garden', 'fertile-fields', 'the-art-of-war', 'entrenched-position'],
-                    dynastyDiscard: ['hito-district']
+                    dynastyDiscard: ['hito-district', 'chisei-district']
                 }
             });
 
@@ -129,6 +129,24 @@ describe('Chasing the Sun', function() {
                 type: 'political',
                 province: this.garden,
                 attackers: [this.hotaru],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.chasing);
+            expect(this.player1).toBeAbleToSelect(this.fields);
+            this.player1.clickCard(this.fields);
+            expect(this.game.currentConflict.conflictProvince).toBe(this.fields);
+        });
+
+        // ruling #253: a province with Chisei District is eligible during a military conflict
+        it('should be able to move a military conflict to a province with Chisei District', function() {
+            this.chisei = this.player2.placeCardInProvince('chisei-district', 'province 2');
+            this.chisei.facedown = false;
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                province: this.garden,
+                attackers: [this.rider],
                 defenders: []
             });
             this.player2.pass();

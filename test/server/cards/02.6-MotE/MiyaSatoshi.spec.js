@@ -74,3 +74,29 @@ describe('Miya Satoshi', function() {
         });
     });
 });
+
+describe('Miya Satoshi without an Imperial card in the dynasty deck', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    honor: 10,
+                    inPlay: ['miya-satoshi']
+                }
+            });
+            this.player1.reduceDeckToNumber('dynasty deck', 3);
+            this.deck = this.player1.player.dynastyDeck.slice();
+        });
+
+        // ruling #315: the rest of the effect fizzles; no honor loss and no reshuffle
+        it('discards the whole dynasty deck and does nothing else', function() {
+            this.player1.clickCard('miya-satoshi');
+            expect(this.player1).not.toHavePrompt('Choose a card to discard');
+            expect(this.player1.player.dynastyDeck.length).toBe(0);
+            this.deck.forEach((card) => expect(card.location).toBe('dynasty discard pile'));
+            expect(this.player1.honor).toBe(10);
+            expect(this.getChatLogs(3)).toContain('player1 discards their entire dynasty deck: Adept of the Waves, Adept of the Waves and Adept of the Waves');
+        });
+    });
+});

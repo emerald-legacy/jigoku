@@ -1,6 +1,6 @@
-describe('Swordguy', function () {
+describe('Seppun Ryo', function () {
     integration(function () {
-        describe('Ignore skill', function () {
+        describe('Seppun Ryo\'s duel ability', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',

@@ -142,6 +142,104 @@ describe('Illustrious Plagiarist', function() {
             });
         });
 
+        describe('When copying Blackmail', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        honor: 15,
+                        inPlay: ['illustrious-plagiarist']
+                    },
+                    player2: {
+                        honor: 5,
+                        inPlay: ['doji-whisperer'],
+                        conflictDiscard: ['blackmail']
+                    }
+                });
+                this.illustriousPlagiarist = this.player1.findCardByName('illustrious-plagiarist');
+                this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
+                this.blackmail = this.player2.findCardByName('blackmail', 'conflict discard pile');
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.illustriousPlagiarist],
+                    defenders: [this.dojiWhisperer]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.illustriousPlagiarist);
+                this.player1.clickCard(this.blackmail);
+                this.player2.pass();
+            });
+
+            // ruling #210: "Play only if" printed outside the Action ability isn't gained
+            it('can use the copied ability without meeting Blackmail\'s play restriction', function() {
+                expect(this.player1.player.isLessHonorable()).toBe(false);
+                this.player1.clickCard(this.illustriousPlagiarist);
+                expect(this.player1).toHavePrompt('Illustrious Plagiarist');
+                this.player1.clickCard(this.dojiWhisperer);
+                expect(this.dojiWhisperer.controller).toBe(this.player1.player);
+            });
+        });
+
+        describe('When two Plagiarists copy Banzai!', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['illustrious-plagiarist', 'illustrious-plagiarist'],
+                        hand: ['banzai']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer'],
+                        conflictDiscard: ['banzai']
+                    }
+                });
+                [this.plagiarist1, this.plagiarist2] = this.player1.filterCardsByName('illustrious-plagiarist');
+                this.ownBanzai = this.player1.findCardByName('banzai', 'hand');
+                this.theirBanzai = this.player2.findCardByName('banzai', 'conflict discard pile');
+                this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.plagiarist1, this.plagiarist2],
+                    defenders: [this.dojiWhisperer]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.plagiarist1);
+                this.player1.clickCard(this.theirBanzai);
+                this.player2.pass();
+                this.player1.clickCard(this.plagiarist2);
+                this.player1.clickCard(this.theirBanzai);
+                this.player2.pass();
+            });
+
+            // ruling #212: maximums are per ability per card title per player
+            it('can use only one of the copies in a conflict', function() {
+                this.player1.clickCard(this.plagiarist1);
+                this.player1.clickCard(this.plagiarist1);
+                this.player1.clickPrompt('Done');
+                expect(this.plagiarist1.militarySkill).toBe(3);
+                this.player2.pass();
+                this.player1.clickCard(this.plagiarist2);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.plagiarist2.militarySkill).toBe(1);
+            });
+
+            // ruling #212: your own Banzai! and one copy are fine
+            it('can use a copy after playing your own Banzai!', function() {
+                this.player1.clickCard(this.ownBanzai);
+                this.player1.clickCard(this.plagiarist2);
+                this.player1.clickPrompt('Done');
+                expect(this.plagiarist2.militarySkill).toBe(3);
+                this.player2.pass();
+                this.player1.clickCard(this.plagiarist1);
+                expect(this.player1).toHavePrompt('Illustrious Plagiarist');
+                this.player1.clickCard(this.plagiarist1);
+                this.player1.clickPrompt('Done');
+                expect(this.plagiarist1.militarySkill).toBe(3);
+            });
+        });
+
         describe('When an older event is under the topmost event', function() {
             beforeEach(function() {
                 this.setupTest({

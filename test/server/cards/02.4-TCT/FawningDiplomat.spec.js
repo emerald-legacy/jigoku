@@ -30,6 +30,21 @@ describe('Fawning Diplomat', function() {
                 expect(this.getChatLogs(10)).toContain('player1 claims the Emperor\'s military favor!');
             });
 
+            // ruling #548: Cloud the Mind is discarded only as the character leaves play
+            it('should not claim the favor when she leaves play with Cloud the Mind attached', function () {
+                this.player1.clickCard(this.cloud);
+                this.player1.clickCard(this.fawningDiplomat);
+                expect(this.cloud.parent).toBe(this.fawningDiplomat);
+
+                this.flow.finishConflictPhase();
+                this.player1.clickPrompt('Done');
+
+                expect(this.fawningDiplomat.location).toBe('dynasty discard pile');
+                expect(this.cloud.location).toBe('conflict discard pile');
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player1.player.imperialFavor).toBe('');
+            });
+
             it('should allow to claim the favor if Diplomat with Cloud the Mind gets disguised', function () {
                 expect(this.player1.player.imperialFavor).toBe('');
 

@@ -73,3 +73,56 @@ describe('Talk With the Servants', function () {
         });
     });
 });
+
+describe('Talk With the Servants\'s conditions', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['bayushi-liar', 'miya-mystic'],
+                    hand: ['talk-with-the-servants'],
+                    provinces: ['entrenched-position']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['fine-katana', 'ornate-fan', 'finger-of-jade', 'elegant-tessen'],
+                    provinces: ['entrenched-position']
+                }
+            });
+            this.bayushiLiar = this.player1.findCardByName('bayushi-liar');
+            this.miyaMystic = this.player1.findCardByName('miya-mystic');
+            this.talkWithTheServants = this.player1.findCardByName('talk-with-the-servants');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.noMoreActions();
+        });
+
+        it('does not trigger after winning a military conflict', function () {
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.miyaMystic],
+                province: 'entrenched-position',
+                defenders: []
+            });
+            this.noMoreActions();
+            expect(this.getChatLogs(5)).toContain('player1 won a military conflict 1 vs 0');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2.hand.length).toBe(4);
+        });
+
+        it('does not trigger after losing a political conflict', function () {
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.whisperer],
+                province: 'entrenched-position',
+                defenders: [this.bayushiLiar]
+            });
+            this.noMoreActions();
+            expect(this.getChatLogs(5)).toContain('player2 won a political conflict 3 vs 3');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2.hand.length).toBe(4);
+        });
+    });
+});

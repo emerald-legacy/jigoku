@@ -236,10 +236,11 @@ describe('Challenge on the Fields', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',
+                    gameMode: 'emerald',
                     player1: {
                         honor: 11,
                         inPlay: ['border-rider', 'battle-maiden-recruit', 'ide-messenger', 'aggressive-moto'],
-                        hand: ['challenge-on-the-fields']
+                        hand: ['challenge-on-the-fields', 'fine-katana']
                     },
                     player2: {
                         honor: 11,
@@ -266,6 +267,9 @@ describe('Challenge on the Fields', function () {
                     type: 'political'
                 });
                 this.player2.pass();
+                this.player1.playAttachment('fine-katana', this.borderRider);
+                expect(this.borderRider.militarySkill).toBe(4);
+                this.player2.pass();
                 this.player1.clickCard(this.challengeOnTheFields);
                 this.player1.clickCard(this.borderRider);
                 this.player1.clickCard(this.agashaSwordsmith);
@@ -273,6 +277,7 @@ describe('Challenge on the Fields', function () {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
 
+                // printed skill 2, +2 for the other participants, +1 bid; Fine Katana doesn't count
                 expect(this.getChatLogs(5)).toContain('Border Rider: 5 vs 3: Agasha Swordsmith');
             });
         });

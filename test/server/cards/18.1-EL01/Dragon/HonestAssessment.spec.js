@@ -47,7 +47,7 @@ describe('Honest Assessment', function() {
             expect(this.player2).toHavePrompt('Name a card');
         });
 
-        it('should let you to name a card and then sac itself to discard all matching cards from a revealed random subset of your opponent\'s hand', function() {
+        it('should let you name a card and discard all matching cards from a revealed random subset of your opponent\'s hand', function() {
             const hand = this.player1.hand.length;
             this.player2.clickCard(this.assessment);
             this.player2.clickCard(this.diplomat);

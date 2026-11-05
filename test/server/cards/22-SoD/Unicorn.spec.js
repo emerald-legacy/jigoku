@@ -151,7 +151,7 @@ describe('SoD - Unicorn', function () {
             });
         });
 
-        describe('Incesssant Moto', function () {
+        describe('Incessant Moto', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',

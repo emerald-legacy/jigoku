@@ -56,5 +56,24 @@ describe('Silent Skirmisher', function() {
             expect(this.silentSkirmisher.militarySkill).toBe(skirmisherMilitarySkill + 2);
             expect(this.getChatLogs(5)).toContain('player1 uses Silent Skirmisher, sacrificing Eager Scout to give itself +2military');
         });
+
+        it('should give the bonus until the end of the conflict', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.silentSkirmisher],
+                defenders: []
+            });
+            this.player2.pass();
+            expect(this.silentSkirmisher.militarySkill).toBe(1);
+            this.player1.clickCard(this.silentSkirmisher);
+            this.player1.clickCard(this.scout);
+            expect(this.silentSkirmisher.militarySkill).toBe(3);
+            this.noMoreActions();
+            this.player1.clickPrompt('No');
+            this.player1.clickPrompt('Don\'t Resolve');
+            expect(this.game.currentConflict).toBeNull();
+            expect(this.silentSkirmisher.militarySkill).toBe(1);
+        });
     });
 });

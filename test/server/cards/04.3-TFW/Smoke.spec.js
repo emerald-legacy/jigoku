@@ -10,7 +10,7 @@ describe('Smoke', function () {
                         hand: ['smoke']
                     },
                     player2: {
-                        inPlay: ['shinjo-tatsuo', 'shinjo-scout']
+                        inPlay: ['shinjo-tatsuo', 'shinjo-scout', 'shinjo-outrider']
                     }
                 });
                 this.juro = this.player1.findCardByName('moto-juro');
@@ -79,6 +79,15 @@ describe('Smoke', function () {
                 it('should not effect the military skill of all unique participants', function () {
                     expect(this.juro.militarySkill).toBe(parseInt(this.juro.cardData.military));
                     expect(this.tatsuo.militarySkill).toBe(parseInt(this.tatsuo.cardData.military));
+                });
+
+                // ruling #397
+                it('should not affect a character that joins the conflict afterwards', function () {
+                    this.outrider = this.player2.findCardByName('shinjo-outrider');
+                    this.player2.clickCard(this.outrider);
+                    expect(this.outrider.inConflict).toBe(true);
+                    expect(this.outrider.militarySkill).toBe(2);
+                    expect(this.scout.militarySkill).toBe(parseInt(this.scout.cardData.military - 2));
                 });
 
                 it('should last until the end of the conflict', function () {

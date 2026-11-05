@@ -49,5 +49,21 @@ describe('Contemplate the Eternal', function () {
                 'player1 plays Contemplate the Eternal, returning the Air Ring and Earth Ring to place 2 fate on Togashi Initiate'
             );
         });
+
+        it('cannot be played during a conflict (Peaceful)', function () {
+            this.player1.pass();
+            this.initiateConflict({
+                type: 'military',
+                ring: 'fire',
+                attackers: [this.initiate],
+                defenders: []
+            });
+            this.player2.pass();
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            this.player1.clickCard(this.contemplate);
+            expect(this.contemplate.location).toBe('hand');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.initiate.fate).toBe(0);
+        });
     });
 });

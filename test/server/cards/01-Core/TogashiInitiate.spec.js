@@ -22,8 +22,12 @@ describe('Togashi Initiate', function() {
             });
 
             this.player2.pass();
+            const fate = this.player1.fate;
             this.player1.clickCard(this.initiate);
             this.player1.clickRing('water');
+            expect(this.initiate.isHonored).toBe(true);
+            expect(this.game.rings.water.fate).toBe(1);
+            expect(this.player1.fate).toBe(fate - 1);
             expect(this.getChatLogs(3)).toContain('player1 uses Togashi Initiate, placing 1 fate on the Water Ring to honor Togashi Initiate');
         });
 

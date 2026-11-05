@@ -439,7 +439,7 @@ describe('SoD - Crab', function () {
             });
         });
 
-        describe('Unbridled Assault', function () {
+        describe('Unbridled Rage', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',
@@ -533,7 +533,7 @@ describe('SoD - Crab', function () {
             });
         });
 
-        describe('Unbridled Assault and a loser that leaves play and returns', function () {
+        describe('Unbridled Rage and a loser that leaves play and returns', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',

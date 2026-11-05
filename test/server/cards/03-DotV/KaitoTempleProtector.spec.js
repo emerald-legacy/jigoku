@@ -135,3 +135,48 @@ describe('Kaito Temple Protector', function() {
         });
     });
 });
+
+describe('Kaito Temple Protector\'s set skills', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['bayushi-kachiko', 'bayushi-yunako']
+                },
+                player2: {
+                    inPlay: ['kaito-temple-protector']
+                }
+            });
+            this.kachiko = this.player1.findCardByName('bayushi-kachiko');
+            this.yunako = this.player1.findCardByName('bayushi-yunako');
+            this.kaitoTempleProtector = this.player2.findCardByName('kaito-temple-protector');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.kachiko, this.yunako],
+                defenders: [this.kaitoTempleProtector]
+            });
+            this.player2.clickCard(this.kaitoTempleProtector);
+            this.player2.clickCard(this.kachiko);
+        });
+
+        it('last until the end of the conflict', function() {
+            expect(this.kaitoTempleProtector.militarySkill).toBe(3);
+            expect(this.kaitoTempleProtector.politicalSkill).toBe(6);
+            this.noMoreActions();
+            this.player1.clickPrompt('Don\'t resolve');
+            expect(this.game.currentConflict).toBeNull();
+            expect(this.kaitoTempleProtector.militarySkill).toBe(3);
+            expect(this.kaitoTempleProtector.politicalSkill).toBe(3);
+        });
+
+        // ruling #413: skills that have been set cannot be switched
+        it('cannot be switched', function() {
+            this.player1.clickCard(this.yunako);
+            expect(this.player1).toHavePrompt('Bayushi Yunako');
+            expect(this.player1).toBeAbleToSelect(this.kachiko);
+            expect(this.player1).not.toBeAbleToSelect(this.kaitoTempleProtector);
+        });
+    });
+});

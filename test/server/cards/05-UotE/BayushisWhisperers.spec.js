@@ -105,3 +105,45 @@ describe('Bayushi\'s Whisperers', function() {
         });
     });
 });
+
+describe('Bayushi\'s Whisperers naming a card in a province', function() {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['bayushi-s-whisperers']
+                },
+                player2: {
+                    fate: 10,
+                    dynastyDiscard: ['hidden-moon-dojo', 'doji-whisperer', 'seeker-initiate']
+                }
+            });
+            this.bayushisWhisperers = this.player1.findCardByName('bayushi-s-whisperers');
+            this.player2.placeCardInProvince('hidden-moon-dojo', 'province 2');
+            this.dojiWhisperer = this.player2.placeCardInProvince('doji-whisperer', 'province 1');
+            this.seekerInitiate = this.player2.placeCardInProvince('seeker-initiate', 'province 3');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.bayushisWhisperers],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.bayushisWhisperers);
+        });
+
+        // ruling #471: the name needn't be in the hand, and the card can't be played from a province either
+        it('stops the opponent from playing the named card from a province', function () {
+            expect(this.player2.hand.length).toBe(0);
+            this.player1.chooseCardInPrompt(this.dojiWhisperer.name, 'card-name');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            this.player2.clickCard(this.dojiWhisperer);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.dojiWhisperer.location).toBe('province 1');
+            this.player2.clickCard(this.seekerInitiate);
+            this.player2.clickPrompt('0');
+            this.player2.clickPrompt('Conflict');
+            expect(this.seekerInitiate.location).toBe('play area');
+        });
+    });
+});

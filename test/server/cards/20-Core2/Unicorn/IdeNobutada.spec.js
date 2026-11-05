@@ -38,6 +38,8 @@ describe('Ide Nobutada', function () {
             expect(this.shinjoTakame.location).toBe('play area');
             expect(this.shinjoTakame.attachments).toContain(this.fineKatana);
             expect(this.shinjoTakame.fate).toBe(1);
+            expect(this.shinjoTakame.isHonored).toBe(true);
+            expect(this.ideNobutada.isHonored).toBe(false);
             expect(this.getChatLogs(5)).toContain('player1 replaces Ide Nobutada with Shinjo Takame');
             expect(this.getChatLogs(5)).toContain('player1 is shuffling their dynasty deck');
 
@@ -118,6 +120,38 @@ describe('Shinjo Takame put into play by Ide Nobutada, with an opposing Shosuro 
             this.player1.clickCard(this.shinjoTakame);
             expect(this.player1).not.toHavePrompt('Find a copy of Ide Nobutada');
             expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+    });
+});
+
+describe('Shinjo Takame', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shinjo-takame'],
+                    dynastyDiscard: ['ide-nobutada']
+                }
+            });
+            this.shinjoTakame = this.player1.findCardByName('shinjo-takame');
+            this.ideNobutada = this.player1.moveCard('ide-nobutada', 'dynasty deck');
+            this.shinjoTakame.dishonor();
+            this.shinjoTakame.modifyFate(2);
+        });
+
+        it('replaces itself with Ide Nobutada, moving its fate and status token', function () {
+            this.player1.clickCard(this.shinjoTakame);
+            expect(this.player1).toHavePrompt('Find a copy of Ide Nobutada');
+            this.player1.clickPrompt('Ide Nobutada');
+            expect(this.shinjoTakame.location).toBe('dynasty deck');
+            expect(this.ideNobutada.location).toBe('play area');
+            expect(this.ideNobutada.fate).toBe(2);
+            expect(this.ideNobutada.isDishonored).toBe(true);
+            expect(this.getChatLogs(5)).toContain('player1 replaces Shinjo Takame with Ide Nobutada');
+
+            this.player1.clickCard(this.ideNobutada);
+            expect(this.player1).not.toHavePrompt('Find a copy of Shinjo Takame');
         });
     });
 });

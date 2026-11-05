@@ -100,6 +100,9 @@ describe('Void Fist', function() {
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard('void-fist');
                 expect(this.player1).toHavePrompt('Void Fist');
+                // ruling #461: a character with a dash military skill can be chosen
+                expect(this.bayushiLiar.hasDash('military')).toBe(true);
+                expect(this.player1).toBeAbleToSelect(this.bayushiLiar);
                 this.player1.clickCard(this.bayushiLiar);
                 expect(this.bayushiLiar.bowed).toBe(true);
                 expect(this.bayushiLiar.inConflict).toBe(false);

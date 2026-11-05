@@ -64,3 +64,40 @@ describe('Icon of Favor', function() {
         });
     });
 });
+
+describe('Icon of Favor when the opponent wins a Fire conflict', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['moto-youth'],
+                    hand: ['icon-of-favor']
+                },
+                player2: {
+                    inPlay: ['matsu-berserker']
+                }
+            });
+            this.moto = this.player1.findCardByName('moto-youth');
+            this.icon = this.player1.findCardByName('icon-of-favor');
+            this.berserker = this.player2.findCardByName('matsu-berserker');
+            this.player1.playAttachment(this.icon, this.moto);
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+        });
+
+        it('should not honor the attached character', function() {
+            this.initiateConflict({
+                type: 'military',
+                ring: 'fire',
+                attackers: [this.berserker],
+                defenders: []
+            });
+            this.noMoreActions();
+            expect(this.getChatLogs(5)).toContain('player2 won a military conflict 3 vs 0');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.moto.isHonored).toBe(false);
+        });
+    });
+});

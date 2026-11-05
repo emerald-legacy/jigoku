@@ -109,3 +109,43 @@ describe('Deceptive Offer at Festival of the Departed', function() {
         });
     });
 });
+
+describe('Deceptive Offer against an opponent who can\'t lose honor', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['bayushi-manipulator'],
+                    hand: ['deceptive-offer'],
+                    honor: 10
+                },
+                player2: {
+                    inPlay: ['righteous-magistrate'],
+                    honor: 10
+                }
+            });
+            this.bayushiManipulator = this.player1.findCardByName('bayushi-manipulator');
+            this.righteousMagistrate = this.player2.findCardByName('righteous-magistrate');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.bayushiManipulator],
+                defenders: [this.righteousMagistrate]
+            });
+            this.player2.pass();
+        });
+
+        // ruling #600: the opponent must choose an option that can change the game state
+        it('only lets the opponent choose the +2/+2', function() {
+            this.player1.clickCard('deceptive-offer');
+            this.player1.clickCard(this.bayushiManipulator);
+            expect(this.player2).not.toHavePromptButton('Give your opponent 1 honor');
+            expect(this.bayushiManipulator.militarySkill).toBe(3);
+            expect(this.bayushiManipulator.politicalSkill).toBe(3);
+            expect(this.player1.honor).toBe(10);
+            expect(this.player2.honor).toBe(10);
+            expect(this.getChatLogs(3)).toContain('player1 plays Deceptive Offer to give +2/+2 to Bayushi Manipulator');
+        });
+    });
+});

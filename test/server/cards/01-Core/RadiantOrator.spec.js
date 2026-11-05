@@ -23,6 +23,8 @@ describe('Radiant Orator', function() {
                 this.player2.clickCard('radiant-orator', 'play area');
 
                 expect(this.player2).not.toHavePrompt('Choose a character');
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.game.currentConflict.attackers).toContain(this.player1.findCardByName('bayushi-kachiko'));
             });
         });
 
@@ -41,6 +43,28 @@ describe('Radiant Orator', function() {
                 this.player2.clickCard('radiant-orator', 'play area');
 
                 expect(this.player2).not.toHavePrompt('Choose a character');
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.game.currentConflict.attackers).toContain(this.player1.findCardByName('bayushi-kachiko'));
+            });
+        });
+
+        describe('If Serene Warrior is declared as a defender and bowed', function() {
+            beforeEach(function() {
+                this.initiateConflict({
+                    ring: 'air',
+                    attackers: ['bayushi-kachiko'],
+                    defenders: ['radiant-orator', 'serene-warrior']
+                });
+                this.warrior = this.player2.findCardByName('serene-warrior');
+                this.warrior.bow();
+                this.player2.clickCard('radiant-orator', 'play area');
+            });
+
+            it('shouldn\'t count its glory', function() {
+                expect(this.warrior.inConflict).toBe(true);
+                expect(this.player2).not.toHavePrompt('Choose a character');
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.game.currentConflict.attackers).toContain(this.player1.findCardByName('bayushi-kachiko'));
             });
         });
 

@@ -11,6 +11,9 @@ describe('Dead Eyes Sensei', function () {
                         'shrewd-yasuki',
                         'butcher-of-the-fallen'
                     ]
+                },
+                player2: {
+                    inPlay: [{ card: 'doji-whisperer', bowed: true }]
                 }
             });
 
@@ -26,15 +29,17 @@ describe('Dead Eyes Sensei', function () {
             this.gallantFateless.bow();
             this.shrewdFated.bow();
             this.butcherFated.bow();
+            this.enemyWhisperer = this.player2.findCardByName('doji-whisperer');
         });
 
-        it('works on anyone', function () {
+        it('works on any character you control', function () {
             this.player1.clickCard(this.deadEyesSensei);
             expect(this.player1).toBeAbleToSelect(this.deadEyesSensei);
             expect(this.player1).toBeAbleToSelect(this.forgottenFateless);
             expect(this.player1).toBeAbleToSelect(this.gallantFateless);
             expect(this.player1).toBeAbleToSelect(this.shrewdFated);
             expect(this.player1).toBeAbleToSelect(this.butcherFated);
+            expect(this.player1).not.toBeAbleToSelect(this.enemyWhisperer);
         });
 
         it('readies a character, removes a fate, and makes the character a berserker', function () {
@@ -47,6 +52,17 @@ describe('Dead Eyes Sensei', function () {
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Dead Eyes Sensei to ready and remove a fate from Shrewd Yasuki, giving them the Berserker trait'
             );
+        });
+
+        it('gives Berserker only for this phase', function () {
+            this.shrewdFated.fate = 2;
+            this.player1.clickCard(this.deadEyesSensei);
+            this.player1.clickCard(this.shrewdFated);
+            expect(this.shrewdFated.hasTrait('berserker')).toBe(true);
+            this.nextPhase();
+            expect(this.game.currentPhase).toBe('fate');
+            expect(this.shrewdFated.location).toBe('play area');
+            expect(this.shrewdFated.hasTrait('berserker')).toBe(false);
         });
     });
 });

@@ -14,18 +14,18 @@ describe('Writ of Authority', function() {
                         inPlay: []
                     }
                 });
-                this.WritOfAuthority = this.player1.findCardByName('serene-warrior');
+                this.sereneWarrior = this.player1.findCardByName('serene-warrior');
                 this.WritOfAuthority = this.player1.findCardByName('writ-of-authority');
             });
 
             it('should be discarded when its controller has less honor', function() {
                 this.player1.honor = 9;
-                this.player1.playAttachment('writ-of-authority', 'serene-warrior');
+                this.player1.playAttachment('writ-of-authority', this.sereneWarrior);
                 expect(this.WritOfAuthority.location).toBe('conflict discard pile');
             });
 
             it('should not be discarded when its controller has equal or greater honor', function() {
-                this.player1.playAttachment('writ-of-authority', 'serene-warrior');
+                this.player1.playAttachment('writ-of-authority', this.sereneWarrior);
                 expect(this.WritOfAuthority.location).toBe('play area');
             });
         });

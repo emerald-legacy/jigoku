@@ -25,7 +25,7 @@ describe('Liaison to the Ancestors', function () {
             this.unspokenEtiquette = this.player2.findCardByName('unspoken-etiquette');
         });
 
-        it('works on multiple characters at the same time', function () {
+        it('can honor one of several characters dishonored at the same time', function () {
             this.toturi.honor();
 
             this.noMoreActions();
@@ -44,6 +44,7 @@ describe('Liaison to the Ancestors', function () {
             expect(this.player1).toHavePrompt('Select a card to affect');
             this.player1.clickCard(this.honoredGeneral);
             expect(this.honoredGeneral.isHonored).toBe(false);
+            expect(this.honoredGeneral.isDishonored).toBe(false);
             expect(this.getChatLogs(5)).toContain('player1 uses Liaison to the Ancestors to honor Honored General');
         });
 
@@ -63,6 +64,7 @@ describe('Liaison to the Ancestors', function () {
 
             this.player1.clickCard(this.liaisonToTheAncestors);
             expect(this.honoredGeneral.isHonored).toBe(false);
+            expect(this.honoredGeneral.isDishonored).toBe(false);
             expect(this.scorp.location).toBe('conflict discard pile');
             expect(this.getChatLogs(5)).toContain('player1 uses Liaison to the Ancestors to honor Honored General');
         });
@@ -102,6 +104,7 @@ describe('Liaison to the Ancestors', function () {
 
             this.player1.clickCard(this.liaisonToTheAncestors);
             expect(this.honoredGeneral.isHonored).toBe(false);
+            expect(this.honoredGeneral.isDishonored).toBe(false);
             expect(this.getChatLogs(5)).toContain('player1 uses Liaison to the Ancestors to honor Honored General');
         });
     });

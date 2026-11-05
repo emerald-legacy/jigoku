@@ -8,7 +8,7 @@ describe('A Season of War', function() {
                         inPlay: ['daidoji-nerishma', 'kakita-yoshi', 'kakita-toshimoko', 'matsu-berserker', 'ikoma-prodigy', 'doji-challenger', 'prodigy-of-the-waves', 'hida-kisada', 'aranat', 'kakita-ryoku'],
                         dynastyDeck: [],
                         hand: ['way-of-the-crane', 'those-who-serve'],
-                        dynastyDiscard: ['a-season-of-war', 'a-season-of-war']
+                        dynastyDiscard: ['a-season-of-war', 'a-season-of-war', 'imperial-storehouse']
                     },
                     player2: {
                         inPlay: ['acolyte-of-koyane', 'adept-of-the-waves', 'agasha-hiyori', 'agasha-shunsen', 'agasha-sumiko', 'agasha-swordsmith', 'agasha-taiko', 'akodo-kaede', 'akodo-makoto'],
@@ -159,6 +159,27 @@ describe('A Season of War', function() {
                 this.player2.clickCard(this.acolyte);
                 this.player2.clickPrompt('0');
                 expect(this.acolyte.location).toBe('play area');
+            });
+
+            // ruling #849
+            it('should discard other cards in the stronghold province but not the stronghold', function() {
+                const storehouse = this.player1.findCardByName('imperial-storehouse');
+                const stronghold = this.player1.player.stronghold;
+                this.player1.moveCard(storehouse, 'stronghold province');
+                storehouse.facedown = false;
+                this.player1.clickCard(this.season);
+                expect(storehouse.location).toBe('dynasty discard pile');
+                expect(stronghold.location).toBe('stronghold province');
+                expect(this.player1.player.getDynastyCardsInProvince('stronghold province').length).toBe(0);
+            });
+
+            // ruling #875
+            it('should still give 1 fate to the first player to pass in the additional dynasty phase', function() {
+                this.player1.clickCard(this.season);
+                const fate = this.player1.fate;
+                this.player1.pass();
+                expect(this.player1.fate).toBe(fate + 1);
+                expect(this.getChatLogs(3)).toContain('player1 is the first to pass, and gains 1 fate');
             });
 
             it('players should not collect fate', function() {

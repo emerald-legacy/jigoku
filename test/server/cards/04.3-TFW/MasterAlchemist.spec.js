@@ -100,7 +100,7 @@ describe('Master Alchemist', function() {
             });
         });
 
-        describe('interaction with{ Young Rumormonger', function() {
+        describe('interaction with Young Rumormonger', function() {
             beforeEach(function() {
                 this.setupTest({
                     phase: 'conflict',

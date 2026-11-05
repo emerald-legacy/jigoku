@@ -147,6 +147,44 @@ describe('Countryside Trader', function() {
             expect(this.getChatLogs(5)).toContain('player1 resolves Manicured Garden to gain 1 fate');
         });
 
+        // ruling #1094: an ability that was already triggered can be chosen
+        it('should be able to resolve a province action its owner already used this round', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.trader],
+                defenders: [],
+                type: 'military',
+                province: this.manicuredGarden
+            });
+            const p2Fate = this.player2.fate;
+            this.player2.clickCard(this.manicuredGarden);
+            expect(this.player2.fate).toBe(p2Fate + 1);
+            const p1Fate = this.player1.fate;
+            this.player1.clickCard(this.trader);
+            expect(this.player1).toBeAbleToSelect(this.manicuredGarden);
+            this.player1.clickCard(this.manicuredGarden);
+            expect(this.player1.fate).toBe(p1Fate);
+            expect(this.getChatLogs(5)).toContain('player1 resolves Manicured Garden to gain 1 fate');
+        });
+
+        // ruling #1094: resolving it doesn't use up the province's limit
+        it('should not use up the limit of the province action', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.trader],
+                defenders: [],
+                type: 'military',
+                province: this.manicuredGarden
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.trader);
+            this.player1.clickCard(this.manicuredGarden);
+            const p2Fate = this.player2.fate;
+            this.player2.clickCard(this.manicuredGarden);
+            expect(this.player2.fate).toBe(p2Fate + 1);
+            expect(this.getChatLogs(3)).toContain('player2 uses Manicured Garden to gain 1 fate');
+        });
+
         it('should regard card text - mentions attacking characters', function() {
             this.noMoreActions();
 

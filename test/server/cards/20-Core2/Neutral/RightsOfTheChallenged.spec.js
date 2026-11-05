@@ -109,3 +109,40 @@ describe('Rights of the Challenged\'s Duel Challenge', function () {
     });
 });
 
+
+describe('Rights of the Challenged for the challenger', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-toshimoko', 'doji-whisperer'],
+                    hand: ['policy-debate', 'rights-of-the-challenged']
+                },
+                player2: {
+                    inPlay: ['brash-samurai', 'doji-kuwanan']
+                }
+            });
+            this.toshimoko = this.player1.findCardByName('kakita-toshimoko');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.rights = this.player1.findCardByName('rights-of-the-challenged');
+            this.brash = this.player2.findCardByName('brash-samurai');
+            this.kuwanan = this.player2.findCardByName('doji-kuwanan');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.toshimoko, this.whisperer],
+                defenders: [this.brash, this.kuwanan]
+            });
+            this.player2.pass();
+        });
+
+        it('cannot be used when you challenged', function () {
+            this.player1.clickCard('policy-debate');
+            this.player1.clickCard(this.toshimoko);
+            this.player1.clickCard(this.brash);
+            expect(this.game.currentDuel.challenger).toBe(this.toshimoko);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.rights.location).toBe('hand');
+        });
+    });
+});

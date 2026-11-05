@@ -52,10 +52,26 @@ describe('Momiji Halls', function () {
 
             this.player1.clickCard(this.lionBox);
             expect(this.player1).not.toHavePrompt('Select card to discard');
-            expect(this.player1.hand.length).not.toBe(initialHandSize + 1);
-            expect(this.getChatLogs(5)).not.toContain(
-                'player1 uses Momiji Halls, bowing Momiji Halls and discarding Ornate Fan to draw 2 cards'
-            );
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.player1.hand.length).toBe(initialHandSize);
+            expect(this.lionBox.bowed).toBe(false);
+        });
+
+        it('does not work in a political conflict', function () {
+            const initialHandSize = this.player1.hand.length;
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.fushicho],
+                defenders: []
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.lionBox);
+            expect(this.player1).not.toHavePrompt('Select card to discard');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.player1.hand.length).toBe(initialHandSize);
+            expect(this.lionBox.bowed).toBe(false);
         });
 
         it('does not work without a participating character', function () {
@@ -71,6 +87,8 @@ describe('Momiji Halls', function () {
 
             this.player1.clickCard(this.lionBox);
             expect(this.player1).not.toHavePrompt('Select card to discard');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.lionBox.bowed).toBe(false);
         });
     });
 });

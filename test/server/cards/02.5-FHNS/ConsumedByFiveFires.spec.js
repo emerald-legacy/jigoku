@@ -8,13 +8,27 @@ describe('Consumed by Five Fires', function() {
                     hand: ['consumed-by-five-fires']
                 },
                 player2: {
-                    inPlay: ['doji-challenger', 'doji-whisperer']
+                    inPlay: ['doji-challenger', 'doji-whisperer'],
+                    hand: ['above-question']
                 }
             });
             this.challenger = this.player2.findCardByName('doji-challenger');
             this.whisperer = this.player2.findCardByName('doji-whisperer');
             this.challenger.fate = 3;
             this.whisperer.fate = 3;
+        });
+
+        // ruling #386: it doesn't target, so it can remove fate from a character protected from targeting
+        it('can remove fate from a character that can\'t be targeted by opponent\'s events', function() {
+            this.player1.pass();
+            const aboveQuestion = this.player2.playAttachment('above-question', this.challenger);
+            expect(aboveQuestion.parent).toBe(this.challenger);
+            this.player1.clickCard('consumed-by-five-fires');
+            expect(this.player1).toBeAbleToSelect(this.challenger);
+            this.player1.clickCard(this.challenger);
+            this.player1.clickPrompt('2');
+            this.player1.clickPrompt('Done');
+            expect(this.challenger.fate).toBe(1);
         });
 
         it('says how much fate it removes from each character', function() {

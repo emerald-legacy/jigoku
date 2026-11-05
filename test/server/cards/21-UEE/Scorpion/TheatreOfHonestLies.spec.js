@@ -99,7 +99,7 @@ describe('Theatre of Honest Lies', function () {
                 this.heroOfThreeTrees = this.player2.findCardByName('hero-of-three-trees');
             });
 
-            it('will trigger from an honor loss caused by the opponent', function () {
+            it('will trigger from an honor gain by the opponent', function () {
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.entertainer],
@@ -138,7 +138,7 @@ describe('Theatre of Honest Lies', function () {
                     this.player2.clickPrompt('Gain 1 honor');
                 });
 
-                it('draws a card', function () {
+                it('takes 1 honor from the opponent', function () {
                     const initialScorpHonor = this.player1.honor;
                     const initialOtherHonor = this.player2.honor;
                     this.player1.clickCard(this.theatreOfHonestLies);

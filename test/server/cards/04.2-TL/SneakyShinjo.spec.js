@@ -33,6 +33,15 @@ describe('Sneaky Shinjo', function() {
                 expect(this.player1).toBeAbleToSelect(this.sneakyShinjo);
             });
 
+            it('should not trigger when the opponent passes', function() {
+                const fate = this.player2.fate;
+                this.player2.pass();
+                expect(this.player2.fate).toBe(fate + 1);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.sneakyShinjo.location).toBe('province 1');
+                expect(this.player1).toHavePrompt('Play cards from provinces');
+            });
+
             it('should put sneaky shinjo into play', function() {
                 this.player2.clickCard(this.adeptOfTheWaves);
                 this.player2.clickPrompt('1');

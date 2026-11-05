@@ -82,3 +82,47 @@ describe('Keeper Initiate', function() {
         });
     });
 });
+
+describe('Keeper Initiate with a ring that gained the role\'s element', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    role: 'keeper-of-air',
+                    inPlay: ['doji-whisperer', 'seeker-of-knowledge'],
+                    dynastyDiscard: ['keeper-initiate']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    provinces: ['entrenched-position']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.seekerOfKnowledge = this.player1.findCardByName('seeker-of-knowledge');
+            this.initiate = this.player1.findCardByName('keeper-initiate');
+            this.p2Whisperer = this.player2.findCardByName('doji-whisperer');
+        });
+
+        // ruling #67
+        it('triggers after you claim a ring that gained your role\'s element during the conflict', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                ring: 'earth',
+                province: 'entrenched-position',
+                attackers: [this.whisperer, this.seekerOfKnowledge],
+                defenders: [this.p2Whisperer]
+            });
+            this.noMoreActions();
+            this.player1.clickRing('air');
+            this.player1.clickPrompt('Gain 2 Honor');
+            expect(this.game.rings.earth.claimedBy).toBe(this.player1.player.name);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.initiate);
+            this.player1.clickCard(this.initiate);
+            expect(this.initiate.location).toBe('play area');
+            expect(this.initiate.fate).toBe(1);
+        });
+    });
+});

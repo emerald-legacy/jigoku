@@ -5,7 +5,7 @@ describe('Hawk Tattoo', function () {
                 this.setupTest({
                     phase: 'conflict',
                     player1: {
-                        inPlay: ['tattooed-wanderer', 'agasha-swordsmith', 'ancient-master'],
+                        inPlay: ['tattooed-wanderer', 'agasha-swordsmith', 'ancient-master', 'otomo-courtier'],
                         hand: ['hawk-tattoo']
                     },
                     player2: {
@@ -14,6 +14,7 @@ describe('Hawk Tattoo', function () {
                 });
                 this.tattooedWanderer = this.player1.findCardByName('tattooed-wanderer');
                 this.agashaSwordsmith = this.player1.findCardByName('agasha-swordsmith');
+                this.otomoCourtier = this.player1.findCardByName('otomo-courtier');
                 this.adeptOfTheWaves = this.player2.findCardByName('adept-of-the-waves');
                 this.seppunGuardsman = this.player2.findCardByName('seppun-guardsman');
                 this.noMoreActions();
@@ -52,6 +53,17 @@ describe('Hawk Tattoo', function () {
                 expect(this.getChatLogs(10)).not.toContain(
                     'player1 uses Hawk Tattoo to move Ancient Master into the conflict and take an additional action'
                 );
+            });
+
+            // ruling #438
+            it('should not trigger if played on a non-Monk that can\'t participate in the conflict', function () {
+                expect(this.game.currentConflict.conflictType).toBe('military');
+                expect(this.otomoCourtier.hasDash('military')).toBe(true);
+                this.hawkTattoo = this.player1.playAttachment('hawk-tattoo', this.otomoCourtier);
+                expect(this.otomoCourtier.attachments).toContain(this.hawkTattoo);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.otomoCourtier.inConflict).toBe(false);
+                expect(this.player2).toHavePrompt('Conflict Action Window');
             });
 
             it('should not trigger if played on a character in the conflict who is not a monk', function () {

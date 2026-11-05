@@ -20,6 +20,15 @@ describe('Breeze of Dawn Lodge', function () {
                 this.fushicho.bowed = true;
             });
 
+            it('cannot be used before a conflict (Conflict Action)', function () {
+                expect(this.game.currentConflict).toBeNull();
+                expect(this.player1).toHavePrompt('Initiate an action');
+                this.player1.clickCard(this.breezeOfDawnLodge);
+                expect(this.player1).not.toHavePrompt('Choose a character');
+                expect(this.player1).toHavePrompt('Initiate an action');
+                expect(this.breezeOfDawnLodge.bowed).toBe(false);
+            });
+
             it('moves a ready character to the conflict', function () {
                 this.noMoreActions();
                 this.initiateConflict({

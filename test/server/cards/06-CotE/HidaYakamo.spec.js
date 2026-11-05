@@ -73,3 +73,36 @@ describe('Hida Yakamo', function() {
         });
     });
 });
+
+describe('Hida Yakamo in a political conflict', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 6,
+                    inPlay: ['hida-yakamo']
+                },
+                player2: {
+                    honor: 14,
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.hidaYakamo = this.player1.findCardByName('hida-yakamo');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.hidaYakamo],
+                defenders: []
+            });
+        });
+
+        it('should bow as a result of conflict resolution even when less honorable than the opponent', function() {
+            expect(this.player1.player.isLessHonorable()).toBe(true);
+            this.noMoreActions();
+            this.player1.clickPrompt('Don\'t Resolve');
+            expect(this.game.currentConflict).toBeNull();
+            expect(this.hidaYakamo.bowed).toBe(true);
+        });
+    });
+});

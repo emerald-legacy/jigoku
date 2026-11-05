@@ -180,7 +180,7 @@ describe('SoD - Phoenix', function () {
             });
         });
 
-        describe('Tessen of the Tsumani Legion', function () {
+        describe('Tessen of the Tsunami Legion', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',
