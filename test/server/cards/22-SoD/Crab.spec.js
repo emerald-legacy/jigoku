@@ -1,6 +1,3 @@
-import { ResolvableAbility } from '../../../../build/server/game/ResolvableAbility.js';
-import { sendHome } from '../../../../build/server/game/GameActions/GameActions.js';
-
 describe('SoD - Crab', function () {
     integration(function () {
         describe('A Bad Death', function () {
@@ -228,7 +225,7 @@ describe('SoD - Crab', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['silent-skirmisher', 'agasha-swordsmith'],
-                        hand: ['dead-eyes']
+                        hand: ['dead-eyes', 'retreat']
                     },
                     player2: {
                         inPlay: ['togashi-yokuni'],
@@ -287,10 +284,14 @@ describe('SoD - Crab', function () {
                 });
                 this.player2.pass();
                 this.player1.clickCard(this.deadeyes);
+                this.player2.pass();
 
-                const context = new ResolvableAbility(this.swordsmith, {}).createContext(this.player1.player);
-                this.game.queueSimpleStep(() => sendHome().resolve(this.skirmisher, context));
-                this.game.continue();
+                this.player1.clickCard('retreat');
+                expect(this.player1).toHavePrompt('Retreat');
+                expect(this.player1).toBeAbleToSelect(this.swordsmith);
+                expect(this.player1).not.toBeAbleToSelect(this.skirmisher);
+                this.player1.clickCard(this.swordsmith);
+                expect(this.swordsmith.isParticipating()).toBe(false);
                 expect(this.skirmisher.isParticipating()).toBe(true);
             });
 

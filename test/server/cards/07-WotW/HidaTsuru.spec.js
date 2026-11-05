@@ -160,3 +160,45 @@ describe('Hida Tsuru', function() {
         });
     });
 });
+
+describe('Hida Tsuru and several characters moved by one ability', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['hida-tsuru', 'wild-stallion', 'eager-scout']
+                }
+            });
+            this.hidaTsuru = this.player1.findCardByName('hida-tsuru');
+            this.stallion = this.player1.findCardByName('wild-stallion');
+            this.scout = this.player1.findCardByName('eager-scout');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.hidaTsuru],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('reacts once for each character that moves (#605)', function() {
+            this.player1.clickCard(this.stallion);
+            this.player1.clickCard(this.scout);
+            expect(this.stallion.isParticipating()).toBe(true);
+            expect(this.scout.isParticipating()).toBe(true);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.hidaTsuru);
+            this.player1.clickCard(this.hidaTsuru);
+            expect(this.player1).toHavePrompt('Select a card to affect');
+            expect(this.player1).toBeAbleToSelect(this.stallion);
+            expect(this.player1).toBeAbleToSelect(this.scout);
+            this.player1.clickCard(this.stallion);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.hidaTsuru);
+            this.player1.clickCard(this.hidaTsuru);
+            expect(this.hidaTsuru.getMilitarySkill()).toBe(6);
+            expect(this.hidaTsuru.getPoliticalSkill()).toBe(5);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+        });
+    });
+});

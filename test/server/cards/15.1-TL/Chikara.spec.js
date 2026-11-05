@@ -1,6 +1,3 @@
-import { ResolvableAbility } from '../../../../build/server/game/ResolvableAbility.js';
-import { takeControl } from '../../../../build/server/game/GameActions/GameActions.js';
-
 describe('Chikara', function() {
     integration(function() {
         describe('Chikara attachment', function() {
@@ -239,45 +236,45 @@ describe('Chikara on a character its owner does not control', function() {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    fate: 3,
+                    fate: 5,
+                    honor: 5,
                     inPlay: ['hida-kisada', 'hida-o-ushi'],
-                    hand: ['chikara']
+                    hand: ['chikara', 'blackmail']
                 },
                 player2: {
-                    inPlay: ['hida-kisada', 'doji-challenger']
+                    honor: 10,
+                    inPlay: ['doji-whisperer']
                 }
             });
-            this.kisadaP1 = this.player1.findCardByName('hida-kisada');
+            this.kisada = this.player1.findCardByName('hida-kisada');
             this.oushi = this.player1.findCardByName('hida-o-ushi');
             this.chikara = this.player1.findCardByName('chikara');
-            this.kisadaP2 = this.player2.findCardByName('hida-kisada');
-            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
 
-            const context = new ResolvableAbility(this.kisadaP1, {}).createContext(this.player1.player);
-            this.game.queueSimpleStep(() => takeControl().resolve(this.challenger, context));
-            this.game.continue();
-
-            this.player1.playAttachment(this.chikara, this.kisadaP1);
+            this.player1.playAttachment(this.chikara, this.kisada);
             this.noMoreActions();
-            this.challenger.fate = 3;
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.kisada, this.oushi],
+                defenders: [this.whisperer]
+            });
+            this.player2.pass();
+            this.player1.clickCard('blackmail');
+            this.player1.clickCard(this.whisperer);
+            this.whisperer.fate = 3;
         });
 
         it('returns the fate to the character\'s controller', function() {
-            expect(this.challenger.controller).toBe(this.player1.player);
-            this.initiateConflict({
-                type: 'military',
-                attackers: [this.kisadaP1, this.oushi, this.challenger],
-                defenders: [this.kisadaP2]
-            });
-
+            expect(this.whisperer.controller).toBe(this.player1.player);
             const p1Fate = this.player1.fate;
             const p2Fate = this.player2.fate;
             this.noMoreActions();
-            this.player1.clickCard(this.kisadaP1);
-            this.player1.clickCard(this.challenger);
+            this.player1.clickCard(this.kisada);
+            this.player1.clickCard(this.whisperer);
 
             expect(this.player1.fate).toBe(p1Fate + 3);
             expect(this.player2.fate).toBe(p2Fate);
+            expect(this.whisperer.location).toBe('dynasty discard pile');
         });
     });
 });

@@ -1,16 +1,13 @@
-import { ResolvableAbility } from '../../../../build/server/game/ResolvableAbility.js';
-import { putIntoPlay } from '../../../../build/server/game/GameActions/GameActions.js';
-
 describe('Hiruma Skirmisher', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    hand: ['hiruma-skirmisher', 'hiruma-skirmisher']
+                    hand: ['hiruma-skirmisher']
                 }
             });
-            [this.skirmisher, this.skirmisher2] = this.player1.filterCardsByName('hiruma-skirmisher');
+            this.skirmisher = this.player1.findCardByName('hiruma-skirmisher');
         });
 
         it('gains covert after you play it', function () {
@@ -19,13 +16,37 @@ describe('Hiruma Skirmisher', function () {
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.skirmisher);
         });
+    });
+});
+
+describe('Hiruma Skirmisher put into play', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kitsu-spiritcaller', 'hida-kisada'],
+                    conflictDiscard: ['hiruma-skirmisher']
+                }
+            });
+            this.spiritcaller = this.player1.findCardByName('kitsu-spiritcaller');
+            this.kisada = this.player1.findCardByName('hida-kisada');
+            this.skirmisher = this.player1.findCardByName('hiruma-skirmisher');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.kisada],
+                defenders: []
+            });
+            this.player2.pass();
+        });
 
         it('does not react when put into play', function () {
-            const context = new ResolvableAbility(this.skirmisher, {}).createContext(this.player1.player);
-            this.game.queueSimpleStep(() => putIntoPlay().resolve(this.skirmisher2, context));
-            this.game.continue();
-            expect(this.skirmisher2.location).toBe('play area');
+            this.player1.clickCard(this.spiritcaller);
+            this.player1.clickCard(this.skirmisher);
+            expect(this.skirmisher.location).toBe('play area');
+            expect(this.skirmisher.isParticipating()).toBe(true);
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
         });
     });
 });
