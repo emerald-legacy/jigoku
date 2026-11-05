@@ -13,7 +13,7 @@ class CycleOfRebirth extends DrawCard {
             .target({
                 location: Location.Provinces,
                 controller: Players.Any,
-                cardCondition: (card) => card.type !== CardType.Province && card.type !== CardType.Stronghold
+                cardCondition: (card, context) => card.type !== CardType.Province && card.type !== CardType.Stronghold && card !== context.source
             })
             .gameAction(sequential([
                 multiple([

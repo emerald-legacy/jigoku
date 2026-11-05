@@ -107,3 +107,27 @@ describe('Cycle of Rebirth', function() {
         });
     });
 });
+
+describe('Cycle of Rebirth and itself', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    dynastyDiscard: ['akodo-zentaro', 'cycle-of-rebirth', 'akodo-toturi', 'matsu-tsuko', 'shinjo-shono'],
+                    provinces: ['ancestral-lands', 'shameful-display', 'midnight-revels']
+                }
+            });
+            this.zentaro = this.player1.placeCardInProvince('akodo-zentaro', 'province 2');
+            this.cycleOfRebirth = this.player1.placeCardInProvince('cycle-of-rebirth', 'province 3');
+        });
+
+        // RRG Event Cards: "The event is not in your hand (or province) while paying its cost"; targets are chosen after costs (RRG Initiating Abilities, ruling #313)
+        it('offers other cards in provinces but not Cycle of Rebirth itself', function() {
+            this.player1.clickCard(this.cycleOfRebirth);
+            expect(this.player1).toHavePrompt('Cycle of Rebirth');
+            expect(this.player1).toBeAbleToSelect(this.zentaro);
+            expect(this.player1).not.toBeAbleToSelect(this.cycleOfRebirth);
+        });
+    });
+});

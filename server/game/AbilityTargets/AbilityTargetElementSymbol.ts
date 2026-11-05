@@ -23,8 +23,9 @@ export class AbilityTargetElementSymbol extends SelectorTargetBase<AbilityTarget
     }
 
     getSelector(properties: AbilityTargetElementSymbolProperties): CardSelectorInstance {
-        // only Twin Soul Temple uses this, and its action is valid whenever the card has an element
-        const cardCondition = (card: BaseCard) => card.isInPlay() && card.getCurrentElementSymbols().length > 0;
+        // only Twin Soul Temple uses this, and its action is valid whenever the card has an element; a broken province isn't in play
+        const cardCondition = (card: BaseCard) =>
+            card.isInPlay() && !(card.isProvinceCard() && card.isBroken) && card.getCurrentElementSymbols().length > 0;
         const cardType = properties.cardType || [...ALL_CARD_TYPES];
         return CardSelector.for(Object.assign({}, properties, { cardType: cardType, cardCondition: cardCondition, targets: false }));
     }

@@ -11,7 +11,7 @@ class BorderlandsFortifications extends DrawCard {
             .target({
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: (card, context) => card.isDynasty && card !== context.source
+                cardCondition: (card, context) => card.isDynasty && card.location !== context.source.location
             }, moveCard((context) => ({
                 target: context.source,
                 destination: context.target.location,

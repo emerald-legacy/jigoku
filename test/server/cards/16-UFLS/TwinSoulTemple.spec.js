@@ -319,3 +319,36 @@ describe('Twin Soul Temple', function() {
         });
     });
 });
+
+describe('Twin Soul Temple and a broken province', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    stronghold: ['twin-soul-temple']
+                },
+                player2: {
+                    inPlay: ['prodigy-of-the-waves'],
+                    provinces: ['pilgrimage', 'fertile-fields']
+                }
+            });
+            this.twinSoul = this.player1.findCardByName('twin-soul-temple');
+            this.prodigy = this.player2.findCardByName('prodigy-of-the-waves');
+            this.pilgrimage = this.player2.findCardByName('pilgrimage', 'province 1');
+            this.fertileFields = this.player2.findCardByName('fertile-fields', 'province 2');
+            this.pilgrimage.facedown = false;
+            this.pilgrimage.isBroken = true;
+            this.fertileFields.facedown = false;
+            this.game.checkGameState(true);
+        });
+
+        it('cannot choose the element symbol of a broken province', function() {
+            this.player1.clickCard(this.twinSoul);
+            expect(this.player1).toHavePrompt('Choose an element to replace');
+            expect(this.player1).toBeAbleToSelect(this.prodigy);
+            expect(this.player1).toBeAbleToSelect(this.fertileFields);
+            expect(this.player1).not.toBeAbleToSelect(this.pilgrimage);
+        });
+    });
+});
