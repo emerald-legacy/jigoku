@@ -183,11 +183,13 @@ this.action('Turn attachment into character')
             target: card,
             effect: [changeType(CardType.Character)].concat(…)
         }),
+        message: (_context, cards, player) =&gt; msg`${player} turns ${cards} into a character`,
         gameAction: multiple([
             detach(),
             cardLastingEffect({ duration: Duration.Custom })
         ])
-    });</code></pre>
+    })
+    .chatText('turn an attachment into a character');</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/TogashiHoshi.ts">Togashi Hoshi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/10-TEL/VoiceOfTheAncestors.ts">Voice of the Ancestors</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.4-TToTS/PromisingYouth.ts">Promising Youth</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Unicorn/LoyalWarhound.ts">Loyal Warhound</a></p>
   </div>
 <div class="ref" id="ef-copyCard" data-name="copyCard copyProvince">
@@ -629,12 +631,12 @@ this.dire({
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.2-HiF/NimbleNoyan.ts">Nimble Noyan</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Unicorn/IncessantMoto.ts">Incessant Moto</a></p>
   </div>
 <div class="ref" id="ef-cannotContribute" data-name="cannotContribute">
-    <h3><code>cannotContribute(func)</code> <span class="kind">Conflict effect</span> <a class="anchor" href="#ef-cannotContribute">#</a></h3>
+    <h3><code>cannotContribute(match)</code> <span class="kind">Conflict effect</span> <a class="anchor" href="#ef-cannotContribute">#</a></h3>
     <p>Some characters "do not count their skill toward the resolution of this conflict".</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>func</code></td><td><code>(conflict, context) =&gt; (card: DrawCard) =&gt; boolean</code></td><td>required</td><td>Recalculated for the current conflict on every state check; returns the test for the characters that don't count.</td></tr>
+        <tr><td><code>match</code></td><td><code>(card: DrawCard, context: AbilityContext) =&gt; boolean</code></td><td>required</td><td>Called for each character when the conflict's skill is counted, with the effect's own context; true for a character that doesn't count. Use <code>context.source</code>, not <code>this</code>, so a copy of the card (it gets its own context) checks itself.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -646,9 +648,7 @@ this.dire({
 // on it does not count its skill toward the resolution of this conflict.
 this.persistentEffect({
     condition: (context) =&gt; context.source.isAttacking(),
-    effect: cannotContribute((_conflict, context) =&gt; {
-        return (card) =&gt; card.getFate() &gt; 0 &amp;&amp; card !== context.source;
-    })
+    effect: cannotContribute((card, context) =&gt; card.getFate() &gt; 0 &amp;&amp; card !== context.source)
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/SwiftMagistrate.ts">Swift Magistrate</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/StoicMagistrate.ts">Stoic Magistrate</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/HaughtyMagistrate.ts">Haughty Magistrate</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/HumbleMagistrate.ts">Humble Magistrate</a></p>
   </div>
@@ -1923,7 +1923,7 @@ this.reaction('Count a ring as claimed')
 .target({
     cardType: CardType.Province,
     location: Location.Provinces,
-    cardCondition: (card, context) =&gt; !card.isConflictProvince() &amp;&amp; card.canBeAttacked() &amp;&amp; …
+    cardCondition: (card, context) =&gt; !card.isConflictProvince() &amp;&amp; card.isEligibleToBeAttacked() &amp;&amp; …
 }, sequential([
     reveal(),
     conflictLastingEffect((context) =&gt; ({
@@ -2000,7 +2000,7 @@ this.reaction('Gain additional military conflict')
     <h3><code>cannotBeAttacked()</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-cannotBeAttacked">#</a></h3>
     <p>"That province cannot be attacked this round." Put it on a province.</p>
     <ul class="edge">
-      <li><code>province.canBeAttacked()</code> is false, so no conflict can be declared against it. A conflict already at the province is not affected.</li>
+      <li><code>province.canBeAttacked()</code> and <code>isEligibleToBeAttacked()</code> are false, so no conflict can be declared against it. A conflict already at the province is not affected.</li>
       <li>On a province chosen by another card, set <code>targetLocation: Location.Provinces</code> in the lasting effect.</li>
     </ul>
     <pre><code>// Agasha Taiko: Reaction: After you play this character, choose a non-stronghold province - that province cannot be

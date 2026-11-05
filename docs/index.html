@@ -352,6 +352,7 @@ this.whileAttached({
         <li>A card that searches the top X cards of a deck is tested with more than X cards in the deck, and the spec checks that the rest stays untouched.</li>
         <li>A bug in the engine (rather than in one card) gets its regression spec in <code>test/server/integration/</code>, not in a card's spec.</li>
         <li>An ability with a <code>select()</code> before the dash shows its prompt when it is used, with "Pay costs first" (unless a cost depends on a target) and "Cancel", even when only one choice is legal (unless the opponent makes the choice). The spec clicks the choice (<code>clickPrompt('Move into conflict')</code>) before it checks anything.</li>
+        <li>Every integration spec fails when a chat line contains <code>choose a target for</code>, the fallback text of <code>selectCard</code> and <code>cardMenu</code>. An ability whose chat would come from one of them needs a <code>chatText</code>.</li>
         <li>A spec should fail without the fix it tests. Run a subset with <code>npm run jasmine -- &lt;spec paths&gt;</code>.</li>
     </ul>
 </div>

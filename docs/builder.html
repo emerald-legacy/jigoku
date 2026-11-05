@@ -266,7 +266,8 @@ this.duelStrike('Place a fate on a character', (duel, context) =&gt; duel.winner
         gameAction: placeFate((context) =&gt; ({
             origin: context.player
         }))
-    }));</code></pre>
+    }))
+    .chatText('place a fate on a winning character');</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crane/DestinyRevealed.ts">Destiny Revealed</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/Coward.ts">Coward!</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crane/KakitaTechnique.ts">Kakita Technique</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/MasterOfTheBlade.ts">Master of the Blade</a></p>
   </div>
 </section>
@@ -1345,6 +1346,17 @@ this.action('Moves a character to or from a conflict at this province')
       <li>One <code>if()</code> or <code>ifAble()</code> per step.</li>
     </ul>
     <pre><code>// Karada District: Action: Give an opponent 1 fate. Choose an attachment on a character that player controls – take control of that attachment and attach it to an eligible character you control, if able. Otherwise, discard it.
+const takeControl = selectCard((context) =&gt; ({
+    target: context.target,
+    cardType: CardType.Character,
+    controller: Players.Self,
+    gameAction: attach({
+        attachment: context.target?.isDrawCard() ? context.target : undefined,
+        takeControl: true
+    }),
+    message: (context, cards, player) =&gt; msg`${player} chooses to attach ${context.target} to ${cards}`
+}));
+
 this.action('Take control of an attachment')
     .cost(costs.giveFateToOpponent(1))
     .target({
@@ -1352,18 +1364,12 @@ this.action('Take control of an attachment')
         cardCondition: (card, context) =&gt; Boolean(card.parentCharacter &amp;&amp; card.parentCharacter.controller === context.player.opponent)
     })
     .ifAble()
-    .selectCard((context) =&gt; ({
-        target: context.target,
-        cardType: CardType.Character,
-        controller: Players.Self,
-        gameAction: attach({
-            attachment: context.target,
-            takeControl: true
-        }),
-        message: (context, cards, player) =&gt; msg`${player} chooses to attach ${context.target} to ${cards}`
-    }))
+    .gameAction(takeControl)
     .otherwise()
-    .discardFromPlay((context) =&gt; ({ target: context.target }));</code></pre>
+    .discardFromPlay((context) =&gt; ({ target: context.target }))
+    .chatText((context) =&gt; takeControl.hasLegalTarget(context)
+        ? msg`take control of ${context.target}`
+        : msg`discard ${context.target}`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/KaradaDistrict.ts">Karada District</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/AkodoZentaro.ts">Akodo Zentarō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/DragonTattoo.ts">Dragon Tattoo</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/JakIthith.ts">Jak'ithith</a></p>
   </div>
 

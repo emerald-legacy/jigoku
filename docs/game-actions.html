@@ -1072,8 +1072,8 @@ this.reaction('Look at 3 random cards of the opponent\'s hand')
       </tbody>
     </table>
     <ul class="edge">
-      <li>The ability's player always chooses the order, also for another player's deck. The last card needs no choice.</li>
-      <li>Illegal when that deck is empty. <code>amount</code> has no default: give it or <code>cards</code>, or the prompt has no cards to choose from.</li>
+      <li>The ability's player always chooses the order, also for another player's deck. The last card needs no choice, so with 0 or 1 card nothing is asked.</li>
+      <li>Illegal when that deck is empty. <code>amount</code> has no default: give it or <code>cards</code>, or no card is rearranged.</li>
       <li>Cards that left the deck before they are put back are skipped. No event of its own.</li>
       <li>Chat: <code>rearrange the top {1} cards of {0}'s {2}</code> ({2} is the deck, such as "dynasty deck").</li>
       <li>No builder shortcut.</li>
@@ -1279,7 +1279,8 @@ this.action('Return a character to a province')
         cardCondition: (card) =&gt; card.location !== Location.StrongholdProvince,
         subActionProperties: (card) =&gt; ({ destination: card.location }),
         gameAction: putIntoProvince({ target: context.target })
-    })));</code></pre>
+    })))
+    .chatText((context) =&gt; msg`put ${context.target} into a province`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/TheRecedingTide.ts">The Receding Tide</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/MasterOfManyLifetimes.ts">Master of Many Lifetimes</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Dragon/RoadToShakyakuMura.ts">Road to Shakyaku Mura</a></p>
   </div>
 <div class="ref" id="ga-refillFaceup" data-name="refillFaceup">
@@ -1559,11 +1560,13 @@ this.action('Turn attachment into character')
             target: card,
             effect: [changeType(CardType.Character)].concat(…)
         }),
+        message: (_context, cards, player) =&gt; msg`${player} turns ${cards} into a character`,
         gameAction: multiple([
             detach(),
             cardLastingEffect({ duration: Duration.Custom })
         ])
-    });</code></pre>
+    })
+    .chatText('turn an attachment into a character');</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/TogashiHoshi.ts">Togashi Hoshi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Unicorn/LoyalWarhound.ts">Loyal Warhound</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.4-TToTS/PromisingYouth.ts">Promising Youth</a></p>
   </div>
 </section>
@@ -1729,7 +1732,7 @@ this.action('Restore a province')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Legal only during a conflict, for a province that is not already in the conflict, can be attacked, and is controlled by the same player as one of the conflict's provinces.</li>
+      <li>Legal only during a conflict, for a province that is not already in the conflict, is eligible to be attacked (<a href="helpers.html#q-canBeAttacked"><code>isEligibleToBeAttacked()</code></a>: fate costs to declare are not checked again), and is controlled by the same player as one of the conflict's provinces.</li>
       <li>The old province leaves the conflict and the new one becomes the conflict province. A facedown province is revealed (an <code>onCardRevealed</code> event in a then-window).</li>
       <li>It has no restriction type of its own. Raises <code>onConflictMoved</code>.</li>
       <li>Chat: <code>move the conflict to {0}</code>.</li>
@@ -2438,7 +2441,7 @@ this.reaction('Modify honor dial')
     <ul class="edge">
       <li>It is a <code>cardLastingEffect</code> until the end of the phase, holding a delayed effect that fires on <code>onConflictFinished</code>. It fires once, at the end of the next conflict to finish, and is gone afterwards, also when <code>onlyIf</code> was false.</li>
       <li>"If it is still in play": a card that changes zones loses its lasting effects, so nothing happens to a card that left play first.</li>
-      <li>Chat: the ability's text is "apply a lasting effect to <em>card</em>" unless it has <code>chatText</code>.</li>
+      <li>Chat: the ability's text is "apply a lasting effect to <em>card</em>" unless it has <code>chatText</code>. Give it one: the default doesn't tell the opponent what the effect is.</li>
       <li>Builder shortcut: <code>.atEndOfConflict(…)</code>.</li>
     </ul>
     <pre><code>// Kitsu Spiritcaller: Action: During a conflict, bow this character. Choose a character in one of your discard piles – put that character into play in the conflict. If that character is still in play at the end of the conflict, return it to the bottom of its deck.
@@ -2477,6 +2480,7 @@ this.action('Resurrect a character')
       <li>A card is legal when at least one effect can be applied to it and no <code>CannotApplyLastingEffects</code> effect on it blocks that effect. Only the effects that can be applied are added. The location isn't checked.</li>
       <li>The effect ends with its duration, when the card changes zones (moving between provinces doesn't count) or when it is turned facedown, unless <code>canChangeZoneOnce</code> or <code>canChangeZoneNTimes</code> allow it.</li>
       <li>Raises <code>onEffectApplied</code> (<code>event.effectTypes</code>).</li>
+      <li>Give the ability (or this action) a <code>chatText</code> that says what the effect does: the default "apply a lasting effect to <em>card</em>" doesn't tell the opponent.</li>
       <li>Builder shortcut: <code>.cardLastingEffect(…)</code>.</li>
     </ul>
     <pre><code>// Arrows from the Woods: [conflict-military] Conflict Action: Each participating character your opponent controls gets -X[conflict-military] until the end of the conflict. X is equal to 1 if you control a participating Bushi character, or 2 if you also control a participating Shinobi or Scout character. (Max 1 per conflict.)
@@ -2508,7 +2512,7 @@ this.conflictAction('Reduce opponent\'s characters mil', { conflictType: Conflic
     </table>
     <ul class="edge">
       <li>Legal whenever it has at least one effect. A conflict effect always reaches the current conflict (a card effect with <code>match</code> reaches the matching cards), so a chosen target changes nothing: pass the card to the effect factory instead, as A War on Two Fronts does with <code>additionalAttackedProvince(context.target)</code>.</li>
-      <li>Raises <code>onEffectApplied</code>. Chat: "apply a lasting effect".</li>
+      <li>Raises <code>onEffectApplied</code>. Chat: "apply a lasting effect"; give the ability a <code>chatText</code> that says what the effect does.</li>
       <li>Builder shortcut: <code>.conflictLastingEffect(…)</code>.</li>
     </ul>
     <pre><code>// Exemplary Etiquette: Action: During a conflict - abilities on characters cannot be triggered this conflict.
@@ -2538,7 +2542,7 @@ this.action('Stop characters from triggering abilities')
     <ul class="edge">
       <li>Legal whenever it has at least one effect; it doesn't check that a duel is running. Without a current duel the effect reaches nothing. Use it in Duel Challenge and Duel Strike abilities.</li>
       <li>A duel effect applies to its first target if that is a duel. Don't put the action on a card target: the chosen card would replace the duel, and the effect would reach nothing.</li>
-      <li>Raises <code>onEffectApplied</code>. Chat: "apply a lasting effect".</li>
+      <li>Raises <code>onEffectApplied</code>. Chat: "apply a lasting effect"; give the ability a <code>chatText</code> that says what the effect does.</li>
       <li>Builder shortcut: <code>.duelLastingEffect(…)</code>.</li>
     </ul>
     <pre><code>// Shosuro Technique: Duel Challenge: If you were challenged - characters do not contribute their printed statistic to the resolution of this duel.
@@ -2568,7 +2572,7 @@ this.duelChallenge('Ignore printed skill in the duel', (duel, context) =&gt; due
     <ul class="edge">
       <li>Legal whenever it has an effect; the players are not checked.</li>
       <li>When the target is both players, one effect covers both, so it reports and expires once.</li>
-      <li>Chat: <code>apply a lasting effect</code>.</li>
+      <li>Chat: <code>apply a lasting effect</code>; give the ability a <code>chatText</code> that says what the effect does.</li>
       <li>Builder shortcut: <code>.playerLastingEffect(…)</code>.</li>
     </ul>
     <pre><code>// Persuasive Counselor: Action: During a conflict in which this character is participating - each event you play during this conflict cannot be canceled.
@@ -2598,7 +2602,7 @@ this.action('Prevent your events from being cancelled')
     </table>
     <ul class="edge">
       <li>Legal for any ring without a restriction against it; unlike <code>playerLastingEffect</code>, an empty <code>effect</code> doesn't make it illegal.</li>
-      <li>Chat: <code>apply a lasting effect</code>.</li>
+      <li>Chat: <code>apply a lasting effect</code>; give the ability a <code>chatText</code> that says what the effect does.</li>
       <li>Builder shortcut: <code>.ringLastingEffect(…)</code>.</li>
     </ul>
     <pre><code>// Secluded Shrine: Reaction: After the conflict phase begins, choose a ring – until the end of the phase, you are considered to have that ring in your claimed ring pool.
@@ -3034,7 +3038,7 @@ this.action('Dishonor/Honor two characters')
     </table>
     <ul class="edge">
       <li>Nothing happens (no prompt) when it isn't legal, or when <code>cards</code> and <code>options</code> are both empty.</li>
-      <li>Chat: "choose a target for <em>target</em>".</li>
+      <li>Chat: "choose a target for <em>target</em>". Give the ability a <code>chatText</code> in practice: every integration spec fails on a chat line with this fallback (the guard in <code>test/helpers/integrationhelper.ts</code>).</li>
       <li>Builder shortcut: <code>.cardMenu(…)</code>.</li>
     </ul>
     <pre><code>// Daidoji Harrier: Reaction: After this character wins a [conflict-military] conflict, your opponent chooses 2 cards in his or her hand - reveal those cards. You choose and discard one of them.
@@ -3242,7 +3246,7 @@ this.action('Add Province Strength')
       <li>The nested action also gets <code>parentAction</code> (this select), which <code>playCard</code>'s <code>resetOnCancel</code> uses to ask again.</li>
       <li>An optional select where nothing is chosen prints no message; the nested action then gets an empty target (the function form isn't called).</li>
       <li>With <code>targets</code> and a targeting cost that can't be paid, the chat says <code>{player} attempted to use {source}, but did not successfully pay the required costs</code> and nothing happens.</li>
-      <li>Chat: <code>choose a target for {0}</code>, where {0} is the select's own target (the ability's source by default). Set <code>chatText</code>, or the ability's chat text, for a useful line; <code>message</code> adds a line once the card is chosen.</li>
+      <li>Chat: <code>choose a target for {0}</code>, where {0} is the select's own target (the ability's source by default). Required in practice: every integration spec fails on a chat line with this fallback (the guard in <code>test/helpers/integrationhelper.ts</code>), so give the ability a <code>chatText</code>. <code>message</code> adds a line once the card is chosen.</li>
       <li>Builder shortcut: <code>.selectCard(…)</code>.</li>
     </ul>
     <pre><code>// Way of the Crab: Action: Sacrifice a (friendly) [clan-crab] character. Choose an opponent – that player must sacrifice a character. (Max 1 per round.)

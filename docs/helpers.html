@@ -327,7 +327,7 @@ this.reaction('Put a character into play')
   </div>
 
   <div class="ref" id="he-copyBaseSkillEffects" data-name="copyBaseSkillEffects">
-    <h3><code>copyBaseSkillEffects(card, { base?, skills? }?)</code> <span class="kind">Effects</span> <a class="anchor" href="#he-copyBaseSkillEffects">#</a></h3>
+    <h3><code>copyBaseSkillEffects(card, { base?, skills?, overrideModifiers? }?)</code> <span class="kind">Effects</span> <a class="anchor" href="#he-copyBaseSkillEffects">#</a></h3>
     <p>Effects that set a character's base skills to another character's skills: "set this character's base skill to the chosen character's current skill values". Returns an array of effects for a lasting effect.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
@@ -335,6 +335,7 @@ this.reaction('Put a character into play')
         <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>required</td><td>The character to copy from.</td></tr>
         <tr><td><code>base</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Copy <code>card</code>'s base skills instead of its current skills.</td></tr>
         <tr><td><code>skills</code></td><td><code>SkillType[]</code></td><td>both</td><td>Which skills to copy.</td></tr>
+        <tr><td><code>overrideModifiers</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Also set the current skills, so modifiers applied later don't change them (ruling #388, Kaito Temple Protector). A dash stays a base dash only.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -348,7 +349,7 @@ this.reaction('Put a character into play')
     cardCondition: (card, context) =&gt; card.isParticipating() &amp;&amp; card !== context.source
 }, cardLastingEffect((context) =&gt; ({
     target: context.source,
-    effect: copyBaseSkillEffects(context.target)
+    effect: copyBaseSkillEffects(context.target, { overrideModifiers: true })
 })))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/03-DotV/KaitoTempleProtector.ts">Kaito Temple Protector</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/MyAncestorsStrength.ts">My Ancestor's Strength</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/ByAnyMeans.ts">By Any Means</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Dragon/CloudHands.ts">Cloud Hands</a></p>
   </div>
@@ -1141,7 +1142,7 @@ this.persistentEffect({
 });
 // Kitsu Warrior: For each [conflict-military] ring that is claimed, this character gets +2[conflict-military]. …
 modifyMilitarySkill(() =&gt; 2 * countClaimedRings(this.game, ConflictType.Military))</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/IshikenInitiate.ts">Ishiken Initiate</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.2-TL/TeachingOfTheElements.ts">Teachings of the Elements</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.6-EU/KitsuWarrior.ts">Kitsu Warrior</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/IshikenInitiate.ts">Ishiken Initiate</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.2-TL/TeachingsOfTheElements.ts">Teachings of the Elements</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.6-EU/KitsuWarrior.ts">Kitsu Warrior</a></p>
   </div>
 
   <div class="ref" id="he-isClaimedRingOfType" data-name="isClaimedRingOfType">
@@ -1789,12 +1790,15 @@ cardCondition: (card, context) =&gt; card.canAttach(capturedParent(context) ?? u
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/Niten.ts">Niten</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/KitsukiMasanori.ts">Kitsuki Masanori</a></p>
   </div>
 
-  <div class="ref" id="q-canBeAttacked" data-name="canBeAttacked">
-    <h3><code>province.canBeAttacked()</code> <span class="kind">Query</span> <a class="anchor" href="#q-canBeAttacked">#</a></h3>
-    <p><code>ProvinceCard</code>. True if a conflict could be declared against the province: unbroken, not protected by a "cannot be attacked" effect, the opponent can pay its fate cost to attack, and the stronghold province only after 3 other provinces are broken (or an effect allows it).</p>
+  <div class="ref" id="q-canBeAttacked" data-name="canBeAttacked isEligibleToBeAttacked">
+    <h3><code>province.canBeAttacked()</code>, <code>province.isEligibleToBeAttacked()</code> <span class="kind">Query</span> <a class="anchor" href="#q-canBeAttacked">#</a></h3>
+    <p><code>ProvinceCard</code>. <code>isEligibleToBeAttacked()</code> is true if the province is eligible to be attacked: unbroken, not protected by a "cannot be attacked" effect, and the stronghold province only after 3 other provinces are broken (or an effect allows it). <code>canBeAttacked()</code> also needs the opponent to be able to pay the fate costs of declaring a conflict against it; use it for "could be declared against".</p>
+    <ul class="edge">
+      <li>During a conflict, use <code>isEligibleToBeAttacked()</code> for "an eligible province" (moving the conflict, A War on Two Fronts, Diversionary Maneuver): the declaration's fate costs aren't paid again (RRG Eligible; <a href="game-actions.html#ga-moveConflict"><code>moveConflict</code></a> checks it this way).</li>
+    </ul>
     <pre><code>// Scout's Steed: … choose an opponent's eligible facedown province - …
 cardCondition: (card, context) =&gt; card.isFacedown() &amp;&amp; card.canBeAttacked() &amp;&amp; card.controller !== context.player</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/DiversionaryManeuver.ts">Diversionary Maneuver</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.6-PaaC/AWarOnTwoFronts.ts">A War on Two Fronts</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Unicorn/ScoutsSteed.ts">Scout's Steed</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Unicorn/ScoutsSteed.ts">Scout's Steed</a> (<code>canBeAttacked</code>), <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/DiversionaryManeuver.ts">Diversionary Maneuver</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.6-PaaC/AWarOnTwoFronts.ts">A War on Two Fronts</a> (<code>isEligibleToBeAttacked</code>)</p>
   </div>
 
   <div class="ref" id="q-conflictProvinceWithText" data-name="conflictProvinceWithText">
@@ -1964,8 +1968,8 @@ this.playOnlyIf((context) =&gt; !!context.player.opponent &amp;&amp; context.pla
       <li>Facedown and broken provinces and facedown holdings are never included.</li>
       <li>The order is the game's card order (<code>game.allCards</code>), not the order of the player's piles. <code>player.charactersInPlay</code> is the pile itself.</li>
     </ul>
-    <pre><code>// Exemplary Negotiator: Action: If you control a dishonored character, …
-.ifCondition((context) =&gt; context.player.inPlay({ attachments: true }).some((card) =&gt; card.isDishonored))</code></pre>
+    <pre><code>// Katana of Fire: Attached character gets +1[conflict-military] for each Fire card you control.
+this.controller.inPlay({ attachments: true }).filter((card) =&gt; card.hasTrait(Trait.Fire)).length</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/03-DotV/KatanaOfFire.ts">Katana of Fire</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/MilitantFaithful.ts">Militant Faithful</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/TryAgainTomorrow.ts">Try Again Tomorrow</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/StudyTheNaturalWorld.ts">Study the Natural World</a> (12 card files)</p>
   </div>
 
@@ -2461,12 +2465,14 @@ event.conflict.getConflictProvinces().some((p) =&gt; p === context.source)</code
     <ul class="edge">
       <li><code>brokenProvinces</code> also records a province broken by an ability during the conflict. A province broken outside a conflict is in no conflict's list.</li>
       <li><code>attackersAtResolution</code> and <code>defendersAtResolution</code> are copies taken when the winner is determined and stay empty until then; characters that leave the conflict afterwards remain in them ("this character won the conflict": Isawa Kaede).</li>
-      <li><code>attackersAtEnd</code> and <code>defendersAtEnd</code> are taken as the participants return home: a character sent home after the winner was determined (False Loyalties) isn't in them. Read them in <code>onConflictFinished</code> for "after the resolution of a conflict in which this character was attacking/defending" (EmeraldDB ruling on Ivory Kingdoms Unicorn).</li>
+      <li><code>attackersAtEnd</code> and <code>defendersAtEnd</code> are taken as the participants return home: a character sent home after the winner was determined (False Loyalties) isn't in them. For "after the resolution of a conflict in which this character was attacking/defending", check in <code>onConflictFinished</code> that it is in both the <code>…AtResolution</code> and the <code>…AtEnd</code> list: it must have taken part throughout the resolution (EmeraldDB rulings #655 Ivory Kingdoms Unicorn, #1121 Utaku Tomoe). A character that joined after the winner was determined is only in <code>…AtEnd</code>.</li>
       <li><code>provincesAtEnd</code> is <code>getConflictProvinces()</code> taken as the conflict finishes, before its <code>UntilEndOfConflict</code> effects expire: a province attacked through A War on Two Fronts stays in it. Read it in <code>onConflictFinished</code> for "the attacked province" (Breakthrough, Lessons from Earth); it is empty for a passed conflict.</li>
       <li>The current conflict is <code>context.game.currentConflict</code>; finished ones are the records of <a href="#q-getConflicts"><code>game.getConflicts(player)</code></a>, which share <code>brokenProvinces</code>.</li>
     </ul>
     <pre><code>// Utaku Tomoe: Reaction: After the resolution of a conflict in which this character was defending - if you won the conflict, gain 2 honor. Otherwise, ready this character.
-onConflictFinished: (event, context) =&gt; event.conflict.defendersAtEnd.includes(context.source)</code></pre>
+onConflictFinished: (event, context) =&gt;
+    event.conflict.defendersAtResolution.includes(context.source) &amp;&amp;
+    event.conflict.defendersAtEnd.includes(context.source)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/IvoryKingdomsUnicorn.ts">Ivory Kingdoms Unicorn</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/MotoChagatai.ts">Moto Chagatai</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/InfernoGuardInvoker.ts">Inferno Guard Invoker</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Unicorn/UtakuTomoe.ts">Utaku Tomoe</a></p>
   </div>
 
