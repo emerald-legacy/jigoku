@@ -381,10 +381,13 @@ export class GameServer implements GameRouter, LobbyHandlers {
             return;
         }
 
-        game.watch('TBA', user);
-        this.userGameMap.set(user.username, game);
-
-        this.sendGameState(game);
+        if(game.watch('TBA', user)) {
+            this.userGameMap.set(user.username, game);
+            this.sendGameState(game);
+        } else if(game.getPlayerByName(user.username)?.left) {
+            // a player who left comes back to their seat; it is restored when their socket connects
+            this.userGameMap.set(user.username, game);
+        }
     }
 
     onGameSync(callback: (summaries: GameSummary[]) => void) {
@@ -467,6 +470,8 @@ export class GameServer implements GameRouter, LobbyHandlers {
 
         const player = game.playersAndSpectators[socket.user.username];
         if(!player) {
+            logger.info(`${socket.user.username} has no seat in game ${game.id}, disconnecting`);
+            ioSocket.disconnect();
             return;
         }
 
@@ -476,7 +481,7 @@ export class GameServer implements GameRouter, LobbyHandlers {
         // socket.io calls this outside any command handler: an error here must not end the process
         this.catchErrors(game, () => {
             player.id = socket.id;
-            if(player.disconnected) {
+            if(player.disconnected || player.left) {
                 logger.info('user \'%s\' reconnected to game', player.name);
                 game.reconnect(socket, player.name);
 

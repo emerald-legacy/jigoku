@@ -114,6 +114,7 @@ export class GameConnectionManager {
         player.id = socket.id;
         player.socket = socket;
         player.disconnected = false;
+        player.left = false;
 
         this.game.addMessage(msg`${player} has reconnected`);
     }

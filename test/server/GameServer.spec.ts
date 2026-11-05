@@ -1,4 +1,5 @@
 import { GameServer } from '../../server/gamenode/GameServer.js';
+import Game from '../../server/game/Game.js';
 import jwt from 'jsonwebtoken';
 import { callMethod } from '../helpers/methodaccess.js';
 import { logger } from '../../server/logger.js';
@@ -9,7 +10,9 @@ type GameMethods = {
     isSpectator: (p: unknown) => boolean;
     leave: (name: string) => void;
     disconnect: (name: string) => void;
-    watch: (id: string, user: unknown) => void;
+    watch: (id: string, user: unknown) => boolean;
+    getPlayerByName: (name: string) => unknown;
+    reconnect: (socket: unknown, name: string) => void;
     getSummary: () => unknown;
     getSaveState: () => unknown;
     getState: (name?: string, shared?: unknown) => unknown;
@@ -60,7 +63,7 @@ function makeGame(overrides: Partial<{ id: string; name: string; players: Record
     const methods = jasmine.createSpyObj<GameMethods>('game', [
         'addAlert', 'isEmpty', 'isSpectator', 'leave', 'disconnect', 'watch', 'getSummary', 'getSaveState',
         'getState', 'getSharedState', 'getPlayers', 'getPlayersAndSpectators', 'addMessage',
-        'clearAnimations', 'allPlayersGone', 'recordHiddenInfo'
+        'clearAnimations', 'allPlayersGone', 'recordHiddenInfo', 'getPlayerByName', 'reconnect'
     ]);
     const game: GameSpy = Object.assign(methods, {
         id: overrides.id ?? 'g1',
@@ -428,10 +431,106 @@ describe('GameServer.onSpectator', () => {
             sendGameState: sendStateSpy
         });
 
+        game.watch.and.returnValue(true);
+
         call('onSpectator', ctx, { id: 'g1' }, { username: 'alice' });
         expect(game.watch).toHaveBeenCalledWith('TBA', jasmine.objectContaining({ username: 'alice' }));
         expect(ctx.userGameMap.get('alice')).toBe(game);
         expect(sendStateSpy).toHaveBeenCalledWith(game);
+    });
+
+    it('maps nothing when the game refuses the watch', () => {
+        const game = makeGame({ id: 'g1' });
+        const sendStateSpy = jasmine.createSpy('sendGameState');
+        const ctx = makeCtx({
+            games: new Map([['g1', game]]),
+            sendGameState: sendStateSpy
+        });
+        game.watch.and.returnValue(false);
+
+        call('onSpectator', ctx, { id: 'g1' }, { username: 'alice' });
+        expect(game.watch).toHaveBeenCalled();
+        expect(ctx.userGameMap.size).toBe(0);
+        expect(sendStateSpy).not.toHaveBeenCalled();
+    });
+});
+
+describe('GameServer rejoin after leaving', () => {
+    type Seat = { name: string; socket?: unknown; left: boolean; disconnected: boolean };
+
+    function makeCase() {
+        const alice: Seat = { name: 'alice', socket: jasmine.createSpyObj('alice', ['send']), left: false, disconnected: false };
+        const bob: Seat = { name: 'bob', left: true, disconnected: false };
+        const game = makeGame({ id: 'g1', players: { alice, bob } });
+        game.started = true;
+        game.getPlayers.and.returnValue([alice, bob]);
+        game.getState.and.returnValue({});
+        game.watch.and.returnValue(false);
+        game.getPlayerByName.and.callFake((name: string) => game.playersAndSpectators[name]);
+        game.reconnect.and.callFake((socket: unknown) => Object.assign(bob, { socket, left: false, disconnected: false }));
+        const ctx = makeCtx({ games: new Map([['g1', game]]), userGameMap: new Map([['alice', game]]) });
+        return { bob, game, ctx };
+    }
+
+    function connect(ctx: ServerCtx, username: string) {
+        const ioSocket = jasmine.createSpyObj<{ on: () => void; join: () => void; leave: () => void; emit: (k: string, payload?: unknown) => void; disconnect: () => void }>(
+            'ioSocket', ['on', 'join', 'leave', 'emit', 'disconnect']
+        );
+        Object.assign(ioSocket, { id: username + '-new', request: { user: { username } } });
+        call('onConnection', ctx, ioSocket);
+        return ioSocket;
+    }
+
+    it('takes a player who left back to their seat and sends them the state', () => {
+        const { bob, game, ctx } = makeCase();
+
+        call('onSpectator', ctx, { id: 'g1' }, { username: 'bob' });
+        const ioSocket = connect(ctx, 'bob');
+
+        expect(game.reconnect).toHaveBeenCalledWith(jasmine.anything(), 'bob');
+        expect(bob.left).toBe(false);
+        expect(ioSocket.emit).toHaveBeenCalledWith('gamestate', jasmine.anything());
+        expect(ioSocket.disconnect).not.toHaveBeenCalled();
+    });
+
+    it('cancels the auto-close when a player who left comes back', () => {
+        const { game, ctx } = makeCase();
+        const timer = setTimeout(() => undefined, 60_000);
+        ctx.abandonTimers.set('g1', timer);
+
+        call('onSpectator', ctx, { id: 'g1' }, { username: 'bob' });
+        connect(ctx, 'bob');
+
+        expect(ctx.abandonTimers.has('g1')).toBe(false);
+        expect(game.addAlert).toHaveBeenCalled();
+        clearTimeout(timer);
+    });
+
+    it('disconnects a socket with no seat in the game', () => {
+        const { game, ctx } = makeCase();
+        ctx.userGameMap.set('carol', game);
+
+        const ioSocket = connect(ctx, 'carol');
+
+        expect(ioSocket.disconnect).toHaveBeenCalled();
+        expect(ioSocket.emit).not.toHaveBeenCalledWith('gamestate', jasmine.anything());
+    });
+
+    it('restores the seat of a player who left a started game when they reconnect', () => {
+        const game = new Game({
+            id: 'g1', name: 'Test Game', allowSpectators: false, spectatorSquelch: false, owner: 'alice',
+            gameType: 'casual', gameMode: 'stronghold', clocks: null, players: {}, spectators: {}
+        }, {});
+        game.join('alice-socket', { username: 'alice', settings: {} });
+        game.join('bob-socket', { username: 'bob', settings: {} });
+        game.started = true;
+        game.leave('bob');
+        expect(game.getPlayerByName('bob')?.left).toBe(true);
+
+        game.reconnect(jasmine.createSpyObj('socket', ['send']), 'bob');
+
+        expect(game.getPlayerByName('bob')?.left).toBe(false);
+        expect(game.allPlayersGone()).toBe(false);
     });
 });
 
