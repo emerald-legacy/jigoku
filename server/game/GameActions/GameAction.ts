@@ -22,8 +22,12 @@ export interface GameActionProperties {
     parentAction?: GameAction<GameActionProperties>;
 }
 
-/** An event this action created: its context is the one the action was resolved with. */
-export type ActionEvent<EventType extends EventName, Context extends AbilityContext> = GameEvent<EventType> & { context: Context };
+/**
+ * An event this action created: its context is the one the action was resolved with. An action that may raise any event gets
+ * one object type (`AnyEvent`), not the union of every event's payload, which would be copied for every card's context.
+ */
+export type ActionEvent<EventType extends EventName, Context extends AbilityContext> =
+    (EventName extends EventType ? AnyEvent : GameEvent<EventType>) & { context: Context };
 
 /** A `target` property as a list: `getProperties` has already made it one, but its type still allows a single target. */
 export function targetList<Value>(target: Value | Value[] | undefined): Value[] {

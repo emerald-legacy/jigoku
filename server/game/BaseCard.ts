@@ -307,14 +307,14 @@ export class BaseCard extends EffectSource {
         }
     }
 
-    action(title: string): AbilityBuilder<ActionContext<this>> {
+    action<Self extends BaseCard>(this: Self, title: string): AbilityBuilder<ActionContext<Self>> {
         return this.actionBuilder(title, { register: (built) => this.abilities.actions.push(this.createAction(built)) });
     }
 
-    protected actionBuilder(title: string, registrar: ActionRegistrar<this>): AbilityBuilder<ActionContext<this>> {
+    protected actionBuilder<Self extends BaseCard>(this: Self, title: string, registrar: ActionRegistrar<Self>): AbilityBuilder<ActionContext<Self>> {
         this.requireSetup(title);
         const draft = createDraft(title, (context) => context.ability instanceof CardAction);
-        this.registerAbility(draft, () => registrar.register(toActionProps<this>(draft)));
+        this.registerAbility(draft, () => registrar.register(toActionProps<Self>(draft)));
         return new AbilityBuilder(draft);
     }
 
@@ -337,17 +337,17 @@ export class BaseCard extends EffectSource {
         });
     }
 
-    protected triggerBuilder<EventOptional extends boolean = false>(abilityType: AbilityType, title: string): TriggerBuilder<this, EventOptional> {
+    protected triggerBuilder<Self extends BaseCard, EventOptional extends boolean = false>(this: Self, abilityType: AbilityType, title: string): TriggerBuilder<Self, EventOptional> {
         this.requireSetup(title);
-        return new TriggerBuilder<this, EventOptional>({
+        return new TriggerBuilder<Self, EventOptional>({
             when: (when) => {
                 const draft = createDraft(title, holdsTriggerEvent(when, () => this.isProvinceCard()));
-                this.registerAbility(draft, () => this.addTriggeredAbility(abilityType, toTriggerProps<this>(draft, when)));
+                this.registerAbility(draft, () => this.addTriggeredAbility(abilityType, toTriggerProps<Self>(draft, when)));
                 return draft;
             },
             aggregateWhen: (aggregateWhen) => {
                 const draft = createDraft(title, holdsAggregateEvents(() => this.isProvinceCard()));
-                this.registerAbility(draft, () => this.addTriggeredAbility(abilityType, toAggregateProps<this>(draft, aggregateWhen)));
+                this.registerAbility(draft, () => this.addTriggeredAbility(abilityType, toAggregateProps<Self>(draft, aggregateWhen)));
                 return draft;
             }
         });
@@ -357,49 +357,49 @@ export class BaseCard extends EffectSource {
         return new CardAction(this, properties);
     }
 
-    private addTriggeredAbility(abilityType: AbilityType, properties: TriggeredAbilityProps<this>): void {
+    private addTriggeredAbility<Self extends BaseCard>(this: Self, abilityType: AbilityType, properties: TriggeredAbilityProps<Self>): void {
         this.abilities.reactions.push(this.createTriggeredAbility(abilityType, properties));
     }
 
-    createTriggeredAbility(abilityType: AbilityType, properties: TriggeredAbilityProperties<this>): TriggeredAbility {
+    createTriggeredAbility<Self extends BaseCard>(this: Self, abilityType: AbilityType, properties: TriggeredAbilityProperties<Self>): TriggeredAbility {
         return new TriggeredAbility(this, abilityType, properties);
     }
 
-    reaction(this: ProvinceCard, title: string): TriggerBuilder<this, true>;
-    reaction(title: string): TriggerBuilder<this>;
-    reaction(title: string): TriggerBuilder<this, boolean> {
-        return this.triggerBuilder<boolean>(AbilityType.Reaction, title);
+    reaction<Self extends ProvinceCard>(this: Self, title: string): TriggerBuilder<Self, true>;
+    reaction<Self extends BaseCard>(this: Self, title: string): TriggerBuilder<Self>;
+    reaction<Self extends BaseCard>(this: Self, title: string): TriggerBuilder<Self, boolean> {
+        return this.triggerBuilder<Self, boolean>(AbilityType.Reaction, title);
     }
 
-    forcedReaction(this: ProvinceCard, title: string): TriggerBuilder<this, true>;
-    forcedReaction(title: string): TriggerBuilder<this>;
-    forcedReaction(title: string): TriggerBuilder<this, boolean> {
-        return this.triggerBuilder<boolean>(AbilityType.ForcedReaction, title);
+    forcedReaction<Self extends ProvinceCard>(this: Self, title: string): TriggerBuilder<Self, true>;
+    forcedReaction<Self extends BaseCard>(this: Self, title: string): TriggerBuilder<Self>;
+    forcedReaction<Self extends BaseCard>(this: Self, title: string): TriggerBuilder<Self, boolean> {
+        return this.triggerBuilder<Self, boolean>(AbilityType.ForcedReaction, title);
     }
 
-    wouldInterrupt(this: ProvinceCard, title: string): TriggerBuilder<this, true>;
-    wouldInterrupt(title: string): TriggerBuilder<this>;
-    wouldInterrupt(title: string): TriggerBuilder<this, boolean> {
-        return this.triggerBuilder<boolean>(AbilityType.WouldInterrupt, title);
+    wouldInterrupt<Self extends ProvinceCard>(this: Self, title: string): TriggerBuilder<Self, true>;
+    wouldInterrupt<Self extends BaseCard>(this: Self, title: string): TriggerBuilder<Self>;
+    wouldInterrupt<Self extends BaseCard>(this: Self, title: string): TriggerBuilder<Self, boolean> {
+        return this.triggerBuilder<Self, boolean>(AbilityType.WouldInterrupt, title);
     }
 
-    interrupt(this: ProvinceCard, title: string): TriggerBuilder<this, true>;
-    interrupt(title: string): TriggerBuilder<this>;
-    interrupt(title: string): TriggerBuilder<this, boolean> {
-        return this.triggerBuilder<boolean>(AbilityType.Interrupt, title);
+    interrupt<Self extends ProvinceCard>(this: Self, title: string): TriggerBuilder<Self, true>;
+    interrupt<Self extends BaseCard>(this: Self, title: string): TriggerBuilder<Self>;
+    interrupt<Self extends BaseCard>(this: Self, title: string): TriggerBuilder<Self, boolean> {
+        return this.triggerBuilder<Self, boolean>(AbilityType.Interrupt, title);
     }
 
-    forcedInterrupt(this: ProvinceCard, title: string): TriggerBuilder<this, true>;
-    forcedInterrupt(title: string): TriggerBuilder<this>;
-    forcedInterrupt(title: string): TriggerBuilder<this, boolean> {
-        return this.triggerBuilder<boolean>(AbilityType.ForcedInterrupt, title);
+    forcedInterrupt<Self extends ProvinceCard>(this: Self, title: string): TriggerBuilder<Self, true>;
+    forcedInterrupt<Self extends BaseCard>(this: Self, title: string): TriggerBuilder<Self>;
+    forcedInterrupt<Self extends BaseCard>(this: Self, title: string): TriggerBuilder<Self, boolean> {
+        return this.triggerBuilder<Self, boolean>(AbilityType.ForcedInterrupt, title);
     }
 
     /**
      * Applies an effect that continues as long as the card providing the effect
      * is both in play and not blank.
      */
-    persistentEffect<Target extends EffectTarget, LocationType extends TargetLocation = Location.PlayArea>(properties: PersistentEffectProps<this, Target, LocationType>): void {
+    persistentEffect<Self extends BaseCard, Target extends EffectTarget, LocationType extends TargetLocation = Location.PlayArea>(this: Self, properties: PersistentEffectProps<Self, Target, LocationType>): void {
         const allowedLocations = [
             Location.Any,
             Location.ConflictDiscardPile,
@@ -455,24 +455,24 @@ export class BaseCard extends EffectSource {
         }
     }
 
-    composure<Target extends EffectTarget, LocationType extends TargetLocation = Location.PlayArea>(properties: Omit<PersistentEffectProps<this, Target, LocationType>, 'condition'>): void {
+    composure<Self extends BaseCard, Target extends EffectTarget, LocationType extends TargetLocation = Location.PlayArea>(this: Self, properties: Omit<PersistentEffectProps<Self, Target, LocationType>, 'condition'>): void {
         this.persistentEffect({
-            condition: (context: AbilityContext<this>) => context.player.hasComposure(),
+            condition: (context: AbilityContext<Self>) => context.player.hasComposure(),
             ...properties
         });
     }
 
-    dire<Target extends EffectTarget, LocationType extends TargetLocation = Location.PlayArea>(properties: PersistentEffectProps<this, Target, LocationType>): void {
+    dire<Self extends BaseCard, Target extends EffectTarget, LocationType extends TargetLocation = Location.PlayArea>(this: Self, properties: PersistentEffectProps<Self, Target, LocationType>): void {
         const condition = properties.condition;
         this.persistentEffect({
             isKeywordEffect: true,
             ...properties,
-            condition: (context: AbilityContext<this>) => context.source.isDire() && (!condition || condition(context))
+            condition: (context: AbilityContext<Self>) => context.source.isDire() && (!condition || condition(context))
         });
     }
 
     legendary(fate: number): void {
-        this.persistentEffect<Player | BaseCard, Location.Any>({
+        this.persistentEffect<this, Player | BaseCard, Location.Any>({
             location: Location.Any,
             targetLocation: Location.Any,
             effect: [

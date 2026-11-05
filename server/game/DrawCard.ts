@@ -257,7 +257,7 @@ export class DrawCard extends BaseCard {
      * effect is applied (for cases where the effect only applies to specific
      * characters).
      */
-    whileAttached(properties: Pick<PersistentEffectProps<this, BaseCard>, 'condition' | 'match' | 'effect'>) {
+    whileAttached<Self extends DrawCard>(this: Self, properties: Pick<PersistentEffectProps<Self, BaseCard>, 'condition' | 'match' | 'effect'>) {
         this.persistentEffect({
             condition: properties.condition || (() => true),
             match: (card, context) => card === this.parent && (!properties.match || properties.match(card, context)),
@@ -908,21 +908,21 @@ export class DrawCard extends BaseCard {
         });
     }
 
-    duelChallenge(title: string, duelCondition?: DuelCondition): AbilityBuilder<TriggerContext<this, Pick<WhenType<this>, EventName.OnDuelChallenge>>> {
+    duelChallenge<Self extends DrawCard>(this: Self, title: string, duelCondition?: DuelCondition): AbilityBuilder<TriggerContext<Self, Pick<WhenType<Self>, EventName.OnDuelChallenge>>> {
         const canTrigger = (duel: Duel, player: Player) => duel.playerCanTriggerChallenge(player);
         return this.triggerBuilder(AbilityType.DuelReaction, title).when({
             onDuelChallenge: duelTrigger(canTrigger, duelCondition)
         });
     }
 
-    duelFocus(title: string, duelCondition?: DuelCondition): AbilityBuilder<TriggerContext<this, Pick<WhenType<this>, EventName.OnDuelFocus>>> {
+    duelFocus<Self extends DrawCard>(this: Self, title: string, duelCondition?: DuelCondition): AbilityBuilder<TriggerContext<Self, Pick<WhenType<Self>, EventName.OnDuelFocus>>> {
         const canTrigger = (duel: Duel, player: Player) => duel.playerCanTriggerFocus(player);
         return this.triggerBuilder(AbilityType.DuelReaction, title).when({
             onDuelFocus: duelTrigger(canTrigger, duelCondition)
         });
     }
 
-    duelStrike(title: string, duelCondition?: DuelCondition): AbilityBuilder<TriggerContext<this, Pick<WhenType<this>, EventName.OnDuelStrike>>> {
+    duelStrike<Self extends DrawCard>(this: Self, title: string, duelCondition?: DuelCondition): AbilityBuilder<TriggerContext<Self, Pick<WhenType<Self>, EventName.OnDuelStrike>>> {
         const canTrigger = (duel: Duel, player: Player) => duel.playerCanTriggerStrike(player);
         return this.triggerBuilder(AbilityType.DuelReaction, title).when({
             onDuelStrike: duelTrigger(canTrigger, duelCondition)
@@ -933,13 +933,13 @@ export class DrawCard extends BaseCard {
      * "Conflict Action": only during a conflict, of `conflictType` if given. A character must be participating,
      * as must the character an attachment in play is attached to, unless `evenFromHome`.
      */
-    conflictAction(title: string, options: ConflictActionOptions = {}): AbilityBuilder<ActionContext<this>> {
+    conflictAction<Self extends DrawCard>(this: Self, title: string, options: ConflictActionOptions = {}): AbilityBuilder<ActionContext<Self>> {
         return this.actionBuilder(title, {
             register: (properties) => {
                 const condition = properties.condition;
                 this.abilities.actions.push(this.createAction({
                     ...properties,
-                    condition: (context: AbilityContext<this>) => context.source.allowsConflictAction(options) && (condition?.(context) ?? true)
+                    condition: (context: AbilityContext<Self>) => context.source.allowsConflictAction(options) && (condition?.(context) ?? true)
                 }));
             }
         });
