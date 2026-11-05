@@ -2,6 +2,7 @@ import { Trait } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { restrictNumberOfDefenders } from '../../effects.js';
+import { attacksAloneWithTrait } from '../attacksAlone.js';
 
 class IssueAChallenge extends DrawCard {
     static id = 'issue-a-challenge';
@@ -9,17 +10,7 @@ class IssueAChallenge extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Prevent more than 1 declared defender')
             .when({
-                onConflictDeclared: (_event, context) => {
-                    const conflict = context.game.currentConflict;
-                    if(!conflict) {
-                        return false;
-                    }
-                    return conflict.getNumberOfParticipantsFor(context.player) === 1 &&
-                        conflict.getParticipants(
-                            (participant) => participant.hasTrait(Trait.Bushi) && participant.controller === context.player
-                        ).length === 1 &&
-                        context.player === conflict.attackingPlayer;
-                }
+                onConflictDeclared: (event, context) => attacksAloneWithTrait(event.conflict, context.player, Trait.Bushi)
             })
             .playerLastingEffect({
                 effect: restrictNumberOfDefenders(1)
