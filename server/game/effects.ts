@@ -1,6 +1,7 @@
 import * as AbilityLimit from './AbilityLimit.js';
 import type { PrintedKeyword } from './KeywordParser.js';
 import { GainAllAbilitiesDynamic } from './Effects/GainAllAbilitiesDynamic.js';
+import { ContextFunction } from './Effects/ContextFunction.js';
 import { Restriction } from './Effects/Restriction.js';
 import { SuppressEffect } from './Effects/SuppressEffect.js';
 import { EffectBuilder } from './Effects/EffectBuilder.js';
@@ -32,7 +33,6 @@ import type { DynamicMatch } from './Effects/GainAllAbilitiesDynamic.js';
 import type { CostReducerProps } from './CostReducer.js';
 import type { RestrictionProperties } from './Effects/Restriction.js';
 import type { EffectApplier } from './Effects/EffectApplier.js';
-import type { Conflict } from './Conflict.js';
 import type { Faction } from './Constants.js';
 import type { Duel } from './Duel.js';
 import type { CharacterStatus, ConflictType, Element, SkillType, Trait } from './Constants.js';
@@ -41,6 +41,7 @@ import type {
     AbilityLimitIncrease,
     ConflictTypeOrBoth,
     EffectValueMap,
+    FatePool,
     ICanOnlyBeDeclaredAsAttackerWithCondition,
     ParticipantCostEffect,
     UnlessActionCostValue
@@ -240,8 +241,8 @@ export const additionalConflict = (type?: ConflictType) => EffectBuilder.player.
 export const additionalTriggerCost = (func: EffectValueMap[EffectName.AdditionalTriggerCost]) => EffectBuilder.player.static(EffectName.AdditionalTriggerCost, func);
 export const additionalPlayCost = (func: EffectValueMap[EffectName.AdditionalPlayCost]) => EffectBuilder.player.static(EffectName.AdditionalPlayCost, func);
 /** `match` gets the effect's context: a copy of the card (Shosuro Actor) is `context.source`. */
-export const alternateFatePool = (match: (card: Parameters<EffectValueMap[EffectName.AlternateFatePool]>[0], context: AbilityContext) => ReturnType<EffectValueMap[EffectName.AlternateFatePool]>) =>
-    EffectBuilder.player.dynamic(EffectName.AlternateFatePool, (_player, context) => (card) => match(card, context));
+export const alternateFatePool = (match: (card: BaseCard, context: AbilityContext) => FatePool | false) =>
+    EffectBuilder.player.static(EffectName.AlternateFatePool, new ContextFunction(match));
 export const cannotDeclareConflictsOfType = (type: ConflictType) => EffectBuilder.player.static(EffectName.CannotDeclareConflictsOfType, type);
 export const canPlayFromOpponents = (location: Location, cards: DrawCard[], sourceOfEffect: BaseCard, playType: PlayType = PlayType.PlayFromHand) =>
     EffectBuilder.player.detached(EffectName.CanPlayFromOpponents, getPlayFromLocation((player) => player.opponent, location, cards, sourceOfEffect, playType));
@@ -317,8 +318,8 @@ export const charactersCannot = (properties: RestrictionType | PlayType | Restri
                 : Object.assign({ appliesTo: RestrictionScope.Characters }, properties)
         )
     );
-export const cannotContribute = (func: (conflict: Conflict, context: AbilityContext) => (card: DrawCard) => boolean) =>
-    EffectBuilder.conflict.dynamic(EffectName.CannotContribute, func);
+export const cannotContribute = (match: (card: DrawCard, context: AbilityContext) => boolean) =>
+    EffectBuilder.conflict.static(EffectName.CannotContribute, new ContextFunction(match));
 export const changeConflictSkillFunction = (func: EffectValueMap[EffectName.ChangeConflictSkillFunction]) => EffectBuilder.conflict.static(EffectName.ChangeConflictSkillFunction, func);
 export const modifyConflictElementsToResolve = (value: number) =>
     EffectBuilder.conflict.static(EffectName.ModifyConflictElementsToResolve, value);

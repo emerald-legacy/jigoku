@@ -89,9 +89,9 @@ export class PlayerCostManager {
     }
 
     getAlternateFatePools(card: BaseCard, context?: AbilityContext): FatePool[] {
-        const effects = this.player.getEffects(EffectName.AlternateFatePool);
-        let alternateFatePools: FatePool[] = effects.flatMap((match) => {
-            const pool = match(card);
+        const poolFunctions = this.player.getEffects(EffectName.AlternateFatePool);
+        let alternateFatePools: FatePool[] = poolFunctions.flatMap((poolFunction) => {
+            const pool = poolFunction.call(card);
             return pool && pool.getFate() > 0 ? [pool] : [];
         });
 

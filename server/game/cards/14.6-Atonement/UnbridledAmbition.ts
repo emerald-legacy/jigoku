@@ -9,7 +9,7 @@ export default class UnbridledAmbition extends ProvinceCard {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
             targetController: Players.Any,
-            effect: cannotContribute(() => (card) => card.isDishonored)
+            effect: cannotContribute((card) => card.isDishonored)
         });
     }
 

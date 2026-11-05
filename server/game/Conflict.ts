@@ -428,7 +428,7 @@ export class Conflict extends GameObject {
             fixedSkillFunction ??
             (this.mostRecentEffect(EffectName.ChangeConflictSkillFunction) ||
                 ((card: DrawCard) => card.getContributionToConflict(this.conflictType)));
-        const cannotContributeFunctions = this.getEffects(EffectName.CannotContribute);
+        const cannotContributeChecks = this.getEffects(EffectName.CannotContribute);
 
         return cards.reduce((sum, card) => {
             const canContributeWhileBowed = card.anyEffect(EffectName.CanContributeWhileBowed);
@@ -438,7 +438,7 @@ export class Conflict extends GameObject {
                 skillFunction = playerSkillFunction;
             }
             if(!cannotContribute) {
-                cannotContribute = cannotContributeFunctions.some((func) => func(card));
+                cannotContribute = cannotContributeChecks.some((match) => match.call(card));
             }
             if(!cannotContribute) {
                 cannotContribute = !card.checkRestrictions(

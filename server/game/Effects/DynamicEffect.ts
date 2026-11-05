@@ -37,9 +37,6 @@ export class DynamicEffect<EffectType extends EffectName = EffectName, Target ex
         }
         const oldValue = this.getValue(target);
         const newValue = this.setValue(target, this.calculate(target, this.context));
-        if(typeof oldValue === 'function' && typeof newValue === 'function') {
-            return oldValue.toString() !== newValue.toString();
-        }
         if(Array.isArray(oldValue) && Array.isArray(newValue)) {
             if(oldValue.length !== newValue.length) {
                 return true;

@@ -30,10 +30,14 @@ type RestrictionLike = { isMatch(type: RestrictionType | PlayType | undefined, c
 
 export type FatePool = DrawCard | Ring;
 
+// Structural view of ContextFunction (consumers only call `.call`), like RestrictionLike.
+interface ContextFunctionLike<Subject, Result> {
+    call(subject: Subject): Result;
+}
+
 // Method syntax on purpose: the engine passes any target or ability source, cards narrow the type.
 interface TargetingCallbacks {
     match(target: GameObject): boolean;
-    alternateFatePool(source: BaseCard): FatePool | false;
 }
 
 /** A conflict type, or both for an effect that applies to either. */
@@ -197,7 +201,7 @@ export interface EffectValueMap {
     [EffectName.UnlessActionCost]: UnlessActionCostValue;
     [EffectName.AddElement]: Element | Element[];
     [EffectName.CannotBidInDuels]: number | string;
-    [EffectName.CannotContribute]: (card: DrawCard) => boolean;
+    [EffectName.CannotContribute]: ContextFunctionLike<DrawCard, boolean>;
     [EffectName.CannotDeclareRing]: (player: Player) => boolean;
     [EffectName.ConsiderRingAsClaimed]: (player: Player) => boolean;
     [EffectName.AdditionalAction]: number;
@@ -207,7 +211,7 @@ export interface EffectValueMap {
     [EffectName.AdditionalConflict]: ConflictType | true;
     [EffectName.AdditionalTriggerCost]: (context: AbilityContext) => Cost | Cost[];
     [EffectName.AdditionalPlayCost]: (context: AbilityContext) => Cost | Cost[];
-    [EffectName.AlternateFatePool]: TargetingCallbacks['alternateFatePool'];
+    [EffectName.AlternateFatePool]: ContextFunctionLike<BaseCard, FatePool | false>;
     [EffectName.CannotDeclareConflictsOfType]: ConflictType;
     [EffectName.CanPlayFromOwn]: boolean;
     [EffectName.CanPlayFromOutOfPlay]: CanPlayFromOutOfPlayValue;

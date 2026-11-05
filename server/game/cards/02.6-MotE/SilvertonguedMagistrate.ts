@@ -7,9 +7,7 @@ class SilverTonguedMagistrate extends DrawCard {
     override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking(),
-            effect: cannotContribute((_conflict, context) => {
-                return (card) => card.getFate() === 0 && card !== context.source;
-            })
+            effect: cannotContribute((card, context) => card.getFate() === 0 && card !== context.source)
         });
     }
 }

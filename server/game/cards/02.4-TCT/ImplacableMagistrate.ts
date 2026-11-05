@@ -7,9 +7,7 @@ class ImplacableMagistrate extends DrawCard {
     override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking(),
-            effect: cannotContribute((_conflict, context) => {
-                return (card) => !card.isHonored && card !== context.source;
-            })
+            effect: cannotContribute((card, context) => !card.isHonored && card !== context.source)
         });
     }
 }

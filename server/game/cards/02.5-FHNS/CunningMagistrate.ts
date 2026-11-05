@@ -7,9 +7,7 @@ class CunningMagistrate extends DrawCard {
     override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
-            effect: cannotContribute((_conflict, context) => {
-                return (card) => card.isDishonored && card !== context.source;
-            })
+            effect: cannotContribute((card, context) => card.isDishonored && card !== context.source)
         });
     }
 }

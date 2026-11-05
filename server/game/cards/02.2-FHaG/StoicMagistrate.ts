@@ -7,9 +7,7 @@ class StoicMagistrate extends DrawCard {
     override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isDefending(),
-            effect: cannotContribute(() => {
-                return (card) => card.costLessThan(3);
-            })
+            effect: cannotContribute((card) => card.costLessThan(3))
         });
     }
 }
