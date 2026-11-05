@@ -104,6 +104,7 @@ describe('The East Wind', function () {
 
             this.player1.clickCard(this.eastWind);
             expect(this.player1).toHavePrompt('Select a card to reveal');
+            expect(this.getChatLogs(3)).toContain('player1 uses The East Wind, bowing The East Wind to look at the top card of their deck');
 
             this.player1.clickPrompt('Take nothing');
             expect(this.player1.fate).toBe(initialFate);

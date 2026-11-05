@@ -181,7 +181,7 @@ describe('The Western Wind', function() {
                 this.game.checkGameState(true);
                 this.player1.clickCard(this.wind);
                 this.player1.clickCard(this.p1);
-                expect(this.getChatLogs(10)).toContain('player1 plays The Western Wind to look at the top 8 cards of their deck');
+                expect(this.getChatLogs(10)).toContain('player1 plays The Western Wind to look at the top 5 cards of their deck');
                 expect(this.player1).toHavePrompt('The Western Wind');
                 expect(this.player1).not.toHavePromptButton('Doji Whisperer');
                 expect(this.player1).not.toHavePromptButton('Kakita Yoshi');

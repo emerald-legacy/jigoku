@@ -86,7 +86,7 @@ export class DeckSearchAction<Context extends AbilityContext = AbilityContext> e
         const properties = this.getProperties(context, additionalProperties);
         const { cardsToLookAt } = properties;
         const player = this.#searched(properties, context);
-        const amount = derive(cardsToLookAt, context);
+        const amount = Math.min(derive(cardsToLookAt, context), this.#getDeck(player, properties).length);
         const deck = player !== context.player ? '{1}\'s deck' : 'their deck';
         const message = amount > 0 ? `look at the top ${amount === 1 ? 'card' : `${amount} cards`} of ${deck}` : `search ${deck}`;
         return [message, player !== context.player ? [player] : []];
