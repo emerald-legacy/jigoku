@@ -10,7 +10,8 @@ export default class ExemplaryNegotiator extends DrawCard {
             .ifCondition((context) => context.player.anyCardsInPlay((card) => card.isDishonored))
             .cost(costs.discardCardsUpToVariableX(() => 2))
             .discardAtRandom((context) => ({
-                amount: context.costs.discardCardsUpToVariableX?.length || 1
+                // 1 while the cost is unpaid, so the effect is legal before the cards are chosen
+                amount: context.costs.discardCardsUpToVariableX?.length ?? 1
             }))
             .chatText((context) => msg`discard ${context.costs.discardCardsUpToVariableX} to make ${context.player.opponent} discard ${(context.costs.discardCardsUpToVariableX ?? []).length} card${(context.costs.discardCardsUpToVariableX ?? []).length > 1 ? 's' : ''} at random`);
     }

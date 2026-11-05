@@ -2,6 +2,11 @@ import { msg } from '../../GameChat.js';
 import { cannotTriggerAbilities } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { ConflictType } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+
+function weakerOpponents(context: AbilityContext<DrawCard>): DrawCard[] {
+    return context.game.currentConflict?.getCharacters(context.player.opponent).filter((card) => card.militarySkill <= context.source.militarySkill) ?? [];
+}
 
 class MenacingIronWarrior extends DrawCard {
     static id = 'menacing-iron-warrior';
@@ -10,14 +15,12 @@ class MenacingIronWarrior extends DrawCard {
         this.action('Disable abilities of weaker military characters')
             .condition((context) => this.game.isDuringConflict(ConflictType.Military) && context.source.isParticipating())
             .cardLastingEffect((context) => ({
-                target: context.game.currentConflict ? context.game.currentConflict.getCharacters(context.player.opponent).filter((card) => card.militarySkill <= context.source.militarySkill && card !== context.source) : [],
+                target: weakerOpponents(context),
                 effect: cannotTriggerAbilities()
             }))
             .chatText((context) => {
-                const conflict = context.game.currentConflict;
                 const opp = context.player.opponent ?? context.player;
-                const characters = conflict ? conflict.getCharacters(opp).filter((card) => card.militarySkill <= context.source.militarySkill && card !== context.source) : [];
-                return msg`prevent ${opp}'s participating characters from using any abilities if their military skill is equal to or lower than ${context.source.militarySkill}. This affects: ${characters}`;
+                return msg`prevent ${opp}'s participating characters from using any abilities if their military skill is equal to or lower than ${context.source.militarySkill}. This affects: ${weakerOpponents(context)}`;
             });
     }
 }

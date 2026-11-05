@@ -3,6 +3,11 @@ import DrawCard from '../../DrawCard.js';
 import { unlimited } from '../../AbilityLimit.js';
 import { delayedEffect } from '../../effects.js';
 import { discardFromPlay } from '../../GameActions/GameActions.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+
+function kuwanan(context: AbilityContext) {
+    return context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan');
+}
 
 class DojiHotaru2 extends DrawCard {
     static id = 'doji-hotaru-2';
@@ -10,10 +15,10 @@ class DojiHotaru2 extends DrawCard {
     override setupCardAbilities() {
         this.persistentEffect({
             effect: delayedEffect({
-                condition: (context) => !!context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan'),
-                message: (context) => msg`${context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan')} is discarded from play as its controller controls ${context.source}`,
+                condition: (context) => !!kuwanan(context),
+                message: (context) => msg`${kuwanan(context)} is discarded from play as its controller controls ${context.source}`,
                 gameAction: discardFromPlay((context) => ({
-                    target: context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan')
+                    target: kuwanan(context)
                 }))
             })
         });

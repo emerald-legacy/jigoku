@@ -10,17 +10,17 @@ export default class WaseitsBlessing extends DrawCard {
     override setupCardAbilities() {
         this.conflictAction('Send a character home from each side')
             .target({
-                name: 'myCharacter',
+                name: 'defender',
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isDefending()
             }, sendHome())
             .target({
-                name: 'oppCharacter',
-                dependsOn: 'myCharacter',
+                name: 'attacker',
+                dependsOn: 'defender',
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()
             }, sendHome())
-            .chatText((context) => msg`send home ${context.targets.myCharacter} and ${context.targets.oppCharacter}`)
+            .chatText((context) => msg`send home ${context.targets.defender} and ${context.targets.attacker}`)
             .max(perRound(1));
     }
 }
