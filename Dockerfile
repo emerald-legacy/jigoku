@@ -14,11 +14,11 @@ COPY . .
 ARG BUILD_VERSION=LOCAL
 ENV BUILD_VERSION=$BUILD_VERSION
 
-RUN mkdir -p server/logs && npx tsc
+# Compile, then remove dev dependencies so the runtime stage copies only what it needs
+RUN npx tsc && npm prune --omit=dev
 
 # Production stage
 FROM node:26.13-alpine3.23@sha256:e6c03d42b46af3b1e98207e59f06a43cfe5efd3ec4b4d3d9802bddf04f833374
-# Install runtime dependencies
 
 WORKDIR /app
 
@@ -37,6 +37,6 @@ USER node
 EXPOSE 9500
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:9500/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))" || exit 1
+    CMD wget -q -O /dev/null http://127.0.0.1:9500/health || exit 1
 
 CMD ["node", "build/server/gamenode/index.js"]
