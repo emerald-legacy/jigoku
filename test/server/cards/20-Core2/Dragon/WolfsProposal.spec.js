@@ -34,6 +34,7 @@ describe('Wolf\'s Proposal', function() {
             this.player1.clickPrompt('Increase glory');
             expect(this.brashSamurai.glory).toBe(4);
             expect(this.asami.glory).toBe(2);
+            expect(this.getChatLogs(3)).toContain('player1 increases Brash Samurai\'s glory by 2 for this phase');
         });
 
         it('should only last for this phase', function() {
@@ -51,6 +52,7 @@ describe('Wolf\'s Proposal', function() {
             this.player1.clickCard(this.wolfsProposal);
             this.player1.clickPrompt('Decrease glory');
             expect(this.brashSamurai.glory).toBe(0);
+            expect(this.getChatLogs(3)).toContain('player1 decreases Brash Samurai\'s glory by 2 for this phase');
         });
 
         it('should only be usable once per round', function() {

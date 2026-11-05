@@ -36,6 +36,7 @@ describe('Doji Reiha', function () {
             this.player1.clickPrompt('Move all duel participants home');
             expect(this.reiha.isParticipating()).toBe(false);
             expect(this.mitsu.isParticipating()).toBe(false);
+            expect(this.getChatLogs(3)).toContain('player1 chooses to move Dōji Reiha and Togashi Mitsu home');
         });
 
         it('honors each contestant once and lets nobody choose on a tie', function () {
@@ -69,6 +70,7 @@ describe('Doji Reiha', function () {
             this.player2.pass();
             resolveDuel(this);
             this.player2.clickPrompt('Do nothing');
+            expect(this.getChatLogs(3)).toContain('player2 chooses not to move the contestants home');
 
             // One honor on a dishonored character clears the status; it must not honor twice.
             expect(this.reiha.isDishonored).toBe(false);
