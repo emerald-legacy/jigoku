@@ -69,6 +69,32 @@ describe('Ashalan Lantern', function () {
             expect(this.leftPlay).toContain([this.lantern, 'conflict discard pile']);
         });
 
+        it('discards itself before the character is played', function () {
+            this.lanternLocationOnPlay = [];
+            this.game.on('onCharacterEntersPlay', () => this.lanternLocationOnPlay.push(this.lantern.location));
+            this.player2.moveCard(this.brash, 'dynasty deck');
+            this.player2.moveCard(this.courtly, 'dynasty deck');
+            this.player2.moveCard(this.tengu, 'dynasty deck');
+
+            this.player1.clickCard(this.lantern);
+            this.player1.clickCard(this.recruit);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.recruit],
+                defenders: []
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.lantern);
+            this.player1.chooseCardInPrompt('Good Omen', 'card-name');
+            this.player1.clickPrompt(this.brash.name);
+            expect(this.lantern.location).toBe('conflict discard pile');
+            this.player1.clickPrompt('0');
+            expect(this.brash.location).toBe('play area');
+            expect(this.lanternLocationOnPlay).toEqual(['conflict discard pile']);
+        });
+
         it('gives 3 fate discount if character chosen matches the name and lets you play even if you cannot afford the base price', function () {
             this.player2.moveCard(this.brash, 'dynasty deck');
             this.player2.moveCard(this.courtly, 'dynasty deck');

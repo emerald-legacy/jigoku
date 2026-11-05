@@ -57,19 +57,23 @@ describe('Twin Sister Blades', function() {
         });
 
         it('should not draw on a non-bushi', function() {
+            const actions = this.yoshi.getActions().length;
             this.player1.clickCard(this.mirumotoDaisho);
             this.player1.clickCard(this.yoshi);
+            expect(this.mirumotoDaisho.parent).toBe(this.yoshi);
+            expect(this.yoshi.getActions().length).toBe(actions);
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.yoshi],
                 defenders: [this.dojiWhisperer]
             });
-            const _hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             this.player2.pass();
             expect(this.player1).toHavePrompt('Conflict Action Window');
             this.player1.clickCard(this.yoshi);
             expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.player1.hand.length).toBe(hand);
         });
 
         it('should draw 2 cards on a duelist if outnumbered', function() {

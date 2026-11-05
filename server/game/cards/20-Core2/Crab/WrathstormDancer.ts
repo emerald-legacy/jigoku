@@ -7,11 +7,14 @@ export default class WrathstormDancer extends DrawCard {
 
     public override setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) =>
-                context.source.isParticipating() &&
-                context.player.charactersInPlay.some(
-                    (card) => card.hasTrait(Trait.Berserker) && card !== context.source && card.isParticipating()
-                ),
+            condition: (context) => {
+                const conflict = context.game.currentConflict;
+                if(!conflict?.isParticipating(context.source)) {
+                    return false;
+                }
+                const side = conflict.isAttacking(context.source) ? conflict.getAttackers() : conflict.getDefenders();
+                return side.some((card) => card !== context.source && card.hasTrait(Trait.Berserker));
+            },
             effect: doesNotBow()
         });
     }

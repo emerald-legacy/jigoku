@@ -9,8 +9,8 @@ class TwinSisterBlades extends DrawCard {
 
     override setupCardAbilities() {
         this.whileAttached({
+            match: (card) => card.hasTrait(Trait.Bushi),
             effect: gainAbility.conflictAction('Draw cards', (ability) => ability
-                .condition((context) => context.source.hasTrait(Trait.Bushi))
                 .draw((context) => ({
                     amount: this.getNumberOfCards(context)
                 }))

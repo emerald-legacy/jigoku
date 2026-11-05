@@ -4,13 +4,25 @@ import { PlayIntoLocation } from '../../../PlayCharacterAction.js';
 import { asIfFromHandPlayActions } from '../../../PlayDisguisedCharacterAsIfFromHand.js';
 import * as costs from '../../../costs/index.js';
 import { reduceNextPlayedCardCost } from '../../../effects.js';
-import { deckSearch, discardFromPlay, playCard, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
+import { deckSearch, discardFromPlay, handler, playCard, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AshalanLantern extends DrawCard {
     static id = 'ashalan-lantern';
 
     public override setupCardAbilities() {
+        const play = playCard((context) => {
+            const target = context.deckSearchSelected[0];
+            return {
+                target,
+                source: this,
+                resetOnCancel: false,
+                playType: PlayType.PlayFromHand,
+                playAction: target ? asIfFromHandPlayActions(target, { into: PlayIntoLocation.Conflict }) : undefined,
+                ignoredBlockers: [Blocker.WrongPhase]
+            };
+        });
+
         this.conflictAction('Play a character from your opponent\'s dynasty deck', { evenFromHome: true })
             .cost(costs.nameCard())
             .gameAction(sequential([
@@ -28,23 +40,25 @@ export default class AshalanLantern extends DrawCard {
                     target: context.player.opponent,
                     player: Players.Self,
                     remainingCards: RemainingCards.Top,
-                    cardCondition: (card) => card.type === CardType.Character && !card.isUnique(),
-                    gameAction: playCard((deckSearchContext) => {
-                        const target = deckSearchContext.deckSearchSelected[0];
-                        return {
-                            target,
-                            source: this,
-                            resetOnCancel: false,
-                            playType: PlayType.PlayFromHand,
-                            playAction: target ? asIfFromHandPlayActions(target, { into: PlayIntoLocation.Conflict }) : undefined,
-                            ignoredBlockers: [Blocker.WrongPhase],
-                            postHandler: () => discardFromPlay({ target: context.source }).resolve(context.player, context)
-                        };
+                    cardCondition: (card, context) => card.type === CardType.Character && !card.isUnique() && play.canAffect(card, context),
+                    gameAction: handler({
+                        handler: (context) => {
+                            if(!play.hasLegalTarget(context)) {
+                                return;
+                            }
+                            discardFromPlay({ target: context.source }).resolve(undefined, context);
+                            context.game.queueSimpleStep(() => {
+                                if(context.source.location === context.source.discardPile) {
+                                    play.resolve(undefined, context);
+                                }
+                                return true;
+                            });
+                        }
                     }),
                     remainingCardsHandler: (context, _event, cards) => {
                         context.game.addMessage(msg`${context.player} puts ${cards} on the top of ${context.player.opponent}'s dynasty deck`);
                     },
-                    message: (context, selectedCards) => msg`${context.player}${selectedCards.length > 0 ? ' compels ' : ' takes nothing'}${selectedCards}${selectedCards.length > 0 ? ' into service' : ''}`
+                    message: (context, selectedCards) => msg`${context.player} compels ${selectedCards} into service`
                 }))
             ]))
             .chatText((context) => msg`look for a character on the top of ${context.player.opponent ?? ''}'s dynasty deck. They reveal ${context.player.opponent?.dynastyDeck.slice(0, 3) ?? []}`);
