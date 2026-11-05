@@ -2,6 +2,7 @@ import type { AbilityContext } from './AbilityContext.js';
 import type { CardAction } from './CardAction.js';
 import { AbilityType, Location, Phase, RestrictionType } from './Constants.js';
 import type DrawCard from './DrawCard.js';
+import { gainHonor } from './GameActions/GameActions.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import { GameMode } from '../GameMode.js';
 
@@ -84,7 +85,7 @@ const Stronghold: GameRules = {
     ],
     setupStartingHandSize: 4,
     ringAirChoices: (optional: boolean): RingChoices => ({
-        [AIR_CHOICE.GAIN_2]: () => true,
+        [AIR_CHOICE.GAIN_2]: (context: AbilityContext) => gainHonor({ amount: 2 }).canAffect(context.player, context),
         [AIR_CHOICE.TAKE_1]: (context: AbilityContext) =>
             Boolean(context.player.opponent && context.player.opponent.checkRestrictions(RestrictionType.TakeHonor, context)),
         [AIR_CHOICE.SKIP]: () => optional
