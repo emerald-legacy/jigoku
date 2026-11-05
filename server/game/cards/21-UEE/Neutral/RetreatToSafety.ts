@@ -12,8 +12,7 @@ export default class RetreatToSafety extends DrawCard {
                 mode: TargetMode.UpTo,
                 numCards: 2,
                 cardType: CardType.Character,
-                controller: Players.Self,
-                cardCondition: (card) => card.isDefending()
+                cardCondition: (card, context) => card.isDefending() && card.isParticipatingFor(context.player)
             }, sendHome())
             .afterwards()
             .if((context) => context.player.isCharacterTraitInPlay(Trait.Commander))

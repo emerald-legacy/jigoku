@@ -96,3 +96,64 @@ describe('Retreat to Safety', () => {
         });
     });
 });
+
+describe('Retreat to Safety with characters on the other side than their controller', () => {
+    integration(() => {
+        let player1: IntegrationContext['player1'];
+        let player2: IntegrationContext['player2'];
+        let skirmisher1: DrawCard;
+        let skirmisher2: DrawCard;
+        let matsuBerserker: DrawCard;
+        let retreatToSafety: DrawCard;
+        let currentConflict: () => IntegrationContext['game']['currentConflict'];
+        let getChatLogs: (_n: number) => string[];
+
+        beforeEach(function(this: IntegrationContext) {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['border-rider', 'endless-plains-skirmisher']
+                },
+                player2: {
+                    inPlay: ['matsu-berserker', 'endless-plains-skirmisher'],
+                    hand: ['retreat-to-safety']
+                }
+            });
+
+            player1 = this.player1;
+            player2 = this.player2;
+            currentConflict = () => this.game.currentConflict;
+            getChatLogs = (n) => this.getChatLogs(n);
+
+            skirmisher1 = player1.findDrawCard('endless-plains-skirmisher');
+            skirmisher2 = player2.findDrawCard('endless-plains-skirmisher');
+            matsuBerserker = player2.findDrawCard('matsu-berserker');
+            retreatToSafety = player2.findDrawCard('retreat-to-safety');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [player1.findDrawCard('border-rider')],
+                defenders: [matsuBerserker]
+            });
+            player2.clickCard(skirmisher2);
+            player2.clickPrompt('player1');
+            player1.clickCard(skirmisher1);
+            player1.clickPrompt('player2');
+        });
+
+        it('chooses defending characters on your side, whoever controls them', () => {
+            expect(currentConflict()?.attackers).toContain(skirmisher2);
+            expect(currentConflict()?.defenders).toContain(skirmisher1);
+
+            player2.clickCard(retreatToSafety);
+            expect(player2).toBeAbleToSelect(matsuBerserker);
+            expect(player2).toBeAbleToSelect(skirmisher1);
+            expect(player2).not.toBeAbleToSelect(skirmisher2);
+
+            player2.clickCard(skirmisher1);
+            player2.clickPrompt('Done');
+            expect(skirmisher1.isParticipating()).toBe(false);
+            expect(getChatLogs(3)).toContain('player2 plays Retreat to Safety to send Endless Plains Skirmisher home');
+        });
+    });
+});

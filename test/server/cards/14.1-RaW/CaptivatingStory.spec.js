@@ -269,3 +269,44 @@ describe('Captivating Story', function() {
         });
     });
 });
+
+describe('Captivating Story with a character on the other side than its controller', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-yoshi', 'endless-plains-skirmisher'],
+                    hand: ['captivating-story']
+                },
+                player2: {
+                    inPlay: ['agasha-swordsmith']
+                }
+            });
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.skirmisher = this.player1.findCardByName('endless-plains-skirmisher');
+            this.story = this.player1.findCardByName('captivating-story');
+            this.swordsmith = this.player2.findCardByName('agasha-swordsmith');
+            this.player1.findCardByName('shameful-display', 'province 1').facedown = false;
+        });
+
+        it('chooses the character alone on your side, not your character on the enemy side', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.yoshi],
+                defenders: [this.swordsmith],
+                type: 'political'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.skirmisher);
+            this.player1.clickPrompt('player2');
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher);
+            this.player2.pass();
+
+            this.player1.clickCard(this.story);
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).toBeAbleToSelect(this.yoshi);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher);
+        });
+    });
+});

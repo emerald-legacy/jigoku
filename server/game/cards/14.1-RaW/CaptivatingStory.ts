@@ -2,7 +2,7 @@ import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { modifyPoliticalSkill } from '../../effects.js';
 import { cardLastingEffect, honor, removeFate, resolveAbility } from '../../GameActions/GameActions.js';
-import { CardType, EventName, Players } from '../../Constants.js';
+import { CardType, EventName } from '../../Constants.js';
 import { CardAbility } from '../../CardAbility.js';
 
 class CaptivatingStory extends DrawCard {
@@ -13,8 +13,7 @@ class CaptivatingStory extends DrawCard {
             .condition((context) => (this.game.currentConflict?.getNumberOfParticipantsFor(context.player) ?? 0) === 1)
             .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
-                cardCondition: (card, context) => card.isParticipating() && (context.player.getNumberOfFaceupProvinces() > 0 || removeFate().canAffect(card, context))
+                cardCondition: (card, context) => card.isParticipatingFor(context.player) && (context.player.getNumberOfFaceupProvinces() > 0 || removeFate().canAffect(card, context))
             }, cardLastingEffect((context) => ({
                 effect: modifyPoliticalSkill(context.player.getNumberOfFaceupProvinces())
             })))

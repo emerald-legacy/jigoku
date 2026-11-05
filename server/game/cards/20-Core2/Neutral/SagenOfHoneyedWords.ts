@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Players } from '../../../Constants.js';
+import { CardType } from '../../../Constants.js';
 import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -14,8 +14,7 @@ export default class SagenOfHoneyedWords extends DrawCard {
         this.conflictAction('Gain a skill bonus based on your company')
             .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
-                cardCondition: (card, context) => card.isParticipating() && card !== context.source && card.glory > 0
+                cardCondition: (card, context) => card.isParticipatingFor(context.player) && card !== context.source && card.glory > 0
             })
             .cardLastingEffect((context) => ({
                 effect: modifyBothSkills(skillBonus(context.target))

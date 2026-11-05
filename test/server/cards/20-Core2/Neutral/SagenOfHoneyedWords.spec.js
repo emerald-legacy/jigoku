@@ -101,3 +101,48 @@ describe('Sagen of Honeyed Words - companion with 0 glory', function () {
         });
     });
 });
+
+describe('Sagen of Honeyed Words with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['sagen-of-honeyed-words', 'endless-plains-skirmisher']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar', 'endless-plains-skirmisher']
+                }
+            });
+            this.sagen = this.player1.findCardByName('sagen-of-honeyed-words');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.sagen],
+                defenders: [this.scholar]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+            this.player2.pass();
+        });
+
+        it('chooses another character on your side, whoever controls it', function () {
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard(this.sagen);
+            expect(this.player1).toBeAbleToSelect(this.skirmisher2);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher1);
+
+            this.player1.clickCard(this.skirmisher2);
+            expect(this.sagen.militarySkill).toBe(2);
+            expect(this.sagen.politicalSkill).toBe(2);
+        });
+    });
+});

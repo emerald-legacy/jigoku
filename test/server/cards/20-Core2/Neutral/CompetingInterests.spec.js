@@ -113,3 +113,64 @@ describe('Competing Interests with a unique attachment on the enemy side', funct
         });
     });
 });
+
+describe('Competing Interests with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-yoshi', 'endless-plains-skirmisher'],
+                    hand: ['competing-interests', 'jade-masterpiece']
+                },
+                player2: {
+                    inPlay: ['akodo-toturi', 'endless-plains-skirmisher'],
+                    hand: ['jade-masterpiece']
+                }
+            });
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.competingInterests = this.player1.findCardByName('competing-interests');
+            this.toturi = this.player2.findCardByName('akodo-toturi');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+        });
+
+        it('counts a unique attachment on your character on the enemy side', function () {
+            this.player1.playAttachment(this.player1.findCardByName('jade-masterpiece'), this.skirmisher1);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.yoshi],
+                defenders: [this.toturi]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+            this.player2.pass();
+
+            this.player1.clickCard(this.competingInterests);
+            expect(this.player1).toBeAbleToSelect(this.toturi);
+            expect(this.player1).toBeAbleToSelect(this.yoshi);
+            this.player1.clickCard(this.toturi);
+            expect(this.toturi.bowed).toBe(true);
+        });
+
+        it('does not count a unique attachment on the opponent\'s character on your side', function () {
+            this.player1.pass();
+            this.player2.playAttachment(this.player2.findCardByName('jade-masterpiece'), this.skirmisher2);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.yoshi],
+                defenders: [this.toturi]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+
+            this.player1.clickCard(this.competingInterests);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.competingInterests.location).toBe('hand');
+            expect(this.toturi.bowed).toBe(false);
+        });
+    });
+});

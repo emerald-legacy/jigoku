@@ -16,23 +16,8 @@ export default class CompetingInterests extends DrawCard {
     }
 
     private hasEnoughUniques(ctx: AbilityContext) {
-        let totalUniques = 0;
-        for(const card of ctx.game.currentConflict?.getParticipants() ?? []) {
-            if(card.controller !== ctx.player) {
-                if(card.isUnique()) {
-                    totalUniques++;
-                }
-                for(const attachment of card.attachments) {
-                    if(attachment.isUnique()) {
-                        totalUniques++;
-                    }
-                }
-
-                if(totalUniques >= 2) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        const enemySide = ctx.game.currentConflict?.getCharacters(ctx.player.opponent) ?? [];
+        const uniques = enemySide.flatMap((card) => [card, ...card.attachments]).filter((card) => card.isUnique());
+        return uniques.length >= 2;
     }
 }

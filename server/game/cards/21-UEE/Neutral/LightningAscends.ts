@@ -1,7 +1,7 @@
 import { msg } from '../../../GameChat.js';
 import { loseTrait, modifyMilitarySkill } from '../../../effects.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
-import { CardType, Players, Trait } from '../../../Constants.js';
+import { CardType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class LightningAscends extends DrawCard {
@@ -12,8 +12,7 @@ export default class LightningAscends extends DrawCard {
             .target({
                 name: 'monk',
                 cardType: CardType.Character,
-                controller: Players.Self,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Monk)
+                cardCondition: (card, context) => card.isParticipatingFor(context.player) && card.hasTrait(Trait.Monk)
             }, cardLastingEffect({
                 effect: modifyMilitarySkill(2)
             }))
@@ -22,8 +21,7 @@ export default class LightningAscends extends DrawCard {
                 activePromptTitle: 'Choose a character to lose all traits',
                 dependsOn: 'monk',
                 cardType: CardType.Character,
-                controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating()
+                cardCondition: (card, context) => !!context.player.opponent && card.isParticipatingFor(context.player.opponent)
             }, cardLastingEffect((context) => ({
                 effect: [...context.targets.enemy.getTraits()].map((t) => loseTrait(t))
             })))
