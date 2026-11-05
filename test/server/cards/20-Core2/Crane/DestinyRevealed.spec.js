@@ -63,6 +63,7 @@ describe('Destiny Revealed', function () {
                 expect(this.challenger.fate).toBe(fate + 1);
                 expect(this.player1).toHavePrompt('Policy Debate');
 
+                expect(this.getChatLogs(5)).toContain('player1 plays Destiny Revealed to place a fate on a winning character');
                 expect(this.getChatLogs(5)).toContain('player1 places a fate from their fate pool on Doji Challenger');
                 expect(this.player1.fate).toBe(initialPlayerFate - 1);
             });

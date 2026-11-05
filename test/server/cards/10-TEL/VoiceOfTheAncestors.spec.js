@@ -48,6 +48,7 @@ describe('Voice of the Ancestors', function () {
                 expect(this.matsuBerserker.hasTrait('spirit')).toBe(true);
                 expect(this.player1.fate).toBe(4);
                 expect(this.akodoToturi.militarySkill).toBe(9);
+                expect(this.getChatLogs(5)).toContain('player1 uses Voice of the Ancestors to play a Lion character from their dynasty discard pile as a Spirit attachment on Akodo Toturi');
             });
 
             it('should play a character as a spirit, discarding other attached spirits', function () {

@@ -126,6 +126,7 @@ describe('Foreign Customs', function () {
                 expect(this.chagatai.isDishonored).toBe(true);
                 expect(this.chagatai.location).toBe('play area');
                 expect(this.chagatai.isParticipating()).toBe(true);
+                expect(this.getChatLogs(5)).toContain('player2 plays Foreign Customs to put a character from their provinces into the conflict, dishonored');
                 expect(this.getChatLogs(5)).toContain(
                     'player2 puts into the conflict Moto Chagatai - they challenge the traditions of the empire'
                 );

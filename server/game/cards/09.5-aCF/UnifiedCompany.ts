@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { putIntoPlay } from '../../GameActions/GameActions.js';
 import { CardType, Players, Location, Trait } from '../../Constants.js';
@@ -23,8 +24,10 @@ class UnifiedCompany extends DrawCard {
                         card.costLessThan(3) &&
                         !card.isUnique();
                 },
+                message: (_context, cards, player) => msg`${player} puts ${cards} into play`,
                 gameAction: putIntoPlay()
-            }));
+            }))
+            .chatText('put a Bushi into play from their dynasty discard pile');
     }
 }
 

@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { changeType, setBaseGlory, setBaseMilitarySkill, setBasePoliticalSkill } from '../../effects.js';
 import { cardLastingEffect, detach, multiple } from '../../GameActions/GameActions.js';
@@ -22,11 +23,13 @@ class TogashiHoshi extends DrawCard {
                         ] : []
                     )
                 }),
+                message: (_context, cards, player) => msg`${player} turns ${cards} into a character`,
                 gameAction: multiple([
                     detach(),
                     cardLastingEffect({ duration: Duration.Custom })
                 ])
-            });
+            })
+            .chatText('turn an attachment into a character');
     }
 }
 

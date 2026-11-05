@@ -74,6 +74,7 @@
             this.player1.clickCard(this.madness);
             expect(this.madness.parent).toBe(this.challenger);
 
+            expect(this.getChatLogs(8)).toContain('player1 uses Bayushi Gichin to poison an opposing duel participant');
             expect(this.getChatLogs(5)).toContain('player1 poisons Doji Challenger');
             expect(this.getChatLogs(5)).toContain('player1 attaches Fiery Madness');
 

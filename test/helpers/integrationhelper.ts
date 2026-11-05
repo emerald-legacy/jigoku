@@ -170,6 +170,14 @@ globalThis.fillers = fillers;
 
 globalThis.integration = function (definitions: () => void): void {
     describe('integration', function (this: unknown) {
+        // SelectCardAction's fallback effect message: an ability ending in a selectCard needs its own chatText
+        afterEach(function (this: Record<string, unknown>) {
+            if(this.flow instanceof GameFlowWrapper) {
+                const fallback = this.flow.getChatLogs(this.flow.game.messages.length).filter((line) => line.includes('choose a target for'));
+                expect(fallback).withContext('chat lines with the selectCard fallback').toEqual([]);
+            }
+        });
+
         beforeEach(function (this: Record<string, unknown>) {
             let flow = new GameFlowWrapper();
             // a game keeps the mode it was created with, so another mode needs a new game

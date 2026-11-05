@@ -84,6 +84,8 @@ describe('Togashi Hoshi', function () {
             expect(this.jadeTetsubo.type).toBe('character');
             expect(this.jadeTetsubo.bowed).toBe(false);
             expect(this.player2).toHavePrompt('Action Window');
+            expect(this.getChatLogs(5)).toContain('player1 uses Togashi Hoshi to turn an attachment into a character');
+            expect(this.getChatLogs(5)).toContain('player1 turns Jade Tetsubō into a character');
         });
 
         it('should be able to assigned into a conflict', function () {

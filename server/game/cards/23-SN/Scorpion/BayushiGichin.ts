@@ -54,6 +54,7 @@ export default class BayushiGichin extends DrawCard {
                     })
                 ];
             }))
+            .chatText('poison an opposing duel participant')
             .limit(unlimited());
 
         this.conflictAction('Military duel to steal honor')

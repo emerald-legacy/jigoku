@@ -20,7 +20,8 @@ export default class DestinyRevealed extends DrawCard {
                 gameAction: placeFate((context) => ({
                     origin: context.player
                 }))
-            }));
+            }))
+            .chatText('place a fate on a winning character');
 
         this.wouldInterrupt('Cancel a ring effect')
             .when({

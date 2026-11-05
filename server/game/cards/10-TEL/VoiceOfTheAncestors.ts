@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { AbilityType, CardType, Location, Players, PlayType, Duration, Trait } from '../../Constants.js';
 import {
@@ -71,7 +72,8 @@ class VoiceOfTheAncestors extends DrawCard {
                         }
                     }))
                 ])
-            });
+            })
+            .chatText((context) => msg`play a Lion character from their dynasty discard pile as a Spirit attachment on ${context.target}`);
     }
 }
 

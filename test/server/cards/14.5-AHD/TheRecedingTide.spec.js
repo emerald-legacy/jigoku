@@ -84,6 +84,7 @@ describe('The Receding Tide', function() {
             this.player1.clickCard(this.p1);
 
             expect(this.berserker.location).toBe(this.p1.location);
+            expect(this.getChatLogs(5)).toContain('player1 plays The Receding Tide to put Matsu Berserker into a province');
         });
     });
 });

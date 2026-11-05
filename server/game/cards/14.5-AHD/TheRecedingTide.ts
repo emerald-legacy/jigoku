@@ -1,3 +1,4 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import { Location, CardType, Players, Trait } from '../../Constants.js';
 import { putIntoProvince, selectCard } from '../../GameActions/GameActions.js';
@@ -21,7 +22,8 @@ class TheRecedingTide extends DrawCard {
                 gameAction: putIntoProvince({
                     target: context.target
                 })
-            })));
+            })))
+            .chatText((context) => msg`put ${context.target} into a province`);
     }
 }
 

@@ -17,7 +17,8 @@ export default class ForeignCustoms extends DrawCard {
                 controller: Players.Self,
                 message: (context, cards) => msg`${context.player} puts into the conflict ${cards} - they challenge the traditions of the empire`,
                 gameAction: putIntoConflict({ status: EntersPlayStatus.Dishonored })
-            });
+            })
+            .chatText('put a character from their provinces into the conflict, dishonored');
 
         this.action('Ready a non-unicorn character')
             .ifCondition((context) => controlsClanCard(context.player, 'unicorn'))

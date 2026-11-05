@@ -58,6 +58,8 @@ describe('Unified Company', function() {
                 this.player1.clickCard(this.gunso);
                 expect(this.gunso.location).toBe('play area');
                 expect(this.gunso.isParticipating()).toBe(false);
+                expect(this.getChatLogs(5)).toContain('player1 uses Unified Company to put a Bushi into play from their dynasty discard pile');
+                expect(this.getChatLogs(5)).toContain('player1 puts Akodo Gunsō into play');
             });
 
             it('should not trigger if you have equal cards in hand', function() {
