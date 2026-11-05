@@ -67,6 +67,8 @@ describe('Greater Understanding 2', function () {
 
             this.player2.clickCard(this.disarm);
             expect(this.player2).not.toBeAbleToSelect(this.greaterUnderstanding);
+            expect(this.player2).toHavePrompt('Action Window');
+            expect(this.disarm.location).toBe('hand');
         });
 
         it('resolve a ring effect then stays on same ring if no targets to move', function () {

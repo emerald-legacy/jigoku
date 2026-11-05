@@ -98,6 +98,9 @@ describe('Master of the Blade outside a conflict', function() {
             this.player2.clickCard(this.master);
             this.player1.clickPrompt('1');
             this.player2.clickPrompt('1');
+            expect(this.getChatLogs(5)).toContain('Kakita Asami: 4 vs 5: Master of the Blade');
+            expect(this.asami.bowed).toBe(true);
+            expect(this.player1).toHavePrompt('Action Window');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.player1).not.toBeAbleToSelect(this.master);
         });

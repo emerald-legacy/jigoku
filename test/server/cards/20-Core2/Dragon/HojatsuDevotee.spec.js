@@ -1,6 +1,3 @@
-import { ResolvableAbility } from '../../../../../build/server/game/ResolvableAbility.js';
-import { sacrifice } from '../../../../../build/server/game/GameActions/GameActions.js';
-
 describe('Hojatsu Devotee', function () {
     integration(function () {
         beforeEach(function () {
@@ -55,10 +52,8 @@ describe('Hojatsu Devotee', function () {
             expect(this.getChatLogs(10)).toContain(
                 'player2 uses Hojatsu Devotee to initiate a military duel : Hojatsu Devotee vs. Kakita Yoshi'
             );
-            expect(this.getChatLogs(10)).toContain(
-                'Hojatsu Devotee: 4 vs 3: Kakita Yoshi',
-                'Duel Effect: discard Kakita Yoshi'
-            );
+            expect(this.getChatLogs(10)).toContain('Hojatsu Devotee: 4 vs 3: Kakita Yoshi');
+            expect(this.getChatLogs(10)).toContain('Duel Effect: discard Kakita Yoshi');
 
             expect(this.yoshi.location).toBe('dynasty discard pile');
         });
@@ -85,22 +80,27 @@ describe('Hojatsu Devotee sacrificed', function () {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['doji-challenger']
+                    inPlay: ['doji-challenger', 'kaiu-envoy'],
+                    hand: ['way-of-the-crab']
                 },
                 player2: {
                     inPlay: ['hojatsu-devotee']
                 }
             });
             this.challenger = this.player1.findCardByName('doji-challenger');
+            this.envoy = this.player1.findCardByName('kaiu-envoy');
             this.hojatsuDevotee = this.player2.findCardByName('hojatsu-devotee');
         });
 
         it('does not react when an opponent\'s ability sacrifices it', function () {
-            const context = new ResolvableAbility(this.challenger, {}).createContext(this.player1.player);
-            this.game.queueSimpleStep(() => sacrifice().resolve(this.hojatsuDevotee, context));
-            this.game.continue();
+            this.player1.clickCard('way-of-the-crab');
+            this.player1.clickCard(this.envoy);
+            expect(this.player2).toHavePrompt('Way of the Crab');
+            this.player2.clickCard(this.hojatsuDevotee);
             expect(this.hojatsuDevotee.location).toBe('dynasty discard pile');
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Action Window');
+            expect(this.challenger.location).toBe('play area');
         });
     });
 });

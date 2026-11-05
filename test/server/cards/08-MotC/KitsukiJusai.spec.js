@@ -26,6 +26,8 @@ describe('Kitsuki Jusai', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('2');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.player2.fate).toBe(2);
             });
 
             it('should prompt to choose an unclaimed ring', function() {
@@ -55,6 +57,7 @@ describe('Kitsuki Jusai', function() {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player1).toHavePrompt('Action Window');
             });
         });
 

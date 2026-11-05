@@ -47,6 +47,8 @@ describe('Inventive Mirumoto', function() {
 
                 this.player1.clickCard(this.inventiveMirumoto);
 
+                expect(this.player1).toHavePrompt('Inventive Mirumoto');
+                expect(this.player1).toBeAbleToSelect(this.fineKatana);
                 expect(this.player1).not.toBeAbleToSelect(this.barcha);
                 expect(this.player1).not.toBeAbleToSelect(this.eruditePrestige);
             });

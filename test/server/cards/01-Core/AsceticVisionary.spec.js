@@ -78,8 +78,10 @@ describe('Ascetic Visionary', function () {
                     attackers: [this.miyaMystic],
                     defenders: [this.asceticVisionary]
                 });
+                expect(this.asceticVisionary.isDefending()).toBe(true);
                 this.player1.clickCard(this.asceticVisionary);
                 expect(this.player1).not.toHavePrompt('Ascetic Visionary');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
             });
 
             it('should not be able to trigger when at home', function () {
@@ -89,8 +91,10 @@ describe('Ascetic Visionary', function () {
                     defenders: []
                 });
                 this.player2.pass();
+                expect(this.mirumotoRaitsugu.isAttacking()).toBe(true);
                 this.player1.clickCard(this.asceticVisionary);
                 expect(this.player1).not.toHavePrompt('Ascetic Visionary');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
             });
         });
     });

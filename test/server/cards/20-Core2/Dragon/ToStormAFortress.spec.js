@@ -33,6 +33,8 @@ describe('To Storm A Fortress', function () {
             expect(this.player1).not.toBeAbleToSelect(this.borderlandsDefender);
             expect(this.player1).not.toBeAbleToSelect(this.togashiInitiate);
             expect(this.player1).not.toBeAbleToSelect(this.miyaMystic);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.toStormAFortress.location).toBe('hand');
         });
 
         it('gives a skill bonus and discards cards from attacked province', function () {
