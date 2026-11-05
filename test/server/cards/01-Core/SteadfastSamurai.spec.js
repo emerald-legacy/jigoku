@@ -22,7 +22,7 @@ describe('Steadfast Samurai', function () {
 
                 expect(this.game.currentPhase).toBe('fate');
                 expect(this.samurai.location).toBe('play area');
-                expect(this.getChatLogs(10)).toContain('player1 uses Steadfast Samurai to stop him being discarded or losing fate in this phase');
+                expect(this.getChatLogs(10)).toContain('player1 uses Steadfast Samurai to stop Steadfast Samurai being discarded or losing fate this phase');
             });
 
             it('does not lose fate', function () {

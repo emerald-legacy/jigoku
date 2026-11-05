@@ -1,6 +1,7 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration, Phase, RestrictionType } from '../../Constants.js';
 import { cardCannot } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
 class SteadfastSamurai extends DrawCard {
     static id = 'steadfast-samurai';
@@ -18,7 +19,7 @@ class SteadfastSamurai extends DrawCard {
                     cardCannot(RestrictionType.DiscardFromPlay)
                 ]
             })
-            .chatText('stop him being discarded or losing fate in this phase');
+            .chatText((context) => msg`stop ${context.source} being discarded or losing fate this phase`);
     }
 }
 

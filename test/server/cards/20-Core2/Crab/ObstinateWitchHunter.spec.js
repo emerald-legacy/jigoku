@@ -29,7 +29,7 @@ describe('Obstinate Witch Hunter', function () {
             this.player2.clickPrompt('Done');
             expect(this.hunter1.fate).toBe(1);
             expect(this.hunter2.location).toBe('play area');
-            expect(this.getChatLogs(5)).toContain('player1 uses Obstinate Witch Hunter to stop him being discarded or losing fate in this phase');
+            expect(this.getChatLogs(5)).toContain('player1 uses Obstinate Witch Hunter to stop Obstinate Witch Hunter being discarded or losing fate this phase');
         });
 
         it('should ignore if self tained', function () {

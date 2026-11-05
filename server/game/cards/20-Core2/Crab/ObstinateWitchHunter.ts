@@ -1,6 +1,7 @@
 import { CardType, Duration, Phase, RestrictionType, Trait } from '../../../Constants.js';
 import { cardCannot } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class ObstinateWitchHunter extends DrawCard {
     static id = 'obstinate-witch-hunter';
@@ -22,6 +23,6 @@ export default class ObstinateWitchHunter extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: [cardCannot(RestrictionType.RemoveFate), cardCannot(RestrictionType.DiscardFromPlay), cardCannot(RestrictionType.Sacrifice)]
             })
-            .chatText('stop him being discarded or losing fate in this phase');
+            .chatText((context) => msg`stop ${context.source} being discarded or losing fate this phase`);
     }
 }
