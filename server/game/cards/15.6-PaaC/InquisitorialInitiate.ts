@@ -10,7 +10,7 @@ function revealCount(context: AbilityContext): number {
     if(!opponent) {
         return 0;
     }
-    return Math.min(opponent.cardsInPlay.filter((card) => card.getFate() === 0).length, opponent.hand.length);
+    return Math.min(opponent.charactersInPlay.filter((card) => card.getFate() === 0).length, opponent.hand.length);
 }
 
 export default class InquisitorialInitiate extends DrawCard {

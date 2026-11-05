@@ -13,7 +13,7 @@ describe('Ashigaru Encampment', function () {
 
         it('puts an Ashigaru into play', function () {
             this.player1.clickCard(this.ashigaruEncampment);
-            const ashigaru = this.player1.player.cardsInPlay[0];
+            const ashigaru = this.player1.player.charactersInPlay[0];
             expect(ashigaru.name).toBe('Ashigaru Recruit');
             expect(ashigaru.militarySkill).toBe(1);
             expect(ashigaru.politicalSkill).toBe(0);
@@ -26,7 +26,7 @@ describe('Ashigaru Encampment', function () {
             this.player1.reduceDeckToNumber('dynasty deck', 0);
             this.player1.clickCard(this.ashigaruEncampment);
             expect(this.player1).toHavePrompt('Action Window');
-            expect(this.player1.player.cardsInPlay.length).toBe(0);
+            expect(this.player1.player.charactersInPlay.length).toBe(0);
         });
     });
 });

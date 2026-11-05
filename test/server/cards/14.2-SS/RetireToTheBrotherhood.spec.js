@@ -213,12 +213,12 @@ describe('Retire To The Brotherhood', function() {
             expect(this.kageyu.controller).toBe(this.player2.player);
             expect(this.chagatai.controller).toBe(this.player2.player);
 
-            expect(this.player1.player.cardsInPlay).toContain(this.shoju2);
-            expect(this.player2.player.cardsInPlay).not.toContain(this.shoju2);
-            expect(this.player1.player.cardsInPlay).not.toContain(this.kageyu);
-            expect(this.player2.player.cardsInPlay).toContain(this.kageyu);
-            expect(this.player1.player.cardsInPlay).not.toContain(this.chagatai);
-            expect(this.player2.player.cardsInPlay).toContain(this.chagatai);
+            expect(this.player1.player.charactersInPlay).toContain(this.shoju2);
+            expect(this.player2.player.charactersInPlay).not.toContain(this.shoju2);
+            expect(this.player1.player.charactersInPlay).not.toContain(this.kageyu);
+            expect(this.player2.player.charactersInPlay).toContain(this.kageyu);
+            expect(this.player1.player.charactersInPlay).not.toContain(this.chagatai);
+            expect(this.player2.player.charactersInPlay).toContain(this.chagatai);
         });
     });
 });
@@ -311,12 +311,12 @@ describe('Retire To The Brotherhood with Stoke Insurrection', function() {
             expect(this.challenger.location).toBe('dynasty discard pile');
             expect(this.representative.location).toBe('dynasty discard pile');
 
-            expect(this.player1.player.cardsInPlay).toContain(this.tsukune2);
-            expect(this.player1.player.cardsInPlay).not.toContain(this.shoju2);
-            expect(this.player2.player.cardsInPlay).toContain(this.yoshi);
-            expect(this.player2.player.cardsInPlay).toContain(this.toshimoko);
-            expect(this.player2.player.cardsInPlay).toContain(this.kageyu);
-            expect(this.player2.player.cardsInPlay).toContain(this.chagatai);
+            expect(this.player1.player.charactersInPlay).toContain(this.tsukune2);
+            expect(this.player1.player.charactersInPlay).not.toContain(this.shoju2);
+            expect(this.player2.player.charactersInPlay).toContain(this.yoshi);
+            expect(this.player2.player.charactersInPlay).toContain(this.toshimoko);
+            expect(this.player2.player.charactersInPlay).toContain(this.kageyu);
+            expect(this.player2.player.charactersInPlay).toContain(this.chagatai);
         });
     });
 });

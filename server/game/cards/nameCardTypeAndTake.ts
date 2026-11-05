@@ -10,7 +10,7 @@ const CARD_TYPES = [CardType.Attachment, CardType.Character, CardType.Event];
 
 /** Test of Skill and Work in Progress reveal 3 cards, or 4 if the player controls a character with the trait. */
 export function revealCount(context: AbilityContext, trait: Trait): number {
-    return context.player.cardsInPlay.some((card) => card.hasTrait(trait)) ? 4 : 3;
+    return context.player.charactersInPlay.some((card) => card.hasTrait(trait)) ? 4 : 3;
 }
 
 /** A cost that names a card type, recorded as `context.costs.namedCardType`. */

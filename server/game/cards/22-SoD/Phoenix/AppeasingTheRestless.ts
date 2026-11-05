@@ -12,7 +12,7 @@ export default class AppeasingTheRestless extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Place fates on spirits')
-            .condition((context) => context.player.cardsInPlay.some((card) => this.canReceiveFate(card, context)))
+            .condition((context) => context.player.charactersInPlay.some((card) => this.canReceiveFate(card, context)))
             .cost(costs.bow({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.hasTrait(Trait.Shugenja)

@@ -123,7 +123,7 @@ describe('Kaito Yoshiaki and a token', function () {
             this.encampment.facedown = false;
             this.player1.pass();
             this.player2.clickCard(this.encampment);
-            this.ashigaru = this.player2.player.cardsInPlay.find((card) => card.name === 'Ashigaru Recruit');
+            this.ashigaru = this.player2.player.charactersInPlay.find((card) => card.name === 'Ashigaru Recruit');
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.kaito],

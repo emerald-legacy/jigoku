@@ -242,7 +242,7 @@ describe('Shadow Step on a character you took control of', function() {
             this.player1.clickCard(this.initiate);
             expect(this.initiate.location).toBe('play area');
             expect(this.initiate.controller).toBe(this.player2.player);
-            expect(this.player2.player.cardsInPlay).toContain(this.initiate);
+            expect(this.player2.player.charactersInPlay).toContain(this.initiate);
             expect(this.initiate.isDishonored).toBe(true);
         });
     });

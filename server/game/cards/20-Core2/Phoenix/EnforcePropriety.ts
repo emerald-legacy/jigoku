@@ -5,7 +5,7 @@ import DrawCard from '../../../DrawCard.js';
 import type Player from '../../../Player.js';
 
 function countReadyShugenja(player: Player): number {
-    return player.cardsInPlay.reduce(
+    return player.charactersInPlay.reduce(
         (sum, card) => (!card.bowed && card.hasTrait(Trait.Shugenja) ? sum + 1 : sum),
         0
     );

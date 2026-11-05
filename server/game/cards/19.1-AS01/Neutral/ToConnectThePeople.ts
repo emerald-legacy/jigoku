@@ -13,7 +13,7 @@ export default class ToConnectThePeople extends DrawCard {
         this.action('Play a character from your opponent\'s discard pile')
             .condition((context) => !context.game.isDuringConflict())
             .ifCondition((context) =>
-                context.player.cardsInPlay.some(
+                context.player.charactersInPlay.some(
                     (card) => card.type === CardType.Character && card.hasTrait(Trait.Merchant)
                 ))
             .discardCard((context) => ({ target: this.topThreeCards(context) }))
@@ -40,7 +40,7 @@ export default class ToConnectThePeople extends DrawCard {
     }
 
     private maxMerchantGlory(context: AbilityContext) {
-        return context.player.cardsInPlay.reduce(
+        return context.player.charactersInPlay.reduce(
             (maxGlory, card) =>
                 card.type === CardType.Character && card.hasTrait(Trait.Merchant) && card.glory > maxGlory
                     ? card.glory

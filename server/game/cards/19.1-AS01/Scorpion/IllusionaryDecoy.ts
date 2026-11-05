@@ -37,7 +37,7 @@ export default class IllusionaryDecoy extends DrawCard {
         this.action('Return to hand')
             .ifCondition((context) => {
                 const claimedRings = context.source.controller.getClaimedRings();
-                const matchShugenjaElementWithClaimedRing = context.source.controller.cardsInPlay.some(
+                const matchShugenjaElementWithClaimedRing = context.source.controller.charactersInPlay.some(
                     (card) =>
                         card.type === CardType.Character &&
                         card.hasTrait(Trait.Shugenja) &&

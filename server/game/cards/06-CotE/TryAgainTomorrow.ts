@@ -8,7 +8,7 @@ class TryAgainTomorrow extends DrawCard {
     override setupCardAbilities() {
         this.action('Send a Character home')
             .condition((context) =>
-                context.player.anyCardsInPlay((card) => card.isParticipating() &&
+                context.player.inPlay({ attachments: true }).some((card) => card.isParticipating() &&
                 card.hasTrait(Trait.Courtier) && card.isHonored))
             .target({
                 cardType: CardType.Character,

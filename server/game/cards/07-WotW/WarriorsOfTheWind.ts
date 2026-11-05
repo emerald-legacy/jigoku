@@ -5,7 +5,7 @@ import { CardType, Players, TargetMode, Trait } from '../../Constants.js';
 import type Player from '../../Player.js';
 
 function participatingCavalry(player: Player) {
-    return player.filterCardsInPlay((card) => card.hasTrait(Trait.Cavalry) && card.isParticipating());
+    return player.inPlay({ attachments: true }).filter((card) => card.hasTrait(Trait.Cavalry) && card.isParticipating());
 }
 
 class WarriorsOfTheWind extends DrawCard {

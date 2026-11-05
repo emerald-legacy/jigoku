@@ -11,7 +11,7 @@ export default class Shineko extends DrawCard {
             targetController: Players.Any,
             effect: reduceCost({
                 amount: (_, player) =>
-                    player.cardsInPlay.some(
+                    player.charactersInPlay.some(
                         (card) => card.type === CardType.Character && card.hasSomeTrait(Trait.Scout, Trait.Beastmaster)
                     )
                         ? 1

@@ -9,7 +9,7 @@ export default class NamelessBrother extends DrawCard {
         this.persistentEffect({
             match: (card, context) => card.controller === context?.player && card.type === CardType.Character,
             effect: modifyBothSkills((character, context) =>
-                context.player.cardsInPlay.reduce(
+                context.player.charactersInPlay.reduce(
                     (skillBonus, otherCard) =>
                         otherCard.type === CardType.Character &&
                         otherCard.name === character.name &&

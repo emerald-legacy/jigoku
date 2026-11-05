@@ -18,7 +18,7 @@ describe('Player - getDuplicateInPlay', function () {
 
             this.dupeCard = new DrawCard(this.player, { id: '1', name: 'Test' });
 
-            this.player.cardsInPlay.push(this.dupeCard);
+            this.player.charactersInPlay.push(this.dupeCard);
 
             this.cardSpy = jasmine.createSpyObj('card', ['isUnique']);
 

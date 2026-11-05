@@ -19,7 +19,7 @@ class KatanaOfFire extends DrawCard {
 
     getTotalKatanaModifier() {
         const fireRingBonus = hasClaimedRing(this, elementSymbol.key, this.controller) ? 2 : 0;
-        return fireRingBonus + this.controller.getNumberOfCardsInPlay((card) => card.hasTrait(Trait.Fire));
+        return fireRingBonus + this.controller.inPlay({ attachments: true }).filter((card) => card.hasTrait(Trait.Fire)).length;
     }
 
     protected override printedElementSymbols = claimedRingSymbols([elementSymbol]);

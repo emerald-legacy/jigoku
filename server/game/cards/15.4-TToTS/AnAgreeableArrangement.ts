@@ -13,7 +13,7 @@ const agreeableCost = (): Cost<{ agreeableArrangementCost: DrawCard }> => ({
     },
     canPay(context) {
         const opponent = context.player.opponent;
-        return !!opponent && context.player.cardsInPlay.some((card) => card.costAtLeast(2) && !card.bowed && !card.anotherUniqueInPlay(opponent));
+        return !!opponent && context.player.charactersInPlay.some((card) => card.costAtLeast(2) && !card.bowed && !card.anotherUniqueInPlay(opponent));
     },
     resolve(context, result) {
         const opponent = context.player.opponent;

@@ -28,6 +28,6 @@ export default class KikuMatsuri extends ProvinceCard {
     }
 
     private controlsParticipant(player: Player | undefined) {
-        return !!player?.anyCardsInPlay((card) => card.isParticipating());
+        return !!player?.inPlay({ attachments: true }).some((card) => card.isParticipating());
     }
 }

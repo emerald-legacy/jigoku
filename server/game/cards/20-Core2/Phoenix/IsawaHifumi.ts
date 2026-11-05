@@ -64,7 +64,7 @@ class HifumiCost extends ReduceableFateCost {
 
     private cardsThatCanPayForHifumi(context: AbilityContext): Set<DrawCard> {
         return new Set(
-            context.player.cardsInPlay.filter((c) => c.type === CardType.Character && c.getFate() > 0)
+            context.player.charactersInPlay.filter((c) => c.type === CardType.Character && c.getFate() > 0)
         );
     }
 }

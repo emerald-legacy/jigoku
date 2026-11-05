@@ -14,9 +14,9 @@ describe('Chronicles of Valor', function () {
             });
             this.yokuni = this.player1.findCardByName('togashi-yokuni');
             this.ikomaKiyono = this.player1.findCardByName('ikoma-kiyono', 'dynasty discard pile');
-            this.mercs = this.player1.player.cardsInPlay.filter((c) => c.name === 'Mercenary Company');
+            this.mercs = this.player1.player.charactersInPlay.filter((c) => c.name === 'Mercenary Company');
             this.matsuBerserker = this.player2.findCardByName('matsu-berserker');
-            this.p2Mercs = this.player2.player.cardsInPlay.filter((c) => c.name === 'Mercenary Company');
+            this.p2Mercs = this.player2.player.charactersInPlay.filter((c) => c.name === 'Mercenary Company');
             this.chronicles = this.player1.findCardByName('chronicles-of-valor');
         });
 

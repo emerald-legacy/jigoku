@@ -175,7 +175,7 @@ class PlayerInteractionWrapper {
     }
 
     get inPlay(): DrawCard[] {
-        return this.player.filterCardsInPlay(() => true);
+        return this.player.inPlay({ attachments: true });
     }
 
     set inPlay(newState: Array<string | InPlayCardSpec> | undefined) {

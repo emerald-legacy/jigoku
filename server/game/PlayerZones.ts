@@ -21,7 +21,7 @@ export class PlayerZones {
     conflictDeck: DrawCard[] = [];
     provinceDeck: ProvinceCard[] = [];
     hand: DrawCard[] = [];
-    cardsInPlay: DrawCard[] = [];
+    charactersInPlay: DrawCard[] = [];
     strongholdProvince: BaseCard[] = [];
     provinceOne: BaseCard[] = [];
     provinceTwo: BaseCard[] = [];
@@ -89,7 +89,7 @@ export class PlayerZones {
             case Location.DynastyDiscardPile:
                 return this.dynastyDiscardPile;
             case Location.PlayArea:
-                return this.cardsInPlay;
+                return this.charactersInPlay;
         }
     }
 
@@ -116,7 +116,7 @@ export class PlayerZones {
                 this.removedFromGame = without(this.removedFromGame);
                 break;
             case Location.PlayArea:
-                this.cardsInPlay = without(this.cardsInPlay);
+                this.charactersInPlay = without(this.charactersInPlay);
                 break;
             case Location.ProvinceOne:
                 this.provinceOne = without(this.provinceOne);

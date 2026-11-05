@@ -139,6 +139,26 @@ export interface GamePlayerUser {
     settings?: GamePlayerUserSettings;
 }
 
+export interface InPlayScope {
+    attachments?: boolean;
+    provinces?: boolean;
+    holdings?: boolean;
+    stronghold?: boolean;
+}
+
+function isInPlayScope(card: BaseCard, scope: InPlayScope): boolean {
+    if(card.location === Location.PlayArea) {
+        return card.isDrawCard() && (card.type === CardType.Character || !!scope.attachments);
+    }
+    if(card.isProvinceCard()) {
+        return !!scope.provinces && card.isFaceup() && !card.isBroken;
+    }
+    if(card.isStrongholdCard()) {
+        return !!scope.stronghold && card.isInProvince();
+    }
+    return !!scope.holdings && card.type === CardType.Holding && card.isFaceup() && card.isInProvince();
+}
+
 export class Player extends GameObject {
     user: GamePlayerUser;
     emailHash: string;
@@ -281,11 +301,11 @@ export class Player extends GameObject {
         this.zones.hand = v;
     }
 
-    get cardsInPlay(): DrawCard[] {
-        return this.zones.cardsInPlay;
+    get charactersInPlay(): DrawCard[] {
+        return this.zones.charactersInPlay;
     }
-    set cardsInPlay(v: DrawCard[]) {
-        this.zones.cardsInPlay = v;
+    set charactersInPlay(v: DrawCard[]) {
+        this.zones.charactersInPlay = v;
     }
 
     get strongholdProvince(): BaseCard[] {
@@ -431,29 +451,23 @@ export class Player extends GameObject {
         return cardsToReturn;
     }
 
+    /**
+     * The cards this player controls in play. Characters are always included; attachments, faceup unbroken provinces,
+     * faceup holdings in provinces and the stronghold only when asked for.
+     */
+    inPlay(scope?: { attachments?: boolean }): DrawCard[];
+    inPlay(scope: InPlayScope): BaseCard[];
+    inPlay(scope: InPlayScope = {}): BaseCard[] {
+        return this.game.allCards.filter((card) => card.controller === this && isInPlayScope(card, scope));
+    }
+
     isTraitInPlay(trait: Trait): boolean {
-        return this.game.allCards.some((card: BaseCard) => {
-            return (
-                card.controller === this &&
-                card.hasTrait(trait) &&
-                card.isFaceup() &&
-                (card.location === Location.PlayArea ||
-                    (card.isProvinceCard() && !card.isBroken) ||
-                    (card.isInProvince() && card.type === CardType.Holding))
-            );
-        });
+        return this.inPlay({ attachments: true, provinces: true, holdings: true })
+            .some((card) => card.isFaceup() && card.hasTrait(trait));
     }
 
     isCharacterTraitInPlay(trait: Trait): boolean {
-        return this.game.allCards.some((card: BaseCard) => {
-            return (
-                card.type === CardType.Character &&
-                card.controller === this &&
-                card.hasTrait(trait) &&
-                card.isFaceup() &&
-                card.location === Location.PlayArea
-            );
-        });
+        return this.charactersInPlay.some((card) => card.isFaceup() && card.hasTrait(trait));
     }
 
     areLocationsAdjacent(locationA: Location, locationB: Location): boolean {
@@ -476,21 +490,9 @@ export class Player extends GameObject {
         return locations.flatMap((location) => this.getProvinceCardInProvince(location) ?? []);
     }
 
-    anyCardsInPlay(predicate: (card: DrawCard) => boolean): boolean {
-        return this.game.allCards.some(
-            (card) => card.controller === this && card.location === Location.PlayArea && card.isDrawCard() && predicate(card)
-        );
-    }
-
     getAllConflictCards(predicate: (card: DrawCard) => boolean = () => true): DrawCard[] {
         return this.game.allCards.filter(
             (card): card is DrawCard => card.owner === this && card.isConflictCard() && predicate(card)
-        );
-    }
-
-    filterCardsInPlay(predicate: (card: DrawCard) => boolean): DrawCard[] {
-        return this.game.allCards.filter(
-            (card): card is DrawCard => card.controller === this && card.location === Location.PlayArea && card.isDrawCard() && predicate(card)
         );
     }
 
@@ -552,15 +554,6 @@ export class Player extends GameObject {
         return this.opponent?.getNumberOfFacedownProvinces(predicate) ?? 0;
     }
 
-    getNumberOfCardsInPlay(predicate: (card: DrawCard) => boolean): number {
-        return this.game.allCards.reduce((num: number, card) => {
-            if(card.controller === this && card.location === Location.PlayArea && card.isDrawCard() && predicate(card)) {
-                return num + 1;
-            }
-            return num;
-        }, 0);
-    }
-
     getNumberOfHoldingsInPlay(): number {
         return this.getHoldingsInPlay().length;
     }
@@ -592,7 +585,7 @@ export class Player extends GameObject {
             return undefined;
         }
 
-        return this.findCard(this.cardsInPlay, (playCard) => {
+        return this.findCard(this.charactersInPlay, (playCard) => {
             return playCard !== card && (playCard.id === card.id || playCard.name === card.name);
         });
     }
@@ -853,7 +846,7 @@ export class Player extends GameObject {
 
         this.resetConflictOpportunities();
 
-        this.cardsInPlay.forEach((card: DrawCard) => {
+        this.charactersInPlay.forEach((card: DrawCard) => {
             card.new = false;
         });
         this.passedDynasty = false;
@@ -1017,7 +1010,7 @@ export class Player extends GameObject {
     }
 
     resetForConflict(): void {
-        this.cardsInPlay.forEach((card: DrawCard) => {
+        this.charactersInPlay.forEach((card: DrawCard) => {
             card.resetForConflict();
         });
     }
@@ -1091,7 +1084,7 @@ export class Player extends GameObject {
             }
         }
 
-        return this.cardsInPlay.some((card: DrawCard) => card.type === CardType.Character && card.hasTrait(trait));
+        return this.charactersInPlay.some((card: DrawCard) => card.type === CardType.Character && card.hasTrait(trait));
     }
 
     getClaimedRings(): Ring[] {
@@ -1099,7 +1092,7 @@ export class Player extends GameObject {
     }
 
     getGloryCount(): number {
-        return this.cardsInPlay.reduce(
+        return this.charactersInPlay.reduce(
             (total: number, card: DrawCard) => total + card.getContributionToImperialFavor(),
             this.getClaimedRings().length + this.gloryModifier
         );

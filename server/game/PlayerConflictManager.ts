@@ -41,7 +41,7 @@ export class PlayerConflictManager {
         if(conflictRing.length === 0) {
             return false;
         }
-        const cards = properties.attacker ? [properties.attacker] : this.player.cardsInPlay.slice();
+        const cards = properties.attacker ? [properties.attacker] : this.player.charactersInPlay.slice();
         if(!this.player.opponent) {
             return conflictType.some((type) =>
                 conflictRing.some((ring: Ring) => cards.some((card: DrawCard) => card.canDeclareAsAttacker(type, ring)))

@@ -15,7 +15,7 @@ class ConsumedByFiveFires extends DrawCard {
             .ifCondition((context) => controlsShugenja(context.player))
             .condition((context) =>
                 !!context.player.opponent &&
-                context.player.opponent.cardsInPlay.some((card) => removeFate().canAffect(card, context)))
+                context.player.opponent.charactersInPlay.some((card) => removeFate().canAffect(card, context)))
             .handler((context) => this.chooseCard(context, {}, []))
             .chatText((context) => msg`remove fate from ${context.player.opponent}'s characters`);
     }
@@ -27,7 +27,7 @@ class ConsumedByFiveFires extends DrawCard {
         }
         this.game.addMessage(msg`${context.player} chooses to: ${messages}`);
         const events = Object.keys(targets).map((key) => {
-            const card = opponent.cardsInPlay.find((c) => c.uuid === key);
+            const card = opponent.charactersInPlay.find((c) => c.uuid === key);
             if(card) {
                 return GameActions.removeFate({ amount: targets[key] }).getEvent(card, context);
             }
@@ -42,7 +42,7 @@ class ConsumedByFiveFires extends DrawCard {
             return;
         }
         const opponent = context.player.opponent;
-        if(fateRemaining === 0 || !opponent.cardsInPlay.some((card) => removeFate().canAffect(card, context) && !Object.keys(targets).includes(card.uuid))) {
+        if(fateRemaining === 0 || !opponent.charactersInPlay.some((card) => removeFate().canAffect(card, context) && !Object.keys(targets).includes(card.uuid))) {
             this.removeChosenFate(context, targets, messages);
             return;
         }

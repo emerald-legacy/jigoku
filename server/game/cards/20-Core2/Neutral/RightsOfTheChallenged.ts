@@ -11,7 +11,7 @@ export default class RightsOfTheChallenged extends DrawCard {
     public override setupCardAbilities() {
         const hasReplacement = (duel: Duel, target: DrawCard, context: AbilityContext) =>
             target.controller === context.player &&
-            context.player.cardsInPlay.some((card) => duel.canReplaceTarget(target, card, context));
+            context.player.charactersInPlay.some((card) => duel.canReplaceTarget(target, card, context));
 
         this.duelChallenge('Replace a challenged character', (duel, context) =>
             duel.targets.some((target) => hasReplacement(duel, target, context))

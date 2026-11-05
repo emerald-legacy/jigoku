@@ -340,17 +340,18 @@ export class Game {
         return this.allCards.filter(predicate);
     }
 
+    /** Both players' characters and the attachments on them, each character followed by its attachments. */
     findAnyCardsInPlay(predicate: (card: DrawCard) => boolean): DrawCard[] {
         let foundCards: DrawCard[] = [];
 
         this.getPlayers().forEach((player) => {
-            foundCards = foundCards.concat(player.findCards(player.cardsInPlay, predicate));
+            foundCards = foundCards.concat(player.findCards(player.charactersInPlay, predicate));
         });
 
         return foundCards;
     }
 
-    /** In play here: characters, attachments, provinces and holdings. */
+    /** Faceup characters, attachments, unbroken provinces and holdings of either player; not the stronghold. */
     isTraitInPlay(trait: Trait): boolean {
         return this.getPlayers().some((player) => player.isTraitInPlay(trait));
     }
@@ -890,7 +891,7 @@ export class Game {
             return;
         }
         card.controller.removeCardFromPile(card);
-        player.cardsInPlay.push(card);
+        player.charactersInPlay.push(card);
         card.controller = player;
         if(card.isParticipating() && this.currentConflict) {
             this.currentConflict.removeFromConflict(card);
@@ -955,7 +956,7 @@ export class Game {
             this.checkWinCondition();
             // if the state has changed, check for:
             for(const player of this.getPlayers()) {
-                player.cardsInPlay.forEach((card: DrawCard) => {
+                player.charactersInPlay.forEach((card: DrawCard) => {
                     if(card.getModifiedController() !== player) {
                         // any card being controlled by the wrong player
                         this.takeControl(card.getModifiedController(), card);

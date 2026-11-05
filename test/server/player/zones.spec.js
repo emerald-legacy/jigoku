@@ -32,9 +32,9 @@ describe('Player zone initialisation', function() {
         expect(this.player.hand.length).toBe(0);
     });
 
-    it('cardsInPlay starts as an empty array', function() {
-        expect(Array.isArray(this.player.cardsInPlay)).toBe(true);
-        expect(this.player.cardsInPlay.length).toBe(0);
+    it('charactersInPlay starts as an empty array', function() {
+        expect(Array.isArray(this.player.charactersInPlay)).toBe(true);
+        expect(this.player.charactersInPlay.length).toBe(0);
     });
 
     it('conflictDiscardPile starts as an empty array', function() {
@@ -98,8 +98,8 @@ describe('Player getSourceList', function() {
         expect(this.player.getSourceList('dynasty deck')).toBe(this.player.dynastyDeck);
     });
 
-    it('returns the cardsInPlay array for Location.PlayArea', function() {
-        expect(this.player.getSourceList('play area')).toBe(this.player.cardsInPlay);
+    it('returns the charactersInPlay array for Location.PlayArea', function() {
+        expect(this.player.getSourceList('play area')).toBe(this.player.charactersInPlay);
     });
 
     it('returns the conflictDiscardPile array', function() {
@@ -174,8 +174,8 @@ describe('Player zone card operations', function() {
 
     it('zone supports native array includes()', function() {
         const card = { uuid: 'z' };
-        this.player.cardsInPlay.push(card);
-        expect(this.player.cardsInPlay.includes(card)).toBe(true);
+        this.player.charactersInPlay.push(card);
+        expect(this.player.charactersInPlay.includes(card)).toBe(true);
     });
 
     it('zone supports native array find()', function() {

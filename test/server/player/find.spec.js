@@ -13,14 +13,14 @@ describe('the Player', function() {
 
         this.player.initialise();
 
-        this.player.cardsInPlay.push(this.cardWithNoAttachments);
-        this.player.cardsInPlay.push(this.cardWithAttachment);
+        this.player.charactersInPlay.push(this.cardWithNoAttachments);
+        this.player.charactersInPlay.push(this.cardWithAttachment);
     });
 
     describe('the findCardByUuid() function on the cards in play', function() {
         describe('when called for a card that isn\'t in play', function() {
             it('should return undefined', function() {
-                this.card = this.player.findCardByUuid(this.player.cardsInPlay, 'notinplay');
+                this.card = this.player.findCardByUuid(this.player.charactersInPlay, 'notinplay');
 
                 expect(this.card).toBe(undefined);
             });
@@ -28,7 +28,7 @@ describe('the Player', function() {
 
         describe('when called for a card that is in play', function() {
             beforeEach(function() {
-                this.card = this.player.findCardByUuid(this.player.cardsInPlay, '2222');
+                this.card = this.player.findCardByUuid(this.player.charactersInPlay, '2222');
             });
 
             it('should return the card', function() {
@@ -39,7 +39,7 @@ describe('the Player', function() {
 
         describe('when called for an attachment that is on a card in play', function() {
             beforeEach(function() {
-                this.card = this.player.findCardByUuid(this.player.cardsInPlay, '1111');
+                this.card = this.player.findCardByUuid(this.player.charactersInPlay, '1111');
             });
 
             it('should return the attachment', function() {

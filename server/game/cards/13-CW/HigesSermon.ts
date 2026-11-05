@@ -8,7 +8,7 @@ class HigesSermon extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Bow characters')
-            .condition((context) => context.player.cardsInPlay.some((a) => !a.bowed) && context.player.opponent !== undefined && context.player.opponent.cardsInPlay.some((a) => !a.bowed))
+            .condition((context) => context.player.charactersInPlay.some((a) => !a.bowed) && context.player.opponent !== undefined && context.player.opponent.charactersInPlay.some((a) => !a.bowed))
             .phase(Phase.Draw)
             .target({
                 name: 'firstCharacter',

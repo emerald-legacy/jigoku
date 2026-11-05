@@ -590,7 +590,7 @@ describe('Right Hand of the Emperor', function() {
                 this.encampment = this.player1.placeCardInProvince('ashigaru-encampment');
                 this.encampment.facedown = false;
                 this.player1.clickCard(this.encampment);
-                this.ashigaru = this.player1.player.cardsInPlay.find((card) => card.name === 'Ashigaru Recruit');
+                this.ashigaru = this.player1.player.charactersInPlay.find((card) => card.name === 'Ashigaru Recruit');
                 this.player2.pass();
                 this.player1.clickCard('peerless-discipline');
                 this.player2.pass();

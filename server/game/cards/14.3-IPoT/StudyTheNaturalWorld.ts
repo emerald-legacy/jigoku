@@ -15,7 +15,7 @@ class StudyTheNaturalWorld extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Add elements to the conflict ring')
-            .condition((context) => context.player.anyCardsInPlay((card) => card.isAttacking() && card.hasTrait(Trait.Scholar)))
+            .condition((context) => context.player.inPlay({ attachments: true }).some((card) => card.isAttacking() && card.hasTrait(Trait.Scholar)))
             .ringLastingEffect((context) => ({
                 target: context.game.currentConflict?.ring,
                 effect: addElement(this.getElementsOfAttackedProvinces(context))

@@ -25,11 +25,11 @@ export default class RetireToTheBrotherhood extends ProvinceCard {
             })
             .gameAction(sequential([
                 discardFromPlay((context) => ({
-                    target: context.player.cardsInPlay
+                    target: context.player.charactersInPlay
                         .filter((a) => a.getFate() === 0)
                         .concat(
                             context.player.opponent
-                                ? context.player.opponent.cardsInPlay.filter((a) => a.getFate() === 0)
+                                ? context.player.opponent.charactersInPlay.filter((a) => a.getFate() === 0)
                                 : []
                         )
                 })),

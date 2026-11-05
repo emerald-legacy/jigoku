@@ -105,7 +105,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
     promptForNewConflict(): void {
         const attackerMatrix = new AttackersMatrix(
             this.conflict.attackingPlayer,
-            this.conflict.attackingPlayer.cardsInPlay,
+            this.conflict.attackingPlayer.charactersInPlay,
             this.game
         );
         if(!attackerMatrix.canPass) {
@@ -363,7 +363,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
-        const targets = defender.cardsInPlay.filter((card: DrawCard) => card.covert);
+        const targets = defender.charactersInPlay.filter((card: DrawCard) => card.covert);
         const contexts = covertContexts(this.game, this.conflict).filter((context) => context.source.canInitiateKeywords(context));
 
         for(const target of targets) {
@@ -425,7 +425,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
             return;
         }
 
-        const targets = defender.cardsInPlay.filter((card: DrawCard) => card.covert);
+        const targets = defender.charactersInPlay.filter((card: DrawCard) => card.covert);
         const contexts = covertContexts(this.game, this.conflict).filter((context) => context.source.canInitiateKeywords(context));
 
         for(const target of targets) {
@@ -598,7 +598,7 @@ export class ConflictFlow extends BaseStepWithPipeline {
         }
 
         this.conflict.defenders.forEach((card: DrawCard) => (card.inConflict = true));
-        defender.cardsInPlay.forEach((card: DrawCard) => (card.covert = false));
+        defender.charactersInPlay.forEach((card: DrawCard) => (card.covert = false));
 
         if(this.conflict.defenders.length > 0) {
             this.game.addMessage(msg`${this.conflict.defendingPlayer} has defended with skill ${this.conflict.defenderSkill}`);

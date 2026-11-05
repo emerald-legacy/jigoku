@@ -11,7 +11,7 @@ export default class ShiroNishiyama extends StrongholdCard {
             .condition(() => this.game.isDuringConflict())
             .cost(costs.bowSelf())
             .cardLastingEffect((context) => ({
-                target: context.player.cardsInPlay.filter((card) => card.isDefending()),
+                target: context.player.charactersInPlay.filter((card) => card.isDefending()),
                 effect: modifyBothSkills(1)
             }))
             .chatText(() => msg`add +1${'military'}/+1${'political'} to all defenders they control`);

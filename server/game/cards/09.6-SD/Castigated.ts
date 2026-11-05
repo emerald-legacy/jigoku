@@ -10,7 +10,7 @@ class Castigated extends DrawCard {
     static id = 'castigated';
 
     override setupCardAbilities() {
-        this.playOnlyIf((context) => context.game.isDuringConflict(ConflictType.Political) && context.player.cardsInPlay.some((card) => card.type === CardType.Character && card.hasTrait(Trait.Imperial)));
+        this.playOnlyIf((context) => context.game.isDuringConflict(ConflictType.Political) && context.player.charactersInPlay.some((card) => card.type === CardType.Character && card.hasTrait(Trait.Imperial)));
 
         this.whileAttached({
             effect: delayedEffect({

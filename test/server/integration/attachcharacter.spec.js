@@ -43,9 +43,9 @@ describe('a character becoming an attachment', function() {
             expect(this.brash.attachments).toContain(this.whisperer);
             expect(this.whisperer.isParticipating()).toBe(false);
             expect(this.game.currentConflict.attackers).not.toContain(this.whisperer);
-            expect(this.player1.player.cardsInPlay).not.toContain(this.whisperer);
-            expect(this.player1.player.cardsInPlay).toContain(this.brash);
-            expect(this.player1.player.cardsInPlay).toContain(this.challenger);
+            expect(this.player1.player.charactersInPlay).not.toContain(this.whisperer);
+            expect(this.player1.player.charactersInPlay).toContain(this.brash);
+            expect(this.player1.player.charactersInPlay).toContain(this.challenger);
         });
     });
 });

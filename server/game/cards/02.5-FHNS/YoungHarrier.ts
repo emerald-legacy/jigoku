@@ -11,7 +11,7 @@ class YoungHarrier extends DrawCard {
             .cost(costs.dishonorSelf())
             .cardLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
-                target: context.player.cardsInPlay.filter((card) => card.isFaction('crane')),
+                target: context.player.charactersInPlay.filter((card) => card.isFaction('crane')),
                 effect: cardCannot(RestrictionType.Dishonor)
             }))
             .chatText('prevent Crane characters from being dishonored this phase');

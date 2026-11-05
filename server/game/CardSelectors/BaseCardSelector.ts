@@ -76,7 +76,7 @@ export class BaseCardSelector {
             }
             return context.game.allCards;
         }
-        let attachments: BaseCard[] = context.player.cardsInPlay.flatMap((card: DrawCard) => card.attachments);
+        let attachments: BaseCard[] = context.player.charactersInPlay.flatMap((card: DrawCard) => card.attachments);
         let allProvinceAttachments: BaseCard[] = context.player
             .getProvinces()
             .flatMap((card) => card.attachments);
@@ -92,7 +92,7 @@ export class BaseCardSelector {
         const allRingAttachments = Object.values(context.game.rings).map((ring) => ring.attachments).flat();
         attachments = attachments.concat(allRingAttachments);
         if(context.player.opponent) {
-            attachments = attachments.concat(...context.player.opponent.cardsInPlay.map((card: DrawCard) => card.attachments));
+            attachments = attachments.concat(...context.player.opponent.charactersInPlay.map((card: DrawCard) => card.attachments));
         }
         let possibleCards: BaseCard[] = [];
         if(controllerProp !== Players.Opponent) {

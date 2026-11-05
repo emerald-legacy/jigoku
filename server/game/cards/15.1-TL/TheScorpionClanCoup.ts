@@ -9,7 +9,7 @@ export default class TheScorpionClanCoup extends ProvinceCard {
         this.persistentEffect({
             condition: (context) =>
                 context.player.isDefendingPlayer() &&
-                context.player.cardsInPlay.some(
+                context.player.charactersInPlay.some(
                     (card) => card.type === CardType.Character && card.hasTrait(Trait.Imperial)
                 ),
             targetController: Players.Opponent,

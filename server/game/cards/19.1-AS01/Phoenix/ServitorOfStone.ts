@@ -2,7 +2,7 @@ import { msg } from '../../../GameChat.js';
 import type { AbilityContext } from '../../../AbilityContext.js';
 import { cardCannot, delayedEffect } from '../../../effects.js';
 import { discardFromPlay } from '../../../GameActions/GameActions.js';
-import { CardType, RestrictionType, Trait } from '../../../Constants.js';
+import { RestrictionType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class ServitorOfStone extends DrawCard {
@@ -24,9 +24,8 @@ export default class ServitorOfStone extends DrawCard {
     }
 
     private controllerHasShugenjaAtSameLocation(context: AbilityContext) {
-        return context.player.anyCardsInPlay(
+        return context.player.charactersInPlay.some(
             (otherCard) =>
-                otherCard.type === CardType.Character &&
                 otherCard.hasTrait(Trait.Shugenja) &&
                 context.source.isInConflict() === otherCard.isInConflict()
         );

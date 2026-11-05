@@ -8,7 +8,7 @@ class MatsuGohei extends DrawCard {
     override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isAttacking() &&
-                            context.player.cardsInPlay
+                            context.player.charactersInPlay
                                 .filter((card) => card.hasTrait(Trait.Bushi) &&
                                     card !== context.source &&
                                     card.isAttacking()).length >= 2,

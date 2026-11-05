@@ -9,7 +9,7 @@ class MatsuBeiona extends DrawCard {
             .when({
                 onCharacterEntersPlay: (event, context) => (
                     event.card === context.source &&
-                    context.player.cardsInPlay.filter((card) => (
+                    context.player.charactersInPlay.filter((card) => (
                         card.hasTrait(Trait.Bushi) &&
                         card !== context.source
                     )).length >= 3

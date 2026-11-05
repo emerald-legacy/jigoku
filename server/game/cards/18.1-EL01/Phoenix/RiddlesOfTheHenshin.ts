@@ -9,7 +9,7 @@ import { resolveRingEffect } from '../../../GameActions/GameActions.js';
 import { perRound } from '../../../AbilityLimit.js';
 
 function getNumberOfMonks(context: AbilityContext) {
-    return context.player.cardsInPlay.reduce(
+    return context.player.charactersInPlay.reduce(
         (total, card) => total + (card.type === CardType.Character && card.hasTrait(Trait.Monk) ? 1 : 0),
         0
     );

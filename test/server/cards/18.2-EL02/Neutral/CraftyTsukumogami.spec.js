@@ -49,9 +49,9 @@ describe('Crafty Tsukumogami', function() {
         it('should leave the other characters in play', function() {
             this.player1.clickCard(this.crafty);
             this.player1.clickRing('fire');
-            expect(this.player1.player.cardsInPlay).not.toContain(this.crafty);
-            expect(this.player1.player.cardsInPlay).toContain(this.crafty2);
-            expect(this.player1.player.cardsInPlay).toContain(this.challenger);
+            expect(this.player1.player.charactersInPlay).not.toContain(this.crafty);
+            expect(this.player1.player.charactersInPlay).toContain(this.crafty2);
+            expect(this.player1.player.charactersInPlay).toContain(this.challenger);
         });
 
         it('should remove attachments, status tokens, fate, and no longer count skill in a conflict', function() {

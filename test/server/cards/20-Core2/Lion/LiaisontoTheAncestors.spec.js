@@ -156,7 +156,7 @@ describe('Liaison to the Ancestors and a token', function () {
             this.encampment = this.player1.placeCardInProvince('ashigaru-encampment');
             this.encampment.facedown = false;
             this.player1.clickCard(this.encampment);
-            this.ashigaru = this.player1.player.cardsInPlay.find((card) => card.name === 'Ashigaru Recruit');
+            this.ashigaru = this.player1.player.charactersInPlay.find((card) => card.name === 'Ashigaru Recruit');
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.ashigaru],

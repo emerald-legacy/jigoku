@@ -7,7 +7,7 @@ class MilitantFaithful extends DrawCard {
 
     override setupCardAbilities() {
         this.persistentEffect({
-            condition: (context) => !!(context.player.opponent && context.player.opponent.anyCardsInPlay((card) => card.isParticipating() && !card.isOrdinary())),
+            condition: (context) => !!(context.player.opponent && context.player.opponent.inPlay({ attachments: true }).some((card) => card.isParticipating() && !card.isOrdinary())),
             effect: doesNotBow()
         });
     }

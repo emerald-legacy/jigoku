@@ -8,7 +8,7 @@ class MagistratesIntervention extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Dishonor a character')
-            .playOnlyIf((context) => context.player.cardsInPlay.some((card) => card.type === CardType.Character && (card.hasTrait(Trait.Courtier) || card.hasTrait(Trait.Magistrate))))
+            .playOnlyIf((context) => context.player.charactersInPlay.some((card) => card.type === CardType.Character && (card.hasTrait(Trait.Courtier) || card.hasTrait(Trait.Magistrate))))
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isAttacking()

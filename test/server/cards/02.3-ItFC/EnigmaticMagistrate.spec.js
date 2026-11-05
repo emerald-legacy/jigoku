@@ -41,7 +41,7 @@ describe('Enigmatic Magistrate with a token', function () {
         // a token has no printed cost, so it isn't even-costed (rulings #254, #1116)
         it('should let a token count its skill', function () {
             this.player1.clickCard(this.encampment);
-            const ashigaru = this.player1.player.cardsInPlay.find((card) => card.name === 'Ashigaru Recruit');
+            const ashigaru = this.player1.player.charactersInPlay.find((card) => card.name === 'Ashigaru Recruit');
             expect(ashigaru.militarySkill).toBe(1);
             this.noMoreActions();
             this.initiateConflict({

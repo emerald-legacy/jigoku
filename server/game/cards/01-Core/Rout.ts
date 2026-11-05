@@ -10,7 +10,7 @@ class Rout extends DrawCard {
             .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card, context) => context.player.cardsInPlay.some((myCard) => (
+                cardCondition: (card, context) => context.player.charactersInPlay.some((myCard) => (
                     myCard.hasTrait(Trait.Bushi) && myCard.isParticipating() &&
                     myCard.militarySkill > card.militarySkill
                 ))

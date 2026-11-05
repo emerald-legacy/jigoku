@@ -34,8 +34,8 @@ describe('A card put into play for its owner by the opponent', function() {
             this.player2.clickPrompt('0');
             expect(this.traitor.location).toBe('play area');
             expect(this.traitor.controller).toBe(this.player1.player);
-            expect(this.player1.player.cardsInPlay).toEqual([this.matsuBerserker, this.traitor]);
-            expect(this.player2.player.cardsInPlay).not.toContain(this.traitor);
+            expect(this.player1.player.charactersInPlay).toEqual([this.matsuBerserker, this.traitor]);
+            expect(this.player2.player.charactersInPlay).not.toContain(this.traitor);
         });
     });
 });

@@ -11,7 +11,7 @@ export default class YojinNoShiro extends StrongholdCard {
             .condition(() => this.game.isDuringConflict())
             .cost(costs.bowSelf())
             .cardLastingEffect((context) => ({
-                target: context.player.cardsInPlay.filter((card) => card.isAttacking()),
+                target: context.player.charactersInPlay.filter((card) => card.isAttacking()),
                 effect: modifyMilitarySkill(1)
             }))
             .chatText(() => msg`give attacking characters +1${'military'}/+0${'political'}`);

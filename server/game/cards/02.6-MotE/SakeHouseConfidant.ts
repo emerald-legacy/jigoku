@@ -11,7 +11,7 @@ class SakeHouseConfidant extends DrawCard {
             .condition((context) => context.source.isParticipating())
             .cost(costs.discardImperialFavor())
             .cardLastingEffect((context) => ({
-                target: context.player.cardsInPlay.filter((card) => card.hasTrait(Trait.Shinobi)),
+                target: context.player.charactersInPlay.filter((card) => card.hasTrait(Trait.Shinobi)),
                 effect: modifyPoliticalSkill(2)
             }))
             .chatText('give their Shinobi +0/+2');

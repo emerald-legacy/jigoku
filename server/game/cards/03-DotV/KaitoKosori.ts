@@ -11,7 +11,7 @@ class KaitoKosori extends DrawCard {
         this.persistentEffect({
             condition: (context) => {
                 const symbol = this.getCurrentElementSymbol(elementKey);
-                return context.player.cardsInPlay.some((card) => card.isParticipating()) &&
+                return context.player.charactersInPlay.some((card) => card.isParticipating()) &&
                     this.game.isDuringConflict(symbol) &&
                     !context.source.isParticipating() && !context.source.bowed;
             },

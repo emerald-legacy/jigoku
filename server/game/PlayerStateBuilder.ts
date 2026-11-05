@@ -48,7 +48,7 @@ export class PlayerStateBuilder {
         const promptState = isActivePlayer ? player.promptState.getState() : {};
         const state: PlayerState = {
             cardPiles: {
-                cardsInPlay: this.getSummaryForCardList(player.cardsInPlay, activePlayer),
+                cardsInPlay: this.getSummaryForCardList(player.charactersInPlay, activePlayer),
                 conflictDiscardPile: this.getSummaryForCardList(player.conflictDiscardPile, activePlayer),
                 dynastyDiscardPile: this.getSummaryForCardList(player.dynastyDiscardPile, activePlayer),
                 hand: this.getSummaryForHand(player.hand, activePlayer, true),

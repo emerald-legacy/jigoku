@@ -7,7 +7,7 @@ import type { AbilityContext } from '../../../AbilityContext.js';
 
 function bonusBase(context: AbilityContext) {
     return Object.values(Element).filter((element) =>
-        context.player.cardsInPlay.some((character) => character.hasTrait(elementTrait(element)))).length;
+        context.player.charactersInPlay.some((character) => character.hasTrait(elementTrait(element)))).length;
 }
 
 export default class AgashaJianyu extends DrawCard {

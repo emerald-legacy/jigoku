@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, ConflictType } from '../../Constants.js';
+import { ConflictType } from '../../Constants.js';
 
 class GloriousVictory extends DrawCard {
     static id = 'glorious-victory';
@@ -11,7 +11,7 @@ class GloriousVictory extends DrawCard {
                     this.game.isDuringConflict(ConflictType.Military) && event.breaker === context.player
             })
             .honor((context) => ({
-                target: context.player.filterCardsInPlay((card) => card.type === CardType.Character)
+                target: context.player.charactersInPlay
             }));
     }
 }

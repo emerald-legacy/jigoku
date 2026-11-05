@@ -48,7 +48,7 @@ export default class JakIthith extends DrawCard {
             .discardFromPlay((context) => ({ target: context.targets[ATTACHMENT] }))
             .chatText((context) => {
                 const attachment = context.targets[ATTACHMENT];
-                const canAttach = context.player.cardsInPlay.some((card) =>
+                const canAttach = context.player.charactersInPlay.some((card) =>
                     attach({ attachment, takeControl: true }).canAffect(card, context));
                 return canAttach
                     ? msg`take control of ${attachment.parentCharacter}'s ${attachment}`

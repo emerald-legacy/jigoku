@@ -49,7 +49,7 @@ export default class Retribution extends DrawCard {
                 }),
                 cardLastingEffect({
                     effect: cannotBeDeclaredAsAttacker(),
-                    target: context.player.cardsInPlay.filter(
+                    target: context.player.charactersInPlay.filter(
                         (card) => card.type === CardType.Character && card !== context.target
                     )
                 }),

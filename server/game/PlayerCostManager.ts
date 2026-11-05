@@ -97,7 +97,7 @@ export class PlayerCostManager {
 
         const maho = !!context?.source.isTemptationsMaho();
         if(maho) {
-            alternateFatePools.push(...this.player.cardsInPlay.filter((a) => a.type === CardType.Character));
+            alternateFatePools.push(...this.player.charactersInPlay.filter((a) => a.type === CardType.Character));
             alternateFatePools = alternateFatePools.filter(
                 (a) => a.printedType !== ObjectType.Ring && a.type === CardType.Character
             );

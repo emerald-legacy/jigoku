@@ -9,7 +9,7 @@ class SecludedTemple extends DrawCard {
         this.reaction('Remove a fate from opponent\'s characters')
             .when({
                 onPhaseStarted: (event, context) => event.phase === Phase.Conflict && context.player.opponent &&
-                                                    context.player.cardsInPlay.length < context.player.opponent.cardsInPlay.length
+                                                    context.player.charactersInPlay.length < context.player.opponent.charactersInPlay.length
             })
             .target({
                 player: Players.Opponent,

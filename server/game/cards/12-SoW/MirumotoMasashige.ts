@@ -9,7 +9,7 @@ class MirumotoMasashige extends DrawCard {
         this.reaction('Honor a character')
             .when({
                 onPhaseStarted: (event, context) => event.phase === Phase.Conflict && context.player.opponent &&
-                                                    context.player.cardsInPlay.length < context.player.opponent.cardsInPlay.length
+                                                    context.player.charactersInPlay.length < context.player.opponent.charactersInPlay.length
             })
             .target({
                 activePromptTitle: 'Choose a character to honor',

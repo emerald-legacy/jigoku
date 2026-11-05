@@ -9,7 +9,7 @@ import type { Event } from '../../../Events/Event.js';
 const resourcesAvailable = (context: AbilityContext) => {
     const fateAvailable = context.player.canSpendFate(1, context);
 
-    const eligibleCharacters = context.player.cardsInPlay.filter(
+    const eligibleCharacters = context.player.charactersInPlay.filter(
         (card) => card.type === CardType.Character &&
             dishonor().canAffect(card, context)
     );

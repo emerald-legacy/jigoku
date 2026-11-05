@@ -91,7 +91,7 @@ describe('Cleanse the Empire', function() {
             this.player1.clickCard(this.master);
             expect(this.master.bowed).toBe(true);
 
-            expect(this.getChatLogs(5)).toContain('player1 plays Cleanse the Empire to remove 1 fate from Ancient Master, Doji Challenger and Doji Whisperer');
+            expect(this.getChatLogs(5)).toContain('player1 plays Cleanse the Empire to remove 1 fate from Doji Challenger, Doji Whisperer and Ancient Master');
             expect(this.getChatLogs(5)).toContain('player1 chooses to bow Ancient Master');
         });
 
@@ -112,7 +112,7 @@ describe('Cleanse the Empire', function() {
             this.player1.clickCard(this.master);
             expect(this.master.bowed).toBe(true);
 
-            expect(this.getChatLogs(5)).toContain('player1 plays Cleanse the Empire to remove 1 fate from Ancient Master, Doji Challenger and Doji Whisperer');
+            expect(this.getChatLogs(5)).toContain('player1 plays Cleanse the Empire to remove 1 fate from Doji Challenger, Doji Whisperer and Ancient Master');
             expect(this.getChatLogs(5)).toContain('player1 chooses to bow Ancient Master');
         });
 
@@ -132,7 +132,7 @@ describe('Cleanse the Empire', function() {
             this.player1.clickCard(this.cleanse);
             expect(this.player1).not.toHavePrompt('Choose a character to bow');
 
-            expect(this.getChatLogs(5)).toContain('player1 plays Cleanse the Empire to remove 1 fate from Ancient Master, Doji Challenger and Doji Whisperer');
+            expect(this.getChatLogs(5)).toContain('player1 plays Cleanse the Empire to remove 1 fate from Doji Challenger, Doji Whisperer and Ancient Master');
         });
     });
 });

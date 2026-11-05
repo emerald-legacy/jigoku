@@ -6,7 +6,7 @@ import { discardFromPlay } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
 function kuwanan(context: AbilityContext) {
-    return context.player.cardsInPlay.find((card) => card.name === 'Doji Kuwanan');
+    return context.player.charactersInPlay.find((card) => card.name === 'Doji Kuwanan');
 }
 
 class DojiHotaru2 extends DrawCard {

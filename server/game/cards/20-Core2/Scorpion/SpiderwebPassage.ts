@@ -6,7 +6,7 @@ import { chatMessage, discardAtRandom, discardFromPlay, joint } from '../../../G
 import DrawCard from '../../../DrawCard.js';
 
 function controlsParticipatingShinobi(context: AbilityContext): boolean {
-    return context.player.cardsInPlay.some((card) => card.isParticipating() && card.hasTrait(Trait.Shinobi));
+    return context.player.charactersInPlay.some((card) => card.isParticipating() && card.hasTrait(Trait.Shinobi));
 }
 
 function shinobiCount(context: AbilityContext): number {

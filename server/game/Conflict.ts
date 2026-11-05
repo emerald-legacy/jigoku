@@ -273,7 +273,7 @@ export class Conflict extends GameObject {
             }
         }
 
-        for(const card of this.attackingPlayer.cardsInPlay) {
+        for(const card of this.attackingPlayer.charactersInPlay) {
             if(this.#participatesFromHome(card, true) && (!predicate || predicate(card))) {
                 attackersArray.push(card);
             }
@@ -288,7 +288,7 @@ export class Conflict extends GameObject {
                 defendersArray.push(defender);
             }
         }
-        for(const card of this.defendingPlayer?.cardsInPlay ?? []) {
+        for(const card of this.defendingPlayer?.charactersInPlay ?? []) {
             if(this.#participatesFromHome(card, false) && (!predicate || predicate(card))) {
                 defendersArray.push(card);
             }

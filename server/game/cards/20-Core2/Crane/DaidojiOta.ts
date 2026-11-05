@@ -11,7 +11,7 @@ export default class DaidojiOta extends DrawCard {
         this.persistentEffect({
             targetController: Players.Opponent,
             condition: (context) =>
-                context.player.cardsInPlay.some(
+                context.player.charactersInPlay.some(
                     (card) => card.type === CardType.Character && card.isParticipating()
                 ),
             effect: reduceCost({

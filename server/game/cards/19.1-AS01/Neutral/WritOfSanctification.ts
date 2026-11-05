@@ -14,7 +14,7 @@ export default class WritOfSanctification extends DrawCard {
 
         this.persistentEffect({
             condition: (context) =>
-                !context.player.cardsInPlay.some(
+                !context.player.charactersInPlay.some(
                     (card) => card.hasTrait(Trait.Shadowlands) && card.type === CardType.Character
                 ),
             effect: addKeyword('ancestral')

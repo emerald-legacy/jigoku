@@ -183,7 +183,7 @@ describe('Player - drop', () => {
 
         describe('when dragging a card from the play area to the conflict discard pile', function() {
             beforeEach(function() {
-                this.player.cardsInPlay.push(this.cardSpy);
+                this.player.charactersInPlay.push(this.cardSpy);
                 this.cardSpy.location = 'play area';
             });
 
@@ -212,7 +212,7 @@ describe('Player - drop', () => {
         describe('when dragging a card from the play area to the dynasty discard pile', function() {
             beforeEach(function() {
                 this.cardSpy.isDynasty = true;
-                this.player.cardsInPlay.push(this.cardSpy);
+                this.player.charactersInPlay.push(this.cardSpy);
                 this.cardSpy.location = 'play area';
             });
 

@@ -141,13 +141,13 @@ export class PutIntoPlayAction<Context extends AbilityContext = AbilityContext> 
 
         // moveCard put the card into the pile of the player who put it into play
         if(card.controller !== finalController) {
-            const index = player.cardsInPlay.indexOf(card);
+            const index = player.charactersInPlay.indexOf(card);
             if(index >= 0) {
-                player.cardsInPlay.splice(index, 1);
+                player.charactersInPlay.splice(index, 1);
             }
             card.controller = finalController;
             card.setDefaultController(card.controller);
-            card.controller.cardsInPlay.push(card);
+            card.controller.charactersInPlay.push(card);
         }
 
         const conflict = context.game.currentConflict;

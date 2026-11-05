@@ -12,7 +12,7 @@ class NeverYield extends DrawCard {
                 onConflictDeclared: (event, context) => event.conflict.attackingPlayer === context.player
             })
             .cardLastingEffect((context) => ({
-                target: context.player.cardsInPlay.filter((card) => card.type === CardType.Character),
+                target: context.player.charactersInPlay.filter((card) => card.type === CardType.Character),
                 effect: [
                     cardCannot({
                         cannot: RestrictionType.SendHome,

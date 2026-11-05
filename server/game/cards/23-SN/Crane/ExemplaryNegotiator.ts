@@ -7,7 +7,7 @@ export default class ExemplaryNegotiator extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Discard cards to cause opponent to discard')
-            .ifCondition((context) => context.player.anyCardsInPlay((card) => card.isDishonored))
+            .ifCondition((context) => context.player.inPlay({ attachments: true }).some((card) => card.isDishonored))
             .cost(costs.discardCardsUpToVariableX(() => 2))
             .discardAtRandom((context) => ({
                 // 1 while the cost is unpaid, so the effect is legal before the cards are chosen

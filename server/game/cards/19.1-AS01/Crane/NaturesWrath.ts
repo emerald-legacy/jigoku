@@ -21,7 +21,7 @@ export default class NaturesWrath extends DrawCard {
 
     public override setupCardAbilities() {
         this.conflictAction('Dishonor or move home a character', { conflictType: ConflictType.Military })
-            .ifCondition((context) => context.player.anyCardsInPlay((card) => card.isParticipating()))
+            .ifCondition((context) => context.player.inPlay({ attachments: true }).some((card) => card.isParticipating()))
             .target({
                 name: TARGET_CHARACTER,
                 cardType: CardType.Character,

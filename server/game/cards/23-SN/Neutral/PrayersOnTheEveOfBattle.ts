@@ -19,7 +19,7 @@ export default class PrayersOnTheEveOfBattle extends DrawCard {
 
         this.reaction('Return to hand')
             .when({
-                onConflictPass: (event, context) => context.player.opponent && event.conflict.attackingPlayer === context.player.opponent && context.player.opponent.cardsInPlay.some((card) => card.type === CardType.Character && !card.bowed)
+                onConflictPass: (event, context) => context.player.opponent && event.conflict.attackingPlayer === context.player.opponent && context.player.opponent.charactersInPlay.some((card) => card.type === CardType.Character && !card.bowed)
             })
             .location(Location.ConflictDiscardPile)
             .moveCard((context) => ({ target: context.source, destination: Location.Hand }))

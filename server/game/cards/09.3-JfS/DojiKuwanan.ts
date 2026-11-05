@@ -6,7 +6,7 @@ import { CardType, ConflictType } from '../../Constants.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 
 function hotaru(context: AbilityContext) {
-    return context.player.cardsInPlay.find((card) => card.name === 'Doji Hotaru');
+    return context.player.charactersInPlay.find((card) => card.name === 'Doji Hotaru');
 }
 
 class DojiKuwanan extends DrawCard {

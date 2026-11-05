@@ -21,6 +21,6 @@ export default class RecklessAssault extends DrawCard {
     }
 
     private getCharacters(context: AbilityContext) {
-        return context.player.opponent?.cardsInPlay.filter((card) => card.militarySkill < 3) ?? [];
+        return context.player.opponent?.charactersInPlay.filter((card) => card.militarySkill < 3) ?? [];
     }
 }

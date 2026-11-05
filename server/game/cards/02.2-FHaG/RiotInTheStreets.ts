@@ -8,7 +8,7 @@ export default class RiotInTheStreets extends ProvinceCard {
     override setupCardAbilities() {
         this.action('Bow character if you have 3 participating bushi')
             .ifCondition((context) =>
-                context.player.getNumberOfCardsInPlay((card) => card.hasTrait(Trait.Bushi) && card.isParticipating()) >= 3)
+                context.player.inPlay({ attachments: true }).filter((card) => card.hasTrait(Trait.Bushi) && card.isParticipating()).length >= 3)
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating()

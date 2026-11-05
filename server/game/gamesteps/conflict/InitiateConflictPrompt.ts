@@ -29,7 +29,7 @@ export class InitiateConflictPrompt extends UiPrompt {
         this.covertRemaining = false;
 
         if(attackerMatrix === null) {
-            this.attackerMatrix = new AttackersMatrix(this.choosingPlayer, this.choosingPlayer.cardsInPlay, this.game);
+            this.attackerMatrix = new AttackersMatrix(this.choosingPlayer, this.choosingPlayer.charactersInPlay, this.game);
             if(!this.attackerMatrix.canPass) {
                 this.canPass = false;
             }

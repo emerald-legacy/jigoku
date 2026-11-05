@@ -29,7 +29,7 @@ export default class WhispersOfTheLordsOfDeath extends DrawCard {
     }
 
     private highestMilitaryForPlayer(player: Player) {
-        return player.cardsInPlay.reduce((maxMil, card) => {
+        return player.charactersInPlay.reduce((maxMil, card) => {
             if(card.type !== CardType.Character) {
                 return maxMil;
             }

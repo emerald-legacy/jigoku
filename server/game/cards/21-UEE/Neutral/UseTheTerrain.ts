@@ -11,7 +11,7 @@ export default class UseTheTerrain extends DrawCard {
     override setupCardAbilities() {
         this.conflictAction('Give each character a military bonus', { conflictType: ConflictType.Military })
             .cardLastingEffect((context) => ({
-                target: context.player.cardsInPlay.filter(() => true),
+                target: context.player.charactersInPlay.filter(() => true),
                 effect: modifyMilitarySkill(this.hasKicker(context) ? 2 : 1)
             }))
             .chatText((context) => msg`give all characters they control +${this.hasKicker(context) ? 2 : 1}${'military'}`);

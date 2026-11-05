@@ -13,7 +13,7 @@ export default class Hayate extends DrawCard {
             targetController: Players.Any,
             effect: reduceCost({
                 amount: (_, player) =>
-                    player.cardsInPlay.reduce(
+                    player.charactersInPlay.reduce(
                         (cavCount, card) => (card.hasTrait(Trait.Cavalry) ? cavCount + 1 : cavCount),
                         0
                     ),
@@ -24,7 +24,7 @@ export default class Hayate extends DrawCard {
         // Hayate isn't chosen: the ability works while either character can move in
         this.conflictAction('Move this and another character to the conflict', { evenFromHome: true })
             .condition((context) =>
-                context.player.cardsInPlay.some((card) => moveToConflict().canAffect(card, context)))
+                context.player.charactersInPlay.some((card) => moveToConflict().canAffect(card, context)))
             .target({
                 name: 'optional',
                 cardType: CardType.Character,

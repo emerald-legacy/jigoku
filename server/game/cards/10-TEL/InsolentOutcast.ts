@@ -13,7 +13,7 @@ class InsolentOutcast extends DrawCard {
     }
 
     getNoOfHonoredCharacters(player: Player) {
-        return player.cardsInPlay.filter((card) => card.type === CardType.Character && card.isHonored).length;
+        return player.charactersInPlay.filter((card) => card.type === CardType.Character && card.isHonored).length;
     }
 }
 
