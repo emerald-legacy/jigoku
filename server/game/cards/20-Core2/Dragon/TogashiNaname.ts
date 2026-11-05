@@ -15,8 +15,8 @@ export default class TogashiNaname extends DrawCard {
             .target({
                 name: 'character',
                 cardType: CardType.Character,
-                controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating() && card.fate > 0
+                cardCondition: (card, context) =>
+                    !!context.player.opponent && card.isParticipatingFor(context.player.opponent) && card.fate > 0
             })
             .ringTarget({
                 name: 'ring',
@@ -26,7 +26,7 @@ export default class TogashiNaname extends DrawCard {
             .selectFrom({
                 name: 'select',
                 dependsOn: 'ring',
-                player: Players.Opponent
+                player: (context) => context.targets.character?.controller === context.player ? Players.Self : Players.Opponent
             }, (context) => ({
                 [`Move a fate from ${context.targets.character?.name ?? ''} to the ${context.rings.ring.name}`]: placeFateOnRing((context) => ({
                     target: context.rings.ring,

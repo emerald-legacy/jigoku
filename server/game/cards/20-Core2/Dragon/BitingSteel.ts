@@ -1,5 +1,5 @@
 import { msg } from '../../../GameChat.js';
-import { CardType, Duration, Players, ConflictType, Trait } from '../../../Constants.js';
+import { CardType, Duration, ConflictType, Trait } from '../../../Constants.js';
 import { modifyDuelistSkill } from '../../../effects.js';
 import { cardLastingEffect, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
@@ -57,8 +57,10 @@ export default class BitingSteel extends DrawCard {
             .ifCondition((context) => context.player.hasAffinity(Trait.Fire, context))
             .target({
                 cardType: CardType.Character,
-                controller: Players.Opponent,
-                cardCondition: (card, context) => card.militarySkill < (context.source.parentCharacter?.militarySkill ?? 0)
+                cardCondition: (card, context) =>
+                    !!context.player.opponent &&
+                    card.isParticipatingFor(context.player.opponent) &&
+                    card.militarySkill < (context.source.parentCharacter?.militarySkill ?? 0)
             }, sendHome());
     }
 }

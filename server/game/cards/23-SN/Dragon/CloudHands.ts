@@ -1,6 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import { Players, CardType, Trait } from '../../../Constants.js';
+import { CardType, Trait } from '../../../Constants.js';
 import { perConflict } from '../../../AbilityLimit.js';
 import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { copyBaseSkillEffects } from '../../copyBaseSkills.js';
@@ -14,16 +14,14 @@ export default class CloudHands extends DrawCard {
                 name: 'myCharacter',
                 activePromptTitle: 'Choose a monk character',
                 cardType: CardType.Character,
-                controller: Players.Self,
-                cardCondition: (card) => card.isParticipating() && card.hasTrait(Trait.Monk)
+                cardCondition: (card, context) => card.isParticipatingFor(context.player) && card.hasTrait(Trait.Monk)
             })
             .target({
                 name: 'oppCharacter',
                 dependsOn: 'myCharacter',
                 activePromptTitle: 'Choose an opponent\'s character',
                 cardType: CardType.Character,
-                controller: Players.Opponent,
-                cardCondition: (card) => card.isParticipating()
+                cardCondition: (card, context) => !!context.player.opponent && card.isParticipatingFor(context.player.opponent)
             }, cardLastingEffect((context) => ({
                 target: context.targets.myCharacter,
                 effect: copyBaseSkillEffects(context.targets.oppCharacter, { base: true })

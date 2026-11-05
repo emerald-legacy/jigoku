@@ -232,3 +232,55 @@ describe('Two Hands against Talented Performers', function () {
         });
     });
 });
+
+describe('Two Hands with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger', 'kakita-yoshi', 'endless-plains-skirmisher']
+                },
+                player2: {
+                    inPlay: ['kakita-toshimoko', 'endless-plains-skirmisher'],
+                    hand: ['two-hands', 'fine-katana']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.toshimoko = this.player2.findCardByName('kakita-toshimoko');
+            this.hands = this.player2.findCardByName('two-hands');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+            this.player1.pass();
+            this.player2.playAttachment(this.player2.findCardByName('fine-katana'), this.toshimoko);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger, this.yoshi],
+                defenders: [this.toshimoko]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('lets your opponent choose characters on their side, whoever controls them', function () {
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player2.clickCard(this.hands);
+            expect(this.player1).toHavePrompt('Choose two characters');
+            expect(this.player1).toBeAbleToSelect(this.challenger);
+            expect(this.player1).toBeAbleToSelect(this.skirmisher2);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher1);
+            this.player1.clickCard(this.challenger);
+            this.player1.clickCard(this.skirmisher2);
+            this.player1.clickPrompt('Done');
+            expect(this.challenger.militarySkill).toBe(3);
+            expect(this.skirmisher2.militarySkill).toBe(3);
+        });
+    });
+});

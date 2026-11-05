@@ -130,3 +130,53 @@ describe('Togashi Naname and a character that cannot lose fate', function () {
     });
 });
 
+describe('Togashi Naname with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['togashi-naname', 'endless-plains-skirmisher']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar', 'endless-plains-skirmisher']
+                }
+            });
+            this.naname = this.player1.findCardByName('togashi-naname');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+            this.skirmisher1.fate = 1;
+            this.skirmisher2.fate = 1;
+            this.scholar.fate = 1;
+
+            this.noMoreActions();
+            this.initiateConflict({
+                ring: 'fire',
+                attackers: [this.naname],
+                defenders: [this.scholar]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('chooses a character with fate on the enemy side, whoever controls it, and its controller selects', function () {
+            this.player2.pass();
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard(this.naname);
+            expect(this.player1).toBeAbleToSelect(this.scholar);
+            expect(this.player1).toBeAbleToSelect(this.skirmisher1);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher2);
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickRing('air');
+            expect(this.player1).toHavePromptButton('Move a fate from Endless Plains Skirmisher to the Air Ring');
+            this.player1.clickPrompt('Move a fate from Endless Plains Skirmisher to the Air Ring');
+            expect(this.skirmisher1.fate).toBe(0);
+            expect(this.game.rings.air.fate).toBe(1);
+        });
+    });
+});

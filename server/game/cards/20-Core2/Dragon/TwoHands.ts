@@ -30,9 +30,8 @@ export default class TwoHands extends DrawCard {
                 mode: TargetMode.Exactly,
                 numCards: 2,
                 cardType: CardType.Character,
-                controller: Players.Opponent,
                 player: Players.Opponent,
-                cardCondition: (card) => card.isParticipating()
+                cardCondition: (card, context) => !!context.player.opponent && card.isParticipatingFor(context.player.opponent)
             }, cardLastingEffect((context) => {
                 const twoHands = calcTwoHandsEffect(context, context.targets.target);
                 return {

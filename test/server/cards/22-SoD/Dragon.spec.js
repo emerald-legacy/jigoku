@@ -613,3 +613,55 @@ describe('Tattooed Man and an opponent\'s card effect', function () {
         });
     });
 });
+
+describe('SoD - Dragon: Strike as the Elements with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['itinerant-philosopher', 'endless-plains-skirmisher'],
+                    hand: ['strike-as-the-elements', 'seal-of-the-dragon']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar', 'endless-plains-skirmisher'],
+                    hand: ['seal-of-the-dragon']
+                }
+            });
+            this.philosopher = this.player1.findCardByName('itinerant-philosopher');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.strike = this.player1.findCardByName('strike-as-the-elements');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+            this.player1.playAttachment(this.player1.findCardByName('seal-of-the-dragon'), this.skirmisher1);
+            this.player2.playAttachment(this.player2.findCardByName('seal-of-the-dragon'), this.skirmisher2);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                ring: 'air',
+                attackers: [this.philosopher],
+                defenders: [this.scholar]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('chooses a Monk on your side, whoever controls it', function () {
+            this.player2.pass();
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard(this.strike);
+            expect(this.player1).toBeAbleToSelect(this.philosopher);
+            expect(this.player1).toBeAbleToSelect(this.skirmisher2);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher1);
+            this.player1.clickCard(this.skirmisher2);
+            this.player1.clickRing('fire');
+            expect(this.skirmisher2.militarySkill).toBe(5);
+            expect(this.game.rings.fire.isClaimed()).toBe(true);
+        });
+    });
+});
