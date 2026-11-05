@@ -22,7 +22,7 @@ describe('Unspoken Etiquette', function() {
                 this.bayushiShoju = this.player2.findCardByName('bayushi-shoju');
                 this.bayushiLiar = this.player2.findCardByName('bayushi-liar');
                 this.bayushiYunako = this.player2.findCardByName('bayushi-yunako');
-                this.unspokenEttiquette = this.player2.findCardByName('unspoken-etiquette');
+                this.unspokenEtiquette = this.player2.findCardByName('unspoken-etiquette');
             });
 
             it('should only be playable during political conflicts', function () {
@@ -33,7 +33,7 @@ describe('Unspoken Etiquette', function() {
                     defenders: [this.bayushiAramoro, this.bayushiShoju]
                 });
 
-                this.player2.clickCard(this.unspokenEttiquette);
+                this.player2.clickCard(this.unspokenEtiquette);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
 
@@ -45,7 +45,7 @@ describe('Unspoken Etiquette', function() {
                     defenders: [this.bayushiAramoro, this.bayushiShoju]
                 });
 
-                this.player2.clickCard(this.unspokenEttiquette);
+                this.player2.clickCard(this.unspokenEtiquette);
                 expect(this.bayushiAramoro.isDishonored).toBe(true);
                 expect(this.akodoToturi.isDishonored).toBe(true);
                 expect(this.bayushiShoju.isDishonored).toBe(false);
@@ -60,7 +60,7 @@ describe('Unspoken Etiquette', function() {
                     defenders: [this.bayushiAramoro, this.bayushiShoju]
                 });
 
-                this.player2.clickCard(this.unspokenEttiquette);
+                this.player2.clickCard(this.unspokenEtiquette);
                 expect(this.matsuBerserker.isDishonored).toBe(false);
                 expect(this.bayushiYunako.isDishonored).toBe(false);
             });
