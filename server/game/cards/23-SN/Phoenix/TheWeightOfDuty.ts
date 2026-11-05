@@ -29,7 +29,8 @@ export default class TheWeightOfDuty extends DrawCard {
                     effect: addKeyword('pride'),
                     duration: Duration.UntilEndOfPhase
                 })
-            ]));
+            ]))
+            .chatText('honor {0} and give it pride until the end of the phase');
     }
 
     private isOwnShugenjaInPlay(card: BaseCard, context: AbilityContext) {

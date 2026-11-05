@@ -24,7 +24,7 @@ class ForebearersEchoes extends DrawCard {
                     gameAction: returnToDeck({ bottom: true })
                 }))
             ]))
-            .chatText('put {0} into play in the conflict and apply a lasting effect to {0}');
+            .chatText('put {0} into play in the conflict and put it on the bottom of their dynasty deck at the end of the conflict');
     }
 }
 

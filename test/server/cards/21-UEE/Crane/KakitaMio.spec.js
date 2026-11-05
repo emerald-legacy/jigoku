@@ -36,6 +36,7 @@ describe('Kakita Mio', function() {
             expect(this.player1).not.toBeAbleToSelect(this.berserker);
             this.player1.clickCard(this.challenger);
             expect(this.challenger.hasTrait('shadowlands')).toBe(true);
+            expect(this.getChatLogs(3)).toContain('player1 uses Kakita Mio to give Doji Challenger the Corrupt trait until the end of the conflict');
             expect(this.yoshi.militarySkill).toBe(3);
             expect(this.yoshi.politicalSkill).toBe(7);
             expect(this.whisperer.politicalSkill).toBe(3);

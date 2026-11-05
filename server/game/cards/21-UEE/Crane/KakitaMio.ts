@@ -16,13 +16,14 @@ export default class KakitaMio extends DrawCard {
                     card.isParticipating() &&
                     context.game.currentConflict?.getNumberOfParticipantsFor(card.controller) === 1
             }, cardLastingEffect({
-                effect: addTrait(Trait.Shadowlands)
-            }));
+                effect: addTrait(Trait.Corrupt)
+            }))
+            .chatText('give {0} the Corrupt trait until the end of the conflict');
 
         this.persistentEffect({
             condition: (context) =>
                 !!context.game.currentConflict &&
-                context.game.currentConflict.getNumberOfParticipantsFor(context.player.opponent, (card) => (card.hasTrait(Trait.Shadowlands) || card.isTainted)) > 0,
+                context.game.currentConflict.getNumberOfParticipantsFor(context.player.opponent, (card) => (card.hasTrait(Trait.Corrupt) || card.isTainted)) > 0,
             match: (card, context) =>
                 card.type === CardType.Character &&
                 !!context && card.isParticipatingFor(context.player) &&

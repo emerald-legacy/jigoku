@@ -68,7 +68,7 @@ describe('Forebearer\'s Echoes', function() {
                 this.player1.clickCard(this.dojiWhisperer);
                 expect(this.dojiWhisperer.location).toBe('play area');
                 expect(this.dojiWhisperer.isParticipating()).toBe(true);
-                expect(this.getChatLogs(3)).toContain('player1 plays Forebearer\'s Echoes to put Doji Whisperer into play in the conflict and apply a lasting effect to Doji Whisperer');
+                expect(this.getChatLogs(3)).toContain('player1 plays Forebearer\'s Echoes to put Doji Whisperer into play in the conflict and put it on the bottom of their dynasty deck at the end of the conflict');
             });
 
             it('should return the target to the bottom of the deck at the end of the conflict', function() {

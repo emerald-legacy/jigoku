@@ -75,6 +75,7 @@ describe('The Weight of Duty', function () {
             this.player1.clickCard(this.dojiChallenger);
             expect(this.dojiChallenger.isHonored).toBe(true);
             expect(this.dojiChallenger.hasKeyword('pride')).toBe(true);
+            expect(this.getChatLogs(3)).toContain('player1 plays The Weight of Duty to honor Doji Challenger and give it pride until the end of the phase');
             expect(this.player1).toHavePrompt('Conflict Action Window');
         });
 
