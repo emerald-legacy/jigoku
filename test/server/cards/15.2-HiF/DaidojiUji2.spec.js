@@ -334,6 +334,35 @@ describe('Daidoji Uji 2', function () {
                 );
             });
 
+            it('should remove cards under Uji from the game if he leaves play while blanked (#1020)', function () {
+                this.player2.pass();
+                this.player1.clickCard(this.charge);
+                this.player1.clickCard(this.uji);
+                this.player1.clickCard(this.uji);
+
+                this.player1.clickPrompt('Fine Katana (2)');
+                this.player1.clickPrompt('Fine Katana');
+                this.player1.clickPrompt('Voice of Honor');
+                this.player1.clickPrompt('Ready for Battle');
+
+                this.player2.playAttachment(this.cloud, this.uji);
+                this.player1.pass();
+                this.player2.clickCard(this.mos);
+                this.player2.clickCard(this.uji);
+                this.player2.clickCard(this.mos);
+                expect(this.uji.isDishonored).toBe(true);
+                this.player1.pass();
+
+                this.player2.clickCard(this.swim);
+                this.player2.clickCard(this.uji);
+
+                expect(this.uji.location).toBe('dynasty discard pile');
+                expect(this.katana.location).toBe('removed from game');
+                expect(this.katana2.location).toBe('removed from game');
+                expect(this.voice.location).toBe('removed from game');
+                expect(this.readyForBattle.location).toBe('removed from game');
+            });
+
             it('should not allow opponent to play cards', function () {
                 this.player2.pass();
                 this.player1.clickCard(this.charge);

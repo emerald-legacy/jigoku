@@ -128,3 +128,36 @@ describe('Tsangusuri Ward and a control change', function () {
         });
     });
 });
+
+describe('Tsangusuri Ward and a moved attachment', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-yoshi', 'miya-mystic', 'iuchi-rimei'],
+                    hand: ['tsangusuri-ward']
+                },
+                player2: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['fine-katana']
+                }
+            });
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.mystic = this.player1.findCardByName('miya-mystic');
+            this.rimei = this.player1.findCardByName('iuchi-rimei');
+            this.ward = this.player1.playAttachment('tsangusuri-ward', this.yoshi);
+            this.katana = this.player2.playAttachment('fine-katana', this.mystic);
+        });
+
+        it('lets an opponent\'s attachment be moved onto the character (#1097)', function () {
+            this.player1.clickCard(this.rimei);
+            this.player1.clickCard(this.katana);
+            expect(this.player1).toBeAbleToSelect(this.yoshi);
+            this.player1.clickCard(this.yoshi);
+            expect(this.katana.parent).toBe(this.yoshi);
+            expect(this.yoshi.attachments).toContain(this.ward);
+            expect(this.mystic.attachments).not.toContain(this.katana);
+        });
+    });
+});
