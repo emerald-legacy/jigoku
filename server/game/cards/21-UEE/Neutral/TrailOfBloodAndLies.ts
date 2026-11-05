@@ -1,5 +1,6 @@
+import { msg } from '../../../GameChat.js';
 import { perPhase } from '../../../AbilityLimit.js';
-import { dishonor } from '../../../GameActions/GameActions.js';
+import { dishonor, selectCard } from '../../../GameActions/GameActions.js';
 import { CardType, Phase, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
@@ -20,11 +21,15 @@ export default class TrailOfBloodAndLies extends DrawCard {
                     );
                 }
             })
-            .target({
+            .gameAction(selectCard({
                 cardType: CardType.Character,
                 player: Players.Opponent,
-                controller: Players.Opponent
-            }, dishonor())
+                controller: Players.Opponent,
+                targets: true,
+                message: (context, card) => msg`${context.player.opponent ?? ''} chooses to dishonor ${card}`,
+                gameAction: dishonor()
+            }))
+            .chatText((context) => msg`force ${context.player.opponent ?? ''} to dishonor a character`)
             .max(perPhase(1))
             .mayResolveAgain({ condition: (context) => context.player.isCharacterTraitInPlay(Trait.Magistrate) });
     }

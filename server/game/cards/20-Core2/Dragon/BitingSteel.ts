@@ -5,7 +5,12 @@ import { cardLastingEffect, sendHome } from '../../../GameActions/GameActions.js
 import DrawCard from '../../../DrawCard.js';
 import { controlsShugenja } from '../../controlsShugenja.js';
 
+// Blanking (Agasha Hiyori) removes the printed modifier effects; switching them keeps the sum.
 function getAttachmentSkill(card: DrawCard) {
+    if(!card.getPersistentEffects().some((effect) => effect.printedSkillBonus)) {
+        return 0;
+    }
+
     let amount = 0;
 
     const mil = parseInt(card.cardData.military_bonus ?? '');

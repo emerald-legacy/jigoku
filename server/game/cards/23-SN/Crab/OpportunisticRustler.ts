@@ -11,10 +11,10 @@ export default class OpportunisticRustler extends DrawCard {
     override setupCardAbilities() {
         this.reaction('Look at your opponent\'s dynasty deck')
             .when({
-                onConflictDeclared: (event, context) => event.attackers?.includes(context.source) && event.conflict.conflictType === ConflictType.Military
+                onConflictDeclared: (event, context) => event.attackers?.includes(context.source) && event.conflict.declaredType === ConflictType.Military
             })
             .deckSearch((context) => ({
-                cardsToLookAt: (context) => context.game.currentConflict?.declaredProvince?.printedStrength ?? 0,
+                cardsToLookAt: (context) => context.game.currentConflict?.conflictProvince?.printedStrength ?? 0,
                 mode: TargetMode.Exactly,
                 numCards: 1,
                 target: context.player.opponent,
@@ -40,7 +40,7 @@ export default class OpportunisticRustler extends DrawCard {
                     if(selected.hasTrait(Trait.Cavalry)) {
                         gameActions.push(moveCard({ target: selected, destination: Location.RemovedFromGame }));
                     } else {
-                        gameActions.push(moveCard({ target: selected, faceup: true, destination: context.game.currentConflict.declaredProvince?.location }));
+                        gameActions.push(moveCard({ target: selected, faceup: true, destination: context.game.currentConflict.conflictProvince?.location }));
                     }
 
                     return gameActions;

@@ -153,3 +153,49 @@ describe('Biting Steel attach restriction', function () {
         });
     });
 });
+
+describe('Biting Steel and a weapon whose skill modifiers are removed', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'draw',
+                gameMode: 'emerald',
+                player1: {
+                    inPlay: ['akodo-makoto', 'agasha-hiyori']
+                },
+                player2: {
+                    inPlay: [{ card: 'mirumoto-raitsugu', attachments: ['fine-katana', 'biting-steel'] }]
+                }
+            });
+            this.makoto = this.player1.findCardByName('akodo-makoto');
+            this.hiyori = this.player1.findCardByName('agasha-hiyori');
+            this.raitsugu = this.player2.findCardByName('mirumoto-raitsugu');
+            this.katana = this.player2.findCardByName('fine-katana');
+            this.bitingSteel = this.player2.findCardByName('biting-steel');
+
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.noMoreActions(); // conflict phase begins: Agasha Hiyori reacts
+
+            this.player1.clickCard(this.hiyori);
+            this.player1.clickCard(this.katana);
+            this.player1.clickRing('air');
+        });
+
+        it('cannot add the printed modifiers of a weapon treated as having no skill modifiers', function () {
+            // Fine Katana's +2 is gone; Biting Steel's own +1 stays
+            expect(this.raitsugu.getMilitarySkill()).toBe(4);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.makoto],
+                defenders: [this.raitsugu]
+            });
+            this.player2.clickCard(this.raitsugu);
+            this.player2.clickCard(this.makoto);
+
+            expect(this.player2).toHavePrompt('Honor Bid');
+            expect(this.player2).not.toBeAbleToSelect(this.bitingSteel);
+        });
+    });
+});

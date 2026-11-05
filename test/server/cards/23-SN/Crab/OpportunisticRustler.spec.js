@@ -168,3 +168,119 @@ describe('Opportunistic Rustler at a province copied by Illusionary Terrain', fu
         });
     });
 });
+
+describe('Opportunistic Rustler after The Crashing Wave moved the conflict', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['opportunistic-rustler']
+                },
+                player2: {
+                    fate: 5,
+                    inPlay: ['brash-samurai', 'diplomat-of-the-steppes', 'courtly-challenger', 'tengu-sensei'],
+                    hand: ['the-crashing-wave'],
+                    provinces: ['manicured-garden']
+                }
+            });
+
+            this.rustler = this.player1.findCardByName('opportunistic-rustler');
+            this.wave = this.player2.findCardByName('the-crashing-wave');
+            this.garden = this.player2.findCardByName('manicured-garden');
+            this.sd2 = this.player2.findCardByName('shameful-display', 'province 2');
+
+            this.brash = this.player2.findCardByName('brash-samurai');
+            this.diplomat = this.player2.findCardByName('diplomat-of-the-steppes');
+            this.courtly = this.player2.findCardByName('courtly-challenger');
+            this.tengu = this.player2.findCardByName('tengu-sensei');
+
+            // top of the dynasty deck: Diplomat, Courtly, Brash, Tengu
+            this.player2.reduceDeckToNumber('dynasty deck', 0);
+            this.player2.moveCard(this.tengu, 'dynasty deck');
+            this.player2.moveCard(this.brash, 'dynasty deck');
+            this.player2.moveCard(this.courtly, 'dynasty deck');
+            this.player2.moveCard(this.diplomat, 'dynasty deck');
+        });
+
+        it('looks at X = the strength of the province the conflict moved to and puts the card there', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.rustler],
+                province: this.garden
+            });
+
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.wave);
+            this.player2.clickCard(this.wave);
+            this.player2.clickCard(this.sd2);
+            expect(this.game.currentConflict.conflictProvince).toBe(this.sd2);
+
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.rustler);
+            this.player1.clickCard(this.rustler);
+            expect(this.player1).toHavePrompt('Select a card to reveal');
+            expect(this.player1).toHavePromptButton(this.courtly.name);
+            expect(this.player1).not.toHavePromptButton(this.tengu.name);
+
+            this.player1.clickPrompt(this.courtly.name);
+            expect(this.courtly.location).toBe('province 2');
+        });
+    });
+});
+
+describe('Opportunistic Rustler in a conflict declared military and switched on reveal', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['opportunistic-rustler']
+                },
+                player2: {
+                    inPlay: ['brash-samurai', 'diplomat-of-the-steppes', 'courtly-challenger', 'tengu-sensei'],
+                    provinces: ['rally-to-the-cause']
+                }
+            });
+
+            this.rustler = this.player1.findCardByName('opportunistic-rustler');
+            this.rally = this.player2.findCardByName('rally-to-the-cause');
+
+            this.brash = this.player2.findCardByName('brash-samurai');
+            this.diplomat = this.player2.findCardByName('diplomat-of-the-steppes');
+            this.courtly = this.player2.findCardByName('courtly-challenger');
+            this.tengu = this.player2.findCardByName('tengu-sensei');
+
+            this.player2.reduceDeckToNumber('dynasty deck', 0);
+            this.player2.moveCard(this.tengu, 'dynasty deck');
+            this.player2.moveCard(this.brash, 'dynasty deck');
+            this.player2.moveCard(this.courtly, 'dynasty deck');
+            this.player2.moveCard(this.diplomat, 'dynasty deck');
+        });
+
+        it('still reacts to being declared as an attacker in a military conflict', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.rustler],
+                province: this.rally
+            });
+
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.rustler);
+            // the attacker (first player) passes first; then the defender switches the type
+            this.player1.pass();
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.rally);
+            this.player2.clickCard(this.rally);
+            expect(this.game.currentConflict.declaredType).toBe('military');
+            expect(this.game.currentConflict.conflictType).toBe('political');
+
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.rustler);
+            expect(this.player1).toHavePrompt('Select a card to reveal');
+            expect(this.player1).toHavePromptButton(this.diplomat.name);
+        });
+    });
+});

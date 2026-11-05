@@ -135,7 +135,8 @@ describe('Trail of Blood and Lies and a discarded character', function() {
             expect(this.player2).toBeAbleToSelect(this.yoshi);
             this.player2.clickCard(this.yoshi);
             expect(this.yoshi.isDishonored).toBe(true);
-            expect(this.getChatLogs(4)).toContain('player1 plays Trail of Blood and Lies to dishonor Kakita Yoshi');
+            expect(this.getChatLogs(4)).toContain('player1 plays Trail of Blood and Lies to force player2 to dishonor a character');
+            expect(this.getChatLogs(4)).toContain('player2 chooses to dishonor Kakita Yoshi');
         });
     });
 });
@@ -165,6 +166,39 @@ describe('Trail of Blood and Lies in the fate phase', function() {
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.player1).toHavePrompt('Select dynasty cards to discard');
             expect(this.trail.location).toBe('hand');
+        });
+    });
+});
+
+describe('Trail of Blood and Lies: the opponent chooses the character while resolving', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['mono-no-aware', 'trail-of-blood-and-lies']
+                },
+                player2: {
+                    inPlay: [{ card: 'doji-challenger', fate: 1, attachments: ['finger-of-jade'] }, 'kakita-yoshi']
+                }
+            });
+            this.monoNoAware = this.player1.findCardByName('mono-no-aware');
+            this.trail = this.player1.findCardByName('trail-of-blood-and-lies');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.fingerOfJade = this.player2.findCardByName('finger-of-jade');
+        });
+
+        it('is too late for Finger of Jade to cancel it (rulings #192, #30)', function() {
+            this.player1.clickCard(this.monoNoAware);
+            expect(this.challenger.fate).toBe(0);
+            this.player1.clickCard(this.trail);
+            expect(this.player2).toBeAbleToSelect(this.challenger);
+            this.player2.clickCard(this.challenger);
+            expect(this.fingerOfJade.location).toBe('play area');
+            expect(this.challenger.isDishonored).toBe(true);
+            expect(this.getChatLogs(5)).toContain('player1 plays Trail of Blood and Lies to force player2 to dishonor a character');
+            expect(this.getChatLogs(5)).toContain('player2 chooses to dishonor Doji Challenger');
         });
     });
 });
