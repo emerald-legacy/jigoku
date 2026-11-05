@@ -32,7 +32,7 @@ export interface DeckSearchProperties<Context extends AbilityContext = AbilityCo
     selectedCardsHandler?(context: Context, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]): void;
     remainingCardsHandler?(context: Context, event: GameEvent<EventName.OnDeckSearch>, cards: DrawCard[]): void;
     cardCondition?(card: DrawCard, context: Context): boolean;
-    /** The card is chosen ("choose"), so Hantei XXXVIII may make the choice; he can't see the cards, so he chooses none. */
+    /** The card is chosen ("choose"), so Hantei XXXVIII may make the choice; he can't see the cards, so he picks at random, or none when a cardCondition limits the choice. */
     targets?: boolean;
     takesNothingGameAction?: GameAction;
     /** The button that ends the choice; by default "Take nothing", or "Done" once a card is taken. */

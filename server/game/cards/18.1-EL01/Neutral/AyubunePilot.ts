@@ -1,6 +1,6 @@
 import DrawCard from '../../../DrawCard.js';
 import * as costs from '../../../costs/index.js';
-import { captureParentCost } from '../../captureParentCost.js';
+import { captureParentCost, capturedParent } from '../../captureParentCost.js';
 
 class AyubunePilot extends DrawCard {
     static id = 'ayubune-pilot';
@@ -14,7 +14,7 @@ class AyubunePilot extends DrawCard {
             .ifCondition((context) => !!(context.source.parentCharacter && !context.source.parentCharacter.bowed))
             .cost(captureParentCost())
             .cost(costs.sacrificeSelf())
-            .moveToConflict((context) => ({ target: [context.source.parentCharacter, context.costs.captureParentCost].filter((card) => !!card) }));
+            .moveToConflict((context) => ({ target: capturedParent(context) ?? [] }));
     }
 }
 

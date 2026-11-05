@@ -19,8 +19,8 @@ export function giveHonorToTriggerCost(recipient: Player): Cost {
         },
         payEvent(context) {
             const events: Event[] = [];
-            const honorAction = takeHonor({ target: context.player.opponent });
-            events.push(honorAction.getEvent(context.player, context));
+            // the event's player gives their opponent the honor
+            events.push(takeHonor().getEvent(context.player, context));
             context.game.addMessage(msg`${context.player} gives ${recipient} 1 honor to trigger ${context.source}'s ability`);
 
             return events;
