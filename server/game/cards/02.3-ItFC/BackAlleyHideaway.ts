@@ -1,5 +1,5 @@
 import { msg } from '../../GameChat.js';
-import { Blocker, CardType, EventName, Location, Players, PlayType } from '../../Constants.js';
+import { Blocker, CardType, EffectName, EventName, Location, Players, PlayType } from '../../Constants.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
 import { EventRegistrar } from '../../EventRegistrar.js';
@@ -26,6 +26,7 @@ export default class BackAlleyHideaway extends DrawCard {
                     event.card.type === CardType.Character &&
                     event.card.controller === context.player &&
                     event.card.location === Location.PlayArea &&
+                    !event.card.anyEffect(EffectName.RemoveFromGameInsteadOfLeavingPlay) &&
                     (event.destination === Location.DynastyDiscardPile || event.destination === Location.ConflictDiscardPile)
             })
             .handler((context) => context.event.replaceHandler(() => this.hide(context.event.card)))

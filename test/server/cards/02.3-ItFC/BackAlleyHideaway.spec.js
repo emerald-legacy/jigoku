@@ -245,6 +245,45 @@ describe('Back-Alley Hideaway', function() {
             });
         });
 
+        describe('a character that would be removed from the game instead', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['kakita-yoshi'],
+                        hand: ['assassination']
+                    },
+                    player2: {
+                        inPlay: ['shosuro-isa'],
+                        dynastyDiscard: ['back-alley-hideaway', 'bayushi-manipulator']
+                    }
+                });
+                this.yoshi = this.player1.findCardByName('kakita-yoshi');
+                this.isa = this.player2.findCardByName('shosuro-isa');
+                this.manipulator = this.player2.findCardByName('bayushi-manipulator');
+                this.backAlley = this.player2.placeCardInProvince('back-alley-hideaway', 'province 1');
+                this.player1.player.honor = 10;
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.yoshi],
+                    defenders: []
+                });
+                this.player2.clickCard(this.isa);
+                this.player2.clickCard(this.manipulator);
+                expect(this.manipulator.location).toBe('play area');
+            });
+
+            it('isn\'t offered, as removal from the game wins (Shosuro Isa\'s shadow)', function() {
+                assassinate(this.player1, this.manipulator);
+                expect(this.player2).not.toHavePrompt('Any interrupts to Bayushi Manipulator leaving play?');
+                expect(this.manipulator.location).toBe('removed from game');
+                expect(this.backAlley.attachments.length).toBe(0);
+                expect(this.getChatLogs(5)).toContain('Bayushi Manipulator fades into nothingness and is removed from the game due to leaving play');
+            });
+        });
+
         describe('when a character returns to hand', function() {
             beforeEach(function() {
                 this.setupTest({
