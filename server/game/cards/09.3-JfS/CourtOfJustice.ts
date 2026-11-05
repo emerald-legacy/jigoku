@@ -1,5 +1,5 @@
 import DrawCard from '../../DrawCard.js';
-import { shuffle } from '../../utils/random.js';
+import { randomHandCards } from '../randomHandCards.js';
 import { ConflictType } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 
@@ -15,7 +15,7 @@ export default class CourtOfJustice extends DrawCard {
                     context.player.opponent !== undefined
             })
             .lookAt((context) => ({
-                target: shuffle(context.player.opponent?.hand ?? []).slice(0, 3),
+                target: randomHandCards(context.player.opponent, 3),
                 message: (context, cards) => msg`${context.player} sees ${cards} from ${context.player.opponent}'s hand`
             }))
             .chatText((context) => {

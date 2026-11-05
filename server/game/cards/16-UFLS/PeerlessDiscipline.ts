@@ -9,7 +9,7 @@ class PeerlessDiscipline extends DrawCard {
     override setupCardAbilities() {
         this.action('Give each character +1 military and Bushi')
             .cardLastingEffect((context) => ({
-                target: context.player.charactersInPlay.filter(() => true),
+                target: context.player.charactersInPlay,
                 effect: [
                     modifyMilitarySkill(1),
                     addTrait(Trait.Bushi)

@@ -19,7 +19,7 @@ export default class BetrayedVision extends DrawCard {
                 cardCondition: (card) => !card.isUnique()
             })
             .target({
-                name: 'myCharacter',
+                name: 'participant',
                 dependsOn: 'cardToCopy',
                 activePromptTitle: 'Choose a character to turn into the copy',
                 cardType: CardType.Character,
@@ -28,6 +28,6 @@ export default class BetrayedVision extends DrawCard {
             }, cardLastingEffect((context) => ({
                 effect: copyCard(context.targets.cardToCopy)
             })))
-            .chatText((context) => msg`make ${context.targets.myCharacter} into a copy of ${context.targets.cardToCopy}`);
+            .chatText((context) => msg`make ${context.targets.participant} into a copy of ${context.targets.cardToCopy}`);
     }
 }
