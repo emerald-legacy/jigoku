@@ -28,6 +28,7 @@
 <h2 id="cm-declaring-abilities">Declaring abilities</h2>
 <p>A card class declares its abilities in <code>setupCardAbilities()</code>. An action or a triggered ability starts with a card method that takes the ability's <code>title</code> (the text of its menu entry and prompt) and returns a builder; each chained call adds one part of the card text (see <a href="#b-the-ability-builder">The ability builder</a>). The builder is registered when <code>setupCardAbilities()</code> returns; there is no closing <code>build()</code>. Called anywhere else, these methods throw <code>"&lt;title&gt;: abilities can only be declared in setupCardAbilities or declareAbilities"</code>.</p>
 <p>Constant abilities and keywords (persistent effects, composure, dire, attachment restrictions, Legendary, Tutored) don't use the builder: they take their settings in one call and return nothing.</p>
+<p>To find the method for a card's wording, start from <a href="index.html#start-map">which method for which card text</a>. What callbacks read from <code>context</code> is in the <a href="types.html#ctx-section-context">context reference</a>.</p>
 
 <section class="group">
   <h3 class="group-title" id="cm-group-actions">Actions</h3>
@@ -164,7 +165,10 @@ this.interrupt('Honor all defenders and dishonor all attackers')
     <p>Starts a "Reaction: After …": the player may use it after the triggering event resolved. Returns a <code>TriggerBuilder</code>.</p>
     <pre><code>// Blackmail Artist: Reaction: After this character wins a [conflict-political] conflict – take 1 honor from your opponent.
 this.reaction('Take 1 honor')
-    .when({ … })
+    .when({
+        afterConflict: (event, context) =&gt; event.conflict.isOnWinningSide(context.source) &amp;&amp;
+                                           context.player.opponent &amp;&amp; event.conflict.conflictType === ConflictType.Political
+    })
     .takeHonor();</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BlackmailArtist.ts">Blackmail Artist</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AkodoGunso.ts">Akodo Gunsō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AkodoToturi.ts">Akodo Toturi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsakoDiplomat.ts">Asako Diplomat</a></p>
   </div>
@@ -347,10 +351,18 @@ this.tutored('Writ of Survey');</code></pre>
     </table>
     <ul class="edge">
       <li>Throws <code>"'&lt;location&gt;' is not a supported effect location."</code> for any other <code>location</code>.</li>
+      <li>In <code>condition</code> and <code>match</code>, <code>context.source</code> is the card with the ability and <code>context.player</code> its controller.</li>
+      <li>A facedown source (a province, a dynasty card in a province) applies nothing until it is turned faceup.</li>
       <li>A blank card's persistent effects stop; only effects it gained keep working.</li>
       <li>Only objects in <code>targetLocation</code> are matched: <code>PlayArea</code> means cards in play, <code>Provinces</code> any card in a province, <code>Any</code> every card.</li>
     </ul>
-    <pre><code>// Cautious Scout: While this character is attacking alone, treat the defending province as if its printed text box were blank (except for Traits).
+    <pre><code>// Political Rival: This character gets +3[conflict-political] while defending.
+this.persistentEffect({
+    condition: (context) =&gt; context.source.isDefending(),
+    effect: modifyPoliticalSkill(3)
+});
+
+// Cautious Scout: other cards (match), the opponent's province: While this character is attacking alone, treat the defending province as if its printed text box were blank (except for Traits).
 this.persistentEffect({
     match: (card) =&gt; card.isConflictProvince(),
     targetLocation: Location.Provinces,
@@ -358,7 +370,7 @@ this.persistentEffect({
     condition: (context) =&gt; context.source.isAttacking() &amp;&amp; context.game.currentConflict?.getNumberOfParticipantsFor('attacker') === 1,
     effect: blank()
 });</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CautiousScout.ts">Cautious Scout</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AggressiveMoto.ts">Aggressive Moto</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AncestralLands.ts">Ancestral Lands</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsahinaStoryteller.ts">Asahina Storyteller</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/PoliticalRival.ts">Political Rival</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CautiousScout.ts">Cautious Scout</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AggressiveMoto.ts">Aggressive Moto</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AncestralLands.ts">Ancestral Lands</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsahinaStoryteller.ts">Asahina Storyteller</a></p>
   </div>
 
   <div class="ref" id="cm-playOnlyIf" data-name="playOnlyIf">
@@ -391,6 +403,9 @@ this.playOnlyIf((context) =&gt; controlsShugenja(context.player));</code></pre>
         <tr><td><code>match</code></td><td><code>(card, context?) =&gt; boolean</code></td><td>none</td><td>Narrows it: the parent must also match ("If attached character is a Bushi, …").</td></tr>
       </tbody>
     </table>
+    <ul class="edge">
+      <li>"Attached character" is <code>context.source.parentCharacter</code>, both in <code>condition</code> (where <code>context.source</code> is the attachment) and in the attachment's other abilities; <code>null</code> when not attached to a character.</li>
+    </ul>
     <pre><code>// Cloud the Mind: Attached character loses all printed abilities.
 this.whileAttached({
     effect: blank()
@@ -491,7 +506,9 @@ this.reaction('Gain 2 fate')
       </tbody>
     </table>
     <ul class="edge">
+      <li>The keys are event names (<code>onCardPlayed</code>, <code>onConflictStarted</code> …). Each event's fields (<code>event.card</code>, <code>event.conflict</code> …) and when it is raised are under <a href="types.html#ev-section-events">Events</a>.</li>
       <li>Several keys are alternatives: the ability triggers if any of them matches.</li>
+      <li>An "if" in the trigger ("After a conflict begins, if this character is attacking –") usually goes into the same check (Mantis Raider); <a href="#b-ifCondition"><code>ifCondition()</code></a> works too (Hiruma Kogoe).</li>
       <li>The check runs once per player; only players allowed to use the ability (its controller, unless <a href="#b-anyPlayer"><code>anyPlayer()</code></a>) are offered it.</li>
       <li>In the rest of the ability <code>context.event</code> is the union of the keys' payloads; narrow with <code>context.event.is(EventName.X)</code> to read a field of one event. On a province it may be <code>undefined</code>.</li>
     </ul>
@@ -1117,7 +1134,7 @@ this.action('Ready a character')
 
   <div class="ref" id="b-initiateDuel" data-name="initiateDuel">
     <h3><code>initiateDuel(fn)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-initiateDuel">#</a></h3>
-    <p>"Initiate a [type] duel – …": the duel is the ability's effect. On a character, the character is the challenger and its player chooses an opposing character as the duel target. On other cards the player chooses a challenger they control (target <code>challenger</code>), then the duel target (target <code>duelTarget</code>).</p>
+    <p>"Initiate a [type] duel – …": the duel is the ability's effect. On a character, the character is the challenger and its player chooses an opposing character as the duel target (<code>context.target</code>). On other cards the player chooses a challenger they control (<code>context.targets.challenger</code>), then the duel target (<code>context.targets.duelTarget</code>).</p>
     <table>
       <thead><tr><th>Property (of the returned object)</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1139,6 +1156,7 @@ this.action('Ready a character')
     </table>
     <ul class="edge">
       <li><code>fn</code> is a function of the context; it is read again for each check, so it can depend on the game state.</li>
+      <li>The <code>duel</code> passed to <code>gameAction</code> and <code>onTie</code> has <code>winner</code> and <code>loser</code> (arrays of cards, unset without a result), <code>winnerController</code>, <code>loserController</code>, <code>challenger</code>, <code>targets</code>, <code>participants</code> and <code>isInvolved(card)</code>.</li>
       <li>The duel chooses its own targets, so the ability has no <code>target()</code>: throws at registration <code>"initiateDuel() chooses the duel's targets itself, so the ability has no target()"</code>. Once per ability; not on a step.</li>
       <li>On a character, the challenger check is added to the ability's <a href="#b-condition"><code>condition()</code></a>. With <code>requiresConflict</code> (the default) don't add a conflict or participation check of your own.</li>
       <li>The challenger is always a character of the ability's player. When the card lets the challenger be any character, declare the targets yourself and use the <a href="game-actions.html#ga-duel"><code>duel</code></a> game action, which <code>initiateDuel()</code> builds on.</li>
@@ -1440,7 +1458,7 @@ this.action('Place a fate on a participating character, bow it, move it home, an
 
 <section class="group">
   <h3 class="group-title" id="b-group-chat">Chat</h3>
-  <p>When an ability is used, the chat prints "{player} uses {card}, {costs} to {chatText}" ("plays" for an event). A step prints only its <code>message()</code>.</p>
+  <p>When an ability is used, the chat prints "{player} uses {card}, {costs} to {chatText}" ("plays" for an event). A step prints only its <code>message()</code>. Writing <code>msg</code> templates (cards, players, skill icons) and the chat conventions: <a href="index.html#start-chat">Chat text</a>.</p>
 
   <div class="ref" id="b-chatMessage" data-name="chatMessage">
     <h3><code>chatMessage(message)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-chatMessage">#</a></h3>

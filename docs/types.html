@@ -639,7 +639,7 @@ effect: delayedEffect({
   <h3><code>EffectName</code> <span class="kind">Enum</span> <a class="anchor" href="#en-EffectName">#</a></h3>
   <p>The type key of every effect the engine applies (<code>effect.type</code>). The engine looks effects up by it (<code>card.anyEffect(EffectName.Blank)</code>, <code>player.sumEffects(EffectName.AdditionalAction)</code>).</p>
   <p>Cards don't create effects from it (except Hida Kisada, below): the factories in <code>effects.ts</code> (<code>modifyMilitarySkill(2)</code>, <code>cardCannot(…)</code>) pick the name. Cards name it only to inspect effects (Kiss of the Sea reads <code>event.effectTypes</code> of <code>onEffectApplied</code>).</p>
-  <p>Each value's string is the member name in lower camel case (<code>Blank</code> → <code>'blank'</code>), and the factory of that name creates it. The full list is in <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/Constants/EffectName.ts"><code>Constants/EffectName.ts</code></a>. The exceptions:</p>
+  <p>Each value's string is the member name in lower camel case (<code>Blank</code> → <code>'blank'</code>), and the factory of that name creates it. So to find what a value does, look up that factory on the effects page: <code>EffectName.Blank</code> is <a href="effects.html#ef-blank"><code>blank()</code></a>, at <code>effects.html#ef-&lt;factory&gt;</code>; paired factories share one entry (<code>modifyPoliticalSkill</code> is under <a href="effects.html#ef-modifyMilitarySkill"><code>modifyMilitarySkill</code></a>), and the jump search (press /) finds either name. The full list is in <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/Constants/EffectName.ts"><code>Constants/EffectName.ts</code></a>. The exceptions:</p>
   <table>
         <thead><tr><th>Value</th><th>Created by</th></tr></thead>
         <tbody>
@@ -835,7 +835,28 @@ cardCannot({
 </section>
 
 <h2 id="ev-section-events">Events</h2>
-<p>Everything that happens in a game is an event (<code>Event</code>). A triggered ability names the events it responds to in <code>.when({ onX: (event, context) =&gt; … })</code>: the key is the event's string value, <code>event</code> is typed by the key, and the predicate returns whether the ability may trigger. In code the names are the <code>EventName</code> members (<code>EventName.OnCardPlayed</code>). A field typed <code>Type?</code> below is optional in <code>Events/EventPayloads.ts</code>: it may be unset, so check it before use.</p>
+<p>Everything that happens in a game is an event (<code>Event</code>). A triggered ability names the events it responds to in <code>.when({ onX: (event, context) =&gt; … })</code>: the key is the event's string value, <code>event</code> is typed by the key, and the predicate returns whether the ability may trigger. In code the names are the <code>EventName</code> members (<code>EventName.OnCardPlayed</code>). A field typed <code>Type?</code> below is optional in <code>Events/EventPayloads.ts</code>: it may be unset, so check it before use. How to declare the trigger: <a href="builder.html#b-when"><code>.when()</code></a>, <a href="builder.html#cm-reaction"><code>this.reaction()</code></a>, <a href="builder.html#cm-interrupt"><code>this.interrupt()</code></a>.</p>
+<p><strong>Finding the event.</strong> Most names follow the card text ("is bowed": <code>onCardBowed</code>, "is honored": <code>onCardHonored</code>); an interrupt ("when … would be") uses the same event as the reaction. Card text whose event is less obvious:</p>
+<table>
+    <thead><tr><th>Card text</th><th>Event</th></tr></thead>
+    <tbody>
+        <tr><td>"After you win a conflict", "after this character wins a conflict"</td><td><a href="#ev-afterConflict"><code>afterConflict</code></a>: <code>event.conflict.winner === context.player</code>, <a href="helpers.html#q-isOnWinningSide"><code>event.conflict.isOnWinningSide(context.source)</code></a></td></tr>
+        <tr><td>"After a conflict begins"; "after the resolution of a conflict"</td><td><a href="#ev-onConflictStarted"><code>onConflictStarted</code></a>; <a href="#ev-onConflictFinished"><code>onConflictFinished</code></a></td></tr>
+        <tr><td>"After this character is declared as an attacker / defender"</td><td><a href="#ev-onConflictDeclared"><code>onConflictDeclared</code></a> (<code>event.attackers?.includes(context.source)</code>); <a href="#ev-onDefendersDeclared"><code>onDefendersDeclared</code></a> (<code>event.defenders</code>)</td></tr>
+        <tr><td>"After … enters play"; "after you play …"</td><td><a href="#ev-onCharacterEntersPlay"><code>onCharacterEntersPlay</code></a>; <a href="#ev-onCardPlayed"><code>onCardPlayed</code></a></td></tr>
+        <tr><td>"After … leaves play" (also discarded from play, sacrificed, returned to hand or deck)</td><td><a href="#ev-onCardLeavesPlay"><code>onCardLeavesPlay</code></a>; reactions read <code>event.cardStateWhenLeftPlay</code></td></tr>
+        <tr><td>"Discards cards from hand"; cards discarded from a deck or province</td><td><a href="#ev-onCardsDiscardedFromHand"><code>onCardsDiscardedFromHand</code></a>; <a href="#ev-onCardsDiscarded"><code>onCardsDiscarded</code></a></td></tr>
+        <tr><td>"Receives a status token"</td><td><a href="#ev-onStatusTokenGained"><code>onStatusTokenGained</code></a></td></tr>
+        <tr><td>"Moves to the conflict"; "moves home"</td><td><a href="#ev-onMoveToConflict"><code>onMoveToConflict</code></a>; <a href="#ev-onSendHome"><code>onSendHome</code></a>, plus <a href="#ev-onReturnHome"><code>onReturnHome</code></a> for conflict resolution</td></tr>
+        <tr><td>"Gains / loses honor"; "takes honor", honor given to a player</td><td><a href="#ev-onModifyHonor"><code>onModifyHonor</code></a>; <a href="#ev-onTransferHonor"><code>onTransferHonor</code></a></td></tr>
+        <tr><td>Fate gained or lost by a player; fate placed on or removed from a card or ring</td><td><a href="#ev-onModifyFate"><code>onModifyFate</code></a>; <a href="#ev-onMoveFate"><code>onMoveFate</code></a></td></tr>
+        <tr><td>"Claims a ring"; "would resolve the [element] ring effect"</td><td><a href="#ev-onClaimRing"><code>onClaimRing</code></a>; <a href="#ev-onResolveRingElement"><code>onResolveRingElement</code></a></td></tr>
+        <tr><td>"Wins a duel"</td><td><a href="#ev-onCharacterWinsDuel"><code>onCharacterWinsDuel</code></a> (once per winner), or <a href="#ev-afterDuel"><code>afterDuel</code></a> (<code>event.winner</code>)</td></tr>
+        <tr><td>"Triggers an ability", "is chosen as the target of an ability"; "the effects of … would initiate"</td><td><a href="#ev-onCardAbilityTriggered"><code>onCardAbilityTriggered</code></a>; <a href="#ev-onInitiateAbilityEffects"><code>onInitiateAbilityEffects</code></a></td></tr>
+        <tr><td>"At the beginning / end of the [phase] phase"</td><td><a href="#ev-onPhaseStarted"><code>onPhaseStarted</code></a> / <a href="#ev-onPhaseEnded"><code>onPhaseEnded</code></a>, with <code>event.phase === Phase.X</code></td></tr>
+    </tbody>
+</table>
+<p>"You control" is <code>event.card.controller === context.player</code>; check the type too when the event also covers provinces or attachments (<code>event.card.type === CardType.Character</code>). "An opponent's card effect or ring effect" and "your ring effect" are <a href="helpers.html#he-isOpponentsRingOrCardEffect"><code>isOpponentsRingOrCardEffect</code> / <code>isOwnRingEffect</code></a> on <code>event.context</code>.</p>
 <p>Events resolve in an event window (<code>EventWindow</code>). A window runs these steps for its events, in this order:</p>
 <ol>
     <li>Each event's condition is checked. A game action's event re-checks that its target is still legal, and is cancelled if not. Unnamed events (<code>moveCard</code>, <code>placeCardUnderneath</code>, …) skip this check.</li>
@@ -1784,7 +1805,8 @@ this.reaction('Force opponent to discard cards equal to the number of attackers'
 onStatusTokenDiscarded: (event, context) =&gt;
     !context.source.bowed &amp;&amp;
     event.token.grantedStatus === CharacterStatus.Honored &amp;&amp;
-    event.cards.some(isFriendlyCharacter.bind(null, context))</code></pre>
+    event.cards.some(isFriendlyCharacter.bind(null, context))
+// isFriendlyCharacter is the card's own function: card.controller === context.player &amp;&amp; card.type === CardType.Character</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crane/DiligentChaperone.ts">Diligent Chaperone</a></p>
 </div>
 <div class="ref" id="ev-onStatusTokenGained" data-name="onStatusTokenGained OnStatusTokenGained">
@@ -2873,7 +2895,7 @@ this.interrupt('Ready for Glory Count')
 </section>
 
 <h2 id="ctx-section-context">Context</h2>
-<p>Every callback of an ability gets <code>context</code>, an <code>AbilityContext</code> (a <code>TriggeredAbilityContext</code> for triggered abilities). It says whose ability it is, what was chosen and paid, and how far the resolution has got.</p>
+<p>Every callback of an ability gets <code>context</code>, an <code>AbilityContext</code> (a <code>TriggeredAbilityContext</code> for triggered abilities). It says whose ability it is, what was chosen and paid, and how far the resolution has got. In card-text terms: <a href="#ctx-player"><code>context.player</code></a> is "you" (<code>context.player.opponent</code> "your opponent"), <a href="#ctx-source"><code>context.source</code></a> "this card", <a href="#ctx-target"><code>context.target</code></a> "the chosen character", <a href="#ctx-costs"><code>context.costs</code></a> what was paid, and in a triggered ability <a href="#ctx-event"><code>context.event</code></a> the event it reacts to. The builder types it for you (<a href="#ctx-typing">Typing</a>).</p>
 <p>Fields are filled in as the ability resolves. So what a callback can read depends on when it runs: a <code>cardCondition</code> runs while targets are chosen, a property factory of a game action runs when the effect resolves. <code>AbilityResolver</code> resolves an ability in this order:</p>
 <ol>
     <li>A snapshot of the source (<code>cardStateWhenInitiated</code>).</li>
@@ -3284,7 +3306,21 @@ this.reaction('Bow a character that just readied')
     <li>The builder checks at run time that the context matches the declared targets and throws "context does not match its declared targets" otherwise.</li>
     <li>Only targets a later target <code>dependsOn</code> are guaranteed set in its callbacks; other earlier targets are typed as optional, because the engine checks independent targets alone.</li>
   </ul>
-  <p class="seen">Not used by any card yet.</p>
+  <p>A private helper method that a callback calls needs its own parameter types. Cards use <code>context: AbilityContext&lt;this&gt;</code> (from <code>AbilityContext.js</code>), or <code>TriggeredAbilityContext&lt;this&gt;</code> (from <code>TriggeredAbilityContext.js</code>) when the helper reads <code>context.event</code>. An event parameter is <code>EventPayload&lt;EventName.X&gt;</code> (the payload fields) or <code>GameEvent&lt;EventName.X&gt;</code> (payload plus the <code>Event</code> fields), both from <code>Events/EventPayloads.js</code>; a union covers several <code>when</code> keys.</p>
+  <pre><code>// Long Journey Home: Reaction: After one or more characters controlled by an opponent move home (including as a result of conflict resolution), choose one of those characters - bow it. …
+type SendOrReturnHomeEvent =
+    | EventPayload&lt;EventName.OnSendHome&gt;
+    | EventPayload&lt;EventName.OnReturnHome&gt;;
+…
+.when({
+    onSendHome: (event, context) =&gt; this.affectedOpponentsCharacter(event, context),
+    onReturnHome: (event, context) =&gt; this.affectedOpponentsCharacter(event, context)
+})
+…
+private affectedOpponentsCharacter(event: SendOrReturnHomeEvent, context: TriggeredAbilityContext&lt;this&gt;) {
+    return event.card.type === CardType.Character &amp;&amp; event.card.controller === context.player.opponent;
+}</code></pre>
+  <p class="seen">No card names <code>ActionContext</code> or <code>TriggerContext</code>; helper parameters as above: <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Unicorn/LongJourneyHome.ts">Long Journey Home</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/DaidojiAhma.ts">Daidoji Ahma</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Unicorn/StrangeMirror.ts">Strange Mirror</a>.</p>
 </div>
 </section>
 

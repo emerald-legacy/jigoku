@@ -26,6 +26,15 @@
     <p>How a card file is built, how card text becomes builder calls, and the rules the code follows: timing, chat text, testing and common mistakes.</p>
     <p>Start here; the other pages are references (see <a href="#start-reading">reading the reference pages</a>).</p>
 </header>
+<h2 id="start-steps">Your first card</h2>
+<p>The workflow for a card without a class, e.g. Way of the Crane:</p>
+<ol>
+    <li>Find its id and text in <code>test/json/Card/&lt;id&gt;.json</code>; the id is the name in kebab-case (<code>way-of-the-crane</code>). Make sure no class has it yet: <code>grep -r "static id = 'way-of-the-crane'" server/game/cards</code>.</li>
+    <li>Turn the text into builder calls (<a href="#start-order">card text to code</a>, <a href="#start-map">which method</a>) and write the class (<a href="#start-anatomy">anatomy</a>).</li>
+    <li>Write its spec (<a href="#start-testing">testing a card</a>).</li>
+    <li>Run the spec with <code>npm run jasmine -- test/server/cards/01-Core/WayOfTheCrane.spec.js</code>, then <code>npm run typecheck</code> and <code>npm run lint</code>: the test run compiles without type checking.</li>
+    <li>Ability not offered when you click the card? See <a href="engine.html#eng-debugging">debugging an ability that isn't offered</a>.</li>
+</ol>
 <h2 id="start-order">From card text to code</h2>
 <p>An ability is a card method that starts and names it, followed by one builder call per part of the card text, in the order of the text. Hover a line to see which part it implements.</p>
 
@@ -62,7 +71,7 @@
 <p>The order matters: the builder fixes its types left to right, so a <code>chatText()</code> after a <code>target()</code> knows the target's card type and one before it doesn't. Every call is on the <a href="builder.html">ability builder</a> page.</p>
 
 <h2 id="start-anatomy">Anatomy of a card file</h2>
-<p>Every card is a class in its own PascalCase file under <code>server/game/cards/&lt;pack&gt;/</code> (plus a clan folder in newer packs), e.g. <code>server/game/cards/01-Core/Assassination.ts</code>. The loader registers each default export by its <code>static id</code>; there is nothing else to register. Files directly in <code>server/game/cards/</code> and files starting with <code>_</code> are shared helpers, not cards.</p>
+<p>Every card is a class in its own PascalCase file under <code>server/game/cards/&lt;pack&gt;/</code> (plus a clan folder in newer packs), e.g. <code>server/game/cards/01-Core/Assassination.ts</code>. The pack is usually the one that first printed the card (the first <code>pack_id</code> in its JSON's <code>versions</code>; <code>core</code> is <code>01-Core</code>, <code>emerald-core-set</code> is <code>20-Core2</code>). The loader registers each default export by its <code>static id</code>; there is nothing else to register. A mistyped id loads silently under that id, so the card plays without abilities. Files directly in <code>server/game/cards/</code> and files starting with <code>_</code> are shared helpers, not cards.</p>
 <pre><code>import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import * as costs from '../../costs/index.js';
@@ -313,7 +322,7 @@ this.whileAttached({
             this.whisperer = this.player2.findCardByName('doji-whisperer');
             this.noMoreActions();
             this.initiateConflict({ attackers: ['doji-challenger'], defenders: ['doji-whisperer'] });
-            this.player2.pass();
+            this.player2.pass(); // the defender acts first in a conflict
         });
 
         it('discards a character with printed cost 2 or lower', function () {
@@ -326,11 +335,12 @@ this.whileAttached({
         });
     });
 });</code></pre>
+<p><code>describe</code>, <code>it</code> and <code>expect</code> are Jasmine; <code>integration()</code> (a global from <code>test/helpers/integrationhelper.ts</code>) gives each spec a new game, driven through <code>this</code>. Card names in the spec are ids. Run it with <code>npm run jasmine -- test/server/cards/01-Core/Assassination.spec.js</code>.</p>
 <h3 id="start-setup">setupTest options</h3>
 <table>
     <thead><tr><th>Option</th><th>Meaning</th></tr></thead>
     <tbody>
-        <tr><td><code>phase</code></td><td>Starting phase: <code>'setup'</code>, <code>'dynasty'</code>, <code>'draw'</code>, <code>'conflict'</code>, <code>'fate'</code>. <code>draw</code> and <code>fate</code> turn on that phase's action windows.</td></tr>
+        <tr><td><code>phase</code></td><td>Starting phase: <code>'setup'</code>, <code>'dynasty'</code>, <code>'draw'</code>, <code>'conflict'</code>, <code>'fate'</code>. <code>draw</code> and <code>fate</code> turn on that phase's action windows. player1 is the first player, so in <code>'conflict'</code> they act first and declare the first conflict.</td></tr>
         <tr><td><code>gameMode</code></td><td>A <code>GameMode</code> (default Stronghold); Emerald turns on its rules, e.g. one copy of an attachment per character.</td></tr>
         <tr><td><code>player1</code>, <code>player2</code></td><td>Each player's cards and resources: <code>inPlay</code> (card ids, or <code>{ card, fate, honor, bowed, covert, attachments }</code>; <code>honor</code> is <code>'honored'</code> or <code>'dishonored'</code>), <code>hand</code>, <code>conflictDeck</code>, <code>conflictDiscard</code>, <code>dynastyDeck</code>, <code>dynastyDiscard</code>, <code>provinces</code>, <code>strongholdProvince</code>, <code>stronghold</code>, <code>role</code>, <code>faction</code>, <code>fate</code>, <code>honor</code>, <code>rings</code> (claimed rings, by element), and the deck sizes <code>conflictDeckSize</code>/<code>dynastyDeckSize</code>.</td></tr>
         <tr><td><code>skipAutoSetup</code>, <code>skipAutoFirstPlayer</code></td><td>Stop before the stronghold provinces or the first player are chosen.</td></tr>
@@ -339,9 +349,11 @@ this.whileAttached({
 <h3 id="start-helpers">Driving the game</h3>
 <ul>
     <li><code>this.player1.clickCard(card)</code>, <code>clickPrompt('Text')</code>, <code>clickRing('air')</code>, <code>clickMenu(card, 'Text')</code>, <code>pass()</code>, <code>passConflict()</code>, <code>playAttachment(attachment, target)</code>, <code>playCharacterFromHand(card, fate)</code>, <code>placeCardInProvince(card, location)</code>, <code>moveCard(card, location)</code>.</li>
-    <li><code>this.noMoreActions()</code> passes both players' action windows; <code>this.initiateConflict({ type, ring, province, attackers, defenders })</code> declares a conflict; <code>this.flow.finishConflictPhase()</code> and <code>this.advancePhases(phase)</code> move on.</li>
+    <li><code>this.noMoreActions()</code> passes both players' action windows; <code>this.initiateConflict({ type, ring, province, attackers, defenders, jumpTo })</code> declares a conflict (default military at the air ring; <code>jumpTo: true</code> also passes its action window); <code>this.flow.finishConflictPhase()</code> and <code>this.advancePhases(phase)</code> move on.</li>
     <li>Finding cards: <code>findCardByName(id, location?)</code>, <code>filterCardsByName(id)</code>.</li>
-    <li>Matchers: <code>toHavePrompt(title)</code>, <code>toHavePromptButton(text)</code>, <code>toHaveDisabledPromptButton(text)</code>, <code>toBeAbleToSelect(card)</code>, <code>toBeAbleToSelectRing(element)</code>.</li>
+    <li>Matchers: <code>toHavePrompt(title)</code> (the prompt's title or the card name above it), <code>toHavePromptButton(text)</code>, <code>toHaveDisabledPromptButton(text)</code>, <code>toBeAbleToSelect(card)</code>, <code>toBeAbleToSelectRing(element)</code>.</li>
+    <li>An action window's prompt is <code>'Action Window'</code>, or <code>'Conflict Action Window'</code> during a conflict. Clicking a card with no usable ability changes nothing, so "can't be used" is <code>clickCard(card)</code> then <code>toHavePrompt('Conflict Action Window')</code>.</li>
+    <li>A reaction or interrupt is offered in a <code>'Triggered Abilities'</code> prompt: <code>clickCard(card)</code> uses it, <code>pass()</code> declines.</li>
     <li>Chat: <code>this.getChatLogs(n)</code> returns the last n lines.</li>
 </ul>
 <div class="note">
@@ -351,7 +363,7 @@ this.whileAttached({
         <li>An engine bug (not one card's) gets its regression spec in <code>test/server/integration/</code>.</li>
         <li>A <code>select()</code> before the dash always prompts (with "Pay costs first" unless a cost depends on a target, and "Cancel"), even with one legal choice, unless the opponent chooses. Click the choice (<code>clickPrompt('Move into conflict')</code>) before checking anything.</li>
         <li>Any spec fails when a chat line contains <code>choose a target for</code>, the fallback text of <code>selectCard</code> and <code>cardMenu</code>: such an ability needs a <code>chatText</code>.</li>
-        <li>A spec should fail without the fix it tests. Run a subset with <code>npm run jasmine -- &lt;spec paths&gt;</code>.</li>
+        <li>A spec should fail without the fix it tests.</li>
     </ul>
 </div>
 

@@ -23,7 +23,7 @@
 <main id="content">
 <header class="hero">
     <h1>Engine internals</h1>
-    <p>How the engine checks and resolves an ability, how engine code runs game actions, how cards listen to events, and where the engine knowingly differs from the rules. Card code rarely needs this page.</p>
+    <p>How the engine checks and resolves an ability, how engine code runs game actions, how cards listen to events, and where the engine knowingly differs from the rules. Card code rarely needs this page; start at <a href="#eng-debugging">debugging</a> when an ability isn't offered.</p>
 </header>
 
 <h2 id="eng-checks">How an ability is checked</h2>
@@ -87,6 +87,18 @@
 </table>
 <p><code>resolveAbility</code> always ignores <code>WrongPlayer</code>, <code>WrongLocation</code>, <code>LimitReached</code>, <code>CannotTrigger</code>, <code>CannotPlay</code> and <code>LimitedAlreadyPlayed</code> (resolving isn't playing); a sub-resolution also ignores <code>MaxReached</code>.</p>
 <p>Never skippable: <code>Blanked</code>, <code>CannotInitiate</code>, <code>NoLegalTarget</code>, and <code>CannotTrigger</code> for a facedown card. The play actions report a play restriction as <code>CannotPlay</code>, like events. Only playing a card raises <code>DuplicateUnique</code>, <code>EnterPlayRestricted</code> (checks the player and, for every play action, the card: Legendary enters play only in the Dynasty phase), <code>CannotEnterConflict</code> (a conflict-only play whose character can't go in; never falls back to home) and <code>CannotPlaceFate</code>.</p>
+
+<h3 id="eng-debugging">Debugging an ability that isn't offered</h3>
+<p>An action window offers a card's actions whose <code>meetsRequirements</code> returns <code>Blocker.None</code> (<code>ActionWindow.onCardClicked</code>); with none, the click does nothing. Log the blockers in a spec:</p>
+<pre><code>const card = this.player1.findCardByName('assassination');
+console.log(card.getActions().map((action) =&gt; `${action.title}: ${action.meetsRequirements(action.createContext(this.player1.player))}`));
+// [ 'Discard a character: condition' ] (before a conflict)</code></pre>
+<p>The values are the <a href="types.html#en-Blocker"><code>Blocker</code></a> strings (<code>'condition'</code> is <code>ConditionNotMet</code>, <code>''</code> is <code>None</code>); look the blocker up in the list above. Other causes:</p>
+<ul>
+    <li>The ability isn't listed: the card has no class under that id (check <code>static id</code> against the card data), or the ability is a reaction or interrupt (not in <code>getActions()</code>). A card in hand also lists its play actions.</li>
+    <li><code>'target'</code>: no card passes the target. The target's <code>controller</code> defaults to <code>Players.Any</code>, and its game action must be able to affect the card (honoring an honored character can't).</li>
+    <li>A reaction or interrupt: it listens only while its card is in its <code>location()</code> (by default the play area; a hand for events, the provinces for holdings and provinces), its <code>when()</code> key must be the event's name with a callback returning true for that event (<a href="types.html#ev-section-events">events</a>), and then the blockers above are checked with that event in the context (<code>TriggeredAbility.eventHandler</code>).</li>
+</ul>
 
 <h2 id="eng-resolver">How an ability resolves</h2>
 <p><code>AbilityResolver</code> runs these steps:</p>

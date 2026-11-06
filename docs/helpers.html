@@ -26,7 +26,8 @@
     <p>Shared helpers for families of cards, and the card, player and game queries abilities use most.</p>
 </header>
 <h2 id="he-helpers">Shared card helpers</h2>
-<p>Code shared by a family of cards (province attachments, mantras, attachment searches, "claimed ring" symbols) lives in modules directly in <code>server/game/cards/</code>. Import with <code>'../name.js'</code> from a set folder (<code>01-Core/</code>) and <code>'../../name.js'</code> from a clan folder (<code>20-Core2/Crab/</code>).</p>
+<p>Code shared by a family of cards (province attachments, mantras, attachment searches, "claimed ring" symbols) lives in modules directly in <code>server/game/cards/</code>. Import with <code>'../name.js'</code> from a set folder (<code>01-Core/</code>) and <code>'../../name.js'</code> from a clan folder (<code>20-Core2/Crab/</code>): <code>import { controlsShugenja } from '../../controlsShugenja.js';</code>. All are named exports except <code>Soldier</code>, <code>SpiritOfTheRiver</code> and <code>UnleashedHound</code> (default).</p>
+<p>Most modules are named after their export. The others: <code>attachmentPlay</code> (<code>isReducibleAttachmentPlay</code>), <code>attacksAlone</code> (<code>attacksAloneWithTrait</code>), <code>cardsUnderneath</code> (<code>cardsUnderneath</code>, <code>countCardsUnderneath</code>, <code>playableFromUnderneath</code>), <code>claimedRings</code> (every claimed ring helper), <code>copyBaseSkills</code> (<code>copyBaseSkillEffects</code>), <code>effectSource</code> (<code>isOpponentsRingOrCardEffect</code>, <code>isOwnRingEffect</code>), <code>extraAbilityUse</code> (<code>getExtraUseDuration</code>), <code>kaiuWall</code> (<code>defendingAtKaiuWall</code>), <code>moveCardInProvince</code> (<code>moveCardInProvinceAction</code>), <code>moveHolding</code> (<code>moveHoldingAction</code>, <code>otherHoldingsInSameProvince</code>), <code>nameCardTypeAndTake</code> (<code>nameCardType</code>, <code>revealCount</code>, <code>takeUpToTwoOfNamedType</code>), <code>playedFromProvince</code> (<code>isPlayedFromProvince</code>), <code>switchSkills</code> (<code>canSwitchSkills</code>), <code>summonCreature</code>; and second exports of <code>captureParentCost</code> (<code>capturedParent</code>), <code>participatingGlory</code> (<code>hasMoreParticipatingGlory</code>), <code>randomHandCards</code> (<code>chooseCardToDiscard</code>).</p>
 <p>Check this list before writing a helper. Code two or more cards need goes here; code for one card stays in its file.</p>
 
 <section class="group">
@@ -1413,7 +1414,36 @@ this.action('Ready character and move to conflict')
 </section>
 
 <h2 id="q-queries">Queries</h2>
-<p>The state queries card abilities call most, grouped by the object they are on. Reach the objects through <code>context.source</code>, <code>context.player</code>, <code>context.player.opponent</code>, <code>context.game</code>, <code>context.game.currentConflict</code>, and in triggers <code>event.card</code>, <code>event.conflict</code>, <code>event.ring</code>.</p>
+<p>The state queries card abilities call most, grouped by the object they are on. Reach the objects through <code>context.source</code>, <code>context.player</code>, <code>context.player.opponent</code>, <code>context.game</code>, <code>context.game.currentConflict</code>, and in triggers <code>event.card</code>, <code>event.conflict</code>, <code>event.ring</code> (what each holds: <a href="types.html#ctx-section-context">Context</a>, <a href="types.html#ev-section-events">Events</a>). They go in a target's <code>cardCondition: (card, context) =&gt; …</code>, an ability's <a href="builder.html#b-condition"><code>condition()</code></a> / <a href="builder.html#b-ifCondition"><code>ifCondition()</code></a>, and a <a href="builder.html#b-when"><code>when</code></a> predicate.</p>
+<table>
+    <thead><tr><th>Card text</th><th>Query</th></tr></thead>
+    <tbody>
+        <tr><td>"you control", "an opponent controls"</td><td><code>card.controller === context.player</code>, <code>=== context.player.opponent</code>; on a target, <code>controller: Players.Self</code> / <code>Players.Opponent</code> (<a href="types.html#en-Players"><code>Players</code></a>)</td></tr>
+        <tr><td>"participating", "attacking", "defending", "at home"</td><td><a href="#q-isParticipating"><code>card.isParticipating()</code></a>, <a href="#q-isAttacking"><code>isAttacking()</code></a>, <code>isDefending()</code>, <a href="#q-isAtHome"><code>isAtHome()</code></a></td></tr>
+        <tr><td>"a Bushi character"</td><td><a href="#q-hasTrait"><code>card.hasTrait(Trait.Bushi)</code></a>, with <code>cardType: CardType.Character</code> on the target</td></tr>
+        <tr><td>"with 2 or less fate", "with no fate"</td><td><a href="#q-getFate"><code>card.getFate() &lt;= 2</code></a>, <code>card.getFate() === 0</code></td></tr>
+        <tr><td>"with printed cost 2 or lower"</td><td><a href="#q-costAtMost"><code>card.costAtMost(2)</code></a></td></tr>
+        <tr><td>"honored", "dishonored", "ordinary"; "ready", "bowed"</td><td><a href="#q-isHonored"><code>card.isHonored</code></a>, <code>isDishonored</code>, <a href="#q-isOrdinary"><code>isOrdinary()</code></a>; <a href="#q-bowed"><code>!card.bowed</code></a>, <code>card.bowed</code></td></tr>
+        <tr><td>"during a conflict", "during a [conflict-political] conflict"</td><td><a href="#q-isDuringConflict"><code>context.game.isDuringConflict(ConflictType.Political)</code></a></td></tr>
+        <tr><td>"at this province", "the attacked province"; "unbroken"</td><td><a href="#q-isConflictProvince"><code>province.isConflictProvince()</code></a>, <a href="#q-getConflictProvinces"><code>conflict.getConflictProvinces()</code></a>; <a href="#q-isBroken"><code>!province.isBroken</code></a>. A province's own action: <a href="builder.html#b-conflictProvinceCondition"><code>conflictProvinceCondition()</code></a></td></tr>
+        <tr><td>"if you have fewer cards in your hand than your opponent"</td><td><code>!!context.player.opponent &amp;&amp; context.player.hand.length &lt; context.player.opponent.hand.length</code> (<a href="#q-player-properties"><code>hand</code></a>, <a href="#q-opponent"><code>opponent</code></a>)</td></tr>
+        <tr><td>"more / less honorable than an opponent"</td><td><a href="#q-isMoreHonorable"><code>context.player.isMoreHonorable()</code></a>, <code>isLessHonorable()</code></td></tr>
+        <tr><td>"if you control a Shugenja character"</td><td><a href="#q-isCharacterTraitInPlay"><code>context.player.isCharacterTraitInPlay(Trait.Shugenja)</code></a>; participating: <a href="#he-controlsParticipating"><code>controlsParticipating()</code></a></td></tr>
+        <tr><td>"each character you control"; "each character"</td><td><a href="#q-player-properties"><code>context.player.charactersInPlay</code></a>; <a href="#q-findAnyCardsInPlay"><code>context.game.findAnyCardsInPlay(…)</code></a></td></tr>
+        <tr><td>"if you won the conflict"; "this character wins"</td><td><code>conflict.winner === context.player</code>; <a href="#q-isOnWinningSide"><code>conflict.isOnWinningSide(card)</code></a></td></tr>
+        <tr><td>"a ring in your claimed ring pool"</td><td><a href="#q-getClaimedRings"><code>context.player.getClaimedRings()</code></a>; <a href="#he-group-rings">claimed ring helpers</a></td></tr>
+        <tr><td>"if you are the first player"</td><td><a href="#q-player-properties"><code>context.player.firstPlayer</code></a></td></tr>
+    </tbody>
+</table>
+<pre><code>// "Action: During a [conflict-political] conflict at an unbroken province, choose a participating Bushi character with 2 or less fate – …"
+this.action('…')
+    .condition((context) =&gt;
+        context.game.isDuringConflict(ConflictType.Political) &amp;&amp;
+        (context.game.currentConflict?.getConflictProvinces().some((province) =&gt; !province.isBroken) ?? false))
+    .target({
+        cardType: CardType.Character,
+        cardCondition: (card) =&gt; card.isParticipating() &amp;&amp; card.hasTrait(Trait.Bushi) &amp;&amp; card.getFate() &lt;= 2
+    }, …)</code></pre>
 <p class="note">Queries only read. Change state with a <a href="game-actions.html">game action</a>, so interrupts, reactions and restrictions see it.</p>
 
 <section class="group">
@@ -1763,9 +1793,9 @@ effect: modifyProvinceStrength((_province, context) =&gt; context.source.getToke
 
   <div class="ref" id="q-parentCharacter" data-name="parentCharacter parentProvince">
     <h3><code>card.parentCharacter</code>, <code>card.parentProvince</code> <span class="kind">Getters</span> <a class="anchor" href="#q-parentCharacter">#</a></h3>
-    <p>"Attached character" / "attached province", or <code>null</code> when attached to something else or nothing.</p>
+    <p><code>BaseCard</code> getters. "Attached character" (<code>DrawCard | null</code>: the host if it is currently a character) / "attached province" (<code>ProvinceCard | null</code>), <code>null</code> when attached to something else or nothing.</p>
     <ul class="edge">
-      <li><code>card.parent</code> is the raw host (also a ring or holding); prefer these getters.</li>
+      <li><code>card.parent</code> is the raw host (<code>BaseCard | Ring | null</code>: also a ring or holding); prefer these getters.</li>
       <li>As a game action target write <code>context.source.parentCharacter ?? []</code>.</li>
     </ul>
     <pre><code>// Court Mask: Action: Return this attachment to your hand and dishonor attached character.

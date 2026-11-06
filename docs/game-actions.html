@@ -26,7 +26,7 @@
     <p>Every game action a card can use, with its properties, defaults, legality and chat text.</p>
 </header>
 <h2 id="ga-basics">How game actions work</h2>
-<p>A game action is one thing the game does: bow a character, gain honor, move a card. Every change a card makes goes through one, so reactions, interrupts, restrictions and the chat see it. The factories are exported from <code>server/game/GameActions/GameActions.ts</code>.</p>
+<p>A game action is one thing the game does: bow a character, gain honor, move a card. Every change a card makes goes through one, so reactions, interrupts, restrictions and the chat see it. The factories are exported from <code>server/game/GameActions/GameActions.ts</code>: <code>import { bow, dishonor } from '../../GameActions/GameActions.js'</code> in a card file (one more <code>../</code> in a clan folder such as <code>19.1-AS01/Crab/</code>). Most have a <a href="builder.html#b-group-shortcuts">builder shortcut</a>, which needs no import.</p>
 
 <h3 id="ga-properties">Properties: none, an object, or a function</h3>
 <pre><code>bow()                                                      // the defaults
@@ -46,9 +46,9 @@ bow((context) =&gt; ({ target: context.targets.character }))  // computed when t
 
 <h3 id="ga-where">Where an action goes</h3>
 <ul>
-    <li><strong>A builder shortcut</strong> where one exists: <code>.bow(…)</code> is <code>.gameAction(bow(…))</code>. An entry without a "Builder shortcut" line has none.</li>
-    <li><strong>On a target:</strong> <code>.target(props, bow())</code>. The action resolves on the chosen card, and only cards it can affect may be chosen.</li>
-    <li><strong>On the ability:</strong> <code>.gameAction(action)</code>.</li>
+    <li><strong>A builder shortcut</strong> where one exists: <a href="builder.html#b-bow"><code>.bow(…)</code></a> is <a href="builder.html#b-gameAction"><code>.gameAction(bow(…))</code></a>. An entry without a "Builder shortcut" line has none.</li>
+    <li><strong>On a target:</strong> <a href="builder.html#b-target"><code>.target(props, bow())</code></a>. The action resolves on the chosen card, and only cards it can affect may be chosen.</li>
+    <li><strong>On the ability:</strong> <a href="builder.html#b-gameAction"><code>.gameAction(action)</code></a>.</li>
     <li><strong>Inside another action:</strong> <code>multiple</code>, <code>sequential</code> and <code>joint</code> take a list of actions. Others take them in properties: <code>gameAction</code> (<code>selectCard</code>, <code>duel</code>, …), <code>trueGameAction</code>/<code>falseGameAction</code> (<code>conditional</code>), <code>choices</code> (<code>chooseAction</code>), <code>replacementGameAction</code> (<code>cancel</code>). See <a href="#ga-group-1-control">composites</a>.</li>
 </ul>
 
@@ -58,7 +58,7 @@ bow((context) =&gt; ({ target: context.targets.character }))  // computed when t
     <thead><tr><th>Kind</th><th><code>target</code> type</th><th>Without a <code>target</code></th></tr></thead>
     <tbody>
         <tr><td>Card actions</td><td><code>BaseCard | BaseCard[]</code></td><td>The ability's source card.</td></tr>
-        <tr><td>Player actions</td><td><code>Player | Player[]</code></td><td>The ability's player (<code>context.player</code>), even for "lose" actions. For "your opponent", pass <code>target: context.player.opponent</code>. Exceptions: <code>chosenDiscard</code>, <code>chosenReturnToDeck</code>, <code>discardAtRandom</code>, <code>discardMatching</code>, <code>takeFate</code>, <code>takeHonor</code> and <code>loseImperialFavor</code> act on the opponent.</td></tr>
+        <tr><td>Player actions</td><td><code>Player | Player[]</code></td><td>The ability's player (<code>context.player</code>), even for "lose" actions. For "your opponent", pass <code>target: context.player.opponent</code>; for "each player", <code>target: context.game.getPlayers()</code>. Exceptions: <code>chosenDiscard</code>, <code>chosenReturnToDeck</code>, <code>discardAtRandom</code>, <code>discardMatching</code>, <code>takeFate</code>, <code>takeHonor</code> and <code>loseImperialFavor</code> act on the opponent.</td></tr>
         <tr><td>Ring actions</td><td><code>Ring | Ring[]</code></td><td>The ring of the current conflict.</td></tr>
         <tr><td>Any action on a target, or nested in one</td><td></td><td>The chosen card replaces the default target. A <code>target</code> written in the action's own properties wins over it: <code>sendHome({ target: context.source })</code> on a target still sends the source home.</td></tr>
     </tbody>
@@ -79,7 +79,7 @@ bow((context) =&gt; ({ target: context.targets.character }))  // computed when t
 </ul>
 
 <h3 id="ga-reading">Reading an entry</h3>
-<p>Each entry: what the action does, its properties, then legality, restriction type, event, chat text and builder shortcut, and an example from a real card. "Chat" is the action's part of the ability's chat line (see <a href="index.html#start-chat">chat text</a>), with <em>italics</em> or <code>{0}</code>, <code>{1}</code> for filled-in values; "as a cost" is its text when used as a cost.</p>
+<p>Each entry: what the action does, its properties, then legality, restriction type, event, chat text and builder shortcut, and an example from a real card. "Chat" is the action's part of the ability's chat line (see <a href="index.html#start-chat">chat text</a>), with <em>italics</em> or <code>{0}</code>, <code>{1}</code> for filled-in values; "as a cost" is its text when used as a <a href="costs.html">cost</a>.</p>
 
 <h2 id="ga-reference">Reference</h2>
 <section class="group">
@@ -98,7 +98,7 @@ bow((context) =&gt; ({ target: context.targets.character }))  // computed when t
       <li>The card must be faceup. A holding or province must be in a province; any other card must be in play.</li>
       <li>No restriction type.</li>
       <li>Raises <code>onAddTokenToCard</code> (<code>event.tokenType</code>). Chat: "add an honor token to <em>card</em>".</li>
-      <li>Builder shortcut: <code>.addToken(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-addToken"><code>.addToken(…)</code></a>.</li>
     </ul>
     <pre><code>// Fortified Assembly: Reaction: After an attack is declared against this province - place 1 honor token on it.
 this.reaction('Place an honor token on this province')
@@ -117,7 +117,7 @@ this.reaction('Place an honor token on this province')
       <li>A character or attachment must be in play; a stronghold is bowed wherever it is.</li>
       <li>Restriction: <code>RestrictionType.Bow</code> ("cannot be bowed").</li>
       <li>Raises <code>onCardBowed</code>. Chat: "bow <em>card</em>"; as a cost: "bowing <em>card</em>".</li>
-      <li>Builder shortcut: <code>.bow(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-bow"><code>.bow(…)</code></a>.</li>
     </ul>
     <pre><code>// Lion's Pride Brawler: Action: While this character is attacking, choose a character with equal or lower [conflict-military] skill than this character – bow that character.
 this.action('Bow a character')
@@ -141,7 +141,7 @@ this.action('Bow a character')
       <li>Legal for any status token; no restriction stops it.</li>
       <li>Raises one <code>onStatusTokenDiscarded</code> event per token (<code>event.token</code>, and <code>event.cards</code>: the one card losing that token, or empty when the token is on no card).</li>
       <li>Chat: "discard <em>card</em>'s status token", naming only the first target token's card, or "discard a status token" when no target token is on a card.</li>
-      <li>Builder shortcut: <code>.discardStatusToken(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-discardStatusToken"><code>.discardStatusToken(…)</code></a>.</li>
     </ul>
     <pre><code>// Perfect Land Ethos: Action: Discard each status token.
 this.action('Discard each status token')
@@ -159,7 +159,7 @@ this.action('Discard each status token')
       <li>An ordinary character must also be able to receive a dishonored token (<code>RestrictionType.ReceiveDishonorToken</code>); an honored one only needs to pass <code>RestrictionType.Dishonor</code> ("cannot be dishonored").</li>
       <li>Raises <code>onCardDishonored</code>. When the character ends up dishonored (it was ordinary), it then also raises <code>onStatusTokenGained</code>.</li>
       <li>Chat: "dishonor <em>card</em>"; as a cost: "dishonoring <em>card</em>".</li>
-      <li>Builder shortcut: <code>.dishonor(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-dishonor"><code>.dishonor(…)</code></a>.</li>
     </ul>
     <pre><code>// Way of the Scorpion: Action: During a conflict, choose a participating non-[clan-scorpion] character – dishonor that character.
 this.action('Dishonor a participating character')
@@ -220,7 +220,7 @@ this.reaction('Copy status token')
       <li><code>RestrictionType.Honor</code> is checked on the character and also on the ability's player, so "you cannot honor characters" effects apply.</li>
       <li>Raises <code>onCardHonored</code>. When the character ends up honored (it was ordinary), it then also raises <code>onStatusTokenGained</code>.</li>
       <li>Chat: "honor <em>card</em>"; as a cost: "honoring <em>card</em>".</li>
-      <li>Builder shortcut: <code>.honor(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-honor"><code>.honor(…)</code></a>.</li>
     </ul>
     <pre><code>// Way of the Crane: Action: Choose a [clan-crane] character you control – honor that character.
 this.action('Honor a character')
@@ -268,7 +268,7 @@ this.action('Move an honor token')
       <li>Only a bowed card can be readied. Characters and attachments must be in play; a stronghold is readied wherever it is.</li>
       <li>Checks "cannot be readied" restrictions (<code>RestrictionType.Ready</code>). Raises <code>onCardReadied</code>.</li>
       <li>Chat: <code>ready {0}</code>.</li>
-      <li>Builder shortcut: <code>.ready(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-ready"><code>.ready(…)</code></a>.</li>
     </ul>
     <pre><code>// Forward Patrol: Conflict Action: Choose a participating Bushi character - ready that character.
 this.conflictAction('Ready a character')
@@ -293,7 +293,7 @@ this.conflictAction('Ready a character')
       <li>A card that is faceup in a province or in play can't be revealed. A card elsewhere (hand, deck) can, faceup or not.</li>
       <li>No restriction type. Raises <code>onCardRevealed</code>.</li>
       <li>Chat: <code>reveal a card</code> (the target is not named). With <code>chatMessage: true</code> it also prints <code>{player} reveals {card} due to {source}</code> when the card is revealed.</li>
-      <li>Builder shortcut: <code>.reveal(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-reveal"><code>.reveal(…)</code></a>.</li>
     </ul>
     <pre><code>// Border Fortress: Action: During a conflict at this province, choose a facedown province – reveal that province.
 this.action('Reveal a province')
@@ -312,7 +312,7 @@ this.action('Reveal a province')
       <li>A card that is already tainted can't be tainted. A character must be in play; a province can be tainted where it is.</li>
       <li>Checks <code>RestrictionType.ReceiveTaintedToken</code>. Raises <code>onCardTainted</code>, then <code>onStatusTokenGained</code>.</li>
       <li>Chat: <code>taint {0}</code>.</li>
-      <li>Builder shortcut: <code>.taint(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-taint"><code>.taint(…)</code></a>.</li>
     </ul>
     <pre><code>// Lurking Affliction: Action: During a  conflict, choose a participating character - taint it.
 this.action('Taint a participating character')
@@ -360,7 +360,7 @@ this.reaction('Flip province facedown')
     <ul class="edge">
       <li>Illegal unless <code>amount</code> is greater than 0. Restriction: <code>RestrictionType.GainFate</code>.</li>
       <li>Raises <code>onModifyFate</code> (<code>event.amount</code>). Chat: "gain <em>N</em> fate"; it doesn't name the player.</li>
-      <li>Builder shortcut: <code>.gainFate(n)</code> or <code>.gainFate(properties)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-gainFate"><code>.gainFate(n)</code></a> or <code>.gainFate(properties)</code>.</li>
     </ul>
     <pre><code>// Prayers on the Eve of Battle: Forced Reaction: After a conflict ends - if the attached character won that conflict, gain 1 fate and discard this card. Otherwise, remove this card from the game.
 this.forcedReaction('Reap your rewards')
@@ -389,7 +389,7 @@ this.forcedReaction('Reap your rewards')
       <li>Illegal when <code>amount</code> is 0. Restriction: <code>RestrictionType.GainHonor</code>.</li>
       <li>A per-phase honor gain limit (<code>EffectName.LimitHonorGainPerPhase</code>) caps the amount; a player at the limit is not a legal target.</li>
       <li>Raises <code>onModifyHonor</code> (<code>event.amount</code>). Chat: "gain <em>N</em> honor" when only the ability's player gains it, otherwise "make <em>players</em> gain <em>N</em> honor"; <em>N</em> is capped by the receiving player's honor limit.</li>
-      <li>Builder shortcut: <code>.gainHonor(n)</code> or <code>.gainHonor(properties)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-gainHonor"><code>.gainHonor(n)</code></a> or <code>.gainHonor(properties)</code>.</li>
     </ul>
     <pre><code>// City of the Open Hand: Action: If you are less honorable than an opponent, bow this stronghold – gain 1 honor.
 this.action('Gain an honor')
@@ -413,7 +413,7 @@ this.action('Gain an honor')
       <li>With <code>spend: true</code> it is <code>player.canSpendFate(amount, context)</code>: the player needs all <code>amount</code> fate (the third Objection! costs 2) and no <code>RestrictionType.SpendFate</code> restriction. The fate costs (<code>payFate</code>, <code>payVariableFate</code>, targeting costs) set it.</li>
       <li>For your own "can spend N fate" checks use <code>player.canSpendFate(amount, context)</code> (0 is always spendable) or <code>player.getSpendableFate(context)</code> (their fate, or 0 while they can't spend).</li>
       <li>Raises <code>onModifyFate</code> with a negative <code>event.amount</code>. Chat: "make <em>player</em> lose <em>N</em> fate"; as a cost: "spending <em>N</em> fate".</li>
-      <li>Builder shortcut: <code>.loseFate(n)</code> or <code>.loseFate(properties)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-loseFate"><code>.loseFate(n)</code></a> or <code>.loseFate(properties)</code>.</li>
     </ul>
     <pre><code>// Seeking Enlightenment: Reaction: After this province is revealed – your opponent loses X fate, where X is the number of attacking characters.
 this.reaction('Force opponent to lose fate equal to the number of attackers')
@@ -441,7 +441,7 @@ this.reaction('Force opponent to lose fate equal to the number of attackers')
       <li>Illegal only when <code>amount</code> is 0: a player with no honor is still a legal target. Honor never goes below 0.</li>
       <li>Restriction: <code>RestrictionType.LoseHonor</code>.</li>
       <li>Raises <code>onModifyHonor</code> with a negative <code>event.amount</code>. Chat: "make <em>player</em> lose <em>N</em> honor"; as a cost: "losing <em>N</em> honor".</li>
-      <li>Builder shortcut: <code>.loseHonor(n)</code> or <code>.loseHonor(properties)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-loseHonor"><code>.loseHonor(n)</code></a> or <code>.loseHonor(properties)</code>.</li>
     </ul>
     <pre><code>// Kuni Laboratory: Forced Reaction: After the conflict phase begins – lose 1 honor.
 this.forcedReaction('After the conflict phase begins')
@@ -454,7 +454,7 @@ this.forcedReaction('After the conflict phase begins')
   </div>
 <div class="ref" id="ga-placeFate" data-name="placeFate">
     <h3><code>placeFate(properties?)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-placeFate">#</a></h3>
-    <p>Places fate on a character, from the general pool or from <code>origin</code>.</p>
+    <p>Places fate on a character, from the general pool or from <code>origin</code> ("place 1 fate on that character", "move 1 fate from your pool to it": <code>origin: context.player</code>).</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -469,7 +469,7 @@ this.forcedReaction('After the conflict phase begins')
       <li>At most the origin's fate moves. Moving less than <code>amount</code> still counts as resolved in full; only a cancelled or redirected event doesn't.</li>
       <li>Checks <code>RestrictionType.PlaceFate</code>. Raises <code>onMoveFate</code>.</li>
       <li>Chat: <code>place {1} fate on {0}</code> ({1} is the amount).</li>
-      <li>Builder shortcut: <code>.placeFate(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-placeFate"><code>.placeFate(…)</code></a>.</li>
     </ul>
     <pre><code>// Keeper Initiate: Reaction: After you claim a ring that matches the element of your role – put this character into play from your dynasty discard pile or provinces. Then, put 1 fate on this character.
 this.reaction('Put this into play')
@@ -482,7 +482,7 @@ this.reaction('Put this into play')
   </div>
 <div class="ref" id="ga-removeFate" data-name="removeFate">
     <h3><code>removeFate(properties?)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-removeFate">#</a></h3>
-    <p>Removes fate from a character, to the general pool or to <code>recipient</code>.</p>
+    <p>Removes fate from a character, to the general pool or to <code>recipient</code> ("remove 1 fate from that character", "move 1 fate from it to your pool": <code>recipient: context.player</code>).</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -494,7 +494,7 @@ this.reaction('Put this into play')
       <li>Only characters in play with fate on them. Illegal with <code>amount</code> 0. A character recipient must allow fate to be placed on it.</li>
       <li>At most the character's fate is removed. Checks <code>RestrictionType.RemoveFate</code>. Raises <code>onMoveFate</code>.</li>
       <li>Chat: <code>remove {1} fate from {0}</code>; as a cost: <code>removing {1} fate from {0}</code>.</li>
-      <li>Builder shortcut: <code>.removeFate(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-removeFate"><code>.removeFate(…)</code></a>.</li>
     </ul>
     <pre><code>// Fearsome Mystic: Action: While this character is participating in a conflict – remove 1 fate from each participating character your opponent controls with lower glory than this character.
 this.action('Remove fate from characters')
@@ -519,7 +519,7 @@ this.action('Remove fate from characters')
       <li>All or nothing: illegal when the target has less fate than <code>amount</code>, or has no opponent, or <code>amount</code> is not positive.</li>
       <li>No restriction type. Raises <code>onMoveFate</code> from the target to their opponent.</li>
       <li>Chat: <code>take {1} fate from {0}</code>; as a cost (paid by the ability's player): <code>giving {1} fate to {2}</code>, {2} being their opponent.</li>
-      <li>Builder shortcut: <code>.takeFate(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-takeFate"><code>.takeFate(…)</code></a>.</li>
     </ul>
     <pre><code>// Way Station Trader: Reaction: After a province is revealed during a conflict in which this character is participating, choose an opponent - take 1 fate from that opponent.
 this.reaction('Take a fate from your opponent')
@@ -546,7 +546,7 @@ this.reaction('Take a fate from your opponent')
       <li>With <code>afterBid</code>, the chat also says "<em>player</em> gives <em>opponent</em> <em>N</em> honor" when it resolves.</li>
       <li>Checks <code>RestrictionType.TakeHonor</code>. Raises <code>onTransferHonor</code>.</li>
       <li>Chat: <code>take {1} honor from {0}</code>, always computed as the ability player's opponent giving to the ability's player, whatever the target. As a cost (paid by the ability's player): <code>giving {1} honor to {2}</code>, {2} being their opponent.</li>
-      <li>Builder shortcut: <code>.takeHonor(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-takeHonor"><code>.takeHonor(…)</code></a>.</li>
     </ul>
     <pre><code>// Kakita Asami: Action: While this character is participating in a [conflict-political] conflict, if you count more current [conflict-political] skill in the conflict than your opponent – take 1 honor from that opponent.
 this.action('Take one honor from your opponent')
@@ -569,7 +569,7 @@ this.action('Take one honor from your opponent')
       <li>All targets go into one <code>onCardsDiscarded</code> event (<code>event.cards</code>), which isn't checked again when it resolves.</li>
       <li>Dynasty cards go to the dynasty discard pile, the rest to the conflict discard pile. A province a card was discarded from is refilled.</li>
       <li>Chat: "discard <em>card</em>"; as a cost: "discarding <em>card</em>".</li>
-      <li>Builder shortcut: <code>.discardCard(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-discardCard"><code>.discardCard(…)</code></a>.</li>
     </ul>
     <pre><code>// Sabotage: Action: During a [conflict-military] conflict, choose a card in an opponent's province – discard that card.
 this.action('Discard a card in a province')
@@ -583,14 +583,14 @@ this.action('Discard a card in a province')
   </div>
 <div class="ref" id="ga-discardFromPlay" data-name="discardFromPlay">
     <h3><code>discardFromPlay(properties?)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-discardFromPlay">#</a></h3>
-    <p>Discards cards from play: they leave play and go to their discard pile.</p>
+    <p>"Discard that character": discards cards from play, so they leave play and go to their discard pile.</p>
     <ul class="edge">
       <li>Characters and attachments in play, and holdings in a province.</li>
       <li>Restriction: <code>RestrictionType.DiscardFromPlay</code>. (<code>sacrifice()</code> is the same action with <code>RestrictionType.Sacrifice</code>; it can't sacrifice a facedown holding.)</li>
       <li>Raises <code>onCardLeavesPlay</code> (<code>event.destination</code>). With it, every attachment on the card is discarded and its fate is removed, as contingent events.</li>
       <li>An Ancestral attachment discarded because its parent left play returns to its owner's hand. A "remove from the game instead" effect (<code>RemoveFromGameInsteadOfLeavingPlay</code>) changes the destination. A province a holding left is refilled.</li>
       <li>Chat: "discard <em>card</em>".</li>
-      <li>Builder shortcut: <code>.discardFromPlay(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-discardFromPlay"><code>.discardFromPlay(…)</code></a>.</li>
     </ul>
     <pre><code>// Assassination: Conflict Action: Lose 3 honor. Choose a character with printed cost 2 or lower – discard that character. (Max 1 per round.)
 this.conflictAction('Discard a character')
@@ -610,7 +610,7 @@ this.conflictAction('Discard a character')
       <li>The card type isn't checked: an attachment in an explicit <code>target</code> list is discarded.</li>
       <li>It has no event of its own: it raises <code>onMoveFate</code> or <code>onCardLeavesPlay</code>.</li>
       <li>Chat: "injure <em>card</em>".</li>
-      <li>Builder shortcut: <code>.injure(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-injure"><code>.injure(…)</code></a>.</li>
     </ul>
     <pre><code>// A Poisoned Banquet: Interrupt: When the conflict phase ends - injure each character with a Poison attachment. (Max 1 per round.)
 this.interrupt('Injure everyone poisoned')
@@ -637,7 +637,7 @@ this.interrupt('Injure everyone poisoned')
       <li>With <code>location</code>, being there is the only check: card type and restrictions ("cannot be removed from the game") are not checked.</li>
       <li>Raises <code>onCardLeavesPlay</code> with the removed-from-game zone as destination.</li>
       <li>Chat: <code>remove {0} from the game</code>.</li>
-      <li>Builder shortcut: <code>.removeFromGame(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-removeFromGame"><code>.removeFromGame(…)</code></a>.</li>
     </ul>
     <pre><code>// Shadow Step: Action: Choose a non-Mythic character you control - remove it from the game, then put it into play. If that character does not have the Shadow trait, it enters play dishonored.
 this.action('Remove a character from the game and put it into play')
@@ -665,7 +665,7 @@ this.action('Remove a character from the game and put it into play')
     <ul class="edge">
       <li>Characters, attachments, events and holdings. Checks <code>RestrictionType.ReturnToDeck</code>. Raises <code>onCardLeavesPlay</code>.</li>
       <li>Chat: <code>return {0} to the top of its owner's deck</code>, <code>… to the bottom of …</code>, or <code>shuffle {0} into its owner's deck</code>.</li>
-      <li>Builder shortcut: <code>.returnToDeck(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-returnToDeck"><code>.returnToDeck(…)</code></a>.</li>
     </ul>
     <pre><code>// Hida Tomonatsu: Reaction: After this character wins a conflict as a defender, sacrifice it. Choose a non-unique attacking character – return that character to the top of its owner's deck.
 this.reaction('Return a character to deck')
@@ -685,7 +685,7 @@ this.reaction('Return a character to deck')
       <li>The card must be in play. A dynasty card can't be in a hand: it goes to the dynasty discard pile instead, with the chat line <code>hand is not a legal location for {card} and it is discarded</code>.</li>
       <li>Checks <code>RestrictionType.ReturnToHand</code>. Raises <code>onCardLeavesPlay</code>.</li>
       <li>Chat: <code>return {0} to their hand</code>.</li>
-      <li>Builder shortcut: <code>.returnToHand(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-returnToHand"><code>.returnToHand(…)</code></a>.</li>
     </ul>
     <pre><code>// Adept of Shadows: Action: Lose 1 honor – return this character to your hand.
 this.action('Return to hand')
@@ -700,7 +700,7 @@ this.action('Return to hand')
       <li>Characters and attachments must be in play; a holding must be faceup in a province.</li>
       <li>Checks <code>RestrictionType.Sacrifice</code>, not the discard restriction. Raises <code>onCardLeavesPlay</code> with <code>isSacrifice</code> set.</li>
       <li>Chat: <code>sacrifice {0}</code>; as a cost: <code>sacrificing {0}</code>.</li>
-      <li>Builder shortcut: <code>.sacrifice(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-sacrifice"><code>.sacrifice(…)</code></a>.</li>
     </ul>
     <pre><code>// Way of the Crab: Action: Sacrifice a (friendly) [clan-crab] character. Choose an opponent – that player must sacrifice a character. (Max 1 per round.)
 this.action('Make your opponent sacrifice a character')
@@ -718,7 +718,7 @@ this.action('Make your opponent sacrifice a character')
 </section>
 <section class="group">
 <h3 class="group-title" id="ga-group-1-hand-deck">Hands and decks</h3>
-<p>Player actions on hands and decks (<code>lookAt</code> is a card action). <code>chosenDiscard</code>, <code>chosenReturnToDeck</code>, <code>discardAtRandom</code> and <code>discardMatching</code> default to the <em>opponent</em>.</p>
+<p>Player actions on hands and decks (<code>lookAt</code> is a card action). <code>chosenDiscard</code>, <code>chosenReturnToDeck</code>, <code>discardAtRandom</code> and <code>discardMatching</code> default to the <em>opponent</em>. "Search your deck for a card" and "look at the top N cards, take one" are <a href="#ga-deckSearch"><code>deckSearch</code></a>; a card from a discard pile to the hand is <a href="#ga-moveCard"><code>moveCard</code></a>.</p>
 <p>The <code>deck</code> property is a <code>DeckType</code> (<code>DeckType.Conflict</code>, <code>DeckType.Dynasty</code>), except for <code>shuffleDeck</code>, which takes a <code>Location</code>.</p>
 <div class="ref" id="ga-chosenDiscard" data-name="chosenDiscard">
     <h3><code>chosenDiscard(properties?)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-chosenDiscard">#</a></h3>
@@ -736,7 +736,7 @@ this.action('Make your opponent sacrifice a character')
       <li>Legal when the player has a matching card in hand and <code>amount</code> isn't 0. Restriction: <code>RestrictionType.Discard</code>.</li>
       <li>With no more matching cards than <code>amount</code>, all of them are discarded without a prompt. Otherwise the player chooses exactly <code>amount</code> ("Choose 2 cards to discard").</li>
       <li>Raises <code>onCardsDiscardedFromHand</code> (<code>event.cards</code>). Chat when it resolves: "<em>player</em> discards <em>cards</em>"; the ability's text: "make <em>player</em> discard <em>N</em> cards".</li>
-      <li>Builder shortcut: <code>.chosenDiscard(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-chosenDiscard"><code>.chosenDiscard(…)</code></a>.</li>
     </ul>
     <pre><code>// Letter from the Daimyō: Reaction: After attached character wins a [conflict-political] conflict, sacrifice this attachment - your opponent chooses and discards 2 cards from his or her hand.
 this.reaction('Make opponent discard 2 cards')
@@ -811,7 +811,7 @@ this.reaction('Draw 2 cards and return 1')
       <li>The taken cards are also stored in <code>context.deckSearchSelected</code> and <code>event.selectedCards</code>.</li>
       <li>With <code>RemainingCards.Shuffle</code> the cards in the prompt are sorted by name, so their order isn't shown.</li>
       <li>Raises <code>onDeckSearch</code> (<code>event.amount</code>). Chat: "look at the top <em>N</em> cards of their deck", with <em>N</em> capped at the cards in the deck ("the top card" for 1), or "search their deck" ("<em>player</em>'s deck" for another player's).</li>
-      <li>Builder shortcut: <code>.deckSearch(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-deckSearch"><code>.deckSearch(…)</code></a>.</li>
     </ul>
     <pre><code>// Earnest Sculptor: Action: Search the top 8 cards of your conflict deck for a Spell, reveal it, and add it to your hand. Shuffle.
 this.action('Search top 8 card for a spell')
@@ -839,7 +839,7 @@ this.action('Search top 8 card for a spell')
       <li>Legal when <code>amount</code> is greater than 0 and the hand isn't empty. Restriction: <code>RestrictionType.Discard</code>.</li>
       <li>Raises <code>onCardsDiscardedFromHand</code> with <code>event.discardedAtRandom</code>; <code>event.discardedCards</code> holds the cards once it resolved.</li>
       <li>Chat when it resolves: "<em>player</em> discards <em>cards</em> at random"; the ability's text: "make <em>player</em> discard <em>N</em> card(s) at random".</li>
-      <li>Builder shortcut: <code>.discardAtRandom(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-discardAtRandom"><code>.discardAtRandom(…)</code></a>.</li>
     </ul>
     <pre><code>// Quarrelsome Youth: Reaction: After this character loses a conflict as an attacker, if you have fewer cards in your hand than your opponent – your opponent discards 1 random card from his or her hand.
 this.reaction('Force opponent to discard a card')
@@ -894,7 +894,7 @@ this.reaction('Name a card')
       <li>Illegal when <code>amount</code> is 0. Restriction: <code>RestrictionType.Draw</code>.</li>
       <li>When the deck runs out, the player draws what is left, loses honor as the game rules say, shuffles the discard pile into the deck, and draws the rest.</li>
       <li>Raises <code>onCardsDrawn</code> (<code>event.amount</code>). Chat: "draw <em>N</em> cards" when only the ability's player draws, otherwise "make <em>players</em> draw <em>N</em> cards".</li>
-      <li>Builder shortcut: <code>.draw(n)</code> or <code>.draw(properties)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-draw"><code>.draw(n)</code></a> or <code>.draw(properties)</code>.</li>
     </ul>
     <pre><code>// Soshi Mika: Forced Reaction: After the conflict phase begins - each player draws 2 cards and loses 1 honor.
 this.forcedReaction('After the conflict phase begins')
@@ -918,7 +918,7 @@ this.forcedReaction('After the conflict phase begins')
       <li>A faceup card in a province or in play can't be looked at; any other card can.</li>
       <li>The message names the cards in the game chat, which both players read. Sort a hand first (<code>.sort((a, b) =&gt; a.name.localeCompare(b.name))</code>) so its order isn't given away; <a href="helpers.html#he-randomHandCards"><code>randomHandCards</code></a> picks random cards and sorts them.</li>
       <li>All targets go into one <code>onLookAtCards</code> event (<code>event.cards</code>, <code>event.stateBeforeResolution</code>). The ability's text: "look at a facedown card".</li>
-      <li>Builder shortcut: <code>.lookAt(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-lookAt"><code>.lookAt(…)</code></a>.</li>
     </ul>
     <pre><code>// Court of Justice: Reaction: After you win a [conflict-political] conflict - look at 3 random cards in your opponent's hand.
 this.reaction('Look at 3 random cards of the opponent\'s hand')
@@ -969,7 +969,7 @@ this.reaction('Rearrange top 3 cards of dynasty deck')
     </table>
     <ul class="edge">
       <li>Chat: <code>shuffle {0}'s {1}</code>.</li>
-      <li>Builder shortcut: <code>.shuffleDeck(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-shuffleDeck"><code>.shuffleDeck(…)</code></a>.</li>
     </ul>
     <pre><code>// Emperor's Summons: Reaction: After this province is revealed - search your dynasty deck for a character card and put it faceup into a non-stronghold province you control, discarding each other card in that province. Shuffle.
 this.reaction('Search for a character card')
@@ -995,7 +995,7 @@ this.reaction('Search for a character card')
       <li>Illegal when the deck is empty, or when the nested action would have no legal target for a token made from the top card (Ashigaru Encampment while characters cannot enter play). Then the card stays on the deck.</li>
       <li>The top card is taken out of the deck (its location becomes removed from game); the token stands in for it. The nested action resolves in a then-window, with only the targets it sets itself.</li>
       <li>Chat: <code>turn the top card of {0}'s {1} into a token</code>, {1} being the <code>DeckType</code> value ("conflict deck").</li>
-      <li>Builder shortcut: <code>.tokenFromTopCard(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-tokenFromTopCard"><code>.tokenFromTopCard(…)</code></a>.</li>
     </ul>
     <pre><code>// Pride: Action: Bow this stronghold. Choose a character you control with no Follower attachments - put the top card of your conflict deck into play, facedown, attached to that character as a +1[conflict-military], +1[conflict-political] Follower attachment.
 this.action('Give a character a +1/+1 attachment')
@@ -1016,7 +1016,7 @@ this.action('Give a character a +1/+1 attachment')
 <p>Actions that move a card between zones without discarding it. Most take a card that is not in play; <code>putIntoProvince</code> takes one in play. For returning a card in play to the hand or deck, see <a href="#ga-group-1-discard">leaving play</a>.</p>
 <div class="ref" id="ga-moveCard" data-name="moveCard">
     <h3><code>moveCard(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-moveCard">#</a></h3>
-    <p>Moves a card that is not in play to <code>destination</code>: from a deck, discard pile, hand or province.</p>
+    <p>Moves a card that is not in play to <code>destination</code>: from a deck, discard pile, hand or province ("add it to your hand", "put it on the bottom of your deck").</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1038,7 +1038,7 @@ this.action('Give a character a +1/+1 attachment')
       <li>These checks only filter a card target; a card in an explicit <code>target</code> list is moved anyway (see <a href="#ga-legality">legality</a>).</li>
       <li>A card removed from the game by its own Ephemeral keyword (<code>card.isRemovedByEphemeral()</code>) can't be moved by anything (<code>player.moveCard</code> refuses); only a manual move from the card menu clears the flag.</li>
       <li>Chat: <code>move {0} to {1}'s {2}</code> ({1} is the destination's player, {2} the location), <code>move {0} to the bottom of {1}'s {2}</code> with <code>bottom</code>, <code>shuffle {0} into {1}'s {2}</code> with <code>shuffle</code>.</li>
-      <li>Builder shortcut: <code>.moveCard(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-moveCard"><code>.moveCard(…)</code></a>.</li>
     </ul>
     <pre><code>// Blade of 10,000 Battles: Reaction: After attached character wins a conflict, if you are more honorable than your opponent, choose a card in your conflict discard pile - add that card to your hand.
 this.reaction('Add a card from the discard pile to the hand')
@@ -1064,7 +1064,7 @@ this.reaction('Add a card from the discard pile to the hand')
       <li>Characters, attachments, events and holdings, from any location. The card goes to <code>Location.Underneath</code> with <code>host</code> = <code>destination</code>, in the pile of the ability's player (<code>player.placeUnderneath</code>). The card's controller becomes the controller of the ability's source.</li>
       <li>No restriction type, no event. Its checks only filter a card target; a card in an explicit <code>target</code> list is placed anyway (see <a href="#ga-legality">legality</a>).</li>
       <li>Chat: <code>place {0} underneath {1}</code>.</li>
-      <li>Builder shortcut: <code>.placeCardUnderneath(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-placeCardUnderneath"><code>.placeCardUnderneath(…)</code></a>.</li>
     </ul>
     <pre><code>// Strange Mirror: Reaction:  After an opponent plays an event - put that event under attached character facedown.
 this.reaction('Put the event underneath attached character')
@@ -1156,7 +1156,7 @@ this.action('Return a character to a province')
       <li>A province is refilled only if it holds no card besides the province card; otherwise nothing changes there.</li>
       <li>An empty dynasty deck is handled like any refill: the player decks out first, then the province is refilled.</li>
       <li>Chat: <code>refill its province faceup</code>.</li>
-      <li>Builder shortcut: <code>.refillFaceup(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-refillFaceup"><code>.refillFaceup(…)</code></a>.</li>
     </ul>
     <pre><code>// Akodo Gunsō: Reaction: After this character enters play from a province – refill that province faceup.
 this.reaction('Refill province faceup')
@@ -1202,7 +1202,7 @@ this.reaction('The attacker gets the first action opportunity')
 </section>
 <section class="group">
 <h3 class="group-title" id="ga-group-2-entering-play">Entering play</h3>
-<p>Putting characters into play without playing them, and playing cards from somewhere other than the hand.</p>
+<p>Putting characters into play without playing them, and playing cards from somewhere other than the hand. "Put it into play" is <code>putIntoPlay</code>, "… into play in the conflict" <code>putIntoConflict</code>, "play it as if it were in your hand" <code>playCard</code>. To take the card from a province, deck or discard pile, give the target that <code>location</code> (Charge!, Black Marketeer).</p>
 <div class="ref" id="ga-opponentPutIntoPlay" data-name="opponentPutIntoPlay">
     <h3><code>opponentPutIntoPlay(properties?)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-opponentPutIntoPlay">#</a></h3>
     <p>Like <a href="#ga-putIntoPlay"><code>putIntoPlay</code></a> (at home), but the ability's player's opponent puts the character into play and controls it.</p>
@@ -1257,7 +1257,7 @@ multiple([
       <li>No restriction type; "cannot play" restrictions are checked by the play ability itself.</li>
       <li><code>playType</code> overrides the play's context, even an "as if from hand" play action's <code>PlayFromHand</code>; play restrictions, cost reducers and <code>onCardPlayed</code> read it. Keep <code>Other</code> for a play from a deck or discard pile without "as if it were in your hand" (Utaku Takeko, Agasha Ayako), so "from hand" effects don't see it (ruling #644).</li>
       <li>Chat: <code>play {0} as if it were in their hand</code>.</li>
-      <li>Builder shortcut: <code>.playCard(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-playCard"><code>.playCard(…)</code></a>.</li>
     </ul>
     <pre><code>// Black Marketeer: Action: Choose an attachment in an opponent's discard pile - play it as if it were in your hand, paying its fate cost to its owner rather than the general pool.
 this.action('Play an attachment')
@@ -1294,7 +1294,7 @@ this.action('Play an attachment')
       <li>A Corrupted character enters play tainted. A character that left a province refills it.</li>
       <li>Raises <code>onCharacterEntersPlay</code> (with <code>fate</code>, <code>status</code>, <code>intoConflict</code>, <code>originalLocation</code>, <code>side</code>).</li>
       <li>Chat: <code>put {0} into play</code> or <code>put {0} into play in the conflict</code>.</li>
-      <li>Builder shortcuts: <code>.putIntoPlay(…)</code>, <code>.putIntoConflict(…)</code>.</li>
+      <li>Builder shortcuts: <a href="builder.html#b-putIntoPlay"><code>.putIntoPlay(…)</code></a>, <a href="builder.html#b-putIntoConflict"><code>.putIntoConflict(…)</code></a>.</li>
     </ul>
     <pre><code>// Charge!: Action: During a [conflict-military] conflict, choose a character in one of your provinces – put that character into play in the conflict.
 this.action('Put a character into play from a province')
@@ -1345,7 +1345,7 @@ this.reaction('Put this character into play')
       <li>A character in play that becomes an attachment leaves the conflict.</li>
       <li>Raises <code>onCardAttached</code> (<code>event.parent</code>, <code>event.card</code> is the attachment, <code>event.originalLocation</code>).</li>
       <li>Chat: "attach <em>attachment</em> to <em>target</em>"; with <code>takeControl</code>: "take control of and attach <em>parent</em>'s <em>attachment</em> to <em>target</em>"; with <code>giveControl</code>: "give control of and attach …".</li>
-      <li>Builder shortcut: <code>.attach(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-attach"><code>.attach(…)</code></a>.</li>
     </ul>
     <pre><code>// Calling in Favors: Action: Dishonor a (friendly) character. Choose an opponent's attachment – take control of that attachment and attach it to that character, if able. Otherwise, discard the attachment.
 this.action('Take control of an attachment')
@@ -1575,7 +1575,7 @@ this.reaction('Move the conflict')
       <li>Legal only during a conflict, for a character in play that is not participating and can participate on that side (attacker or defender). A character that "participates from home" can't be moved.</li>
       <li>Checks <code>RestrictionType.MoveToConflict</code>. Raises <code>onMoveToConflict</code>.</li>
       <li>Chat: <code>move {0} into the conflict</code>.</li>
-      <li>Builder shortcut: <code>.moveToConflict(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-moveToConflict"><code>.moveToConflict(…)</code></a>.</li>
     </ul>
     <pre><code>// Adorned Barcha: Action: During a [conflict-military] conflict in which attached character is not participating, choose a participating character - bow that character and move attached character to the conflict.
 this.action('Move character into the conflict')
@@ -1594,7 +1594,7 @@ this.action('Move character into the conflict')
       <li>Only a participating character can be sent home; a character that "participates from home" can't.</li>
       <li>Checks <code>RestrictionType.SendHome</code>. Raises <code>onSendHome</code>.</li>
       <li>Chat: <code>send {0} home</code>.</li>
-      <li>Builder shortcut: <code>.sendHome(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-sendHome"><code>.sendHome(…)</code></a>.</li>
     </ul>
     <pre><code>// Obsidian Caves: Conflict Action: At this province, the attacking player chooses a character they control - send it home.
 this.action('Attacker moves a character home')
@@ -1610,7 +1610,7 @@ this.action('Attacker moves a character home')
 </section>
 <section class="group">
 <h3 class="group-title" id="ga-group-1-rings-conflicts">Rings and conflicts</h3>
-<p>Ring actions target rings; without a <code>target</code> they affect the ring of the current conflict, and outside a conflict they have no target. Choose another ring with a ring target (<code>.ringTarget(…)</code>) or <a href="#ga-selectRing"><code>selectRing</code></a>.</p>
+<p>Ring actions target rings; without a <code>target</code> they affect the ring of the current conflict, and outside a conflict they have no target. Choose another ring with a ring target (<a href="builder.html#b-ringTarget"><code>.ringTarget(…)</code></a>) or <a href="#ga-selectRing"><code>selectRing</code></a>.</p>
 <div class="ref" id="ga-claimRing" data-name="claimRing">
     <h3><code>claimRing(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-claimRing">#</a></h3>
     <p>The ability's player claims a ring.</p>
@@ -1656,7 +1656,7 @@ this.reaction('Resolve the ring as if you were the attacker')
     <ul class="edge">
       <li>Legal only when the player has a legal conflict declaration (of <code>forcedDeclaredType</code>, if given).</li>
       <li>Raises <code>onConflictInitiated</code>. Chat: "declare a new conflict".</li>
-      <li>Builder shortcut: <code>.initiateConflict(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-initiateConflict"><code>.initiateConflict(…)</code></a>.</li>
     </ul>
     <pre><code>// Breakthrough: Reaction: After the resolution of your first conflict this phase as the attacking player, if that conflict broke a province – immediately declare your second conflict for this phase.
 this.reaction('Declare a new conflict')
@@ -1679,7 +1679,7 @@ this.reaction('Declare a new conflict')
       <li><code>amount</code> must be positive. The origin is checked as for <a href="#ga-placeFate"><code>placeFate</code></a> (<code>canMoveFateFrom</code>; Student of War, The Stone of Sorrows).</li>
       <li>Checks <code>RestrictionType.PlaceFate</code> on the ring. Raises <code>onMoveFate</code>.</li>
       <li>Chat: <code>place {1} fate on {0}</code>, or <code>move {1} fate from {2} to {0}</code> with an origin.</li>
-      <li>Builder shortcut: <code>.placeFateOnRing(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-placeFateOnRing"><code>.placeFateOnRing(…)</code></a>.</li>
     </ul>
     <pre><code>// Starless Nights: Reaction: After the conflict phase begins - place 1 fate on each unclaimed ring. (Max 1 per round.)
 this.reaction('Place 1 fate on each unclaimed ring')
@@ -1717,7 +1717,7 @@ this.action('Remove a ring from the unclaimed ring pool')
       <li>A ring with several elements needs a conflict: the player chooses up to the conflict's number of elements to resolve, one ring at a time. Buttons: "Done" once one is chosen, "Resolve All Elements" when all may be resolved, and "Don't Resolve the Conflict Ring".</li>
       <li>Each element then resolves as an optional <a href="#ga-resolveRingEffect"><code>resolveRingEffect</code></a>. No restriction type. Raises <code>onResolveConflictRing</code>.</li>
       <li>Chat: <code>resolve {0}</code>.</li>
-      <li>Builder shortcut: <code>.resolveConflictRing(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-resolveConflictRing"><code>.resolveConflictRing(…)</code></a>.</li>
     </ul>
     <pre><code>// Defend the Wall: Reaction: After you win a conflict at this province – resolve the ring effect of that conflict as if you were the attacking player.
 this.reaction('Resolve the ring effect')
@@ -1747,7 +1747,7 @@ this.reaction('Resolve the ring effect')
       <li>Several rings: the event counts as resolved in full (for <code>then()</code>) unless one of the ring effects was cancelled; a replaced one counts as resolved (Enlightenment).</li>
       <li>If the ability's player has a "cannot resolve rings" effect, the event is cancelled with the chat line <code>{player}'s ring effect is cancelled</code>, before its would-interrupt window (ruling #636: a cancelled ring effect can't be replaced). Raises <code>onResolveRingElement</code>.</li>
       <li>Chat: <code>resolve {0} effect</code>.</li>
-      <li>Builder shortcut: <code>.resolveRingEffect(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-resolveRingEffect"><code>.resolveRingEffect(…)</code></a>.</li>
     </ul>
     <pre><code>// Greater Understanding: Reaction: After fate is placed on attached ring - resolve that ring's effect as if you were the attacking player.
 this.reaction('Resolve the attached ring\'s effect')
@@ -1826,7 +1826,7 @@ this.action('Switch the conflict type or ring')
       <li>Legal only during a conflict. No restriction is checked.</li>
       <li>It always switches to the other type; <code>targetConflictType</code> only decides whether it is legal. Raises <code>onSwitchConflictType</code>.</li>
       <li>Chat: <code>switch the conflict type from {0} to {1}</code>.</li>
-      <li>Builder shortcut: <code>.switchConflictType(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-switchConflictType"><code>.switchConflictType(…)</code></a>.</li>
     </ul>
     <pre><code>// Captive Audience: Action: During a [conflict-political] conflict, lose 1 honor – change the conflict type to [conflict-military].
 this.action('Change the conflict to military')
@@ -1906,7 +1906,7 @@ selectRing({
       <li>Legal whenever it has a target; no restriction type.</li>
       <li>When the game's rules give the favor no sides, it is claimed whole and <code>side</code> is ignored.</li>
       <li>Raises <code>onClaimFavor</code>. Chat: "claim the <em>sovereign</em> favor", then "<em>player</em> claims the <em>sovereign</em> <em>military</em> favor!" when it resolves (or "… claims the <em>sovereign</em> favor!" without sides). The sovereign is <code>game.rules.imperialFavorSovereign</code>: "Emperor's", or "Empress'" in Emerald and Sanctuary.</li>
-      <li>Builder shortcut: <code>.claimImperialFavor(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-claimImperialFavor"><code>.claimImperialFavor(…)</code></a>.</li>
     </ul>
     <pre><code>// Yatakabune Port: Interrupt: When this province is broken during a conflict - claim the Imperial Favor.
 this.interrupt('Claim the imperial favor')
@@ -2006,7 +2006,7 @@ this.action('Return player\'s rings')
 </section>
 <section class="group">
 <h3 class="group-title" id="ga-group-1-duels">Duels</h3>
-<p>Most duels are written with the builder's <code>.initiateDuel(…)</code>, which adds the challenger and target choices and the <code>duel()</code> action. Use <code>duel()</code> directly when the ability already chooses the target.</p>
+<p>Most duels are written with the builder's <a href="builder.html#b-initiateDuel"><code>.initiateDuel(…)</code></a>, which adds the challenger and target choices and the <code>duel()</code> action. Use <code>duel()</code> directly when the ability already chooses the target.</p>
 <div class="ref" id="ga-duel" data-name="duel">
     <h3><code>duel(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-duel">#</a></h3>
     <p>The challenger challenges the target characters to a duel; the duel resolves and <code>gameAction</code> resolves if it has a winner.</p>
@@ -2016,7 +2016,7 @@ this.action('Return player\'s rings')
         <tr><td><code>target</code></td><td><code>BaseCard | BaseCard[]</code></td><td>the ability's source</td><td>The challenged characters. The default is useless, as the source is the challenger: use the action on a target.</td></tr>
         <tr><td><code>type</code></td><td><code>DuelType</code></td><td>required</td><td><code>Military</code>, <code>Political</code> or <code>Glory</code>.</td></tr>
         <tr><td><code>challenger</code></td><td><code>DrawCard</code></td><td>the ability's source</td><td>The challenging character.</td></tr>
-        <tr><td><code>gameAction</code></td><td><code>GameAction | (duel, context) =&gt; GameAction</code></td><td>required</td><td>The duel's effect, resolved only when the duel has a winner. It gets no target from the duel: name it, e.g. <code>bow({ target: duel.loser })</code>.</td></tr>
+        <tr><td><code>gameAction</code></td><td><code>GameAction | (duel, context) =&gt; GameAction</code></td><td>required</td><td>The duel's effect, resolved only when the duel has a winner. It gets no target from the duel: name it, e.g. <code>bow({ target: duel.loser })</code>. What <code>duel</code> offers (<code>winner</code>/<code>loser</code> arrays, <code>winnerController</code>, …): see <a href="builder.html#b-initiateDuel"><code>initiateDuel</code></a>.</td></tr>
         <tr><td><code>onTie</code></td><td><code>GameAction | (duel, context) =&gt; GameAction</code></td><td>none</td><td>Resolved when the duel has no winner.</td></tr>
         <tr><td><code>chatText</code></td><td><code>(context, duel) =&gt; MessageArgs</code></td><td>the game action's own text</td><td>What the chat says after "Duel Effect: " when the duel has a winner; <code>onTie</code> always uses its own text.</td></tr>
         <tr><td><code>statistic</code></td><td><code>DuelStatistic</code>: <code>(card, duelRules) =&gt; number | { printed, bonus }</code></td><td>the duel type's skill</td><td>Replaces the value each participant duels with. Return <code>{ printed, bonus }</code> when part of it is a bonus that <code>duelIgnorePrintedSkill</code> keeps (Challenge on the Fields); a number counts as all printed.</td></tr>
@@ -2124,7 +2124,7 @@ this.action('Set honor dials')
       <li>Without <code>Direction.Prompt</code>, a target passed down (by a card target or a composite) is ignored: the action uses its own <code>target</code>.</li>
       <li>Raises <code>onModifyBid</code>.</li>
       <li>Chat: <code>increase their bid by {amount}</code> / <code>decrease their bid by {amount}</code>; with <code>Direction.Prompt</code>, <code>modify their honor bid by {amount}</code>.</li>
-      <li>Builder shortcut: <code>.modifyBid(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-modifyBid"><code>.modifyBid(…)</code></a>.</li>
     </ul>
     <pre><code>// Contingency Plan: Reaction: After honor dials are revealed – increase or decrease the value of your bid by 1 (to a minimum of 0).
 this.reaction('Change your bid by 1')
@@ -2165,7 +2165,7 @@ this.reaction('Modify honor dial')
 <section class="group">
 <h3 class="group-title" id="ga-group-1-lasting">Lasting effects and control</h3>
 <p>A lasting effect applies <code>effect</code> (one effect factory or a list, see <a href="effects.html">effects</a>) for a <code>duration</code>: "until the end of the conflict, …". There is one action per kind of thing it applies to: cards (<code>cardLastingEffect</code>, <code>atEndOfConflict</code>, <code>takeControl</code>), players, rings, the conflict and the duel. All raise <code>onEffectApplied</code>. Their chat text is "apply a lasting effect", which tells the opponent nothing: give the ability a <code>chatText</code> that says what the effect does.</p>
-<p>Properties shared by <code>cardLastingEffect</code>, <code>conflictLastingEffect</code>, <code>duelLastingEffect</code>, <code>playerLastingEffect</code> and <code>ringLastingEffect</code> (each entry lists only its own):</p>
+<p id="ga-lasting-shared">Properties shared by <code>cardLastingEffect</code>, <code>conflictLastingEffect</code>, <code>duelLastingEffect</code>, <code>playerLastingEffect</code> and <code>ringLastingEffect</code> (each entry lists only its own):</p>
 <table>
     <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
     <tbody>
@@ -2194,7 +2194,7 @@ this.reaction('Modify honor dial')
       <li>It is a <code>cardLastingEffect</code> until the end of the phase, holding a delayed effect that fires on <code>onConflictFinished</code>. It fires once, at the end of the next conflict to finish, and is gone afterwards, also when <code>onlyIf</code> was false.</li>
       <li>"If it is still in play": a card that changes zones loses its lasting effects, so nothing happens to a card that left play first.</li>
       <li>Chat: "apply a lasting effect to <em>card</em>" unless it has <code>chatText</code>.</li>
-      <li>Builder shortcut: <code>.atEndOfConflict(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-atEndOfConflict"><code>.atEndOfConflict(…)</code></a>.</li>
     </ul>
     <pre><code>// Kitsu Spiritcaller: Action: During a conflict, bow this character. Choose a character in one of your discard piles – put that character into play in the conflict. If that character is still in play at the end of the conflict, return it to the bottom of its deck.
 this.action('Resurrect a character')
@@ -2211,7 +2211,7 @@ this.action('Resurrect a character')
   </div>
 <div class="ref" id="ga-cardLastingEffect" data-name="cardLastingEffect">
     <h3><code>cardLastingEffect(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-cardLastingEffect">#</a></h3>
-    <p>Applies an effect to cards for a duration: "until the end of the conflict, that character gets +2 military".</p>
+    <p>Applies an effect to cards for a duration: "until the end of the conflict, that character gets +2 military". Also takes the <a href="#ga-lasting-shared">shared properties</a> (<code>effect</code>; <code>duration</code>, default <code>Duration.UntilEndOfConflict</code>). Without a <code>target</code> and off a card target, it applies to the ability's own card.</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2226,7 +2226,7 @@ this.action('Resurrect a character')
       <li>The effect's value isn't checked: a <code>+0</code> skill modifier still makes the card legal. When the amount can be 0, give the ability a condition so it can't be used without the potential to change the game state (Hida Guardian: <code>context.player.getNumberOfHoldingsInPlay() &gt; 0</code>).</li>
       <li>The effect ends with its duration, when the card changes zones (moving between provinces doesn't count) or when it is turned facedown, unless <code>canChangeZoneOnce</code> or <code>canChangeZoneNTimes</code> allow it.</li>
       <li>Raises <code>onEffectApplied</code> (<code>event.effectTypes</code>).</li>
-      <li>Builder shortcut: <code>.cardLastingEffect(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-cardLastingEffect"><code>.cardLastingEffect(…)</code></a>.</li>
     </ul>
     <pre><code>// Arrows from the Woods: [conflict-military] Conflict Action: Each participating character your opponent controls gets -X[conflict-military] until the end of the conflict. X is equal to 1 if you control a participating Bushi character, or 2 if you also control a participating Shinobi or Scout character. (Max 1 per conflict.)
 this.conflictAction('Reduce opponent\'s characters mil', { conflictType: ConflictType.Military })
@@ -2241,7 +2241,7 @@ this.conflictAction('Reduce opponent\'s characters mil', { conflictType: Conflic
   </div>
 <div class="ref" id="ga-conflictLastingEffect" data-name="conflictLastingEffect">
     <h3><code>conflictLastingEffect(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-conflictLastingEffect">#</a></h3>
-    <p>Applies an effect to the conflict as a whole, not to a card or player: "characters cannot trigger abilities this conflict".</p>
+    <p>Applies an effect to the conflict as a whole, not to a card or player: "characters cannot trigger abilities this conflict". Also takes the <a href="#ga-lasting-shared">shared properties</a> (<code>duration</code>, default <code>Duration.UntilEndOfConflict</code>).</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2252,7 +2252,7 @@ this.conflictAction('Reduce opponent\'s characters mil', { conflictType: Conflic
     </table>
     <ul class="edge">
       <li>Legal whenever it has at least one effect. A conflict effect always reaches the current conflict (a card effect with <code>match</code> reaches the matching cards), so a chosen target changes nothing: pass the card to the effect factory instead, as A War on Two Fronts does with <code>additionalAttackedProvince(context.target)</code>.</li>
-      <li>Builder shortcut: <code>.conflictLastingEffect(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-conflictLastingEffect"><code>.conflictLastingEffect(…)</code></a>.</li>
     </ul>
     <pre><code>// Exemplary Etiquette: Action: During a conflict - abilities on characters cannot be triggered this conflict.
 this.action('Stop characters from triggering abilities')
@@ -2268,7 +2268,7 @@ this.action('Stop characters from triggering abilities')
   </div>
 <div class="ref" id="ga-duelLastingEffect" data-name="duelLastingEffect">
     <h3><code>duelLastingEffect(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-duelLastingEffect">#</a></h3>
-    <p>Applies an effect to the current duel: "characters do not contribute their printed statistic to the resolution of this duel".</p>
+    <p>Applies an effect to the current duel: "characters do not contribute their printed statistic to the resolution of this duel". Also takes the <a href="#ga-lasting-shared">shared properties</a> (<code>duration</code>, default <code>Duration.UntilEndOfDuel</code>).</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2279,7 +2279,7 @@ this.action('Stop characters from triggering abilities')
     <ul class="edge">
       <li>Legal whenever it has at least one effect; it doesn't check that a duel is running. Without a current duel the effect reaches nothing. Use it in Duel Challenge and Duel Strike abilities.</li>
       <li>A duel effect applies to its first target if that is a duel. Don't put the action on a card target: the chosen card would replace the duel, and the effect would reach nothing.</li>
-      <li>Builder shortcut: <code>.duelLastingEffect(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-duelLastingEffect"><code>.duelLastingEffect(…)</code></a>.</li>
     </ul>
     <pre><code>// Shosuro Technique: Duel Challenge: If you were challenged - characters do not contribute their printed statistic to the resolution of this duel.
 this.duelChallenge('Ignore printed skill in the duel', (duel, context) =&gt; duel.challengingPlayer &amp;&amp; duel.challengingPlayer.opponent === context.player)
@@ -2291,7 +2291,7 @@ this.duelChallenge('Ignore printed skill in the duel', (duel, context) =&gt; due
   </div>
 <div class="ref" id="ga-playerLastingEffect" data-name="playerLastingEffect">
     <h3><code>playerLastingEffect(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-playerLastingEffect">#</a></h3>
-    <p>Applies an effect to players for a while ("for this conflict, you …").</p>
+    <p>Applies an effect to players for a while ("for this conflict, you …"). Also takes the <a href="#ga-lasting-shared">shared properties</a> (<code>effect</code>; <code>duration</code>, default <code>Duration.UntilEndOfConflict</code>). Without a <code>target</code>, it applies to the ability's player.</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2302,7 +2302,7 @@ this.duelChallenge('Ignore printed skill in the duel', (duel, context) =&gt; due
     <ul class="edge">
       <li>Legal whenever it has an effect; the players are not checked.</li>
       <li>When the target is both players, one effect covers both, so it reports and expires once.</li>
-      <li>Builder shortcut: <code>.playerLastingEffect(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-playerLastingEffect"><code>.playerLastingEffect(…)</code></a>.</li>
     </ul>
     <pre><code>// Persuasive Counselor: Action: During a conflict in which this character is participating - each event you play during this conflict cannot be canceled.
 this.action('Prevent your events from being cancelled')
@@ -2315,7 +2315,7 @@ this.action('Prevent your events from being cancelled')
   </div>
 <div class="ref" id="ga-ringLastingEffect" data-name="ringLastingEffect">
     <h3><code>ringLastingEffect(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-ringLastingEffect">#</a></h3>
-    <p>Applies an effect to rings for a while.</p>
+    <p>Applies an effect to rings for a while. Also takes the <a href="#ga-lasting-shared">shared properties</a> (<code>effect</code>; <code>duration</code>, default <code>Duration.UntilEndOfConflict</code>). Without a <code>target</code> and off a ring target, it applies to the conflict ring.</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2324,7 +2324,7 @@ this.action('Prevent your events from being cancelled')
     </table>
     <ul class="edge">
       <li>Legal for any ring without a restriction against it; unlike <code>playerLastingEffect</code>, an empty <code>effect</code> doesn't make it illegal.</li>
-      <li>Builder shortcut: <code>.ringLastingEffect(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-ringLastingEffect"><code>.ringLastingEffect(…)</code></a>.</li>
     </ul>
     <pre><code>// Secluded Shrine: Reaction: After the conflict phase begins, choose a ring – until the end of the phase, you are considered to have that ring in your claimed ring pool.
 this.reaction('Count a ring as claimed')
@@ -2366,7 +2366,14 @@ this.action('Take control of a character')
 </section>
 <section class="group">
 <h3 class="group-title" id="ga-group-1-control">Composite and control flow</h3>
-<p>Actions that hold other actions (composites). How they pass targets on:</p>
+<p>Actions that hold other actions (composites). Which one, by card wording:</p>
+  <ul>
+    <li>"X and Y": usually no composite. Several actions on one target or step (<code>.target(props, bow(), dishonor())</code>, or two shortcuts) resolve together, like <code>multiple</code>. Use <code>joint</code> when neither may happen unless both can.</li>
+    <li>"X. Then, Y" or "If you do, Y": a <a href="builder.html#b-then"><code>then()</code></a> step; Y follows only if X resolved in full. A plain "X. Y." that must wait for X: <a href="builder.html#b-afterwards"><code>afterwards()</code></a> or <code>sequential</code>.</li>
+    <li>"If …, X. Otherwise, Y": <a href="builder.html#b-if"><code>.if()</code></a> (<code>conditional</code>). "X, if able. Otherwise, Y": <code>ifAble</code>. "You may X": <code>optional</code>. "With [trait] affinity": <code>onAffinity</code>. "Cancel" or "… instead": <code>cancel</code>.</li>
+    <li>"Choose one: …" or "Select one: …" is a builder <a href="builder.html#b-select"><code>select()</code></a> when the pick is made as the ability starts, <a href="#ga-chooseAction"><code>chooseAction</code></a> when it is made while the ability resolves.</li>
+  </ul>
+<p>How they pass targets on:</p>
   <ul>
     <li>A composite passes a target down only when it was given one: its own <code>target</code>, the card target it sits on, or an outer composite's. Then every nested action gets that target. Without one, each nested action keeps its own default target (the source, the ability's player, the conflict's ring).</li>
     <li>Whatever else the caller passes on goes to the nested actions too.</li>
@@ -2389,7 +2396,7 @@ this.action('Take control of a character')
       <li>Illegal when there is no event, it is already cancelled, or it can't be cancelled: <code>cannotBeCancelled</code> events, events played by a player whose events can't be cancelled, and a leaves-play event of a card that can't be prevented from leaving play (<code>RestrictionType.PreventedFromLeavingPlay</code>).</li>
       <li>With <code>replacementGameAction</code>, it is legal only if the replacement has a legal target. A single replacement event becomes <code>event.replacementEvent</code> of the cancelled event (not for a sacrifice). The cancelled action then didn't resolve in full, so its own <code>then()</code> steps don't follow.</li>
       <li>Chat: "cancel the effects of <em>event card</em>", or with a replacement its own text followed by "instead of <em>event card</em>".</li>
-      <li>Builder shortcut: <code>.cancel(…)</code> (interrupts only).</li>
+      <li>Builder shortcut: <a href="builder.html#b-cancel"><code>.cancel(…)</code></a> (interrupts only).</li>
     </ul>
     <pre><code>// Kitsuki Shomon: Interrupt: When another character you control would be dishonored – instead, dishonor this character. Then, ready this character.
 this.wouldInterrupt('Dishonor this character instead')
@@ -2419,7 +2426,7 @@ this.wouldInterrupt('Dishonor this character instead')
     </table>
     <ul class="edge">
       <li>A <code>handler</code> underneath, so always legal: on an ability without targets it makes the ability usable even when its other actions have no legal target. Put it behind <code>.if()</code> or in a later step when that matters.</li>
-      <li>Builder shortcut: <code>.chatMessage((context) =&gt; …)</code>, whose function gets only the context.</li>
+      <li>Builder shortcut: <a href="builder.html#b-chatMessage"><code>.chatMessage((context) =&gt; …)</code></a>, whose function gets only the context.</li>
     </ul>
     <pre><code>// Raise the Alarm: Action: During a [conflict-military] conflict in which you are the defending player – turn a dynasty card in the attacked province faceup. Then, if that card is a character, put it into play as a defender.
     .then()
@@ -2472,7 +2479,7 @@ this.wouldInterrupt('Dishonor this character instead')
     </table>
     <ul class="edge">
       <li>Always legal, so on an ability without targets it makes the ability usable even when its other actions have no legal target. Raises an unnamed event. It has no chat text.</li>
-      <li>The builder's <code>.handler(fn)</code> is not this action: it replaces the whole resolution of the ability or step. Use <code>.gameAction(handler(…))</code> to run a function between other actions.</li>
+      <li>The builder's <a href="builder.html#b-handler"><code>.handler(fn)</code></a> is not this action: it replaces the whole resolution of the ability or step. Use <code>.gameAction(handler(…))</code> to run a function between other actions.</li>
     </ul>
     <pre><code>// Mischievous Tanuki: Action: During the conflict phase - you and another player secretly select a number on your honor dials. Then reveal your dials. If both players selected even or both players selected odd, you take 2 fate from the other player. Otherwise, the player who selected even gains 2 honor, and the player who selected odd draws 2 cards.
 trueGameAction: sequential([
@@ -2501,7 +2508,7 @@ trueGameAction: sequential([
     </table>
     <ul class="edge">
       <li>The ability is usable when either action has a legal target. The chat text is the one of the action it would resolve.</li>
-      <li>Builder: <code>.ifAble() … .otherwise() …</code>; <code>otherwise()</code> is required. Unlike <code>.if()</code>, its actions stay on the ability after a card target, so name their targets.</li>
+      <li>Builder: <a href="builder.html#b-ifAble"><code>.ifAble() … .otherwise() …</code></a>; <code>otherwise()</code> is required. Unlike <code>.if()</code>, its actions stay on the ability after a card target, so name their targets.</li>
     </ul>
     <pre><code>// Akodo Zentarō: Action: During a conflict in which this character is attacking, choose a non-unique holding in the attacked province - gain control of that holding and move it to one of your unbroken provinces, if able, discarding each other card in the province. Otherwise, discard it.
     .ifAble()
@@ -2582,7 +2589,7 @@ this.action('Remove a ring from the unclaimed ring pool')
       <li>Saying No to the prompt resolves nothing (not <code>noAffinityGameAction</code>).</li>
       <li>With the affinity but no legal target for <code>gameAction</code>, nobody is asked and nothing resolves.</li>
       <li>Chat: when the affinity is used, <code>{player} channels their {trait} affinity to {text}</code>, where {text} is <code>chatText</code> or the nested action's message. As an ability's effect message it is the message of the branch that applies.</li>
-      <li>Builder: <code>.onAffinity(trait, { activePromptTitle, chatText })</code> is a step modifier, not this action's shortcut: it wraps the step's own game actions (not those given to a target) in one <code>onAffinity</code> action.</li>
+      <li>Builder: <a href="builder.html#b-onAffinity"><code>.onAffinity(trait, { activePromptTitle, chatText })</code></a> is a step modifier, not this action's shortcut: it wraps the step's own game actions (not those given to a target) in one <code>onAffinity</code> action.</li>
     </ul>
     <pre><code>// Earth's Examination: [conflict-political] Conflict Action: If you control a Shugenja character, choose a participating character - taint it, if able. With Earth affinity, you may bow that character. …
 .target({ … }, taint(), onAffinity({
@@ -2632,7 +2639,7 @@ trueGameAction: chooseAction({
       <li>Legal when the nested action is; without a legal nested action nobody is asked (also in a step). With <code>Players.Opponent</code> in a solo game nobody is asked and nothing happens.</li>
       <li>A <code>then()</code> step after it runs only if the player said Yes and the action resolved.</li>
       <li>Chat: the nested action's message; <code>acceptMessage</code> and <code>declineMessage</code> add lines for the answer.</li>
-      <li>Builder shortcut: <code>.optional(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-optional"><code>.optional(…)</code></a>.</li>
     </ul>
     <pre><code>// Hiruma Hajime: Action:  Choose a card in or attached to a province - move that card to another unbroken non-stronghold province controlled by the same player. If it is now in a province currently being attacked, you may turn it facedown.
 moveCardInProvinceAction(this)
@@ -2659,7 +2666,7 @@ moveCardInProvinceAction(this)
       <li>Each action except the last resolves its events in a then-window before the next action is checked; the last action's events resolve with the rest of the ability.</li>
       <li>A <code>then()</code> after it follows if every event, including those already resolved, resolved in full.</li>
       <li>Chat: the first nested action's message only, even when that action ends up with nothing to do. Give the ability a <code>chatText</code>.</li>
-      <li>Consecutive <code>.then()</code> steps are often the simpler alternative.</li>
+      <li>Consecutive <a href="builder.html#b-then"><code>.then()</code></a> or <a href="builder.html#b-afterwards"><code>.afterwards()</code></a> steps are often the simpler alternative; a step can print its own line with <a href="builder.html#b-message"><code>message()</code></a>.</li>
     </ul>
     <pre><code>// Tranquil Philosopher: Action: Choose an unclaimed ring - move 1 fate from that ring to another unclaimed ring. Then, gain 1 honor.
 this.action('Move fate on rings')
@@ -2681,7 +2688,7 @@ this.action('Move fate on rings')
 </section>
 <section class="group">
 <h3 class="group-title" id="ga-group-1-prompts">Prompts and choices</h3>
-<p>Actions that let a player choose while the ability resolves (after the dash), then resolve a nested <code>gameAction</code> on the choice. Unlike a target, the choice is made at resolution and is not a target unless <code>targets: true</code>.</p>
+<p>Actions that let a player choose while the ability resolves (after the dash), then resolve a nested <code>gameAction</code> on the choice. Unlike a target, the choice is made at resolution and is not a target unless <code>targets: true</code>. "Choose a character – …" before the dash is a <a href="builder.html#b-target">target</a>; "your opponent chooses a character and discards it", "search your deck for a card", "choose one of the revealed cards" are choices while resolving (<code>selectCard</code>, <a href="#ga-deckSearch"><code>deckSearch</code></a>, <code>cardMenu</code>).</p>
   <ul>
     <li><strong>What the nested action gets:</strong> <code>subActionProperties(choice)</code>, by default <code>{ target: choice }</code>, on top of whatever the select itself was passed. Return other properties to aim the nested action elsewhere, for example <code>{ destination: card.location }</code>. The nested action's own properties still win.</li>
     <li><strong>What can be chosen:</strong> only cards, rings or tokens for which the nested action, with those properties, is legal. With none, the select is illegal and does nothing.</li>
@@ -2746,7 +2753,7 @@ this.action('Dishonor/Honor two characters')
     <ul class="edge">
       <li>Nothing happens (no prompt) when it isn't legal, or when <code>cards</code> and <code>options</code> are both empty.</li>
       <li>Chat: "choose a target for <em>target</em>" (replace it, see above).</li>
-      <li>Builder shortcut: <code>.cardMenu(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-cardMenu"><code>.cardMenu(…)</code></a>.</li>
     </ul>
     <pre><code>// Daidoji Harrier: Reaction: After this character wins a [conflict-military] conflict, your opponent chooses 2 cards in his or her hand - reveal those cards. You choose and discard one of them.
 this.reaction('Discard an opponent\'s card')
@@ -2777,8 +2784,8 @@ this.reaction('Discard an opponent\'s card')
     <ul class="edge">
       <li>Only choices whose action has a legal target are offered; with none, nothing happens. The ability is usable when any choice is.</li>
       <li>Chat: "choose between different actions".</li>
-      <li>The builder's <code>.select({…})</code> makes the same kind of choice as the ability starts; <code>chooseAction</code> chooses while it resolves, e.g. by the duel's loser.</li>
-      <li>Builder shortcut: <code>.chooseAction(…)</code>.</li>
+      <li>The builder's <a href="builder.html#b-select"><code>.select({…})</code></a> makes the same kind of choice as the ability starts; <code>chooseAction</code> chooses while it resolves, e.g. by the duel's loser.</li>
+      <li>Builder shortcut: <a href="builder.html#b-chooseAction"><code>.chooseAction(…)</code></a>.</li>
     </ul>
     <pre><code>// Forest of Rustling Whispers: Conflict Action: At this province, choose a participating character - honor or dishonor that character.
 this.action('Honor or dishonor a character')
@@ -2816,7 +2823,7 @@ this.action('Honor or dishonor a character')
     <ul class="edge">
       <li>Only numbers whose action has a legal target are offered. With one such number there is no prompt; with none, nothing happens.</li>
       <li>Chat: "make a choice for <em>target</em>".</li>
-      <li>Builder shortcut: <code>.chooseAmount(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-chooseAmount"><code>.chooseAmount(…)</code></a>.</li>
     </ul>
     <pre><code>// Seven Stings Keep: Interrupt: When you declare a conflict, choose a number greater than 0 and bow this stronghold – your opponent declares defenders for this conflict. Then declare the conflict (choosing attackers, ring, conflict type, and province). You must declare a number of attackers equal to the number you chose.
 this.interrupt('Force defenders to assign first')
@@ -2881,7 +2888,7 @@ this.action('Look at opponent\'s hand and name a card')
       <li>The chosen province is passed to the nested action as its <code>target</code>, also with the function form. A nested action that sets its own target keeps it: Frontline Engineer's <code>deckSearch</code> searches the player's deck.</li>
       <li>The function form is called once for each province while checking legality, and once more with the chosen one.</li>
       <li>Chat: as <code>selectCard</code>.</li>
-      <li>Builder shortcut: <code>.selectAttackedProvince(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-selectAttackedProvince"><code>.selectAttackedProvince(…)</code></a>.</li>
     </ul>
     <pre><code>// Disdainful Remark: Action: During a conflict, if you control a participating Courtier character – until the end of the conflict, the attacked province gets +X strength. X is equal to the number of cards in your opponent's hand.
 this.action('Add Province Strength')
@@ -2935,7 +2942,7 @@ this.action('Add Province Strength')
       <li>An optional select where nothing is chosen prints no message; the nested action then gets an empty target (the function form isn't called).</li>
       <li>With <code>targets</code> and a targeting cost that can't be paid, the chat says <code>{player} attempted to use {source}, but did not successfully pay the required costs</code> and nothing happens.</li>
       <li>Chat: <code>choose a target for {0}</code>, {0} being the select's own target (the source by default); replace it, see the group intro. <code>message</code> adds a line once the card is chosen.</li>
-      <li>Builder shortcut: <code>.selectCard(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-selectCard"><code>.selectCard(…)</code></a>.</li>
     </ul>
     <pre><code>// Way of the Crab: Action: Sacrifice a (friendly) [clan-crab] character. Choose an opponent – that player must sacrifice a character. (Max 1 per round.)
 this.action('Make your opponent sacrifice a character')
@@ -2983,7 +2990,7 @@ selectCard((context) =&gt; ({
       <li>The variable and stat modes need selector properties that the type doesn't list: <code>numCardsFunc</code> for <code>ExactlyVariable</code>/<code>UpToVariable</code> (else 1 card), <code>cardStat</code> and <code>maxStat</code> for <code>MaxStat</code> (it throws without them). They are passed through as written, as Stoke Insurrection does.</li>
       <li>With <code>optional</code> and nothing chosen, <code>message</code> still runs, with an empty list.</li>
       <li>Chat: as <code>selectCard</code>.</li>
-      <li>Builder shortcut: <code>.selectCards(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-selectCards"><code>.selectCards(…)</code></a>.</li>
     </ul>
     <pre><code>// Aranat: Reaction: After you play this character, choose an opponent - that player may reveal any number of his or her facedown non-stronghold provinces. …
 this.reaction('Place additional fate')
@@ -3021,7 +3028,7 @@ this.reaction('Place additional fate')
     <ul class="edge">
       <li>A ring can be chosen if it passes <code>ringCondition</code> and the nested action is legal with <code>subActionProperties(ring)</code>. With none, the select does nothing.</li>
       <li>Chat: <code>choose a ring</code>; set the ability's chat text to say more. <code>message</code> adds a line once the ring is chosen.</li>
-      <li>Builder shortcut: <code>.selectRing(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-selectRing"><code>.selectRing(…)</code></a>.</li>
     </ul>
     <pre><code>// Tranquil Philosopher: Action: Choose an unclaimed ring - move 1 fate from that ring to another unclaimed ring. Then, gain 1 honor.
 selectRing((context) =&gt; ({
@@ -3056,7 +3063,7 @@ selectRing((context) =&gt; ({
       <li>The tokens offered are all tokens on the card the nested action can affect; <code>tokenCondition</code> does not filter them. With one such token, or <code>singleToken: false</code>, there is no prompt.</li>
       <li>The chosen tokens are stored in <code>context.tokens.selectToken</code>.</li>
       <li>Chat: <code>choose a status token for {0}</code>, where {0} is the select's own target (the source's tokens by default); set <code>chatText</code> or the ability's chat text. <code>message</code> adds a line once the token is chosen.</li>
-      <li>Builder shortcut: <code>.selectToken(…)</code>.</li>
+      <li>Builder shortcut: <a href="builder.html#b-selectToken"><code>.selectToken(…)</code></a>.</li>
     </ul>
     <pre><code>// Liar's Mask: Action: Discard a status token from attached character.
 this.action('Discard status token from attached character')
