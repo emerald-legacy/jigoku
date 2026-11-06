@@ -908,8 +908,6 @@ describe('SoD - Phoenix: Vengeful Kami, Max 1 per conflict', function () {
             this.player2.clickCard(this.scholar);
             expect(this.scholar.fate).toBe(1);
 
-            const ab = this.vengeful1.abilities.actions.concat(this.vengeful1.abilities.reactions || []);
-            console.log('DBG', JSON.stringify(Object.keys(this.player1.player.abilityMaxByIdentifier)), JSON.stringify(Object.keys(this.player2.player.abilityMaxByIdentifier)), ab.map((a) => a.maxIdentifier + '|' + !!a.max).join(','), this.vengeful1 === this.vengeful2);
             this.player1.pass();
             this.player2.clickCard(this.vengeful2);
             expect(this.player2).toHavePrompt('Conflict Action Window');
