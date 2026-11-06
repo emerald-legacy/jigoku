@@ -1,5 +1,8 @@
 import { CardType, DuelType, Players } from '../../Constants.js';
-import { conditional, discardFromPlay, duel, removeFate } from '../../GameActions/GameActions.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import type { ResolvedDuel } from '../../Duel.js';
+import { duel, injure } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class MirumotoRaitsugu extends DrawCard {
@@ -14,13 +17,20 @@ export default class MirumotoRaitsugu extends DrawCard {
                 cardCondition: (card) => card.isParticipating()
             }, duel({
                 type: DuelType.Military,
-                gameAction: (duel) =>
-                    conditional({
-                        target: duel.loser?.[0],
-                        condition: (duel.loser?.[0]?.getFate() ?? 0) > 0,
-                        trueGameAction: removeFate(),
-                        falseGameAction: discardFromPlay()
-                    })
+                gameAction: (duel) => injure({ target: duel.loser ?? [] }),
+                chatText: (context, duel) => this.injureMessage(context, duel)
             }));
+    }
+
+    private injureMessage(context: AbilityContext, duel: ResolvedDuel) {
+        const losers = duel.loser ?? [];
+        const injured = losers.filter((card) => injure({ target: losers }).canAffect(card, context));
+        const discarded = injured.filter((card) => card.getFate() === 0);
+        const fateRemoved = injured.filter((card) => card.getFate() > 0);
+        const parts = [
+            discarded.length > 0 ? context.game.gameChat.nested(msg`discard ${discarded}`) : undefined,
+            fateRemoved.length > 0 ? context.game.gameChat.nested(msg`remove 1 fate from ${fateRemoved}`) : undefined
+        ].filter((part) => part !== undefined);
+        return msg`${parts}`;
     }
 }

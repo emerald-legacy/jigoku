@@ -120,5 +120,44 @@ describe('Mirumoto Raitsugu', function() {
                 expect(this.dojiWhisperer.fate).toBe(0);
             });
         });
+        describe('with Two Hands', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['mirumoto-raitsugu'],
+                        hand: ['two-hands']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer', 'solemn-scholar']
+                    }
+                });
+                this.mirumotoRaitsugu = this.player1.findCardByName('mirumoto-raitsugu');
+                this.twoHands = this.player1.findCardByName('two-hands');
+                this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
+                this.solemnScholar = this.player2.findCardByName('solemn-scholar');
+                this.solemnScholar.fate = 2;
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.mirumotoRaitsugu],
+                    defenders: [this.dojiWhisperer, this.solemnScholar]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.mirumotoRaitsugu);
+                this.player1.clickCard(this.dojiWhisperer);
+                this.player1.clickCard(this.twoHands);
+                this.player1.clickCard(this.solemnScholar);
+                this.player1.clickPrompt('5');
+                this.player2.clickPrompt('1');
+            });
+
+            it('resolves the result for each loser (RRG D.3: they lose together)', function() {
+                expect(this.dojiWhisperer.location).toBe('dynasty discard pile');
+                expect(this.solemnScholar.location).toBe('play area');
+                expect(this.solemnScholar.fate).toBe(1);
+                expect(this.getChatLogs(5)).toContain('Duel Effect: discard Doji Whisperer and remove 1 fate from Solemn Scholar');
+            });
+        });
     });
 });
