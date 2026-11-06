@@ -27,7 +27,7 @@
 </header>
 <h2 id="he-helpers">Shared card helpers</h2>
 <p>Code shared by a family of cards (province attachments, mantras, attachment searches, "claimed ring" symbols) lives in modules directly in <code>server/game/cards/</code>. Import with <code>'../name.js'</code> from a set folder (<code>01-Core/</code>) and <code>'../../name.js'</code> from a clan folder (<code>20-Core2/Crab/</code>): <code>import { controlsShugenja } from '../../controlsShugenja.js';</code>. All are named exports except <code>Soldier</code>, <code>SpiritOfTheRiver</code> and <code>UnleashedHound</code> (default).</p>
-<p>Most modules are named after their export. The others: <code>attachmentPlay</code> (<code>isReducibleAttachmentPlay</code>), <code>attacksAlone</code> (<code>attacksAloneWithTrait</code>), <code>cardsUnderneath</code> (<code>cardsUnderneath</code>, <code>countCardsUnderneath</code>, <code>playableFromUnderneath</code>), <code>claimedRings</code> (every claimed ring helper), <code>copyBaseSkills</code> (<code>copyBaseSkillEffects</code>), <code>effectSource</code> (<code>isOpponentsRingOrCardEffect</code>, <code>isOwnRingEffect</code>), <code>extraAbilityUse</code> (<code>getExtraUseDuration</code>), <code>kaiuWall</code> (<code>defendingAtKaiuWall</code>), <code>moveCardInProvince</code> (<code>moveCardInProvinceAction</code>), <code>moveHolding</code> (<code>moveHoldingAction</code>, <code>otherHoldingsInSameProvince</code>), <code>nameCardTypeAndTake</code> (<code>nameCardType</code>, <code>revealCount</code>, <code>takeUpToTwoOfNamedType</code>), <code>playedFromProvince</code> (<code>isPlayedFromProvince</code>), <code>switchSkills</code> (<code>canSwitchSkills</code>), <code>summonCreature</code>; and second exports of <code>captureParentCost</code> (<code>capturedParent</code>), <code>participatingGlory</code> (<code>hasMoreParticipatingGlory</code>), <code>randomHandCards</code> (<code>chooseCardToDiscard</code>).</p>
+<p>Most modules are named after their export. For the others (<code>attachmentPlay</code>, <code>claimedRings</code>, …) grep: <code>grep -l 'export .*isReducibleAttachmentPlay' server/game/cards/*.ts</code>.</p>
 <p>Check this list before writing a helper. Code two or more cards need goes here; code for one card stays in its file.</p>
 
 <section class="group">
@@ -1435,7 +1435,7 @@ this.action('Ready character and move to conflict')
         <tr><td>"if you are the first player"</td><td><a href="#q-player-properties"><code>context.player.firstPlayer</code></a></td></tr>
     </tbody>
 </table>
-<pre><code>// "Action: During a [conflict-political] conflict at an unbroken province, choose a participating Bushi character with 2 or less fate – …"
+<pre><code>// Made-up text combining rows: "Action: During a [conflict-political] conflict at an unbroken province, choose a participating Bushi character with 2 or less fate – …"
 this.action('…')
     .condition((context) =&gt;
         context.game.isDuringConflict(ConflictType.Political) &amp;&amp;

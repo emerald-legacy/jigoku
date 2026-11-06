@@ -362,7 +362,7 @@ this.persistentEffect({
     effect: modifyPoliticalSkill(3)
 });
 
-// Cautious Scout: other cards (match), the opponent's province: While this character is attacking alone, treat the defending province as if its printed text box were blank (except for Traits).
+// Cautious Scout: While this character is attacking alone, treat the defending province as if its printed text box were blank (except for Traits).
 this.persistentEffect({
     match: (card) =&gt; card.isConflictProvince(),
     targetLocation: Location.Provinces,
@@ -404,7 +404,7 @@ this.playOnlyIf((context) =&gt; controlsShugenja(context.player));</code></pre>
       </tbody>
     </table>
     <ul class="edge">
-      <li>"Attached character" is <code>context.source.parentCharacter</code>, both in <code>condition</code> (where <code>context.source</code> is the attachment) and in the attachment's other abilities; <code>null</code> when not attached to a character.</li>
+      <li>In <code>condition</code>, <code>context.source</code> is the attachment; "attached character" is <a href="helpers.html#q-parentCharacter"><code>context.source.parentCharacter</code></a>.</li>
     </ul>
     <pre><code>// Cloud the Mind: Attached character loses all printed abilities.
 this.whileAttached({
@@ -509,7 +509,7 @@ this.reaction('Gain 2 fate')
       <li>The keys are event names (<code>onCardPlayed</code>, <code>onConflictStarted</code> …). Each event's fields (<code>event.card</code>, <code>event.conflict</code> …) and when it is raised are under <a href="types.html#ev-section-events">Events</a>.</li>
       <li>Several keys are alternatives: the ability triggers if any of them matches.</li>
       <li>An "if" in the trigger ("After a conflict begins, if this character is attacking –") usually goes into the same check (Mantis Raider); <a href="#b-ifCondition"><code>ifCondition()</code></a> works too (Hiruma Kogoe).</li>
-      <li>The check runs once per player; only players allowed to use the ability (its controller, unless <a href="#b-anyPlayer"><code>anyPlayer()</code></a>) are offered it.</li>
+      <li>The check runs once per player, and the ability is offered only to a player who may use it: the card's controller; anyone with <a href="#b-anyPlayer"><code>anyPlayer()</code></a>; the opponent too while the card has <a href="effects.html#ef-canBeTriggeredByOpponent"><code>canBeTriggeredByOpponent</code></a> (not for forced abilities); on an event card, anyone who can play it from where it is.</li>
       <li>In the rest of the ability <code>context.event</code> is the union of the keys' payloads; narrow with <code>context.event.is(EventName.X)</code> to read a field of one event. On a province it may be <code>undefined</code>.</li>
     </ul>
     <pre><code>// Benevolent Host: Reaction: After you play this character, choose a Courtier in your provinces – put that character into play. …
@@ -749,7 +749,7 @@ this.action('Ready a character')
 
 <section class="group">
   <h3 class="group-title" id="b-group-targets">Targets</h3>
-  <p>"Choose …" before the dash. Each target method takes the target's properties, then the game actions that resolve on what was chosen.</p>
+  <p>"Choose …": a choice made when the ability is used (RRG: "choose" denotes a target). Each target method takes the target's properties, then the game actions that resolve on what was chosen.</p>
   <ul>
     <li>The target's game actions get the choice as their default target. An action that sets its own <code>target</code> keeps it.</li>
     <li>A target without game actions only records the choice. Later game actions, <code>if()</code> or a step read it.</li>
@@ -757,7 +757,7 @@ this.action('Ready a character')
     <li>The ability can only be used when every target that doesn't depend on another has a legal choice, or is optional.</li>
     <li>Two targets with one name throw <code>"two targets named &lt;name&gt;"</code>; a target after <code>if()</code> throws <code>"targets come before if()"</code>.</li>
   </ul>
-  <p>A "choose" after the dash is made while the effect resolves, so it is not a target. Use <a href="#b-selectCard"><code>selectCard()</code></a>, <a href="#b-chooseAction"><code>chooseAction()</code></a> or another <a href="#b-group-shortcuts-choices">choice shortcut</a>.</p>
+  <p>What counts is when the choice is made, not where it stands in the text. A choice that can only be made while the effect resolves (among cards the effect reveals or looks at, or after an earlier part has happened) is not a target: use <a href="#b-selectCard"><code>selectCard()</code></a>, <a href="#b-chooseAction"><code>chooseAction()</code></a> or another <a href="#b-group-shortcuts-choices">choice shortcut</a>.</p>
 
   <div class="ref" id="b-abilityTarget" data-name="abilityTarget">
     <h3><code>abilityTarget(properties, ...gameActions)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-abilityTarget">#</a></h3>
@@ -862,7 +862,7 @@ this.action('Prevent an opponent contesting a ring')
 
   <div class="ref" id="b-select" data-name="select">
     <h3><code>select(choices)</code> · <code>select(properties, choices)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-select">#</a></h3>
-    <p>"Select one – … or …" before the effect: the player picks one labelled choice when the ability is used. The label is <code>context.selects[name].choice</code>, and <code>context.select</code> for the select named <code>target</code>. Without other properties, pass the choices alone.</p>
+    <p>"Select one – … or …": the player picks one labelled choice when the ability is used, with the targets (RRG: pre-effect "select" instructions are made then), also when the text puts it after the dash (For Shame!: "Your opponent must select one – …", with <code>player: Players.Opponent</code>). The label is <code>context.selects[name].choice</code>, and <code>context.select</code> for the select named <code>target</code>. Without other properties, pass the choices alone.</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1145,8 +1145,8 @@ this.action('Ready a character')
         <tr><td><code>targetCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>participating (with <code>requiresConflict</code>)</td><td>Who can be dueled (an opposing character other than the challenger); replaces the default check.</td></tr>
         <tr><td><code>opponentChoosesDuelTarget</code></td><td><code>boolean</code></td><td><code>false</code></td><td>The opponent chooses the duel target.</td></tr>
         <tr><td><code>opponentChoosesChallenger</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Not on a character: the opponent chooses the challenger.</td></tr>
-        <tr><td><code>onTie</code></td><td><code>GameAction | (duel, context) =&gt; GameAction</code></td><td>none</td><td>The effect on a tie; without it a tie does nothing.</td></tr>
-        <tr><td><code>chatText</code></td><td><code>(context, duel) =&gt; msg…</code></td><td>the game action's text</td><td>The text after "Duel Effect: ".</td></tr>
+        <tr><td><code>onTie</code></td><td><code>GameAction | (duel, context) =&gt; GameAction</code></td><td>none</td><td>The effect when the duel has no winner (a tie); without it nothing happens.</td></tr>
+        <tr><td><code>chatText</code></td><td><code>(context, duel) =&gt; msg…</code></td><td>the game action's text</td><td>The text after "Duel Effect: " when the duel has a winner; otherwise the <code>onTie</code> action's text.</td></tr>
         <tr><td><code>refuseGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>The effect when the opponent refuses the duel; it resolves first and the duel is refused only if it resolved; a replaced refusal (Kitsuki Shomon) still refuses, a cancelled one doesn't (ruling #646).</td></tr>
         <tr><td><code>refusalMessage</code></td><td><code>(context, refuser) =&gt; msg…</code></td><td>"… chooses to refuse the duel and …"</td><td>The chat line when refused: built when the opponent chooses to refuse, posted only once the refusal fully resolved. A refusal that was replaced (Kitsuki Shomon, ruling #646) posts "<em>refuser</em> chooses to refuse the duel" instead.</td></tr>
         <tr><td><code>statistic</code></td><td><code>(card, duelRules) =&gt; number | { printed, bonus }</code></td><td>the duel type's skill</td><td>The value each character duels with (<a href="game-actions.html#ga-duel"><code>DuelStatistic</code></a>).</td></tr>
@@ -1156,7 +1156,7 @@ this.action('Ready a character')
     </table>
     <ul class="edge">
       <li><code>fn</code> is a function of the context; it is read again for each check, so it can depend on the game state.</li>
-      <li>The <code>duel</code> passed to <code>gameAction</code> and <code>onTie</code> has <code>winner</code> and <code>loser</code> (arrays of cards, unset without a result), <code>winnerController</code>, <code>loserController</code>, <code>challenger</code>, <code>targets</code>, <code>participants</code> and <code>isInvolved(card)</code>.</li>
+      <li>The <code>duel</code> passed to <code>gameAction</code> and <code>onTie</code> has <code>winner</code> and <code>loser</code> (arrays of cards; both unset without a winner), <code>winnerController</code>, <code>loserController</code>, <code>challenger</code>, <code>targets</code>, <code>participants</code> and <code>isInvolved(card)</code>.</li>
       <li>The duel chooses its own targets, so the ability has no <code>target()</code>: throws at registration <code>"initiateDuel() chooses the duel's targets itself, so the ability has no target()"</code>. Once per ability; not on a step.</li>
       <li>On a character, the challenger check is added to the ability's <a href="#b-condition"><code>condition()</code></a>. With <code>requiresConflict</code> (the default) don't add a conflict or participation check of your own.</li>
       <li>The challenger is always a character of the ability's player. When the card lets the challenger be any character, declare the targets yourself and use the <a href="game-actions.html#ga-duel"><code>duel</code></a> game action, which <code>initiateDuel()</code> builds on.</li>
@@ -1411,7 +1411,7 @@ this.action('Move this character to the conflict or home from the conflict')
 
   <div class="ref" id="b-then" data-name="then">
     <h3><code>then()</code> <span class="kind">Builder</span> <a class="anchor" href="#b-then">#</a></h3>
-    <p>"If you do, …": starts the next step, which follows only when every event of this step resolved in full. Returns a builder for the step.</p>
+    <p>"Then, …" or "If you do, …": starts the next step, which follows only when every event of this step resolved in full. Returns a builder for the step.</p>
     <ul class="edge">
       <li>If this step raised no events (nothing it could do), the step doesn't follow.</li>
       <li>A replaced or redirected event (another event name or card) didn't resolve in full.</li>
@@ -2068,7 +2068,7 @@ this.action('Steal a fate')
 
 <section class="group">
   <h3 class="group-title" id="b-group-shortcuts-choices">Shortcuts: choices while resolving</h3>
-  <p>Choices made after the dash, while the effect resolves (not targets): the chosen thing is handed to the inner <code>gameAction</code>.</p>
+  <p>Choices made while the effect resolves (not targets): the chosen thing is handed to the inner <code>gameAction</code>.</p>
   <div class="ref" id="b-cardMenu" data-name="cardMenu">
     <h3><code>cardMenu(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-cardMenu">#</a></h3>
     <p>One of <code>cards</code> is chosen from card buttons, and <code>gameAction</code> resolves on it. Full entry: <a href="game-actions.html#ga-cardMenu"><code>cardMenu</code></a>.</p>
@@ -2083,7 +2083,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-chooseAction" data-name="chooseAction">
     <h3><code>chooseAction(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-chooseAction">#</a></h3>
-    <p>A labelled choice between game actions ("select one" after the dash); a choice is an action or <code>{ action, message }</code>. Full entry: <a href="game-actions.html#ga-chooseAction"><code>chooseAction</code></a>.</p>
+    <p>A labelled choice between game actions, made while the effect resolves (a "select one" made when the ability is used is <a href="#b-select"><code>select()</code></a>); a choice is an action or <code>{ action, message }</code>. Full entry: <a href="game-actions.html#ga-chooseAction"><code>chooseAction</code></a>.</p>
     <pre><code>// Compass: … look at the top 3 cards of one of your decks. …
 .chooseAction({
     activePromptTitle: 'Choose a deck',

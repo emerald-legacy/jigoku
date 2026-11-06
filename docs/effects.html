@@ -35,17 +35,12 @@
     <tbody>
         <tr><td>A constant ability (no "Action:", "Reaction:" or similar label): "Each participating character you control gets +1 military."</td><td><a href="builder.html#cm-persistentEffect"><code>this.persistentEffect({ match, targetController, condition, effect })</code></a> in <code>setupCardAbilities()</code></td></tr>
         <tr><td>"Attached character gets +2 military."</td><td><a href="builder.html#cm-whileAttached"><code>this.whileAttached({ effect })</code></a></td></tr>
-        <tr><td>"… until the end of the conflict" in an ability</td><td>A lasting effect game action as the ability's effect: <a href="game-actions.html#ga-cardLastingEffect"><code>cardLastingEffect</code></a>, <a href="game-actions.html#ga-playerLastingEffect"><code>playerLastingEffect</code></a>, <a href="game-actions.html#ga-ringLastingEffect"><code>ringLastingEffect</code></a>, <a href="game-actions.html#ga-conflictLastingEffect"><code>conflictLastingEffect</code></a>, <a href="game-actions.html#ga-duelLastingEffect"><code>duelLastingEffect</code></a>, or the builder shortcut of the same name (<code>.cardLastingEffect({ … })</code>)</td></tr>
-        <tr><td>"Choose a character – … this phase"</td><td><code>.target({ … }, cardLastingEffect({ duration: Duration.UntilEndOfPhase, effect }))</code>: the chosen card gets it. Without a target, <code>cardLastingEffect</code> applies to the ability's own card. The default duration is <code>Duration.UntilEndOfConflict</code>; the others are listed under <a href="game-actions.html#ga-group-1-lasting">lasting effects</a>.</td></tr>
+        <tr><td>"… until the end of the conflict", "… this phase" in an ability</td><td>A lasting effect game action as the ability's effect: <a href="game-actions.html#ga-cardLastingEffect"><code>cardLastingEffect</code></a>, <a href="game-actions.html#ga-playerLastingEffect"><code>playerLastingEffect</code></a>, <a href="game-actions.html#ga-ringLastingEffect"><code>ringLastingEffect</code></a>, <a href="game-actions.html#ga-conflictLastingEffect"><code>conflictLastingEffect</code></a>, <a href="game-actions.html#ga-duelLastingEffect"><code>duelLastingEffect</code></a>, or the builder shortcut of the same name (<code>.cardLastingEffect({ … })</code>). Durations: <a href="game-actions.html#ga-lasting-shared">shared properties</a>.</td></tr>
+        <tr><td>"Choose a character – …"</td><td><code>.target({ … }, cardLastingEffect({ duration: Duration.UntilEndOfPhase, effect }))</code>: the chosen card gets it. Without a target it is the ability's own card.</td></tr>
         <tr><td>"The next card you play this phase costs 1 less"</td><td><code>playerLastingEffect</code> with the effect, e.g. <code>reduceNextPlayedCardCost</code></td></tr>
     </tbody>
 </table>
-<p>A "while …" in the card text is the <code>condition</code>, re-read at every state check. In it <code>context.source</code> is the card the ability is on: for "while this character is attacking" use <code>context.source.isAttacking()</code> (<a href="helpers.html#q-isAttacking">queries</a>); on an attachment it is the attachment, so "while attached character is attacking" is <code>context.source.parentCharacter?.isAttacking()</code>.</p>
-<pre><code>// Curved Blade: … While attached character is attacking, it gets +2[conflict-military].
-this.whileAttached({
-    condition: (context) =&gt; Boolean(context.source.parentCharacter &amp;&amp; context.source.parentCharacter.isAttacking()),
-    effect: modifyMilitarySkill(2)
-});</code></pre>
+<p>A "while …" in the card text is the <code>condition</code>, re-read at every state check. What <code>context.source</code> is in it and which cards a persistent effect reaches (<code>match</code>, <code>targetController</code>, <code>targetLocation</code>, facedown sources) are on <a href="builder.html#cm-persistentEffect"><code>persistentEffect</code></a> and <a href="builder.html#cm-whileAttached"><code>whileAttached</code></a>; for lasting effects see each game action.</p>
 <p>The label on each entry says what the effect applies to:</p>
 <table>
     <thead><tr><th>Label</th><th>Applies to</th><th>Put it there with</th></tr></thead>
@@ -53,32 +48,11 @@ this.whileAttached({
         <tr><td>Card effect</td><td>A card</td><td><code>persistentEffect</code> with <code>match</code>, <code>whileAttached</code>, <code>cardLastingEffect</code>, <code>conflictLastingEffect</code> with <code>match</code></td></tr>
         <tr><td>Player effect</td><td>A player</td><td><code>persistentEffect</code> with <code>targetController</code> (<code>Players.Self</code> by default, <code>Opponent</code> or <code>Any</code>), <code>playerLastingEffect</code> with <code>target</code> (by default the ability's player)</td></tr>
         <tr><td>Ring effect</td><td>A ring</td><td><code>persistentEffect</code> with <code>match</code>, <code>ringLastingEffect</code></td></tr>
-        <tr><td>Conflict effect</td><td>The current conflict, whatever <code>match</code> or <code>target</code> says; nothing outside a conflict</td><td><code>conflictLastingEffect</code>, or a <code>persistentEffect</code> with a <code>condition</code></td></tr>
+        <tr><td>Conflict effect</td><td>The current conflict, whatever <code>match</code> or <code>target</code> says; nothing outside a conflict</td><td><code>conflictLastingEffect</code>, or a <code>persistentEffect</code> (usually with a <code>condition</code>)</td></tr>
         <tr><td>Duel effect</td><td>The current duel</td><td><code>duelLastingEffect</code></td></tr>
     </tbody>
 </table>
-<p>Which cards a <code>persistentEffect</code> reaches with a card effect:</p>
-<ul>
-    <li>Without <code>match</code>: the card itself.</li>
-    <li>With <code>match</code>: matching cards in the play area. Set <code>targetLocation</code> for cards elsewhere, provinces included.</li>
-    <li>Only cards that the effect source's controller controls, unless <code>targetController</code> says otherwise (the default is <code>Players.Self</code>; see <a href="types.html#en-Players"><code>Players</code></a>).</li>
-    <li>A province or holding applies its persistent effects from its province, and only while it is faceup (<code>ActiveEffect.isEffectActive</code>).</li>
-    <li><code>whileAttached</code> reaches the attached card, whoever controls it.</li>
-    <li><code>conflictLastingEffect</code> with <code>match</code> reaches every matching card while it lasts, also cards that enter play later (Grasp of Earth).</li>
-</ul>
-<pre><code>// Kuni Wasteland (province): while it is the attacked province, the opponent's characters can't trigger
-// abilities or initiate keywords.
-this.persistentEffect({
-    condition: (context) =&gt; context.source.isConflictProvince(),
-    targetController: Players.Opponent,
-    targetLocation: Location.PlayArea,
-    match: (card) =&gt; card.type === CardType.Character,
-    effect: [
-        cardCannot({ cannot: RestrictionType.TriggerAbilities, appliesTo: RestrictionScope.NonForcedAbilities }),
-        cardCannot({ cannot: RestrictionType.InitiateKeywords, appliesTo: RestrictionScope.KeywordAbilities })
-    ]
-});</code></pre>
-<p>Whose effect it is (for "you", "opponent" and restriction scopes): a persistent effect is its source's controller's; a lasting effect is the player's whose ability created it, even when that player doesn't control the source (an opponent's event they played).</p>
+<p>Whose effect it is: a persistent effect is its source's controller's; a lasting effect is the player's whose ability created it. That player is <code>context.player</code> in its condition and value functions and "you" for restriction scopes. <code>targetController</code> is always relative to the source's current controller.</p>
 
 <h3 id="ef-values">Fixed and computed values</h3>
 <p>Some effects take a value or a function: <code>modifyMilitarySkill(2)</code> or <code>modifyMilitarySkill((card, context) =&gt; card.attachments.length)</code>. A function is recalculated for each target at every state check. The parameter tables show which effects take a function; "A fixed value" means it doesn't.</p>
@@ -106,13 +80,13 @@ this.persistentEffect({
         <tr><td>"… by your opponent's events", "… by card effects"</td><td>the same, with <code>appliesTo: RestrictionScope.OpponentsEvents</code>, <code>CardEffects</code>, … (<a href="types.html#en-RestrictionScope"><code>RestrictionScope</code></a>)</td></tr>
         <tr><td>"immune to …"</td><td><a href="#ef-immunity"><code>immunity</code></a></td></tr>
         <tr><td>"you / your opponent cannot …"</td><td><a href="#ef-playerCannot"><code>playerCannot</code></a></td></tr>
-        <tr><td>"cannot be declared as an attacker", "cannot participate in [conflict-military] conflicts"</td><td><a href="#ef-cannotBeDeclaredAsAttacker"><code>cannotBeDeclaredAsAttacker</code></a>, <a href="#ef-cannotParticipateAsAttacker"><code>cannotParticipateAsAttacker</code></a></td></tr>
+        <tr><td>"cannot be declared as an attacker", "cannot participate as an attacker", "cannot participate in [conflict-military] conflicts"</td><td><a href="#ef-cannotBeDeclaredAsAttacker"><code>cannotBeDeclaredAsAttacker</code></a>, <a href="#ef-cannotParticipateAsAttacker"><code>cannotParticipateAsAttacker()</code></a>, both <code>cannotParticipateAsAttacker(ConflictType.Military)</code> and <code>cannotParticipateAsDefender(ConflictType.Military)</code> (Pacifism)</td></tr>
         <tr><td>"does not bow as a result of conflict resolution"</td><td><a href="#ef-doesNotBow"><code>doesNotBow</code></a></td></tr>
         <tr><td>"costs 1 less to play", "the next card you play costs 1 less"</td><td><a href="#ef-reduceCost"><code>reduceCost</code></a>, <a href="#ef-reduceNextPlayedCardCost"><code>reduceNextPlayedCardCost</code></a></td></tr>
         <tr><td>"you may declare an additional conflict"</td><td><a href="#ef-additionalConflict"><code>additionalConflict</code></a></td></tr>
         <tr><td>"gets +2 strength" (province)</td><td><a href="#ef-modifyProvinceStrength"><code>modifyProvinceStrength</code></a></td></tr>
         <tr><td>"you may play … from your discard pile"</td><td><a href="#ef-canPlayFromOwn"><code>canPlayFromOwn</code></a></td></tr>
-        <tr><td>"take control of …"</td><td><a href="#ef-takeControl"><code>takeControl</code></a></td></tr>
+        <tr><td>"take control of …"</td><td><a href="#ef-takeControl"><code>takeControl</code></a> in a <code>cardLastingEffect</code> (Blackmail), or the <a href="game-actions.html#ga-takeControl"><code>takeControl</code> game action</a></td></tr>
         <tr><td>"if it wins the conflict, honor it" (later, once)</td><td><a href="#ef-delayedEffect"><code>delayedEffect</code></a></td></tr>
     </tbody>
 </table>

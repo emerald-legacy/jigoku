@@ -1202,7 +1202,7 @@ this.reaction('The attacker gets the first action opportunity')
 </section>
 <section class="group">
 <h3 class="group-title" id="ga-group-2-entering-play">Entering play</h3>
-<p>Putting characters into play without playing them, and playing cards from somewhere other than the hand. "Put it into play" is <code>putIntoPlay</code>, "… into play in the conflict" <code>putIntoConflict</code>, "play it as if it were in your hand" <code>playCard</code>. To take the card from a province, deck or discard pile, give the target that <code>location</code> (Charge!, Black Marketeer).</p>
+<p>Putting characters into play without playing them, and playing cards from somewhere other than the hand. "Put it into play" is <code>putIntoPlay</code>, "… into play in the conflict" <code>putIntoConflict</code>, "play it as if it were in your hand" <code>playCard</code>. To take the card from a province or discard pile, give the target that <code>location</code> (Charge!, Black Marketeer); from a deck, nest the action in <a href="#ga-deckSearch"><code>deckSearch</code></a>.</p>
 <div class="ref" id="ga-opponentPutIntoPlay" data-name="opponentPutIntoPlay">
     <h3><code>opponentPutIntoPlay(properties?)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-opponentPutIntoPlay">#</a></h3>
     <p>Like <a href="#ga-putIntoPlay"><code>putIntoPlay</code></a> (at home), but the ability's player's opponent puts the character into play and controls it.</p>
@@ -2173,6 +2173,7 @@ this.reaction('Modify honor dial')
         <tr><td><code>duration</code></td><td><code>Duration</code></td><td><code>Duration.UntilEndOfConflict</code> (<code>duelLastingEffect</code>: <code>UntilEndOfDuel</code>)</td><td><code>UntilEndOfDuel</code>, <code>UntilEndOfConflict</code>, <code>UntilEndOfPhase</code>, <code>UntilEndOfRound</code>, <code>UntilPassPriority</code>, <code>UntilOpponentPassPriority</code>, <code>UntilSelfPassPriority</code>, <code>UntilNextPassPriority</code>, <code>Persistent</code>, or <code>Custom</code> with <code>until</code>.</td></tr>
         <tr><td><code>until</code></td><td><code>EffectUntil</code></td><td>none</td><td>With <code>Duration.Custom</code>: event names with a callback; the effect ends when one returns true.</td></tr>
         <tr><td><code>condition</code></td><td><code>(context) =&gt; boolean</code></td><td>always</td><td>The effect is active only while this holds.</td></tr>
+        <tr><td><code>targetController</code></td><td><code>Players | Player</code></td><td><code>Players.Self</code></td><td>Whose cards a card effect with <code>match</code> reaches, and which players a player effect reaches. <code>Self</code>/<code>Opponent</code> are relative to the current controller of the ability's card (<code>source.getEffectController()</code>, read while the effect lasts), not to the ability's player; <code>Players.Any</code> for both (Expert Interpreter). Ignored by <code>cardLastingEffect</code> (it always reaches its target) and <code>playerLastingEffect</code> (set from its <code>target</code>).</td></tr>
         <tr><td><code>ability</code></td><td><code>BaseAbility</code></td><td>the resolving ability</td><td>The ability the effect belongs to.</td></tr>
         <tr><td><code>endingMessage</code></td><td><code>string</code></td><td>none</td><td>With <code>Duration.Custom</code>: a chat line when the effect ends (Into the Storm).</td></tr>
     </tbody>
@@ -2211,7 +2212,7 @@ this.action('Resurrect a character')
   </div>
 <div class="ref" id="ga-cardLastingEffect" data-name="cardLastingEffect">
     <h3><code>cardLastingEffect(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-cardLastingEffect">#</a></h3>
-    <p>Applies an effect to cards for a duration: "until the end of the conflict, that character gets +2 military". Also takes the <a href="#ga-lasting-shared">shared properties</a> (<code>effect</code>; <code>duration</code>, default <code>Duration.UntilEndOfConflict</code>). Without a <code>target</code> and off a card target, it applies to the ability's own card.</p>
+    <p>Applies an effect to cards for a duration: "until the end of the conflict, that character gets +2 military". Also takes the <a href="#ga-lasting-shared">shared properties</a>.</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2241,13 +2242,12 @@ this.conflictAction('Reduce opponent\'s characters mil', { conflictType: Conflic
   </div>
 <div class="ref" id="ga-conflictLastingEffect" data-name="conflictLastingEffect">
     <h3><code>conflictLastingEffect(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-conflictLastingEffect">#</a></h3>
-    <p>Applies an effect to the conflict as a whole, not to a card or player: "characters cannot trigger abilities this conflict". Also takes the <a href="#ga-lasting-shared">shared properties</a> (<code>duration</code>, default <code>Duration.UntilEndOfConflict</code>).</p>
+    <p>Applies an effect to the conflict as a whole, not to a card or player: "characters cannot trigger abilities this conflict". Also takes the <a href="#ga-lasting-shared">shared properties</a>.</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>effect</code></td><td><code>EffectFactory | EffectFactory[]</code></td><td>none</td><td>Conflict-wide effects such as <code>charactersCannot(…)</code>, <code>cannotContribute(…)</code> or <code>additionalAttackedProvince(…)</code>.</td></tr>
         <tr><td><code>match</code></td><td><code>(card, context) =&gt; boolean</code></td><td>none</td><td>For a card effect: the cards it reaches while it lasts, also cards that enter play later (Grasp of Earth).</td></tr>
-        <tr><td><code>targetController</code></td><td><code>Players | Player</code></td><td><code>Players.Self</code></td><td>With <code>match</code>: whose cards it reaches (<code>Players.Opponent</code>, <code>Players.Any</code>).</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -2268,7 +2268,7 @@ this.action('Stop characters from triggering abilities')
   </div>
 <div class="ref" id="ga-duelLastingEffect" data-name="duelLastingEffect">
     <h3><code>duelLastingEffect(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-duelLastingEffect">#</a></h3>
-    <p>Applies an effect to the current duel: "characters do not contribute their printed statistic to the resolution of this duel". Also takes the <a href="#ga-lasting-shared">shared properties</a> (<code>duration</code>, default <code>Duration.UntilEndOfDuel</code>).</p>
+    <p>Applies an effect to the current duel: "characters do not contribute their printed statistic to the resolution of this duel". Also takes the <a href="#ga-lasting-shared">shared properties</a>.</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2291,7 +2291,7 @@ this.duelChallenge('Ignore printed skill in the duel', (duel, context) =&gt; due
   </div>
 <div class="ref" id="ga-playerLastingEffect" data-name="playerLastingEffect">
     <h3><code>playerLastingEffect(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-playerLastingEffect">#</a></h3>
-    <p>Applies an effect to players for a while ("for this conflict, you …"). Also takes the <a href="#ga-lasting-shared">shared properties</a> (<code>effect</code>; <code>duration</code>, default <code>Duration.UntilEndOfConflict</code>). Without a <code>target</code>, it applies to the ability's player.</p>
+    <p>Applies an effect to players for a while ("for this conflict, you …"). Also takes the <a href="#ga-lasting-shared">shared properties</a>.</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2315,13 +2315,7 @@ this.action('Prevent your events from being cancelled')
   </div>
 <div class="ref" id="ga-ringLastingEffect" data-name="ringLastingEffect">
     <h3><code>ringLastingEffect(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-ringLastingEffect">#</a></h3>
-    <p>Applies an effect to rings for a while. Also takes the <a href="#ga-lasting-shared">shared properties</a> (<code>effect</code>; <code>duration</code>, default <code>Duration.UntilEndOfConflict</code>). Without a <code>target</code> and off a ring target, it applies to the conflict ring.</p>
-    <table>
-      <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><code>targetController</code></td><td><code>Players | Player</code></td><td><code>Players.Self</code></td><td>Which players a player effect in <code>effect</code> applies to, relative to the ability's player; <code>Players.Any</code> for both (Expert Interpreter).</td></tr>
-      </tbody>
-    </table>
+    <p>Applies an effect to rings for a while. It takes only the <a href="#ga-lasting-shared">shared properties</a>.</p>
     <ul class="edge">
       <li>Legal for any ring without a restriction against it; unlike <code>playerLastingEffect</code>, an empty <code>effect</code> doesn't make it illegal.</li>
       <li>Builder shortcut: <a href="builder.html#b-ringLastingEffect"><code>.ringLastingEffect(…)</code></a>.</li>
@@ -2366,14 +2360,7 @@ this.action('Take control of a character')
 </section>
 <section class="group">
 <h3 class="group-title" id="ga-group-1-control">Composite and control flow</h3>
-<p>Actions that hold other actions (composites). Which one, by card wording:</p>
-  <ul>
-    <li>"X and Y": usually no composite. Several actions on one target or step (<code>.target(props, bow(), dishonor())</code>, or two shortcuts) resolve together, like <code>multiple</code>. Use <code>joint</code> when neither may happen unless both can.</li>
-    <li>"X. Then, Y" or "If you do, Y": a <a href="builder.html#b-then"><code>then()</code></a> step; Y follows only if X resolved in full. A plain "X. Y." that must wait for X: <a href="builder.html#b-afterwards"><code>afterwards()</code></a> or <code>sequential</code>.</li>
-    <li>"If …, X. Otherwise, Y": <a href="builder.html#b-if"><code>.if()</code></a> (<code>conditional</code>). "X, if able. Otherwise, Y": <code>ifAble</code>. "You may X": <code>optional</code>. "With [trait] affinity": <code>onAffinity</code>. "Cancel" or "… instead": <code>cancel</code>.</li>
-    <li>"Choose one: …" or "Select one: …" is a builder <a href="builder.html#b-select"><code>select()</code></a> when the pick is made as the ability starts, <a href="#ga-chooseAction"><code>chooseAction</code></a> when it is made while the ability resolves.</li>
-  </ul>
-<p>How they pass targets on:</p>
+<p>Actions that hold other actions (composites); each entry names the card wording it implements. "X and Y" usually needs none: the actions of one target or step already resolve together (<a href="builder.html#b-gameAction"><code>gameAction()</code></a>). "Then", "If you do", "If …, otherwise" and "if able" are written with the builder: see <a href="builder.html#b-group-flow">flow</a>. How composites pass targets on:</p>
   <ul>
     <li>A composite passes a target down only when it was given one: its own <code>target</code>, the card target it sits on, or an outer composite's. Then every nested action gets that target. Without one, each nested action keeps its own default target (the source, the ability's player, the conflict's ring).</li>
     <li>Whatever else the caller passes on goes to the nested actions too.</li>
@@ -2688,7 +2675,7 @@ this.action('Move fate on rings')
 </section>
 <section class="group">
 <h3 class="group-title" id="ga-group-1-prompts">Prompts and choices</h3>
-<p>Actions that let a player choose while the ability resolves (after the dash), then resolve a nested <code>gameAction</code> on the choice. Unlike a target, the choice is made at resolution and is not a target unless <code>targets: true</code>. "Choose a character – …" before the dash is a <a href="builder.html#b-target">target</a>; "your opponent chooses a character and discards it", "search your deck for a card", "choose one of the revealed cards" are choices while resolving (<code>selectCard</code>, <a href="#ga-deckSearch"><code>deckSearch</code></a>, <code>cardMenu</code>).</p>
+<p>Actions that let a player choose while the ability resolves, then resolve a nested <code>gameAction</code> on the choice. The choice is not a target unless <code>targets: true</code>. Card wording: "your opponent chooses a character and discards it" (<code>selectCard</code>), "choose one of the revealed cards" (<code>cardMenu</code>). What counts is when the choice is made, not where the dash is: a choice made when the ability is used, such as For Shame!'s "your opponent must select one", is a builder <a href="builder.html#b-group-targets">target or select</a>.</p>
   <ul>
     <li><strong>What the nested action gets:</strong> <code>subActionProperties(choice)</code>, by default <code>{ target: choice }</code>, on top of whatever the select itself was passed. Return other properties to aim the nested action elsewhere, for example <code>{ destination: card.location }</code>. The nested action's own properties still win.</li>
     <li><strong>What can be chosen:</strong> only cards, rings or tokens for which the nested action, with those properties, is legal. With none, the select is illegal and does nothing.</li>

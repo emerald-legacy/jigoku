@@ -27,12 +27,11 @@
     <p>Start here; the other pages are references (see <a href="#start-reading">reading the reference pages</a>).</p>
 </header>
 <h2 id="start-steps">Your first card</h2>
-<p>The workflow for a card without a class, e.g. Way of the Crane:</p>
+<p>The workflow for a new card. The paths use Way of the Crane, which is already implemented, so you can compare your result with <code>server/game/cards/01-Core/WayOfTheCrane.ts</code> and its spec:</p>
 <ol>
-    <li>Find its id and text in <code>test/json/Card/&lt;id&gt;.json</code>; the id is the name in kebab-case (<code>way-of-the-crane</code>). Make sure no class has it yet: <code>grep -r "static id = 'way-of-the-crane'" server/game/cards</code>.</li>
+    <li>Find its id and text in <code>test/json/Card/&lt;id&gt;.json</code>; the id is the name in kebab-case (<code>way-of-the-crane</code>). Check whether a class has it already: <code>grep -r "static id = 'way-of-the-crane'" server/game/cards</code>.</li>
     <li>Turn the text into builder calls (<a href="#start-order">card text to code</a>, <a href="#start-map">which method</a>) and write the class (<a href="#start-anatomy">anatomy</a>).</li>
-    <li>Write its spec (<a href="#start-testing">testing a card</a>).</li>
-    <li>Run the spec with <code>npm run jasmine -- test/server/cards/01-Core/WayOfTheCrane.spec.js</code>, then <code>npm run typecheck</code> and <code>npm run lint</code>: the test run compiles without type checking.</li>
+    <li>Write its spec (<a href="#start-testing">testing a card</a>) and run it with <code>npm run jasmine -- test/server/cards/01-Core/WayOfTheCrane.spec.js</code>, then <code>npm run typecheck</code> and <code>npm run lint</code>: the test run compiles without type checking.</li>
     <li>Ability not offered when you click the card? See <a href="engine.html#eng-debugging">debugging an ability that isn't offered</a>.</li>
 </ol>
 <h2 id="start-order">From card text to code</h2>
@@ -107,7 +106,7 @@ export default Assassination;</code></pre>
     <thead><tr><th>The card says</th><th>Write</th></tr></thead>
     <tbody>
         <tr><td>Action:</td><td><code>this.action(title)</code></td></tr>
-        <tr><td>Conflict Action:</td><td><code>this.conflictAction(title, options?)</code>: only during a conflict, with the character (or the attachment's character) participating. Not on provinces or strongholds; options in <a href="builder.html#cm-conflictAction"><code>conflictAction</code></a>.</td></tr>
+        <tr><td>Conflict Action:</td><td><a href="builder.html#cm-conflictAction"><code>this.conflictAction(title, options?)</code></a>, on draw cards only</td></tr>
         <tr><td>Reaction: After …</td><td><code>this.reaction(title).when({ … })</code></td></tr>
         <tr><td>Interrupt: When …</td><td><code>this.interrupt(title).when({ … })</code></td></tr>
         <tr><td>Interrupt: When … would …</td><td><code>this.wouldInterrupt(title).when({ … })</code>, usually with <code>.cancel()</code></td></tr>
@@ -121,9 +120,10 @@ export default Assassination;</code></pre>
         <tr><td>Legendary X</td><td><code>this.legendary(x)</code></td></tr>
         <tr><td>Tutored – X</td><td><code>this.tutored('X')</code></td></tr>
         <tr><td>Play only if …</td><td><code>this.playOnlyIf((context) =&gt; …)</code></td></tr>
-        <tr><td>Attached character gains "Action: …"</td><td><code>this.whileAttached({ effect: gainAbility.action(title, (ability) =&gt; ability…) })</code>; also <code>gainAbility.conflictAction</code> and <code>gainAbility.reaction(title, (ability) =&gt; ability.when({ … })…)</code></td></tr>
+        <tr><td>Attached character gains "Action: …"</td><td><code>this.whileAttached({ effect: gainAbility.action(title, (ability) =&gt; ability…) })</code>; the other ability types in <a href="effects.html#ef-gainAbility"><code>gainAbility</code></a></td></tr>
     </tbody>
 </table>
+<p>The rest of the text maps to builder calls by the tables on the reference pages: costs before the dash in <a href="costs.html#co-costs">costs</a>, the effect after it in <a href="game-actions.html">game actions</a> (by group), "gets", "gains" and "cannot" in <a href="effects.html#ef-wordings">card text to effect</a>, triggers in <a href="types.html#ev-section-events">events</a>, and conditions in <a href="helpers.html#q-queries">queries</a>.</p>
 
 <h2 id="start-context">The context</h2>
 <p>Every callback gets <code>context</code>, the ability being resolved. The common fields:</p>
@@ -182,14 +182,7 @@ export default Assassination;</code></pre>
 </ul>
 
 <h2 id="start-chat">Chat text</h2>
-<p>A resolved ability writes a chat line such as <em>player1 plays Assassination, losing 3 honor to discard Doji Whisperer</em>. The engine writes everything up to "to" (player, "plays" for an event or "uses" otherwise, card, costs). The rest comes from the ability:</p>
-<ul>
-    <li><strong>By default</strong> it joins the game actions' own texts ("bow Doji Whisperer and draw 1 card"); often enough.</li>
-    <li><strong><code>chatText('format')</code></strong> replaces it. <code>{0}</code> is the target (or the ring, or else the source); for anything more use the template form.</li>
-    <li><strong><code>chatText((context) =&gt; msg`…`)</code></strong> (most cards) is a template that formats cards, players and rings; <code>context.chatTarget()</code> gives what <code>{0}</code> would.</li>
-    <li><strong>Per choice:</strong> each <code>select</code> choice <code>{ action, chatText }</code> has its own line; the ability then has no <code>chatText()</code>.</li>
-    <li><strong>A step</strong> (after <code>then()</code> or <code>afterwards()</code>) has no <code>chatText()</code>; its whole line, if any, comes from <code>message((context) =&gt; msg`…`)</code>.</li>
-</ul>
+<p>A resolved ability writes a chat line such as <em>player1 plays Assassination, losing 3 honor to discard Doji Whisperer</em>. The engine writes everything up to "to" (player, "plays" for an event or "uses" otherwise, card, costs). The rest is the game actions' own texts joined ("bow Doji Whisperer and draw 1 card"), unless the ability sets <a href="builder.html#b-chatText"><code>chatText()</code></a> (most cards: <code>chatText((context) =&gt; msg`…`)</code>). A step after <code>then()</code> or <code>afterwards()</code> writes its line with <a href="builder.html#b-message"><code>message()</code></a> instead, and a <a href="builder.html#b-select"><code>select()</code></a> whose choices carry a <code>chatText</code> each has none of its own.</p>
 <p>Pass game objects and keywords as values so the chat can format them:</p>
 <ul>
     <li>Cards, players and rings go into a <code>msg</code> template or <code>{N}</code> arguments; in a plain string (<code>`… ${card.name}`</code>) they lose their formatting.</li>
@@ -335,7 +328,7 @@ this.whileAttached({
         });
     });
 });</code></pre>
-<p><code>describe</code>, <code>it</code> and <code>expect</code> are Jasmine; <code>integration()</code> (a global from <code>test/helpers/integrationhelper.ts</code>) gives each spec a new game, driven through <code>this</code>. Card names in the spec are ids. Run it with <code>npm run jasmine -- test/server/cards/01-Core/Assassination.spec.js</code>.</p>
+<p><code>describe</code>, <code>it</code> and <code>expect</code> are Jasmine; <code>integration()</code> (a global from <code>test/helpers/integrationhelper.ts</code>) gives each spec a new game, driven through <code>this</code>. Card names in the spec are ids. Run it as in <a href="#start-steps">your first card</a>.</p>
 <h3 id="start-setup">setupTest options</h3>
 <table>
     <thead><tr><th>Option</th><th>Meaning</th></tr></thead>
@@ -349,7 +342,7 @@ this.whileAttached({
 <h3 id="start-helpers">Driving the game</h3>
 <ul>
     <li><code>this.player1.clickCard(card)</code>, <code>clickPrompt('Text')</code>, <code>clickRing('air')</code>, <code>clickMenu(card, 'Text')</code>, <code>pass()</code>, <code>passConflict()</code>, <code>playAttachment(attachment, target)</code>, <code>playCharacterFromHand(card, fate)</code>, <code>placeCardInProvince(card, location)</code>, <code>moveCard(card, location)</code>.</li>
-    <li><code>this.noMoreActions()</code> passes both players' action windows; <code>this.initiateConflict({ type, ring, province, attackers, defenders, jumpTo })</code> declares a conflict (default military at the air ring; <code>jumpTo: true</code> also passes its action window); <code>this.flow.finishConflictPhase()</code> and <code>this.advancePhases(phase)</code> move on.</li>
+    <li><code>this.noMoreActions()</code> passes both players' action windows; <code>this.initiateConflict({ type, ring, province, attackers, defenders, jumpTo })</code> declares a conflict (default military at the air ring; with <code>defenders</code>, <code>jumpTo: true</code> also passes its action window); <code>this.flow.finishConflictPhase()</code> and <code>this.advancePhases(phase)</code> move on.</li>
     <li>Finding cards: <code>findCardByName(id, location?)</code>, <code>filterCardsByName(id)</code>.</li>
     <li>Matchers: <code>toHavePrompt(title)</code> (the prompt's title or the card name above it), <code>toHavePromptButton(text)</code>, <code>toHaveDisabledPromptButton(text)</code>, <code>toBeAbleToSelect(card)</code>, <code>toBeAbleToSelectRing(element)</code>.</li>
     <li>An action window's prompt is <code>'Action Window'</code>, or <code>'Conflict Action Window'</code> during a conflict. Clicking a card with no usable ability changes nothing, so "can't be used" is <code>clickCard(card)</code> then <code>toHavePrompt('Conflict Action Window')</code>.</li>
@@ -361,7 +354,7 @@ this.whileAttached({
     <ul>
         <li>A "search the top X cards" card is tested with more than X cards in the deck, checking the rest stays untouched.</li>
         <li>An engine bug (not one card's) gets its regression spec in <code>test/server/integration/</code>.</li>
-        <li>A <code>select()</code> before the dash always prompts (with "Pay costs first" unless a cost depends on a target, and "Cancel"), even with one legal choice, unless the opponent chooses. Click the choice (<code>clickPrompt('Move into conflict')</code>) before checking anything.</li>
+        <li>A <code>select()</code> before the dash always prompts (with "Pay costs first" and "Cancel"), even with one legal choice, unless the opponent chooses. Click the choice (<code>clickPrompt('Move into conflict')</code>) before checking anything.</li>
         <li>Any spec fails when a chat line contains <code>choose a target for</code>, the fallback text of <code>selectCard</code> and <code>cardMenu</code>: such an ability needs a <code>chatText</code>.</li>
         <li>A spec should fail without the fix it tests.</li>
     </ul>

@@ -97,7 +97,7 @@ console.log(card.getActions().map((action) =&gt; `${action.title}: ${action.meet
 <ul>
     <li>The ability isn't listed: the card has no class under that id (check <code>static id</code> against the card data), or the ability is a reaction or interrupt (not in <code>getActions()</code>). A card in hand also lists its play actions.</li>
     <li><code>'target'</code>: no card passes the target. The target's <code>controller</code> defaults to <code>Players.Any</code>, and its game action must be able to affect the card (honoring an honored character can't).</li>
-    <li>A reaction or interrupt: it listens only while its card is in its <code>location()</code> (by default the play area; a hand for events, the provinces for holdings and provinces), its <code>when()</code> key must be the event's name with a callback returning true for that event (<a href="types.html#ev-section-events">events</a>), and then the blockers above are checked with that event in the context (<code>TriggeredAbility.eventHandler</code>).</li>
+    <li>A reaction or interrupt: it listens only while its card is in its <a href="builder.html#b-location"><code>location()</code></a> (the default depends on the card type), its <code>when()</code> key must be the event's name with a callback returning true for that event (<a href="types.html#ev-section-events">events</a>), and then the blockers above are checked with that event in the context (<code>TriggeredAbility.eventHandler</code>).</li>
 </ul>
 
 <h2 id="eng-resolver">How an ability resolves</h2>
