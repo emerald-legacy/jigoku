@@ -815,7 +815,7 @@ cardCannot({
 </section>
 
 <section class="group">
-  <h3 class="group-title" id="en-group-events">Events</h3>
+  <h3 class="group-title" id="en-group-events">Event names</h3>
 <div class="ref" id="en-EventName" data-name="EventName">
   <h3><code>EventName</code> <span class="kind">Enum</span> <a class="anchor" href="#en-EventName">#</a></h3>
   <p>The name of every game event. In a <code>when</code> map the key is the string value (<code>onCardPlayed</code>); in code it is the enum member (<code>EventName.OnCardPlayed</code>), for example in <code>event.is(EventName.OnCardHonored)</code>, <code>context.event.name === EventName.OnCardHonored</code>, <code>EventRegistrar.register({ [EventName.OnRoundEnded]: … })</code> and <code>registerTriggerWindow</code>.</p>
@@ -845,11 +845,14 @@ cardCannot({
         <tr><td>"After this character is declared as an attacker / defender"</td><td><a href="#ev-onConflictDeclared"><code>onConflictDeclared</code></a> (<code>event.attackers?.includes(context.source)</code>); <a href="#ev-onDefendersDeclared"><code>onDefendersDeclared</code></a> (<code>event.defenders</code>)</td></tr>
         <tr><td>"After … enters play"; "after you play …"</td><td><a href="#ev-onCharacterEntersPlay"><code>onCharacterEntersPlay</code></a>; <a href="#ev-onCardPlayed"><code>onCardPlayed</code></a></td></tr>
         <tr><td>"After … leaves play" (also discarded from play, sacrificed, returned to hand or deck)</td><td><a href="#ev-onCardLeavesPlay"><code>onCardLeavesPlay</code></a>; reactions read <code>event.cardStateWhenLeftPlay</code></td></tr>
-        <tr><td>"Discards cards from hand"; cards discarded from a deck or province</td><td><a href="#ev-onCardsDiscardedFromHand"><code>onCardsDiscardedFromHand</code></a>; <a href="#ev-onCardsDiscarded"><code>onCardsDiscarded</code></a></td></tr>
+        <tr><td>"Discards cards from hand"</td><td>Listen to both (Shosuro Hyobu): <a href="#ev-onCardsDiscardedFromHand"><code>onCardsDiscardedFromHand</code></a> (<code>chosenDiscard</code>, <code>discardAtRandom</code>, <code>discardMatching</code>) and <a href="#ev-onCardsDiscarded"><code>onCardsDiscarded</code></a> with <code>event.originalCardStateInfo</code> location <code>Hand</code> (the <code>discardCard</code> action and the discard costs)</td></tr>
+        <tr><td>Cards discarded from a deck or province</td><td><a href="#ev-onCardsDiscarded"><code>onCardsDiscarded</code></a></td></tr>
+        <tr><td>"… by a card ability" (its cost or effect)</td><td><code>!!event.context?.ability.isCardAbility()</code>: false for ring effects, playing a character, attachment or holding, and framework steps (<a href="#ctx-ability"><code>context.ability</code></a>)</td></tr>
         <tr><td>"Receives a status token"</td><td><a href="#ev-onStatusTokenGained"><code>onStatusTokenGained</code></a></td></tr>
         <tr><td>"Moves to the conflict"; "moves home"</td><td><a href="#ev-onMoveToConflict"><code>onMoveToConflict</code></a>; <a href="#ev-onSendHome"><code>onSendHome</code></a>, plus <a href="#ev-onReturnHome"><code>onReturnHome</code></a> for conflict resolution</td></tr>
         <tr><td>"Gains / loses honor"; "takes honor", honor given to a player</td><td><a href="#ev-onModifyHonor"><code>onModifyHonor</code></a>; <a href="#ev-onTransferHonor"><code>onTransferHonor</code></a></td></tr>
-        <tr><td>Fate gained or lost by a player; fate placed on or removed from a card or ring</td><td><a href="#ev-onModifyFate"><code>onModifyFate</code></a>; <a href="#ev-onMoveFate"><code>onMoveFate</code></a></td></tr>
+        <tr><td>Fate gained or lost by a player (also a <code>costs.payFate</code> cost); fate placed on or removed from a card or ring</td><td><a href="#ev-onModifyFate"><code>onModifyFate</code></a>; <a href="#ev-onMoveFate"><code>onMoveFate</code></a></td></tr>
+        <tr><td>"Spends fate to play a card" (a card's fate cost, after reductions)</td><td><a href="#ev-onSpendFate"><code>onSpendFate</code></a>, plus <code>onMoveFate</code> for fate paid to a ring (Sententious Poet)</td></tr>
         <tr><td>"Claims a ring"; "would resolve the [element] ring effect"</td><td><a href="#ev-onClaimRing"><code>onClaimRing</code></a>; <a href="#ev-onResolveRingElement"><code>onResolveRingElement</code></a></td></tr>
         <tr><td>"Wins a duel"</td><td><a href="#ev-onCharacterWinsDuel"><code>onCharacterWinsDuel</code></a> (once per winner), or <a href="#ev-afterDuel"><code>afterDuel</code></a> (<code>event.winner</code>)</td></tr>
         <tr><td>"Triggers an ability", "is chosen as the target of an ability"; "the effects of … would initiate"</td><td><a href="#ev-onCardAbilityTriggered"><code>onCardAbilityTriggered</code></a>; <a href="#ev-onInitiateAbilityEffects"><code>onInitiateAbilityEffects</code></a></td></tr>
@@ -2896,18 +2899,7 @@ this.interrupt('Ready for Glory Count')
 
 <h2 id="ctx-section-context">Context</h2>
 <p>Every callback of an ability gets <code>context</code>, an <code>AbilityContext</code> (a <code>TriggeredAbilityContext</code> for triggered abilities). It says whose ability it is, what was chosen and paid, and how far the resolution has got. In card-text terms: <a href="#ctx-player"><code>context.player</code></a> is "you" (<code>context.player.opponent</code> "your opponent"), <a href="#ctx-source"><code>context.source</code></a> "this card", <a href="#ctx-target"><code>context.target</code></a> "the chosen character", <a href="#ctx-costs"><code>context.costs</code></a> what was paid, and in a triggered ability <a href="#ctx-event"><code>context.event</code></a> the event it reacts to. The builder types it for you (<a href="#ctx-typing">Typing</a>).</p>
-<p>Fields are filled in as the ability resolves. So what a callback can read depends on when it runs: a <code>cardCondition</code> runs while targets are chosen, a property factory of a game action runs when the effect resolves. <code>AbilityResolver</code> resolves an ability in this order:</p>
-<ol>
-    <li>A snapshot of the source (<code>cardStateWhenInitiated</code>).</li>
-    <li>Targets chosen before costs (<code>Stage.PreTarget</code>).</li>
-    <li>The initiate window: <code>onCardAbilityInitiated</code> or <code>onAbilityResolverInitiated</code>, with <code>onCardAbilityTriggered</code>, and <code>onCardPlayed</code> for an event card.</li>
-    <li>Costs (<code>Stage.Cost</code>).</li>
-    <li>Targets checked, or chosen, after costs (<code>Stage.Target</code>).</li>
-    <li>Limits used up; the chat line.</li>
-    <li><code>onInitiateAbilityEffects</code>, for actions, triggered abilities and events (not for then-steps or keyword abilities).</li>
-    <li>The effects (<code>Stage.Effect</code>).</li>
-    <li>Queued province refills.</li>
-</ol>
+<p>Fields are filled in as the ability resolves. So what a callback can read depends on when it runs: a <code>cardCondition</code> runs while targets are chosen, a property factory of a game action runs when the effect resolves. <code>context.stage</code> says how far it got: <code>PreTarget</code> (targets offered before costs), <code>Cost</code>, <code>Target</code> (targets confirmed or chosen after costs), <code>Effect</code>. The full order: <a href="engine.html#eng-resolver">how an ability resolves</a>.</p>
 
 <section class="group">
   <h3 class="group-title" id="ctx-group-object">The context object</h3>
@@ -2975,7 +2967,7 @@ this.interrupt('Ready for Glory Count')
   <h3 class="group-title" id="ctx-group-who">Who and what</h3>
 <div class="ref" id="ctx-ability" data-name="ability">
   <h3><code>context.ability</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-ability">#</a></h3>
-  <p>The ability being resolved. Useful members: <code>title</code>, <code>abilityType</code> (<code>AbilityType</code>), <code>isCardPlayed()</code> (an event card, or a play action), <code>isCardAbility()</code>, <code>isTriggeredAbility()</code>, <code>isKeywordAbility()</code>, <code>cannotBeMirrored</code>, <code>getReducedCost(context)</code> on play abilities.</p>
+  <p>The ability being resolved. Useful members: <code>title</code>, <code>abilityType</code> (<code>AbilityType</code>), <code>isCardPlayed()</code> (an event card, or a play action), <code>isCardAbility()</code> (true for card abilities, keyword abilities and their steps; false for playing a character, attachment or holding, ring effects and framework steps), <code>isTriggeredAbility()</code>, <code>isKeywordAbility()</code>, <code>cannotBeMirrored</code>, <code>getReducedCost(context)</code> on play abilities.</p>
   <ul class="edge">
     <li>In an action's context the builder types it as <code>CardAction</code> (<code>ActionContext</code>); in a trigger's, as <code>TriggeredAbility</code>.</li>
     <li><code>isTriggeredAbility()</code> is true for actions too: every <code>CardAbility</code> counts as triggered. It is false for keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity) and for then-steps. Compare <code>abilityType</code> with <code>AbilityType.Action</code> to tell actions apart.</li>

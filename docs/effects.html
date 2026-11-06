@@ -71,6 +71,7 @@
     <thead><tr><th>Card text</th><th>Effect</th></tr></thead>
     <tbody>
         <tr><td>"gets +2 [conflict-military]", "-1 [conflict-political]"</td><td><a href="#ef-modifyMilitarySkill"><code>modifyMilitarySkill</code> / <code>modifyPoliticalSkill</code></a>, both at once <a href="#ef-modifyBothSkills"><code>modifyBothSkills</code></a></td></tr>
+        <tr><td>"set base skill to the chosen character's skill"</td><td><a href="helpers.html#he-copyBaseSkillEffects"><code>copyBaseSkillEffects</code></a></td></tr>
         <tr><td>"double … skill"</td><td><a href="#ef-modifyMilitarySkillMultiplier"><code>modifyMilitarySkillMultiplier(2)</code></a>, for base skill <a href="#ef-modifyBaseMilitarySkillMultiplier"><code>modifyBaseMilitarySkillMultiplier</code></a></td></tr>
         <tr><td>"gets +1 glory"</td><td><a href="#ef-modifyGlory"><code>modifyGlory</code></a></td></tr>
         <tr><td>"gains Covert", "gains the Bushi trait", "gains the [clan-crane] clan symbol"</td><td><a href="#ef-addKeyword"><code>addKeyword('covert')</code></a>, <a href="#ef-addTrait"><code>addTrait(Trait.Bushi)</code></a>, <a href="#ef-addFaction"><code>addFaction('crane')</code></a></td></tr>
@@ -91,7 +92,7 @@
     </tbody>
 </table>
 
-<h2 id="ef-reference">Reference</h2>
+<h2 id="ef-reference">Effect reference</h2>
 <section class="group">
 <h3 class="group-title" id="ef-group-1-identity">Traits, keywords, factions and card type</h3>
 <p>Card effects that change what a card is: add a trait, keyword or clan, change the type, blank the text box, or copy another card. The next group takes traits, keywords and clans away.</p>
@@ -1100,7 +1101,7 @@ this.action('Gain abilities from a character in your discard pile')
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>match</code></td><td><code>BaseCard | BaseCard[] | (target, context) =&gt; BaseCard | BaseCard[]</code></td><td>required</td><td>The cards to copy from. A function is called again each time the target's abilities are read.</td></tr>
+        <tr><td><code>match</code></td><td><code>BaseCard | BaseCard[] | (target, context) =&gt; BaseCard | BaseCard[]</code></td><td>required</td><td>The cards to copy from. A function is called again each time the target's abilities are read, with <code>game.getFrameworkContext(target.controller)</code> as context: <code>context.source</code> is not the effect's card; read the target (the first parameter) or <code>context.game</code>.</td></tr>
         <tr><td><code>printedAbilitiesOnly</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Only used for a blanked source card: <code>false</code> still copies its non-printed (gained) abilities, <code>true</code> copies nothing from it.</td></tr>
       </tbody>
     </table>
@@ -1369,7 +1370,7 @@ this.action('Opponent\'s characters at home can\'t use abilities')
     .chatText(…);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Tranquility.ts">Tranquility</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/HirumaAmbusher.ts">Hiruma Ambusher</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/HighKick.ts">High Kick</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/KakitaDojo.ts">Kakita Dōjō</a></p>
   </div>
-<div class="ref" id="ef-cardCannot" data-name="cardCannot">
+<div class="ref" id="ef-cardCannot" data-name="cardCannot" data-aka="cannot be targeted, cannot be chosen">
     <h3><code>cardCannot(properties)</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-cardCannot">#</a></h3>
     <p>The card "cannot be bowed", "cannot be chosen as the target of an opponent's event", and so on.</p>
     <table>
@@ -2762,7 +2763,7 @@ this.legendary(1);</code></pre>
 })))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/ToShowThePath.ts">To Show the Path</a></p>
   </div>
-<div class="ref" id="ef-reduceCost" data-name="reduceCost">
+<div class="ref" id="ef-reduceCost" data-name="reduceCost" data-aka="cost reduction, costs less, reduce the cost">
     <h3><code>reduceCost(properties)</code> <span class="kind">Player effect</span> <a class="anchor" href="#ef-reduceCost">#</a></h3>
     <p>Reduces the cost to play matching cards: "costs 1 less to play".</p>
     <table>
@@ -2778,7 +2779,7 @@ this.legendary(1);</code></pre>
       </tbody>
     </table>
     <ul class="edge">
-      <li>A card that reduces its own cost needs <code>location: Location.Any</code> (it is in hand) and <code>match: (card, source) =&gt; card === source</code>.</li>
+      <li>A card that reduces its own cost needs <code>location: Location.Any</code> (it is in hand) and <code>match: (card, source) =&gt; card === source</code>. <code>targetController: Players.Any</code> (Bamboo Tattoo) gives the reducer to both players, so it applies whoever plays the card; <code>match</code> keeps it to this card.</li>
       <li>A detached effect: each application adds its own reducer. Only a missing <code>amount</code> becomes 1; <code>0</code> reduces nothing.</li>
       <li>A function <code>amount</code> gets the player playing the card. Check that player's affinity there (Grasp of Earth 2, with <code>targetController: Players.Any</code>), not in <code>targetCondition</code>, whose context is the card's controller (Trading on the Sand Road).</li>
       <li>Only the cost to play cards (<code>card.getCost()</code>), not ability costs.</li>

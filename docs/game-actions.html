@@ -60,6 +60,7 @@ bow((context) =&gt; ({ target: context.targets.character }))  // computed when t
         <tr><td>Card actions</td><td><code>BaseCard | BaseCard[]</code></td><td>The ability's source card.</td></tr>
         <tr><td>Player actions</td><td><code>Player | Player[]</code></td><td>The ability's player (<code>context.player</code>), even for "lose" actions. For "your opponent", pass <code>target: context.player.opponent</code>; for "each player", <code>target: context.game.getPlayers()</code>. Exceptions: <code>chosenDiscard</code>, <code>chosenReturnToDeck</code>, <code>discardAtRandom</code>, <code>discardMatching</code>, <code>takeFate</code>, <code>takeHonor</code> and <code>loseImperialFavor</code> act on the opponent.</td></tr>
         <tr><td>Ring actions</td><td><code>Ring | Ring[]</code></td><td>The ring of the current conflict.</td></tr>
+        <tr><td>Token actions</td><td><code>StatusToken | StatusToken[]</code></td><td>The source card's status tokens (<code>TokenAction.defaultTargets</code>).</td></tr>
         <tr><td>Any action on a target, or nested in one</td><td></td><td>The chosen card replaces the default target. A <code>target</code> written in the action's own properties wins over it: <code>sendHome({ target: context.source })</code> on a target still sends the source home.</td></tr>
     </tbody>
 </table>
@@ -81,7 +82,7 @@ bow((context) =&gt; ({ target: context.targets.character }))  // computed when t
 <h3 id="ga-reading">Reading an entry</h3>
 <p>Each entry: what the action does, its properties, then legality, restriction type, event, chat text and builder shortcut, and an example from a real card. "Chat" is the action's part of the ability's chat line (see <a href="index.html#start-chat">chat text</a>), with <em>italics</em> or <code>{0}</code>, <code>{1}</code> for filled-in values; "as a cost" is its text when used as a <a href="costs.html">cost</a>.</p>
 
-<h2 id="ga-reference">Reference</h2>
+<h2 id="ga-reference">Game action reference</h2>
 <section class="group">
 <h3 class="group-title" id="ga-group-1-status">Card status</h3>
 <p>Actions that change a card's state: bowed or ready, honored or dishonored, tainted, faceup or facedown, and the tokens on it. <code>discardStatusToken</code> and <code>moveStatusToken</code> target tokens, not cards: by default every status token on the source.</p>
@@ -597,7 +598,7 @@ this.conflictAction('Discard a character')
     .cost(costs.payHonor(3))
     .target({
         cardType: CardType.Character,
-        cardCondition: (card) =&gt; card.costLessThan(3)
+        cardCondition: (card) =&gt; card.costAtMost(2)
     }, discardFromPlay())
     .max(perRound(1));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Assassination.ts">Assassination</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/NobleSacrifice.ts">Noble Sacrifice</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Reprieve.ts">Reprieve</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/ForcedRetirement.ts">Forced Retirement</a></p>
@@ -1959,7 +1960,7 @@ this.action('Flip the Imperial Favor')
                 'Discard the Imperial Favor': sequential([
                     loseImperialFavor({ target: context.player }),
                     conditional({
-                        // "to": only if the favor was discarded (Ikoma Yumiko's Dagger can replace it)
+                        // "to": honor only if the favor was discarded
                         condition: (context) =&gt; context.events.some((event) =&gt;
                             event.is(EventName.OnDiscardFavor) &amp;&amp; event.isFullyResolved()),
                         trueGameAction: honor({ target: context.target })
@@ -2023,7 +2024,7 @@ this.action('Return player\'s rings')
         <tr><td><code>costHandler</code></td><td><code>(context, prompt) =&gt; void</code></td><td>none</td><td>Runs after the honor bid instead of the honor transfer (e.g. pay with cards).</td></tr>
         <tr><td><code>challengerEffect</code></td><td><code>EffectFactory | EffectFactory[]</code></td><td>none</td><td>A lasting effect on the challenger until the duel ends.</td></tr>
         <tr><td><code>targetEffect</code></td><td><code>EffectFactory | EffectFactory[]</code></td><td>none</td><td>A lasting effect on the targets until the duel ends.</td></tr>
-        <tr><td><code>refuseGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>The opponent is asked "Do you wish to refuse the duel?" while it has a legal target; "Yes" resolves it first, in its own window, and the duel is refused only if it resolved ("to"). A refusal whose effect was replaced (Kitsuki Shomon, Young Rumormonger dishonor another character) still refuses the duel (ruling #646); one an interrupt cancelled starts the duel.</td></tr>
+        <tr><td><code>refuseGameAction</code></td><td><code>GameAction</code></td><td>none</td><td>The opponent is asked "Do you wish to refuse the duel?" while it has a legal target; "Yes" resolves it first, in its own window, and the duel is refused only if it resolved (<a href="index.html#start-then">"to"</a>). A refusal whose effect was replaced (Kitsuki Shomon, Young Rumormonger dishonor another character) still refuses the duel (ruling #646); one an interrupt cancelled starts the duel.</td></tr>
         <tr><td><code>refusalMessage</code></td><td><code>(context, refuser) =&gt; MessageArgs</code></td><td>"<em>refuser</em> chooses to refuse the duel and …"</td><td>The chat line when the duel is refused: built when "Yes" is chosen (so it can read the state before the refusal), posted after the refusal fully resolved. A refusal that was replaced posts "<em>refuser</em> chooses to refuse the duel" instead; the replacement's own line names what happened. A refusal that didn't resolve posts none; the duel's own lines follow.</td></tr>
         <tr><td><code>requiresConflict</code></td><td><code>boolean</code></td><td>unset (<code>.initiateDuel</code> sets <code>true</code>)</td><td>Characters added to the duel later must be participating. Unset, that holds when the duel was initiated during a conflict (RRG D.1); <code>false</code> lifts it. <code>.initiateDuel</code> also requires a participating challenger and target unless it is <code>false</code>.</td></tr>
         <tr><td><code>targetCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>none</td><td>Who can be the duel's target (with <code>.initiateDuel</code>) or be added to the duel later (Two Hands); replaces the participation check.</td></tr>
@@ -2381,7 +2382,7 @@ this.action('Take control of a character')
     <ul class="edge">
       <li>Needs a triggered ability's context (an interrupt): it cancels <code>context.event</code>.</li>
       <li>Illegal when there is no event, it is already cancelled, or it can't be cancelled: <code>cannotBeCancelled</code> events, events played by a player whose events can't be cancelled, and a leaves-play event of a card that can't be prevented from leaving play (<code>RestrictionType.PreventedFromLeavingPlay</code>).</li>
-      <li>With <code>replacementGameAction</code>, it is legal only if the replacement has a legal target. A single replacement event becomes <code>event.replacementEvent</code> of the cancelled event (not for a sacrifice). The cancelled action then didn't resolve in full, so its own <code>then()</code> steps don't follow.</li>
+      <li>With <code>replacementGameAction</code>, it is legal only if the replacement has a legal target. A single replacement event becomes <code>event.replacementEvent</code> of the cancelled event (not when the cancelled event is a sacrifice: a replaced sacrifice is not paid). The cancelled action then didn't resolve in full, so its own <code>then()</code> steps don't follow; for "to" a replaced part still counts (<a href="index.html#start-then">then, to</a>).</li>
       <li>Chat: "cancel the effects of <em>event card</em>", or with a replacement its own text followed by "instead of <em>event card</em>".</li>
       <li>Builder shortcut: <a href="builder.html#b-cancel"><code>.cancel(…)</code></a> (interrupts only).</li>
     </ul>
@@ -2438,7 +2439,7 @@ this.wouldInterrupt('Dishonor this character instead')
     </table>
     <ul class="edge">
       <li>Legality, the chat text and the events all come from the branch the condition picks at that moment; the other branch is ignored.</li>
-      <li>Builder: <code>.if(condition) … .otherwise() …</code> builds one; after a card target, its actions go on that target. Without <code>.otherwise()</code> the builder's false branch is an empty <code>multiple([])</code>, which has no legal target (not <code>noAction()</code>): see <a href="builder.html#b-if"><code>if()</code></a>.</li>
+      <li>Builder: <code>.if(condition) … .otherwise() …</code> builds one; after a card target, its actions go on that target. Without <code>.otherwise()</code> the builder's false branch is an empty <code>multiple([])</code>, which has no legal target (not <code>noAction()</code>); when the <code>if()</code> follows a card target with its own game actions, the false branch is those actions instead (<code>withBranches</code>). See <a href="builder.html#b-if"><code>if()</code></a>.</li>
     </ul>
     <pre><code>// Ceremonial Robes: … Place 1 of those cards into that province faceup, place another on the bottom of that deck, and discard the other card. Then, if you discarded a [Spirit], each player loses 1 honor.
 'discard': sequential([
@@ -2675,7 +2676,7 @@ this.action('Move fate on rings')
 </section>
 <section class="group">
 <h3 class="group-title" id="ga-group-1-prompts">Prompts and choices</h3>
-<p>Actions that let a player choose while the ability resolves, then resolve a nested <code>gameAction</code> on the choice. The choice is not a target unless <code>targets: true</code>. Card wording: "your opponent chooses a character and discards it" (<code>selectCard</code>), "choose one of the revealed cards" (<code>cardMenu</code>). What counts is when the choice is made, not where the dash is: a choice made when the ability is used, such as For Shame!'s "your opponent must select one", is a builder <a href="builder.html#b-group-targets">target or select</a>.</p>
+<p>Actions that let a player choose while the ability resolves, then resolve a nested <code>gameAction</code> on the choice. The choice is not a target unless <code>targets: true</code>. Card wording: "your opponent chooses a character and discards it" (<code>selectCard</code>), "choose one of the revealed cards" (<code>cardMenu</code>). A choice before the dash, such as For Shame!'s "your opponent must select one", is made when the ability is used: a builder <a href="builder.html#b-group-targets">target or select</a>.</p>
   <ul>
     <li><strong>What the nested action gets:</strong> <code>subActionProperties(choice)</code>, by default <code>{ target: choice }</code>, on top of whatever the select itself was passed. Return other properties to aim the nested action elsewhere, for example <code>{ destination: card.location }</code>. The nested action's own properties still win.</li>
     <li><strong>What can be chosen:</strong> only cards, rings or tokens for which the nested action, with those properties, is legal. With none, the select is illegal and does nothing.</li>

@@ -31,22 +31,15 @@
 <div class="rule"><blockquote>Any imperative instruction (other than "choose…," which denotes one or more targets must be chosen, or "select…," which denotes that one or more of a number of effects must be selected) that appears before the dash of a triggered ability is considered a part of that ability’s cost.</blockquote><cite>Cost</cite></div>
 <div class="rule"><blockquote>If multiple costs for a single card or ability require payment, those costs must be paid simultaneously. If any part of a cost payment is prevented, once all costs that can be paid are paid, the process of initiating the ability or playing the card immediately ends without further resolution.</blockquote><cite>Cost</cite></div>
 <div class="rule"><blockquote>If the effects of an ability are canceled, the ability is still considered to have been used, and any costs have still been paid.</blockquote><cite>Cancel</cite></div>
-<pre><code>// Assassination: Conflict Action: Lose 3 honor. Choose a character with printed cost 2 or lower – discard that character. (Max 1 per round.)
-this.conflictAction('Discard a character')
-    .cost(costs.payHonor(3))
-    .target({
-        cardType: CardType.Character,
-        cardCondition: (card) =&gt; card.costLessThan(3)
-    }, discardFromPlay())
-    .max(perRound(1));</code></pre>
+<p>A full card with a cost: Assassination in <a href="index.html#start-anatomy">anatomy of a card file</a>.</p>
 
 <h3 id="co-how">How the engine pays</h3>
 <ol>
     <li><strong>Legality.</strong> Before the ability can be used, the engine asks every cost <code>canPay(context)</code> on a copy of the context at <code>Stage.Cost</code>. If one says no, the ability is not offered (blocker <code>CannotPayCost</code>). Nothing is chosen or paid yet, so <code>context.costs</code> is empty.</li>
-    <li><strong>Early targets.</strong> Unless the ability has <a href="builder.html#b-cannotTargetFirst"><code>cannotTargetFirst()</code></a>, its targets are checked and offered first (stage <code>PreTarget</code>); the player may pick "Pay costs first", unless a cost has <code>dependsOn</code> (it can't be paid before its target is chosen). A select target offers it even then. The targets are confirmed after the costs.</li>
+    <li><strong>Early targets</strong> are offered with "Pay costs first" (<a href="index.html#start-timing">timing</a>), except when a cost has <code>dependsOn</code> (it can't be paid before its target is chosen); a select target offers the button even then.</li>
     <li><strong>Choosing.</strong> The costs resolve in the order they were declared (with <code>firstPlayerChoosesFirst()</code> and the opponent as first player, costs marked <code>chosenByOpponent</code> come first): each one asks its question (which card, how much fate, Yes or No) and collects the events that pay it. While the resolver allows it, every prompt has a Cancel button; cancelling ends the ability and nothing is paid.</li>
-    <li><strong>Paying.</strong> All collected events resolve in one event window, so the costs are paid simultaneously. If any of them is cancelled or prevented, the chat says "<em>player1 attempted to use X, but did not successfully pay the required costs</em>" and the ability ends (for a played card it also raises <a href="types.html#ev-onCardPlayCostsNotPaid"><code>onCardPlayCostsNotPaid</code></a>); what was paid stays paid.</li>
-    <li><strong>Then</strong> the targets are chosen or confirmed. Targeting costs (effects that make choosing a card cost fate) are paid when the effects initiate; if they can't be, the chat says "<em>did not successfully pay the required costs</em>" and the ability ends before the limit or max counts. With no legal target left, the chat says "<em>player1 attempted to use X, but there are insufficient legal targets</em>" and the ability ends. Otherwise the limit and max count the use, the chat line is written and the effects initiate. In every case, including a later cancel of the effects, paid costs stay paid.</li>
+    <li><strong>Paying.</strong> All collected events resolve in one event window, so the costs are paid simultaneously. If any of them is cancelled or prevented, the chat says "<em>player1 attempted to use X, but did not successfully pay the required costs</em>" and the ability ends (for a played card it also raises <a href="types.html#ev-onCardPlayCostsNotPaid"><code>onCardPlayCostsNotPaid</code></a>); what was paid stays paid. A cost whose event was replaced counts as paid (Young Rumormonger moving the dishonor, ruling #176); a replaced or prevented sacrifice doesn't (RRG Replacement Effects; rulings #306, #726).</li>
+    <li><strong>Then</strong> the targets are chosen or confirmed and the effects initiate (<a href="engine.html#eng-resolver">step by step</a>). Targeting costs (effects that make choosing a card cost fate) are paid when the effects initiate; if they can't be, the ability ends before the limit or max counts. With no legal target left, the chat says "<em>player1 attempted to use X, but there are insufficient legal targets</em>". In every case, including a later cancel of the effects, paid costs stay paid.</li>
 </ol>
 <ul>
     <li>An event card gets <code>payReduceableFateCost()</code> (its printed fate cost) added after its own costs automatically; don't declare it.</li>
@@ -877,7 +870,7 @@ this.reaction('Prevent a ring from being used for a conflict')
     <pre><code>// Assassination: Conflict Action: Lose 3 honor. Choose a character with printed cost 2 or lower – discard that character. (Max 1 per round.)
 this.conflictAction('Discard a character')
     .cost(costs.payHonor(3))
-    .target({ cardType: CardType.Character, cardCondition: (card) =&gt; card.costLessThan(3) }, discardFromPlay())
+    .target({ cardType: CardType.Character, cardCondition: (card) =&gt; card.costAtMost(2) }, discardFromPlay())
     .max(perRound(1));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Assassination.ts">Assassination</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/MerchantOfDesires.ts">Merchant of Desires</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AdeptOfShadows.ts">Adept of Shadows</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CaptiveAudience.ts">Captive Audience</a></p>
   </div>
@@ -1290,7 +1283,7 @@ this.action('Bow to reduce attachment cost')
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DaimyosFavor.ts">Daimyō's Favor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/YasukiProcurer.ts">Yasuki Procurer</a></p>
   </div>
 
-  <div class="ref" id="li-perConflict" data-name="perConflict">
+  <div class="ref" id="li-perConflict" data-name="perConflict" data-aka="max 1 per conflict, once per conflict">
     <h3><code>perConflict(max)</code> <span class="kind">Limit</span> <a class="anchor" href="#li-perConflict">#</a></h3>
     <p>"per conflict": resets when a conflict finishes.</p>
     <ul class="edge">
@@ -1350,7 +1343,7 @@ this.reaction('Draw a card')
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/WayOfThePhoenix.ts">Way of the Phoenix</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.5-AaN/TacticiansApprentice.ts">Tactician's Apprentice</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/WithstandTheDarkness.ts">Withstand the Darkness</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/HidaOUshi.ts">Hida O-Ushi</a></p>
   </div>
 
-  <div class="ref" id="li-perRound" data-name="perRound">
+  <div class="ref" id="li-perRound" data-name="perRound" data-aka="max 1 per round, once per round">
     <h3><code>perRound(max)</code> <span class="kind">Limit</span> <a class="anchor" href="#li-perRound">#</a></h3>
     <p>"per round": resets when the round ends. <code>perRound(1)</code> is every card ability's default limit.</p>
     <ul class="edge">

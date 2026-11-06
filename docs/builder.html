@@ -26,9 +26,9 @@
     <p>The card methods that declare abilities, and every call of the ability builder: triggers, conditions, costs, targets, effects, chat text, limits and steps.</p>
 </header>
 <h2 id="cm-declaring-abilities">Declaring abilities</h2>
-<p>A card class declares its abilities in <code>setupCardAbilities()</code>. An action or a triggered ability starts with a card method that takes the ability's <code>title</code> (the text of its menu entry and prompt) and returns a builder; each chained call adds one part of the card text (see <a href="#b-the-ability-builder">The ability builder</a>). The builder is registered when <code>setupCardAbilities()</code> returns; there is no closing <code>build()</code>. Called anywhere else, these methods throw <code>"&lt;title&gt;: abilities can only be declared in setupCardAbilities or declareAbilities"</code>.</p>
+<p>A card class declares its abilities in <code>setupCardAbilities()</code>. An action or a triggered ability starts with a card method that takes the ability's <code>title</code> (the text of its menu entry and prompt) and returns a builder; each chained call adds one part of the card text (see <a href="#b-the-ability-builder">builder calls</a>). The builder is registered when <code>setupCardAbilities()</code> returns; there is no closing <code>build()</code>. Called anywhere else, these methods throw <code>"&lt;title&gt;: abilities can only be declared in setupCardAbilities or declareAbilities"</code>.</p>
 <p>Constant abilities and keywords (persistent effects, composure, dire, attachment restrictions, Legendary, Tutored) don't use the builder: they take their settings in one call and return nothing.</p>
-<p>To find the method for a card's wording, start from <a href="index.html#start-map">which method for which card text</a>. What callbacks read from <code>context</code> is in the <a href="types.html#ctx-section-context">context reference</a>.</p>
+<p>To find the method for a card's wording, start from <a href="index.html#start-map">which method for which card text</a>. The card queries that callbacks call (<code>isParticipating()</code>, <code>hasTrait()</code>, …) are on the <a href="helpers.html#q-queries">queries</a> page. What callbacks read from <code>context</code> is in the <a href="types.html#ctx-section-context">context reference</a>.</p>
 
 <section class="group">
   <h3 class="group-title" id="cm-group-actions">Actions</h3>
@@ -65,7 +65,7 @@ this.action('Sacrifice to discard an attachment')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Use it only when the card's Emerald Legacy text prints "Conflict Action:". A card printed only in an older version (A Fate Worse Than Death, Fate Has No Secrets) stays an <code>action()</code>, even when its card data says "Conflict Action:". So does older wording such as "Action: During a conflict, …": write that condition out.</li>
+      <li>Use it only when the card data text prints "Conflict Action:" and a version of the card has an Emerald Legacy print (an <code>image_url</code> on <code>emeralddb-images</code> in <code>test/json/Card/&lt;id&gt;.json</code>). Otherwise it stays an <code>action()</code> with the condition written out: a card printed only in an older version (A Fate Worse Than Death, Fate Has No Secrets), or older wording such as "Action: During a conflict, …". Exception: For Shame! (01-Core) stays an <code>action()</code>.</li>
       <li>The conflict check is added to the ability's own <a href="#b-condition"><code>condition()</code></a> when the builder is registered; both must hold.</li>
       <li>A copy of the ability (Illustrious Plagiarist) is checked for the card that has it: a character that copies a Conflict Action must be participating.</li>
       <li>The check reads the card's current type: a character played as an attachment (Togashi Kazue) is checked as an attachment.</li>
@@ -147,7 +147,7 @@ this.forcedReaction('Can\'t be discarded or remove fate')
     <p>Starts an "Interrupt: When …": the player may use it before the triggering event resolves. Returns a <code>TriggerBuilder</code>.</p>
     <ul class="edge">
       <li>For "When … would …" (cancel or replace the event before it happens) use <a href="#cm-wouldInterrupt"><code>wouldInterrupt()</code></a>.</li>
-      <li><a href="#b-cancel"><code>cancel()</code></a> cancels the event that is about to resolve.</li>
+      <li>Cancelling or replacing the event belongs on <code>wouldInterrupt()</code>, not here: cancels have priority over other interrupts (RRG Cancel). No card uses <a href="#b-cancel"><code>cancel()</code></a> on <code>interrupt()</code>.</li>
     </ul>
     <pre><code>// The Art of Peace: Interrupt: When this province is broken – dishonor each attacking character and honor each defending character.
 this.interrupt('Honor all defenders and dishonor all attackers')
@@ -441,7 +441,7 @@ this.shrewdYasuki.declareAbilities(() =&gt; {
   </div>
 </section>
 
-<h2 id="b-the-ability-builder">The ability builder</h2>
+<h2 id="b-the-ability-builder">Builder calls</h2>
 <p><code>action()</code>, <code>conflictAction()</code>, the duel triggers and <code>when()</code>/<code>aggregateWhen()</code> return an <code>AbilityBuilder</code> (<code>server/game/AbilityBuilder.ts</code>). Each call records one part of the ability and returns the builder. The builder's type grows with each call: a target, a cost or a select adds its name to <code>context</code> for every later callback, so card code needs no casts. Runtime checks back the types: a callback called with a context that doesn't hold its declared targets throws <code>"&lt;title&gt;: context does not match its declared targets"</code>.</p>
 <p>Every error below names the ability by its title. Most are thrown when the call is made; the ones marked "at registration" are thrown when <code>setupCardAbilities()</code> returns.</p>
 
@@ -452,7 +452,7 @@ this.shrewdYasuki.declareAbilities(() =&gt; {
     <li><code>when()</code> / <code>aggregateWhen()</code> (triggered abilities)</li>
     <li>When and where the ability can be used: <code>phase()</code>, <code>location()</code>, <code>condition()</code>, <code>ifCondition()</code>, <code>playOnlyIf()</code>, <code>anyPlayer()</code>, <code>collectiveTrigger()</code>, <code>evenDuringDynasty()</code>, <code>canTriggerOutsideConflict()</code>, <code>conflictProvinceCondition()</code></li>
     <li><code>cost()</code></li>
-    <li>Targets</li>
+    <li>Targets: <a href="#b-target"><code>target()</code></a>, <a href="#b-targetCards"><code>targetCards()</code></a>, <a href="#b-ringTarget"><code>ringTarget()</code></a>, <a href="#b-select"><code>select()</code></a>, <a href="#b-selectFrom"><code>selectFrom()</code></a>, <a href="#b-abilityTarget"><code>abilityTarget()</code></a>, <a href="#b-elementTarget"><code>elementTarget()</code></a>, <a href="#b-tokenTarget"><code>tokenTarget()</code></a></li>
     <li>Effects: game actions, <code>if()</code>/<code>ifAble()</code>/<code>otherwise()</code>, <code>onAffinity()</code>, <code>initiateDuel()</code>, <code>handler()</code>, <code>onResolve()</code></li>
     <li>Chat: <code>chatText()</code> on the ability, <code>message()</code> on a step</li>
     <li><code>limit()</code> / <code>max()</code>, <code>cannotTargetFirst()</code>, <code>firstPlayerChoosesFirst()</code>, <code>cannotBeMirrored()</code>, <code>attachmentText()</code></li>
@@ -753,11 +753,11 @@ this.action('Ready a character')
   <ul>
     <li>The target's game actions get the choice as their default target. An action that sets its own <code>target</code> keeps it.</li>
     <li>A target without game actions only records the choice. Later game actions, <code>if()</code> or a step read it.</li>
-    <li>Targets are chosen when the ability is used, before costs are paid; the prompt offers "Pay costs first" (not when a cost depends on a target, as an attachment's reduced fate cost does) and "Cancel". Exceptions: <a href="#b-cannotTargetFirst"><code>cannotTargetFirst()</code></a>, and targets the opponent chooses. A step's targets are chosen when the step resolves.</li>
+    <li>Targets are offered before costs (<a href="index.html#start-timing">timing</a>), also with a "Cancel" button. Not with <a href="#b-cannotTargetFirst"><code>cannotTargetFirst()</code></a> or for targets the opponent chooses. A step's targets are chosen when the step resolves.</li>
     <li>The ability can only be used when every target that doesn't depend on another has a legal choice, or is optional.</li>
     <li>Two targets with one name throw <code>"two targets named &lt;name&gt;"</code>; a target after <code>if()</code> throws <code>"targets come before if()"</code>.</li>
   </ul>
-  <p>What counts is when the choice is made, not where it stands in the text. A choice that can only be made while the effect resolves (among cards the effect reveals or looks at, or after an earlier part has happened) is not a target: use <a href="#b-selectCard"><code>selectCard()</code></a>, <a href="#b-chooseAction"><code>chooseAction()</code></a> or another <a href="#b-group-shortcuts-choices">choice shortcut</a>.</p>
+  <p>A "choose" or "select" before the dash is made when the ability is used: a target or <a href="#b-select"><code>select()</code></a>. A choice after the dash is made while the effect resolves (among cards the effect reveals or looks at, or after an earlier part has happened) and is not a target: use <a href="#b-selectCard"><code>selectCard()</code></a>, <a href="#b-chooseAction"><code>chooseAction()</code></a> or another <a href="#b-group-shortcuts-choices">choice shortcut</a>.</p>
 
   <div class="ref" id="b-abilityTarget" data-name="abilityTarget">
     <h3><code>abilityTarget(properties, ...gameActions)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-abilityTarget">#</a></h3>
@@ -862,7 +862,7 @@ this.action('Prevent an opponent contesting a ring')
 
   <div class="ref" id="b-select" data-name="select">
     <h3><code>select(choices)</code> · <code>select(properties, choices)</code> <span class="kind">Builder</span> <a class="anchor" href="#b-select">#</a></h3>
-    <p>"Select one – … or …": the player picks one labelled choice when the ability is used, with the targets (RRG: pre-effect "select" instructions are made then), also when the text puts it after the dash (For Shame!: "Your opponent must select one – …", with <code>player: Players.Opponent</code>). The label is <code>context.selects[name].choice</code>, and <code>context.select</code> for the select named <code>target</code>. Without other properties, pass the choices alone.</p>
+    <p>"Select one – … or …" before the dash: the player picks one labelled choice when the ability is used, with the targets (RRG Select). Also when the opponent selects (For Shame!: "Your opponent must select one – dishonor the chosen character or bow it", with <code>player: Players.Opponent</code>; the dash introduces the options). A selection after the dash is made while the effect resolves: <a href="#b-chooseAction"><code>chooseAction()</code></a>. The label is <code>context.selects[name].choice</code>, and <code>context.select</code> for the select named <code>target</code>. Without other properties, pass the choices alone.</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1226,10 +1226,7 @@ this.action('Initiate a Military duel')
     <li>A step is not a new use of the card: it raises no <code>onCardAbilityInitiated</code> (Kamayari reacts once per ability).</li>
     <li>When one of the step's targets has no legal choice, the step doesn't resolve and prints nothing.</li>
   </ul>
-  <div class="note">
-    <p><strong>"Then" or "if you do"?</strong> Both are <code>then()</code>: it follows only when the step before resolved in full (designer ruling; the RRG has the same rule for "to", quoted below). <code>afterwards()</code> follows regardless: use it for a sentence without "then" that comes after the effect ("Shuffle.", "If it is now in …"), and for the few cards whose rulings let the post-then part resolve anyway. Likewise <code>thenIf()</code> / <code>afterwardsIf()</code>.</p>
-  </div>
-  <div class="rule"><blockquote>If the effect text of a card ability includes the word "to," then the text that follows the word "to" can only be resolved if the preceding text was successfully resolved in full.</blockquote><cite>The word "To"</cite></div>
+  <p>Which step to use for "then", "if you do", "to" and a sentence without "then": <a href="index.html#start-then">then, if you do, to, afterwards</a>.</p>
 
   <div class="ref" id="b-afterwards" data-name="afterwards">
     <h3><code>afterwards()</code> <span class="kind">Builder</span> <a class="anchor" href="#b-afterwards">#</a></h3>
@@ -1420,16 +1417,18 @@ this.action('Move this character to the conflict or home from the conflict')
       <li>A step prints only its <a href="#b-message"><code>message()</code></a>; <code>chatText()</code> there throws.</li>
       <li>For a sentence that follows even if this step didn't resolve, use <a href="#b-afterwards"><code>afterwards()</code></a>.</li>
     </ul>
-    <pre><code>// Ujiaki's Offer: Action: During a [conflict-political] conflict, choose a participating character … - place 1 fate on the chosen character. If you do, bow it, move it home, and dishonor it.
-this.action('Place a fate on a participating character, bow it, move it home, and dishonor it')
-    .condition((context) =&gt; context.game.isDuringConflict(ConflictType.Political))
-    .target({ … }, placeFate())
-    .chatText('place a fate on {0} then bow, dishonor, and move them home')
+    <pre><code>// Invocation of Ash: Action: Lose 1 honor. Choose a character you control – move this attachment to that character. Then, remove 1 fate from that character.
+this.action('Move to another character')
+    .cost(costs.payHonor(1))
+    .target({
+        cardType: CardType.Character,
+        controller: Players.Self,
+        cardCondition: (card, context) =&gt; card !== context.source.parentCharacter
+    }, attach((context) =&gt; ({ attachment: context.source })))
+    .chatText(…)
     .then()
-    .bow((context) =&gt; ({ target: context.target }))
-    .dishonor((context) =&gt; ({ target: context.target }))
-    .sendHome((context) =&gt; ({ target: context.target }));</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.6-PaaC/UjiakisOffer.ts">Ujiaki's Offer</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.4-CoC/MercenaryCompany.ts">Mercenary Company</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/PropitiousMarket.ts">Propitious Market</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KitsuSpiritcaller.ts">Kitsu Spiritcaller</a></p>
+    .removeFate((context) =&gt; ({ target: context.target }));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.3-TFW/InvocationOfAsh.ts">Invocation of Ash</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.6-PaaC/UjiakisOffer.ts">Ujiaki's Offer</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/PropitiousMarket.ts">Propitious Market</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KitsuSpiritcaller.ts">Kitsu Spiritcaller</a></p>
   </div>
 
   <div class="ref" id="b-thenIf" data-name="thenIf">
@@ -1597,7 +1596,7 @@ this.action('Place a fate on a bushi')
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/DistinguishedDojo.ts">Distinguished Dōjō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/MotoJuro.ts">Moto Juro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BayushiShoju.ts">Bayushi Shoju</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/FavoredNiece.ts">Favored Niece</a></p>
   </div>
 
-  <div class="ref" id="b-max" data-name="max">
+  <div class="ref" id="b-max" data-name="max" data-aka="max 1 per conflict">
     <h3><code>max(max)</code> <span class="kind">Limit</span> <a class="anchor" href="#b-max">#</a></h3>
     <p>"(Max X per [period].)": how often each player may use this ability across all copies of the card, whoever owns the copy.</p>
     <table>
@@ -2068,7 +2067,7 @@ this.action('Steal a fate')
 
 <section class="group">
   <h3 class="group-title" id="b-group-shortcuts-choices">Shortcuts: choices while resolving</h3>
-  <p>Choices made while the effect resolves (not targets): the chosen thing is handed to the inner <code>gameAction</code>.</p>
+  <p>Choices after the dash, made while the effect resolves (not targets; a choice before the dash is a <a href="#b-group-targets">target or select</a>): the chosen thing is handed to the inner <code>gameAction</code>.</p>
   <div class="ref" id="b-cardMenu" data-name="cardMenu">
     <h3><code>cardMenu(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-cardMenu">#</a></h3>
     <p>One of <code>cards</code> is chosen from card buttons, and <code>gameAction</code> resolves on it. Full entry: <a href="game-actions.html#ga-cardMenu"><code>cardMenu</code></a>.</p>
@@ -2083,7 +2082,7 @@ this.action('Steal a fate')
   </div>
   <div class="ref" id="b-chooseAction" data-name="chooseAction">
     <h3><code>chooseAction(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-chooseAction">#</a></h3>
-    <p>A labelled choice between game actions, made while the effect resolves (a "select one" made when the ability is used is <a href="#b-select"><code>select()</code></a>); a choice is an action or <code>{ action, message }</code>. Full entry: <a href="game-actions.html#ga-chooseAction"><code>chooseAction</code></a>.</p>
+    <p>A labelled choice between game actions after the dash, made while the effect resolves (a "select one" before the dash is <a href="#b-select"><code>select()</code></a>); a choice is an action or <code>{ action, message }</code>. Full entry: <a href="game-actions.html#ga-chooseAction"><code>chooseAction</code></a>.</p>
     <pre><code>// Compass: … look at the top 3 cards of one of your decks. …
 .chooseAction({
     activePromptTitle: 'Choose a deck',
@@ -2207,154 +2206,6 @@ this.action('Steal a fate')
     gameAction: (token) =&gt; attach({ target: context.target, attachment: token })
 }))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Lion/NobleVanguard.ts">Noble Vanguard</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Lion/Pride.ts">Pride</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Lion/AshigaruEncampment.ts">Ashigaru Encampment</a></p>
-  </div>
-</section>
-
-<h2 id="cm-card-queries">Card queries used in abilities</h2>
-<p>Card methods that ability callbacks (<code>condition</code>, <code>cardCondition</code>, <code>match</code>, <code>if()</code> …) call to read the game state. They change nothing. More helpers are on the <a href="helpers.html">Card helpers and queries</a> page.</p>
-
-<section class="group">
-  <h3 class="group-title" id="cm-group-conflict-queries">Conflict</h3>
-
-  <div class="ref" id="cm-conflictProvinceWithText" data-name="conflictProvinceWithText">
-    <h3><code>conflictProvinceWithText()</code> <span class="kind">Query</span> <a class="anchor" href="#cm-conflictProvinceWithText">#</a></h3>
-    <p>On a province: the conflict province that carries this province's text, which is this province or a copy of it, or <code>undefined</code>. A province whose text is blank (broken, dishonored or blanked) doesn't count.</p>
-    <pre><code>// Pilgrimage: During conflicts at this province, cancel all ring effects. …
-const province = this.conflictProvinceWithText();
-if(province &amp;&amp; !event.cancelled) {
-    event.cancel();
-    this.game.addMessage(msg`${province} cancels the ring effect`);
-}</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Pilgrimage.ts">Pilgrimage</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/HenshinMysteries.ts">Henshin Mysteries</a></p>
-  </div>
-
-  <div class="ref" id="cm-isAttacking" data-name="isAttacking isDefending">
-    <h3><code>isAttacking(conflictType?)</code> · <code>isDefending(conflictType?)</code> <span class="kind">Query</span> <a class="anchor" href="#cm-isAttacking">#</a></h3>
-    <p>Whether this character is attacking (or defending) in the current conflict. Defined on <code>DrawCard</code>.</p>
-    <table>
-      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><code>conflictType</code></td><td><code>ConflictType</code></td><td>any</td><td>Also requires the conflict to be of this type.</td></tr>
-      </tbody>
-    </table>
-    <ul class="edge">
-      <li><code>false</code> when there is no conflict. Either one being <code>true</code> implies a conflict, so no extra <code>isDuringConflict()</code> check is needed.</li>
-    </ul>
-    <pre><code>// Mountaintop Statuary: … Choose an attacking character with printed cost 2 or lower – move that character home.
-    .target({
-        cardType: CardType.Character,
-        cardCondition: (card) =&gt; card.isAttacking() &amp;&amp; card.costLessThan(3)
-    }, sendHome());</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/MountaintopStatuary.ts">Mountaintop Statuary</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AdmitDefeat.ts">Admit Defeat</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsceticVisionary.ts">Ascetic Visionary</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CautiousScout.ts">Cautious Scout</a></p>
-  </div>
-
-  <div class="ref" id="cm-isInConflictProvince" data-name="isInConflictProvince">
-    <h3><code>isInConflictProvince()</code> <span class="kind">Query</span> <a class="anchor" href="#cm-isInConflictProvince">#</a></h3>
-    <p>Whether this card is in a province where a conflict is ("During a conflict at this province" on a holding).</p>
-    <ul class="edge">
-      <li>Only <code>DrawCard</code> (holdings, characters in provinces …) answers it; on other cards it is always <code>false</code>. A province itself uses <code>isConflictProvince()</code>.</li>
-    </ul>
-    <pre><code>// Mountaintop Statuary: Action: During a conflict at this province, sacrifice this holding. …
-this.action('Send a 2 or lower cost character home')
-    .condition((context) =&gt; context.source.isInConflictProvince())
-    .cost(costs.sacrificeSelf())</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/MountaintopStatuary.ts">Mountaintop Statuary</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/RaiseTheAlarm.ts">Raise the Alarm</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.3-TFW/WrathOfTheKami.ts">The Wrath of the Kami</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/AkodoZentaro.ts">Akodo Zentarō</a></p>
-  </div>
-</section>
-
-<section class="group">
-  <h3 class="group-title" id="cm-group-state-queries">Card state</h3>
-
-  <div class="ref" id="cm-getBaseMilitarySkill" data-name="getBaseMilitarySkill getBasePoliticalSkill">
-    <h3><code>getBaseMilitarySkill()</code> · <code>getBasePoliticalSkill()</code> <span class="kind">Query</span> <a class="anchor" href="#cm-getBaseMilitarySkill">#</a></h3>
-    <p>This character's base skill: the printed skill after effects that change the base (set, copy, double, switch, dash), without other modifiers. Defined on <code>DrawCard</code>; the getters <code>baseMilitarySkill</code> and <code>basePoliticalSkill</code> return the same.</p>
-    <ul class="edge">
-      <li>A dash counts as 0, and the result is never below 0.</li>
-    </ul>
-    <pre><code>// Way of the Lion: Action: During a conflict, choose a [clan-lion] character – double that character's base [conflict-military] skill until the end of the conflict.
-    .target({
-        cardType: CardType.Character,
-        cardCondition: (card) =&gt; card.isFaction('lion') &amp;&amp; card.getBaseMilitarySkill() &gt; 0
-    }, cardLastingEffect({
-        effect: modifyBaseMilitarySkillMultiplier(2)
-    }))</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/WayOfTheLion.ts">Way of the Lion</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/CantorOfGales.ts">Cantor of Gales</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/TrueStrikeKenjutsu.ts">True Strike Kenjutsu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/CollapsibleTunnels.ts">Collapsible Tunnels</a></p>
-  </div>
-
-  <div class="ref" id="cm-getCurrentElementSymbol" data-name="getCurrentElementSymbol">
-    <h3><code>getCurrentElementSymbol(key)</code> <span class="kind">Query</span> <a class="anchor" href="#cm-getCurrentElementSymbol">#</a></h3>
-    <p>The element of one of this card's element symbols, after effects that replace it. A card declares its symbols in its <code>protected printedElementSymbols</code> list (read through <code>getPrintedElementSymbols()</code>), each with a <code>key</code>.</p>
-    <table>
-      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><code>key</code></td><td><code>string</code></td><td>required</td><td>The symbol's key.</td></tr>
-      </tbody>
-    </table>
-    <ul class="edge">
-      <li>Throws <code>"&lt;card name&gt; has no element symbol '&lt;key&gt;'"</code> for an unknown key.</li>
-    </ul>
-    <pre><code>// Isawa Atsuko: Action: During a [element-void] conflict – …
-this.action('Wield the power of the void')
-    .condition(() =&gt; this.game.isDuringConflict(this.getCurrentElementSymbol(elementKey)))</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/IsawaAtsuko.ts">Isawa Atsuko</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/FearsomeMystic.ts">Fearsome Mystic</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/IsawaMasahiro.ts">Isawa Masahiro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/SeekerOfKnowledge.ts">Seeker of Knowledge</a></p>
-  </div>
-
-  <div class="ref" id="cm-getTokenCount" data-name="getTokenCount">
-    <h3><code>getTokenCount(type)</code> <span class="kind">Query</span> <a class="anchor" href="#cm-getTokenCount">#</a></h3>
-    <p>How many tokens of <code>type</code> (such as <code>TokenType.Honor</code>) are on this card; 0 when there are none. Status tokens (honored, dishonored, tainted) are not counted here.</p>
-    <table>
-      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><code>type</code></td><td><code>string</code></td><td>required</td><td>The token type.</td></tr>
-      </tbody>
-    </table>
-    <pre><code>// Propitious Market: This holding gets +1 bonus strength for each honor token on it.
-    effect: modifyProvinceStrength((_province, context) =&gt; context.source.getTokenCount(TokenType.Honor))</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/PropitiousMarket.ts">Propitious Market</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/DistinguishedDojo.ts">Distinguished Dōjō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/FortifiedAssembly.ts">Fortified Assembly</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/EndlessArchives.ts">Endless Archives</a></p>
-  </div>
-
-  <div class="ref" id="cm-hasTrait" data-name="hasTrait">
-    <h3><code>hasTrait(trait)</code> <span class="kind">Query</span> <a class="anchor" href="#cm-hasTrait">#</a></h3>
-    <p>Whether this card has the <code>Trait</code> now: its printed traits (or those of the card it copies), plus gained traits, minus lost ones.</p>
-    <ul class="edge">
-      <li>A blank effect that also blanks traits removes the printed ones. For several traits use <code>hasSomeTrait(…)</code> or <code>hasEveryTrait(…)</code>.</li>
-    </ul>
-    <pre><code>// Magistrate's Intervention: Play only if you control a Courtier or Magistrate character.
-    .playOnlyIf((context) =&gt; context.player.charactersInPlay.some((card) =&gt; card.type === CardType.Character &amp;&amp; (card.hasTrait(Trait.Courtier) || card.hasTrait(Trait.Magistrate))))</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/MagistratesIntervention.ts">Magistrate's Intervention</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AgainstTheWaves.ts">Against the Waves</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/AsceticVisionary.ts">Ascetic Visionary</a></p>
-  </div>
-
-  <div class="ref" id="cm-isBlank" data-name="isBlank">
-    <h3><code>isBlank()</code> <span class="kind">Query</span> <a class="anchor" href="#cm-isBlank">#</a></h3>
-    <p>Whether this card's printed text box is blank: a blank effect, or an effect that makes it a copy of another card. A province is also blank while it is broken or dishonored (unless the conflict ignores status tokens).</p>
-    <ul class="edge">
-      <li>A blank card's printed abilities and persistent effects don't work; the engine checks this itself. Call it in card code outside an ability, such as an <code>allowAttachment()</code> override for a printed "No … attachments".</li>
-    </ul>
-    <pre><code>// Kitsuki Yaruma: Courtesy. No Poison attachments.
-override allowAttachment(attachment: BaseCard): boolean {
-    if(attachment.hasTrait(Trait.Poison) &amp;&amp; !this.isBlank()) {
-        return false;
-    }
-
-    return super.allowAttachment(attachment);
-}</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.1-ToA/KitsukiYaruma.ts">Kitsuki Yaruma</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/KitsukiChiari.ts">Kitsuki Chiari</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/Kuro.ts">Kuro</a></p>
-  </div>
-
-  <div class="ref" id="cm-isFaceup" data-name="isFaceup">
-    <h3><code>isFaceup()</code> <span class="kind">Query</span> <a class="anchor" href="#cm-isFaceup">#</a></h3>
-    <p>Whether this card is faceup.</p>
-    <ul class="edge">
-      <li>On a province, in a format without province cards both <code>isFaceup()</code> and <code>isFacedown()</code> are <code>false</code>.</li>
-    </ul>
-    <pre><code>// Akodo Zentarō: … choose a non-unique holding in the attacked province - …
-    .target({
-        cardType: CardType.Holding,
-        controller: Players.Opponent,
-        location: Location.Provinces,
-        cardCondition: (card) =&gt; card.isInConflictProvince() &amp;&amp; !card.isUnique() &amp;&amp; card.isFaceup()
-    })</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/AkodoZentaro.ts">Akodo Zentarō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/DaidojiUji.ts">Daidōji Uji</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/IkomaUjiaki.ts">Ikoma Ujiaki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/KaiuInventor.ts">Kaiu Inventor</a></p>
   </div>
 </section>
 
