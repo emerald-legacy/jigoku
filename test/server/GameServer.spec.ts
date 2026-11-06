@@ -838,7 +838,8 @@ describe('GameServer.onGameMessage', () => {
             menuButton: jasmine.createSpy('menuButton'),
             drop: jasmine.createSpy('drop'),
             changeStat: jasmine.createSpy('changeStat'),
-            facedownCardClicked: jasmine.createSpy('facedownCardClicked')
+            facedownCardClicked: jasmine.createSpy('facedownCardClicked'),
+            selectDeck: jasmine.createSpy('selectDeck')
         });
         const ctx = makeCtx({ userGameMap: new Map([['alice', game]]), sendGameState: jasmine.createSpy('sendGameState') });
         const socket = { user: { username: 'alice' }, id: 's1' };
@@ -889,6 +890,13 @@ describe('GameServer.onGameMessage', () => {
         call('onGameMessage', ctx, socket, 'changeStat', 'honor', 1);
         call('onGameMessage', ctx, socket, 'changeStat', 'gold', 1);
         expect(game.changeStat).toHaveBeenCalledOnceWith('alice', 'honor', 1);
+    });
+
+    it('rejects selectDeck: decks are chosen only when the game starts', () => {
+        const { game, ctx, socket } = setup();
+        call('onGameMessage', ctx, socket, 'selectDeck', { name: 'Deck', faction: { value: 'crab' } });
+        expect(game.selectDeck).not.toHaveBeenCalled();
+        expect(game.stopNonChessClocks).not.toHaveBeenCalled();
     });
 
     it('rejects names inherited from Object.prototype', () => {

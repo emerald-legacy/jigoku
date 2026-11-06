@@ -16,7 +16,7 @@ import { Socket, verifyUserToken } from '../Socket.js';
 import { detectBinary } from '../util.js';
 import { isOwnKey } from '../game/utils/helpers.js';
 import { stringifyWithoutCycles, WsSocket, type LobbyHandlers } from './WsSocket.js';
-import { DeckSchema, ShortCardDataSchema, type GameSummary, type PendingGameDTO, type ShortCardData, type UserIdentity } from './LobbyProtocol.js';
+import { ShortCardDataSchema, type GameSummary, type PendingGameDTO, type ShortCardData, type UserIdentity } from './LobbyProtocol.js';
 import * as env from '../env.js';
 
 const MAX_DEBUG_DATA_LENGTH = 4 * 1024 * 1024;
@@ -616,7 +616,6 @@ export class GameServer implements GameRouter, LobbyHandlers {
             z.tuple([z.looseObject({ element: z.string() }), MenuItemSchema]),
             (g, p, [sourceRing, menuItem]) => g.ringMenuItemClick(p, sourceRing, menuItem)
         ),
-        selectDeck: command(z.tuple([DeckSchema]), (g, p, [deck]) => g.selectDeck(p, deck)),
         showConflictDeck: command(z.tuple([]), (g, p) => g.showConflictDeck(p)),
         showDynastyDeck: command(z.tuple([]), (g, p) => g.showDynastyDeck(p)),
         shuffleConflictDeck: command(z.tuple([]), (g, p) => g.shuffleConflictDeck(p)),
