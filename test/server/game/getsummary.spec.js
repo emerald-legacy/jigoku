@@ -82,11 +82,13 @@ describe('the Game', () => {
                         player2.left = false;
                     });
 
-                    it('should still summarise the game, without that player', () => {
+                    it('should keep that player, marked as left, so the lobby can offer Rejoin after a restart', () => {
                         var state = game.getSummary('');
 
                         expect(state.name).toBe('Test Game');
-                        expect(Object.keys(state.players)).toEqual([player1.name]);
+                        expect(Object.keys(state.players)).toEqual([player1.name, player2.name]);
+                        expect(state.players[player1.name].left).toBe(false);
+                        expect(state.players[player2.name].left).toBe(true);
                     });
                 });
             });

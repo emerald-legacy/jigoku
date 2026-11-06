@@ -238,10 +238,6 @@ export class GameStateSerializer {
 
         for(const player of game.getPlayers()) {
             let deck: { name?: string; selected?: boolean } | undefined;
-            if(player.left) {
-                continue;
-            }
-
             if(activePlayerName === player.name && player.deck) {
                 deck = { name: player.deck.name, selected: player.deck.selected };
             } else if(player.deck) {
