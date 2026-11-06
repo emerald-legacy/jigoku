@@ -131,18 +131,16 @@ describe('Storm from Sakkaku', function () {
                 });
 
                 describe('when the attacker does not discard the holding from the province', function () {
-                    it('should cancel the effects of the conflict ring', function () {
+                    it('should not cancel the effects of the conflict ring', function () {
                         this.player2.pass();
                         this.player1.clickPrompt('No');
-                        expect(this.player1).toHavePrompt('Action Window');
-                        expect(this.getChatLogs(1)).toContain('Storm from Sakkaku cancels the ring effect');
+                        expect(this.player1).toHavePrompt('Earth Ring');
                     });
 
-                    it('should cancel conflict ring resolution due to card effects', function () {
+                    it('should not cancel conflict ring resolution due to card effects', function () {
                         this.player2.clickCard('display-of-power');
                         this.player1.clickPrompt('No');
-                        expect(this.player1).toHavePrompt('Action Window');
-                        expect(this.getChatLogs(1)).toContain('Storm from Sakkaku cancels the ring effect');
+                        expect(this.player2).toHavePrompt('Earth Ring');
                     });
                 });
             });

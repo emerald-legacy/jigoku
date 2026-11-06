@@ -34,8 +34,8 @@ describe('Compromised Secrets', function () {
 
         it('should make you give an honor to your opponent to trigger ability', function () {
             this.player1.playAttachment(this.secrets1, this.rider2);
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
 
             this.player2.clickCard(this.rider2);
             expect(this.rider2.bowed).toBe(false);
@@ -45,8 +45,8 @@ describe('Compromised Secrets', function () {
 
         it('should not make you give an honor to your opponent to trigger ability on non-attached character', function () {
             this.player1.playAttachment(this.secrets1, this.rider2);
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
 
             this.player2.clickCard(this.adept);
             this.player2.clickCard(this.adept);
@@ -58,8 +58,8 @@ describe('Compromised Secrets', function () {
         it('should not be allowed to trigger if you attach this to a character you control (you cannot give honor to yourself)', function () {
             this.player1.playAttachment(this.secrets1, this.rider1);
             this.player2.pass();
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
 
             expect(this.player1).toHavePrompt('Action Window');
             this.player1.clickCard(this.rider1);
@@ -71,8 +71,8 @@ describe('Compromised Secrets', function () {
 
         it('should make you give an honor each time you trigger', function () {
             this.player1.playAttachment(this.secrets1, this.rider2);
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
 
             this.player2.clickCard(this.rider2);
             expect(this.rider2.bowed).toBe(false);
@@ -88,8 +88,8 @@ describe('Compromised Secrets', function () {
             this.player1.playAttachment(this.secrets1, this.rider2);
             this.player2.pass();
             this.player1.playAttachment(this.secrets2, this.rider2);
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
 
             this.player2.clickCard(this.rider2);
             expect(this.rider2.bowed).toBe(false);
@@ -132,3 +132,38 @@ describe('Compromised Secrets', function () {
         });
     });
 });
+
+describe('Compromised Secrets and keywords', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 10,
+                    hand: ['compromised-secrets']
+                },
+                player2: {
+                    honor: 11,
+                    inPlay: ['akodo-gunso']
+                }
+            });
+            this.gunso = this.player2.findCardByName('akodo-gunso');
+            this.player1.playAttachment('compromised-secrets', this.gunso);
+            // player1 has no characters, so their conflict opportunity passes by itself
+            this.noMoreActions();
+            this.noMoreActions();
+        });
+
+        it('doesn\'t add a cost to Pride, which isn\'t a triggered ability', function () {
+            this.initiateConflict({
+                attackers: [this.gunso],
+                defenders: []
+            });
+            const honor1 = this.player1.honor;
+            this.noMoreActions();
+            expect(this.gunso.isHonored).toBe(true);
+            expect(this.player1.honor).toBe(honor1 - 1); // only the unopposed honor loss
+        });
+    });
+});
+

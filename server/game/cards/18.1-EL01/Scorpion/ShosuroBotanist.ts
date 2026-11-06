@@ -1,22 +1,19 @@
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Players } from '../../../Constants.js';
+import { returnToHand } from '../../../GameActions/GameActions.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
 
 class ShosuroBotanist extends DrawCard {
     static id = 'shosuro-botanist';
 
-    setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Return attachment to owners hand',
-            target: {
+    override setupCardAbilities() {
+        this.action('Return attachment to owners hand')
+            .target({
                 cardType: CardType.Attachment,
                 controller: Players.Self,
-                cardCondition: card => !card.hasTrait('weapon'),
-                gameAction: AbilityDsl.actions.returnToHand()
-            },
-            effect: 'return {0} to {1}\'s hand',
-            effectArgs: context => [context.target?.owner ?? '']
-        });
+                cardCondition: (card) => !card.hasTrait(Trait.Weapon)
+            }, returnToHand())
+            .chatText((context) => msg`return ${context.chatTarget()} to ${context.target.owner}'s hand`);
     }
 }
 

@@ -12,13 +12,13 @@ describe('CardMenuAction', function() {
         this.gameAction = buildGameActionSpy();
     });
 
-    describe('getProperties()', function() {
-        it('should install setDefaultTarget on the underlying gameAction', function() {
+    describe('targets', function() {
+        it('should pass each card to the gameAction as its target', function() {
             const action = new CardMenuAction({
                 cards: [this.cardA], gameAction: this.gameAction
             });
-            action.getProperties(this.context);
-            expect(this.gameAction.setDefaultTarget).toHaveBeenCalled();
+            action.hasLegalTarget(this.context);
+            expect(this.gameAction.hasLegalTarget).toHaveBeenCalledWith(this.context, { target: this.cardA });
         });
     });
 
@@ -58,7 +58,7 @@ describe('CardMenuAction', function() {
             expect(lastPromptPlayer(this.game.promptWithHandlerMenu)).toBe(override);
         });
 
-        it('should not prompt when cards and choices are both empty', function() {
+        it('should not prompt when cards and options are both empty', function() {
             const action = new CardMenuAction({
                 cards: [], gameAction: this.gameAction
             });
@@ -66,9 +66,9 @@ describe('CardMenuAction', function() {
             expect(this.game.promptWithHandlerMenu).not.toHaveBeenCalled();
         });
 
-        it('should prompt when cards is empty but choices is non-empty (handlers provide legal target)', function() {
+        it('should prompt when cards is empty but options is non-empty (options provide legal target)', function() {
             const action = new CardMenuAction({
-                cards: [], choices: ['x'], handlers: [() => {}], gameAction: this.gameAction
+                cards: [], options: [{ text: 'x', handler: () => {} }], gameAction: this.gameAction
             });
             action.addEventsToArray([], this.context);
             expect(this.game.promptWithHandlerMenu).toHaveBeenCalled();
@@ -129,18 +129,16 @@ describe('CardMenuAction', function() {
             expect(this.gameAction.hasLegalTarget).toHaveBeenCalledWith(this.context, jasmine.objectContaining({ name: 'A' }));
         });
 
-        it('should invoke messageArgs with (chosenCard, player, filteredCards)', function() {
-            const messageArgs = jasmine.createSpy('messageArgs').and.returnValue(['arg1', 'arg2']);
-            const cardCondition = (card) => card === this.cardA;
+        it('should invoke message with (context, chosenCard, chooser)', function() {
+            const message = jasmine.createSpy('message').and.returnValue(['picked {0}', ['arg1', 'arg2']]);
             const action = new CardMenuAction({
                 cards: [this.cardA, this.cardB], gameAction: this.gameAction,
-                cardCondition,
-                message: 'picked {0}', messageArgs
+                message
             });
             action.addEventsToArray([], this.context);
             lastPromptArgs(this.game.promptWithHandlerMenu).cardHandler(this.cardA);
-            expect(messageArgs).toHaveBeenCalledWith(this.cardA, this.player, [this.cardA]);
-            expect(this.game.addMessage).toHaveBeenCalledWith('picked {0}', 'arg1', 'arg2');
+            expect(message).toHaveBeenCalledWith(this.context, this.cardA, this.player);
+            expect(this.game.addMessage).toHaveBeenCalledWith(['picked {0}', ['arg1', 'arg2']]);
         });
 
         it('should not add a message when message is not configured', function() {
@@ -154,9 +152,9 @@ describe('CardMenuAction', function() {
     });
 
     describe('hasLegalTarget()', function() {
-        it('should short-circuit to true when handlers are present, without consulting the gameAction', function() {
+        it('should short-circuit to true when options are present, without consulting the gameAction', function() {
             const action = new CardMenuAction({
-                cards: [], handlers: [() => {}], gameAction: this.gameAction
+                cards: [], options: [{ text: 'x', handler: () => {} }], gameAction: this.gameAction
             });
             expect(action.hasLegalTarget(this.context)).toBe(true);
             expect(this.gameAction.hasLegalTarget).not.toHaveBeenCalled();

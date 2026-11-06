@@ -60,5 +60,36 @@ describe('Asahina Takako', function() {
                 expect(this.player2).toHavePrompt('Action Window');
             });
         });
+
+        describe('choices', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['asahina-takako'],
+                        dynastyDeck: ['doji-challenger', 'doji-whisperer']
+                    }
+                });
+                this.dojiChallenger = this.player1.placeCardInProvince('doji-challenger', 'province 1');
+                this.dojiWhisperer = this.player1.placeCardInProvince('doji-whisperer', 'province 2');
+            });
+
+            it('switches only with a card in another province', function() {
+                this.player1.clickCard('asahina-takako');
+                this.player1.clickCard(this.dojiChallenger);
+                this.player1.clickPrompt('Switch with another card');
+                expect(this.player1).not.toBeAbleToSelect(this.dojiChallenger);
+                expect(this.player1).toBeAbleToSelect(this.dojiWhisperer);
+                this.player1.clickCard(this.dojiWhisperer);
+                expect(this.getChatLogs(3)).not.toContain('player1 chooses to discard Doji Challenger');
+            });
+
+            it('says which card is discarded', function() {
+                this.player1.clickCard('asahina-takako');
+                this.player1.clickCard(this.dojiChallenger);
+                this.player1.clickPrompt('Discard');
+                expect(this.getChatLogs(3)).toContain('player1 chooses to discard Doji Challenger');
+            });
+        });
     });
 });

@@ -74,3 +74,36 @@ describe('Glade of Contemplation', function () {
         });
     });
 });
+
+describe('Glade of Contemplation: maximum of 5', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['aggressive-moto'],
+                    hand: ['bonds-of-blood', 'breakthrough', 'captive-audience', 'cavalry-reserves', 'banzai', 'charge', 'fine-katana', 'let-go', 'assassination']
+                },
+                player2: {
+                    hand: ['adopted-kin', 'ancestral-daisho'],
+                    provinces: ['glade-of-contemplation']
+                }
+            });
+
+            this.aggressiveMoto = this.player1.findCardByName('aggressive-moto');
+            this.glade = this.player2.findCardByName('glade-of-contemplation', 'province 1');
+        });
+
+        it('draws at most 5 cards', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.aggressiveMoto],
+                province: this.glade
+            });
+
+            this.player2.clickCard(this.glade);
+            this.player2.clickPrompt('Draw cards');
+            expect(this.player2.hand.length).toBe(7);
+        });
+    });
+});

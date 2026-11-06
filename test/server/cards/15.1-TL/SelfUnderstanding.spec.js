@@ -63,6 +63,8 @@ describe('Self Understanding', function() {
             this.noMoreActions();
             this.player1.clickCard(this.challenger);
 
+            expect(this.player1).toHavePrompt('Earth Ring');
+            this.player1.clickPrompt('Draw a card and opponent discards');
             expect(this.player1).toHavePrompt('Fire Ring');
             this.player1.clickCard(this.brash);
             this.player1.clickPrompt('Dishonor Brash Samurai');
@@ -94,7 +96,7 @@ describe('Self Understanding', function() {
             expect(this.player1).toHavePrompt('Asako Azunami');
         });
 
-        it('should not be playable if you have no claimed rings', function() {
+        it('should not react if you have no claimed rings', function() {
             this.player1.playAttachment(this.understanding, this.challenger);
             this.noMoreActions();
 
@@ -105,7 +107,9 @@ describe('Self Understanding', function() {
             });
 
             this.noMoreActions();
+            expect(this.getChatLogs(4)).toContain('player1 won a political conflict 6 vs 6');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePromptButton('Gain 2 Honor');
         });
 
         it('should not react to losing', function() {

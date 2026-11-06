@@ -1,24 +1,27 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
+import { RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class WhiteHordeVanguard extends DrawCard {
     static id = 'white-horde-vanguard';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.game.isDuringConflict() && context.game.conflictRecord.filter(record => record.completed).length === 0,
+            // the first conflict lasts until it ends, also after its own record is completed (afterConflict reactions)
+            condition: (context) => context.game.isDuringConflict() &&
+                !context.game.conflictRecord.some((record) => record.completed && record.uuid !== context.game.currentConflict?.uuid),
             effect: [
-                AbilityDsl.effects.cardCannot({
-                    cannot: 'sendHome',
-                    restricts: 'opponentsCardEffects'
+                cardCannot({
+                    cannot: RestrictionType.SendHome,
+                    appliesTo: RestrictionScope.OpponentsCardEffects
                 }),
-                AbilityDsl.effects.cardCannot({
-                    cannot: 'moveToConflict',
-                    restricts: 'opponentsCardEffects'
+                cardCannot({
+                    cannot: RestrictionType.MoveToConflict,
+                    appliesTo: RestrictionScope.OpponentsCardEffects
                 }),
-                AbilityDsl.effects.cardCannot({
-                    cannot: 'bow',
-                    restricts: 'opponentsCardEffects'
+                cardCannot({
+                    cannot: RestrictionType.Bow,
+                    appliesTo: RestrictionScope.OpponentsCardEffects
                 })
             ]
         });

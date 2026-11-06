@@ -49,7 +49,7 @@ describe('Ancient Master', function () {
                 this.player1.clickPrompt('Play Ancient Master as an attachment');
                 this.player1.clickCard(this.nitenMaster);
                 this.noMoreActions();
-                let handsize = this.player1.player.hand.length;
+                const handsize = this.player1.player.hand.length;
                 this.initiateConflict({
                     attackers: [this.nitenMaster]
                 });
@@ -61,12 +61,26 @@ describe('Ancient Master', function () {
                 expect(this.player1.player.hand.length).toBe(handsize + 1);
             });
 
+            it('says how many cards it looks at when fewer than 5 are left', function () {
+                this.player1.reduceDeckToNumber('conflict deck', 2);
+                this.player1.clickCard(this.ancientMaster);
+                this.player1.clickPrompt('Play Ancient Master as an attachment');
+                this.player1.clickCard(this.nitenMaster);
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.nitenMaster]
+                });
+                this.player1.clickCard(this.ancientMaster);
+                expect(this.player1).toHavePrompt('Ancient Master');
+                expect(this.getChatLogs(3)).toContain('player1 uses Ancient Master to look at the top two cards of their deck');
+            });
+
             it('should trigger its reaction and find tattoos', function () {
                 this.player1.clickCard(this.ancientMaster);
                 this.player1.clickPrompt('Play Ancient Master as an attachment');
                 this.player1.clickCard(this.nitenMaster);
                 this.noMoreActions();
-                let handsize = this.player1.player.hand.length;
+                const handsize = this.player1.player.hand.length;
                 this.initiateConflict({
                     attackers: [this.nitenMaster]
                 });
@@ -108,6 +122,41 @@ describe('Ancient Master', function () {
                 expect(this.ancientMaster.location).toBe('conflict discard pile');
                 expect(this.ancientMaster.getType()).toBe('character');
             });
+        });
+    });
+});
+
+describe('Ancient Master on a defender', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-yoshi']
+                },
+                player2: {
+                    inPlay: ['niten-master'],
+                    hand: ['ancient-master'],
+                    conflictDeck: ['hurricane-punch', 'censure', 'ornate-fan']
+                }
+            });
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.nitenMaster = this.player2.findCardByName('niten-master');
+            this.ancientMaster = this.player2.findCardByName('ancient-master');
+            this.player1.pass();
+            this.player2.clickCard(this.ancientMaster);
+            this.player2.clickPrompt('Play Ancient Master as an attachment');
+            this.player2.clickCard(this.nitenMaster);
+        });
+
+        it('should trigger after the attached character is declared as a defender', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.yoshi],
+                defenders: [this.nitenMaster]
+            });
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.ancientMaster);
         });
     });
 });

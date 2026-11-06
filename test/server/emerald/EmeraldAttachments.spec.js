@@ -1,4 +1,4 @@
-import { GameModes } from '../../../build/server/GameModes.js';
+import { GameMode } from '../../../build/server/GameMode.js';
 
 describe('Attachments - Emerald', function () {
     integration(function () {
@@ -13,7 +13,7 @@ describe('Attachments - Emerald', function () {
                     inPlay: ['hantei-sotorii'],
                     hand: ['fine-katana']
                 },
-                gameMode: GameModes.Emerald
+                gameMode: GameMode.Emerald
             });
 
             this.mitsu = this.player1.findCardByName('togashi-mitsu');
@@ -105,7 +105,7 @@ describe('Attachments - Emerald Solider Token', function () {
                     stronghold: ['pride'],
                     dynastyDiscard: ['noble-vanguard']
                 },
-                gameMode: GameModes.Emerald
+                gameMode: GameMode.Emerald
             });
 
             this.challenger = this.player1.findCardByName('doji-challenger');

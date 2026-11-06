@@ -51,8 +51,10 @@ export enum EventName {
     OnMoveToConflict = 'onMoveToConflict',
     OnSendHome = 'onSendHome',
     OnCardPlayed = 'onCardPlayed',
+    OnCardPlayCostsNotPaid = 'onCardPlayCostsNotPaid',
     OnDeckShuffled = 'onDeckShuffled',
     AfterDuel = 'afterDuel',
+    OnCharacterWinsDuel = 'onCharacterWinsDuel',
     OnDuelStarted = 'onDuelStarted',
     OnDuelChallenge = 'onDuelChallenge',
     OnDuelFocus = 'onDuelFocus',
@@ -93,5 +95,7 @@ export enum EventName {
     Unnamed = 'unnamedEvent',
     OnAddDuelParticipant = 'onAddDuelParticipant',
     OnReplaceDuelParticipant = 'onReplaceDuelParticipant',
-    OnAbilityResolverInitiated = 'onAbilityResolverInitiated'
+    OnAbilityResolverInitiated = 'onAbilityResolverInitiated',
+    /** Paying a cost that has no event of its own. */
+    PayCost = 'payCost'
 }

@@ -43,6 +43,25 @@ describe('Leniency', function() {
                 expect(this.player1).toHavePrompt('Action Window');
             });
 
+            it('should replace the earth ring effect and not allow a character with printed cost 3 or more', function () {
+                this.shibaTsukune = this.player1.findCardByName('shiba-tsukune');
+                this.player1DeckSize = this.player1.conflictDeck.length;
+                this.noMoreActions();
+                expect(this.player1).toBeAbleToSelect('leniency');
+                this.player1.clickCard('leniency');
+                expect(this.player1).toHavePrompt('Choose a character');
+                expect(this.player1).toBeAbleToSelect(this.etherealDreamer);
+                expect(this.player1).not.toBeAbleToSelect(this.shibaTsukune);
+                this.player1.clickCard(this.etherealDreamer);
+                expect(this.getChatLogs(5)).toContain('player1 plays Leniency to put Ethereal Dreamer into play instead of resolving the ring effect');
+                expect(this.etherealDreamer.location).toBe('play area');
+                expect(this.shibaTsukune.location).toBe('province 1');
+                expect(this.player1.hand.length).toBe(1);
+                expect(this.player1.conflictDeck.length).toBe(this.player1DeckSize);
+                expect(this.player2.hand.length).toBe(3);
+                expect(this.player1).toHavePrompt('Action Window');
+            });
+
             it('should let you put a dash mil chararcter into play instead of resolving the ring effect', function () {
                 this.noMoreActions();
                 this.player1.clickCard('leniency');

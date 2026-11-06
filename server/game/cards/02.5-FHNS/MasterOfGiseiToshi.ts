@@ -1,32 +1,28 @@
 import DrawCard from '../../DrawCard.js';
-import { Duration, EventName, Phases, Players, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Duration, Phase, Players, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { playerCannot } from '../../effects.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class MasterOfGiseiToshi extends DrawCard {
     static id = 'master-of-gisei-toshi';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.reaction({
-            title: 'Prevent non-spell events from being played while contesting a ring',
-            when: {
-                onPhaseStarted: (event: EventPayload<EventName.OnPhaseStarted>) => event.phase === Phases.Conflict
-            },
-            target: {
-                mode: TargetMode.Ring,
+    override setupCardAbilities() {
+        this.reaction('Prevent non-spell events from being played while contesting a ring')
+            .when({
+                onPhaseStarted: (event) => event.phase === Phase.Conflict
+            })
+            .ringTarget({
                 ringCondition: () => true
-            },
-            effect: 'prevent non-spell events from being played while {0} is contested',
-            gameAction: ability.actions.playerLastingEffect(context => ({
+            })
+            .playerLastingEffect((context) => ({
                 duration: Duration.UntilEndOfPhase,
-                targetController: Players.Any,
-                condition: () => this.game.currentConflict?.ring === context.ring,
-                effect: ability.effects.playerCannot({
-                    cannot: 'play',
-                    restricts: 'nonSpellEvents'
+                target: Players.Any,
+                condition: () => context.ring.isContested() && this.game.currentConflict?.ring === context.ring,
+                effect: playerCannot({
+                    cannot: RestrictionType.Play,
+                    appliesTo: RestrictionScope.NonSpellEvents
                 })
             }))
-        });
+            .chatText('prevent non-spell events from being played while {0} is contested');
     }
 }
 

@@ -1,4 +1,4 @@
-import { GameModes } from '../../../build/server/GameModes.js';
+import { GameMode } from '../../../build/server/GameMode.js';
 
 describe('Disguised - Obsidian', function() {
     integration(function() {
@@ -12,7 +12,7 @@ describe('Disguised - Obsidian', function() {
                 player2: {
                     inPlay: ['hantei-sotorii']
                 },
-                gameMode: GameModes.Obsidian
+                gameMode: GameMode.Obsidian
             });
 
             this.brash = this.player1.findCardByName('brash-samurai');

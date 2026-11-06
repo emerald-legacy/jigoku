@@ -80,5 +80,42 @@ describe('Adept of the Waves', function() {
                 expect(this.player1).toHavePrompt('Choose defenders to Covert');
             });
         });
+
+        describe('Adept of the Waves\' ability used twice in a phase', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['adept-of-the-waves', 'togashi-kazue-2', 'solemn-scholar'],
+                        stronghold: ['twin-soul-temple']
+                    },
+                    player2: {
+                        inPlay: ['kitsu-spiritcaller'],
+                        provinces: ['entrenched-position']
+                    }
+                });
+                this.adeptOfTheWaves = this.player1.findCardByName('adept-of-the-waves');
+                this.scholar = this.player1.findCardByName('solemn-scholar');
+                this.temple = this.player1.findCardByName('twin-soul-temple');
+                this.entrenchedPosition = this.player2.findCardByName('entrenched-position');
+            });
+
+            it('should keep the element of the first use', function() {
+                this.player1.clickCard(this.adeptOfTheWaves);
+                this.player1.clickCard(this.scholar);
+                this.player2.pass();
+                this.player1.clickCard(this.temple);
+                this.player1.clickCard(this.adeptOfTheWaves);
+                this.player1.clickPrompt('air');
+                this.player2.pass();
+                this.player1.clickCard(this.adeptOfTheWaves);
+                this.player1.clickCard(this.adeptOfTheWaves);
+                this.noMoreActions();
+                this.player1.clickRing('water');
+                this.player1.clickCard(this.scholar);
+                this.player1.clickCard(this.entrenchedPosition);
+                expect(this.player1).toHavePrompt('Choose defenders to Covert');
+            });
+        });
     });
 });

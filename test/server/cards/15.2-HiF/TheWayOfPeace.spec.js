@@ -117,6 +117,23 @@ describe('The Way of Peace', function() {
                 expect(this.hotaru.isHonored).toBe(true);
                 expect(this.kaezin.isHonored).toBe(true);
             });
+
+            it('should not be able to select an already honored character', function() {
+                this.hotaru.honor();
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    province: this.wayOfPeace,
+                    attackers: [this.attendant],
+                    defenders: []
+                });
+                this.noMoreActions();
+
+                this.player2.clickCard(this.wayOfPeace);
+                expect(this.player2).toBeAbleToSelect(this.attendant);
+                expect(this.player2).not.toBeAbleToSelect(this.hotaru);
+                expect(this.player2).toBeAbleToSelect(this.kaezin);
+            });
         });
     });
 });

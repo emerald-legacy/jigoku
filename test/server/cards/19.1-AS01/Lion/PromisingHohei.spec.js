@@ -31,7 +31,7 @@ describe('Promising Hohei', function () {
             });
 
             it('should cost 0 if target has 2 glory', function () {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
 
                 this.player1.clickCard(this.promisingHohei1);
                 this.player1.clickCard(this.relentlessGloryseeker);
@@ -40,7 +40,7 @@ describe('Promising Hohei', function () {
             });
 
             it('should cost 1 if target has <2 glory', function () {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
 
                 this.player1.clickCard(this.promisingHohei1);
                 this.player1.clickCard(this.messageRunner);
@@ -118,6 +118,38 @@ describe('Promising Hohei', function () {
                 this.player1.clickCard(soldier);
                 expect(this.fan.location).toBe('hand');
             });
+        });
+    });
+});
+
+describe('Promising Hohei moved', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['giver-of-gifts', 'akodo-toturi', 'doji-challenger'],
+                    hand: ['promising-hohei', 'ayubune-pilot']
+                }
+            });
+            this.giver = this.player1.findCardByName('giver-of-gifts');
+            this.toturi = this.player1.findCardByName('akodo-toturi');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.hohei = this.player1.findCardByName('promising-hohei');
+            this.player1.playAttachment('ayubune-pilot', this.challenger);
+            this.player2.pass();
+            this.player1.playAttachment(this.hohei, this.toturi);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.pass();
+            this.player2.pass();
+        });
+
+        it('does not react again when it moves to another character', function () {
+            this.player1.clickCard(this.giver);
+            this.player1.clickCard(this.hohei);
+            this.player1.clickCard(this.challenger);
+            expect(this.hohei.parent).toBe(this.challenger);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
         });
     });
 });

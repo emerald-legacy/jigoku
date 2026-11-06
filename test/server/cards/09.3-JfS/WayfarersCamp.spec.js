@@ -98,3 +98,31 @@ describe('Wayfarer\'s Camp', function () {
         });
     });
 });
+
+describe('Wayfarer\'s Camp without a character to play', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    fate: 8,
+                    dynastyDiscard: ['wayfarer-s-camp', 'imperial-storehouse']
+                }
+            });
+            this.wayfarersCamp = this.player1.placeCardInProvince('wayfarer-s-camp');
+            this.storehouse = this.player1.placeCardInProvince('imperial-storehouse', 'province 2');
+            this.storehouse.facedown = true;
+            for(const location of ['province 3', 'province 4']) {
+                for(const card of this.player1.player.getDynastyCardsInProvince(location)) {
+                    card.facedown = true;
+                }
+            }
+        });
+
+        it('cannot be used just to turn a card faceup', function () {
+            this.player1.clickCard(this.wayfarersCamp);
+            expect(this.player1).not.toHavePrompt('Choose a card to turn faceup');
+            expect(this.storehouse.facedown).toBe(true);
+        });
+    });
+});

@@ -58,3 +58,41 @@ describe('Firebrand', function() {
         });
     });
 });
+
+describe('Firebrand with a replaced element', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['firebrand', 'isawa-tadaka'],
+                    stronghold: ['twin-soul-temple']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar']
+                }
+            });
+
+            this.firebrand = this.player1.findCardByName('firebrand');
+            this.twinSoul = this.player1.findCardByName('twin-soul-temple');
+            this.solemnScholar = this.player2.findCardByName('solemn-scholar');
+
+            this.player1.claimRing('fire');
+            this.game.checkGameState(true);
+            this.player1.clickCard(this.twinSoul);
+            this.player1.clickCard(this.firebrand);
+            this.player1.clickPrompt('Ring to resolve (fire)');
+            this.player1.clickPrompt('Water');
+            this.player2.pass();
+        });
+
+        it('names the ring it resolves', function() {
+            this.player1.clickCard(this.firebrand);
+            this.player1.clickRing('fire');
+            expect(this.player1).toHavePrompt('Water Ring');
+            this.player1.clickCard(this.solemnScholar);
+            expect(this.solemnScholar.bowed).toBe(true);
+            expect(this.getChatLogs(5)).toContain('player1 uses Firebrand, returning the Fire Ring to resolve the Water Ring effect');
+        });
+    });
+});

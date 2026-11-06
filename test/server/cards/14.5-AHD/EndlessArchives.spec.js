@@ -37,7 +37,7 @@ describe('Endless Archives', function() {
         });
 
         it('if triggered, should place an honor token on the holding and then prompt you to select a card', function() {
-            let cards = this.player1.hand.length;
+            const cards = this.player1.hand.length;
             this.noMoreActions();
             this.player1.passConflict();
             this.player1.clickCard(this.archives);
@@ -68,7 +68,7 @@ describe('Endless Archives', function() {
         });
 
         it('should incrementally have you pick cards', function() {
-            let cards = this.player2.hand.length;
+            const cards = this.player2.hand.length;
             this.noMoreActions();
             this.player1.passConflict();
             this.player1.clickCard(this.archives);
@@ -92,7 +92,7 @@ describe('Endless Archives', function() {
         });
 
         it('if you have fewer than X cards should only draw X', function() {
-            let cards = this.player1.hand.length;
+            const cards = this.player1.hand.length;
             this.noMoreActions();
             this.player1.passConflict();
             this.player1.clickCard(this.archives);

@@ -1,104 +1,41 @@
-import { AllPlayerPrompt } from '../AllPlayerPrompt.js';
-import type BaseCard from '../../BaseCard.js';
+import { msg, type MessageArgs } from '../../GameChat.js';
+import { Location } from '../../Constants.js';
 import type DrawCard from '../../DrawCard.js';
-import type Game from '../../Game.js';
 import type Player from '../../Player.js';
+import { MulliganPrompt } from './MulliganPrompt.js';
 
-class MulliganDynastyPrompt extends AllPlayerPrompt {
-    selectedCards: Record<string, DrawCard[]>;
-    selectableCards: Record<string, DrawCard[]>;
+export class MulliganDynastyPrompt extends MulliganPrompt {
+    protected override readonly deckName = 'Dynasty';
 
-    constructor(game: Game) {
-        super(game);
-        this.selectedCards = {};
-        this.selectableCards = {};
-        game.getPlayers().forEach((player: Player) => this.selectedCards[player.name] = []);
-    }
-
-    completionCondition(player: Player): boolean {
+    protected override hasDecided(player: Player): boolean {
         return player.takenDynastyMulligan;
     }
 
-    continue(): boolean {
-        if(!this.isComplete()) {
-            this.highlightSelectableCards();
-        }
-
-        return super.continue();
+    protected override markDecided(player: Player): void {
+        player.takenDynastyMulligan = true;
     }
 
-    highlightSelectableCards(): void {
-        this.game.getPlayers().forEach((player: Player) => {
-            if(!this.selectableCards[player.name]) {
-                this.selectableCards[player.name] = this.game.getProvinceArray(false).map((location: string) => player.getDynastyCardsInProvince(location)).flat();
+    protected override mulliganableCards(player: Player): DrawCard[] {
+        return this.game.getProvinceArray(false).flatMap((location) => player.getDynastyCardsInProvince(location))
+            .filter((card) => card.isDynasty && card.isInProvince());
+    }
+
+    protected override mulligan(player: Player, cards: DrawCard[]): MessageArgs {
+        for(const card of cards) {
+            if(player.dynastyDeck.length > 0) {
+                player.moveCard(player.dynastyDeck[0], card.location);
             }
-            player.setSelectableCards(this.selectableCards[player.name]);
-        });
-    }
-
-    activePrompt() {
-        return {
-            selectCard: true,
-            selectRing: true,
-            menuTitle: 'Select dynasty cards to mulligan',
-            buttons: [{ text: 'Done', arg: 'done' }],
-            promptTitle: 'Dynasty Mulligan'
-        };
-    }
-
-    onCardClicked(player: Player, card: DrawCard): boolean {
-        if(!player || !this.activeCondition(player) || !card) {
-            return false;
         }
-        if(!this.cardCondition(card)) {
-            return false;
+        for(const card of cards) {
+            const location = card.location;
+            player.moveCard(card, Location.DynastyDeck, { bottom: true });
+            player.replaceDynastyCard(location);
         }
-
-        if(!this.selectedCards[player.name].includes(card)) {
-            this.selectedCards[player.name].push(card);
-        } else {
-            this.selectedCards[player.name] = this.selectedCards[player.name].filter(c => c !== card);
-        }
-        player.setSelectedCards(this.selectedCards[player.name]);
-
-        return true;
+        player.shuffleDynastyDeck();
+        return msg`${player} has mulliganed ${cards.length} cards from the dynasty deck`;
     }
 
-    cardCondition(card: BaseCard): boolean {
-        return card.isDynasty && card.isInProvince();
-    }
-
-    waitingPrompt() {
-        return {
-            menuTitle: 'Waiting for opponent to mulligan dynasty cards'
-        };
-    }
-
-    menuCommand(player: Player, arg: string): boolean {
-        if(arg === 'done') {
-            if(this.selectedCards[player.name].length > 0) {
-                for(const card of this.selectedCards[player.name]) {
-                    if(player.dynastyDeck.length > 0) {
-                        player.moveCard(player.dynastyDeck[0], card.location);
-                    }
-                }
-                for(const card of this.selectedCards[player.name]) {
-                    let location = card.location;
-                    player.moveCard(card, 'dynasty deck bottom');
-                    player.replaceDynastyCard(location);
-                }
-                player.shuffleDynastyDeck();
-                this.game.addMessage('{0} has mulliganed {1} cards from the dynasty deck', player, this.selectedCards[player.name].length);
-            } else {
-                this.game.addMessage('{0} has kept all dynasty cards', player);
-            }
-            player.clearSelectedCards();
-            player.clearSelectableCards();
-            player.takenDynastyMulligan = true;
-            return true;
-        }
-        return false;
+    protected override keptMessage(player: Player): MessageArgs {
+        return msg`${player} has kept all dynasty cards`;
     }
 }
-
-export default MulliganDynastyPrompt;

@@ -1,4 +1,4 @@
-import { GameModes } from '../../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../../build/server/GameMode.js';
 
 describe('Biting Steel', function () {
     integration(function () {
@@ -13,7 +13,7 @@ describe('Biting Steel', function () {
                         inPlay: ['mirumoto-raitsugu', 'miya-mystic'],
                         hand: ['biting-steel', 'fine-katana']
                     },
-                    gameMode: GameModes.Emerald
+                    gameMode: GameMode.Emerald
                 });
 
                 this.makoto = this.player1.findCardByName('akodo-makoto');
@@ -26,6 +26,15 @@ describe('Biting Steel', function () {
             it('shouldn\'t attach if you don\'t have a weapon', function () {
                 this.player1.pass();
                 expect(this.player2).toHavePrompt('Action Window');
+                this.player2.clickCard(this.bitingSteel);
+                expect(this.player2).toHavePrompt('Action Window');
+            });
+
+            it('shouldn\'t attach without a shugenja', function () {
+                this.player2.moveCard('miya-mystic', 'dynasty discard pile');
+                this.player1.pass();
+                this.player2.playAttachment(this.katana, this.raitsugu);
+                this.player1.pass();
                 this.player2.clickCard(this.bitingSteel);
                 expect(this.player2).toHavePrompt('Action Window');
             });
@@ -110,6 +119,134 @@ describe('Biting Steel', function () {
                 expect(this.challenger.isParticipating()).toBe(false);
                 expect(this.getChatLogs(5)).toContain('player2 uses Biting Steel to send Doji Challenger home');
             });
+        });
+    });
+});
+
+describe('Biting Steel attach restriction', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['akodo-makoto'],
+                    hand: ['fine-katana']
+                },
+                player2: {
+                    inPlay: ['mirumoto-raitsugu', 'miya-mystic'],
+                    hand: ['biting-steel', 'fine-katana']
+                },
+                gameMode: GameMode.Emerald
+            });
+            this.makoto = this.player1.findCardByName('akodo-makoto');
+            this.raitsugu = this.player2.findCardByName('mirumoto-raitsugu');
+            this.bitingSteel = this.player2.findCardByName('biting-steel');
+            this.player1.playAttachment('fine-katana', this.makoto);
+            this.player2.playAttachment('fine-katana', this.raitsugu);
+            this.player1.pass();
+        });
+
+        it('attaches only to a character you control with a Weapon', function () {
+            this.player2.clickCard(this.bitingSteel);
+            expect(this.player2).toBeAbleToSelect(this.raitsugu);
+            expect(this.player2).not.toBeAbleToSelect(this.makoto);
+        });
+    });
+});
+
+describe('Biting Steel and a weapon whose skill modifiers are removed', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'draw',
+                gameMode: 'emerald',
+                player1: {
+                    inPlay: ['akodo-makoto', 'agasha-hiyori']
+                },
+                player2: {
+                    inPlay: [{ card: 'mirumoto-raitsugu', attachments: ['fine-katana', 'biting-steel'] }]
+                }
+            });
+            this.makoto = this.player1.findCardByName('akodo-makoto');
+            this.hiyori = this.player1.findCardByName('agasha-hiyori');
+            this.raitsugu = this.player2.findCardByName('mirumoto-raitsugu');
+            this.katana = this.player2.findCardByName('fine-katana');
+            this.bitingSteel = this.player2.findCardByName('biting-steel');
+
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.noMoreActions(); // conflict phase begins: Agasha Hiyori reacts
+
+            this.player1.clickCard(this.hiyori);
+            this.player1.clickCard(this.katana);
+            this.player1.clickRing('air');
+        });
+
+        it('cannot add the printed modifiers of a weapon treated as having no skill modifiers', function () {
+            // Fine Katana's +2 is gone; Biting Steel's own +1 stays
+            expect(this.raitsugu.getMilitarySkill()).toBe(4);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.makoto],
+                defenders: [this.raitsugu]
+            });
+            this.player2.clickCard(this.raitsugu);
+            this.player2.clickCard(this.makoto);
+
+            expect(this.player2).toHavePrompt('Honor Bid');
+            expect(this.player2).not.toBeAbleToSelect(this.bitingSteel);
+        });
+    });
+});
+
+describe('Biting Steel with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger', 'endless-plains-skirmisher']
+                },
+                player2: {
+                    inPlay: ['doomed-shugenja', 'enlightened-warrior', 'endless-plains-skirmisher'],
+                    hand: ['biting-steel', 'fine-katana']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.doomed = this.player2.findCardByName('doomed-shugenja');
+            this.warrior = this.player2.findCardByName('enlightened-warrior');
+            this.bitingSteel = this.player2.findCardByName('biting-steel');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+            this.player1.pass();
+            this.player2.playAttachment(this.player2.findCardByName('fine-katana'), this.warrior);
+            this.player1.pass();
+            this.player2.playAttachment(this.bitingSteel, this.warrior);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger],
+                defenders: [this.warrior, this.doomed]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('chooses a character on the enemy side, whoever controls it', function () {
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player2.clickCard(this.bitingSteel);
+            expect(this.player2).toBeAbleToSelect(this.challenger);
+            expect(this.player2).toBeAbleToSelect(this.skirmisher2);
+            expect(this.player2).not.toBeAbleToSelect(this.skirmisher1);
+            this.player2.clickCard(this.skirmisher2);
+            expect(this.skirmisher2.isParticipating()).toBe(false);
+            expect(this.getChatLogs(5)).toContain('player2 uses Biting Steel to send Endless Plains Skirmisher home');
         });
     });
 });

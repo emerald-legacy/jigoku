@@ -1,51 +1,38 @@
-import { CardType, EventName, Players, Location, TargetMode, Decks } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Players, Location, TargetMode, DeckType } from '../../../Constants.js';
+import { deckSearch, placeInProvince } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type { GameEvent } from '../../../Events/EventPayloads.js';
-import type Player from '../../../Player.js';
-import { ProvinceCard } from '../../../ProvinceCard.js';
+import { perRound } from '../../../AbilityLimit.js';
 
 export default class TennyosBlessing extends DrawCard {
     static id = 'tennyo-s-blessing';
 
-    public setupCardAbilities() {
-        this.action<ProvinceCard>({
-            title: 'Look at your dynasty deck',
-            evenDuringDynasty: true,
-            target: {
+    public override setupCardAbilities() {
+        this.action('Look at your dynasty deck')
+            .evenDuringDynasty()
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: (card) => card.location !== Location.StrongholdProvince,
-                gameAction: AbilityDsl.actions.deckSearch<ProvinceCard>({
-                    targetMode: TargetMode.UpTo,
-                    numCards: 2,
-                    amount: 4,
-                    shuffle: true,
-                    deck: Decks.DynastyDeck,
-                    selectedCardsHandler: (context, event, cards) => {
-                        const searchEvent = event as GameEvent<EventName.OnDeckSearch> & { player: Player };
-                        if(cards.length > 0) {
-                            const target = context.target;
-                            context.game.addMessage(
-                                '{0} selects {1} and puts {2} into {3}',
-                                searchEvent.player,
-                                cards,
-                                cards.length > 1 ? 'them' : 'it',
-                                target?.facedown ? target.location : (target ?? '')
-                            );
-                            cards.forEach((card) => {
-                                if(target) {
-                                    searchEvent.player.moveCard(card, target.location);
-                                }
-                                card.facedown = false;
-                            });
-                        } else {
-                            context.game.addMessage('{0} selects no cards', searchEvent.player);
+                cardCondition: (card) => card.location !== Location.StrongholdProvince
+            }, deckSearch((context) => ({
+                target: context.player,
+                mode: TargetMode.UpTo,
+                numCards: 2,
+                cardsToLookAt: 4,
+                deck: DeckType.Dynasty,
+                selectedCardsHandler: (context, event, cards) => {
+                    if(cards.length > 0) {
+                        const target = context.target;
+                        context.game.addMessage(msg`${event.player} selects ${cards} and puts ${cards.length > 1 ? 'them' : 'it'} into ${target?.facedown ? target.location : (target ?? '')}`);
+                        if(target) {
+                            cards.forEach((card) => placeInProvince({ destination: target.location }).resolve(card, context));
                         }
+                    } else {
+                        context.game.addMessage(msg`${event.player} selects no cards`);
                     }
-                })
-            }
-        });
+                }
+            })))
+            .max(perRound(1));
     }
 }

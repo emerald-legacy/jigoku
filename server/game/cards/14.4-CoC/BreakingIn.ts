@@ -1,58 +1,52 @@
-import { CardType, EventName, Location, Players } from '../../Constants.js';
+import { msg, type MsgArg } from '../../GameChat.js';
+import { CardType, DeckType, Location, Players, Trait } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import DrawCard from '../../DrawCard.js';
-import type BaseCard from '../../BaseCard.js';
-import type Player from '../../Player.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+import type DrawCard from '../../DrawCard.js';
+import { placeInProvince } from '../../GameActions/GameActions.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class BreakingIn extends ProvinceCard {
     static id = 'breaking-in';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Search for a character card',
-            when: {
-                onCardRevealed: (event: EventPayload<EventName.OnCardRevealed>, context: TriggeredAbilityContext) => event.card === context.source
-            },
-            handler: (context: TriggeredAbilityContext) => {
-                return this.game.promptWithHandlerMenu(context.player, {
-                    activePromptTitle: 'Select a card:',
-                    context: context,
-                    cards: context.player.dynastyDeck.slice(0, 8).filter((card) => card.type === CardType.Character),
-                    choices: ['Select nothing'],
-                    handlers: [() => this.game.addMessage('{0} selects nothing from their deck', context.player)],
-                    cardHandler: (cardFromDeck: DrawCard) => {
-                        if(cardFromDeck.hasTrait('cavalry')) {
-                            return this.game.promptForSelect(context.player, {
-                                activePromptTitle: 'Choose a province',
-                                context: context,
-                                cardType: [CardType.Province],
-                                location: Location.Provinces,
-                                controller: Players.Self,
-                                onSelect: (player: Player, card: BaseCard) => {
-                                    this.game.addMessage(
-                                        '{0} places {1} in {2}',
-                                        context.player,
-                                        cardFromDeck,
-                                        card.facedown ? card.location : card
-                                    );
-                                    player.moveCard(cardFromDeck, card.location);
-                                    cardFromDeck.facedown = false;
-                                    player.shuffleDynastyDeck();
-                                    return true;
-                                }
-                            });
-                        }
-                        context.player.moveCard(cardFromDeck, context.source.location);
-                        cardFromDeck.facedown = false;
-                        this.game.addMessage('{0} places {1} in {2}', context.player, cardFromDeck, context.source);
-                        context.player.shuffleDynastyDeck();
-                        return true;
-                    }
-                });
-            },
-            effect: 'choose a character to place in a province'
+    override setupCardAbilities() {
+        this.reaction('Search for a character card')
+            .when({
+                onCardRevealed: (event, context) => event.card === context.source
+            })
+            .deckSearch({
+                activePromptTitle: 'Select a card:',
+                cardsToLookAt: 8,
+                deck: DeckType.Dynasty,
+                cardCondition: (card) => card.type === CardType.Character,
+                selectedCardsHandler: (context, _event, [card]) => this.place(context, card)
+            })
+            .chatText('choose a character to place in a province');
+    }
+
+    private place(context: AbilityContext, card: DrawCard | undefined): void {
+        if(!card) {
+            this.game.addMessage(msg`${context.player} selects nothing from their deck`);
+            return;
+        }
+        if(!card.hasTrait(Trait.Cavalry)) {
+            this.putInto(context, card, context.source.location, context.source);
+            return;
+        }
+        this.game.promptForSelect(context.player, {
+            activePromptTitle: 'Choose a province',
+            context: context,
+            cardType: [CardType.Province],
+            location: Location.Provinces,
+            controller: Players.Self,
+            onSelect: (_player, province) => {
+                this.putInto(context, card, province.location, province.facedown ? province.location : province);
+                return true;
+            }
         });
+    }
+
+    private putInto(context: AbilityContext, card: DrawCard, location: Location, named: MsgArg): void {
+        this.game.addMessage(msg`${context.player} places ${card} in ${named}`);
+        placeInProvince({ destination: location }).resolve(card, context);
     }
 }

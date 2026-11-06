@@ -1,3 +1,5 @@
+import { breakProvince } from '../../../../build/server/game/GameActions/GameActions.js';
+
 describe('Utaku Kamoko', function() {
     integration(function() {
         describe('Utaku Kamoko', function() {
@@ -23,14 +25,14 @@ describe('Utaku Kamoko', function() {
                     attackers: [this.utakuKamoko],
                     defenders: []
                 });
-                expect(this.utakuKamoko.getMilitarySkill()).toBe(3);
-                expect(this.utakuKamoko.getMilitarySkill()).toBe(3);
+                expect(this.utakuKamoko.militarySkill).toBe(3);
+                expect(this.utakuKamoko.militarySkill).toBe(3);
                 expect(this.utakuKamoko.isDishonored).toBe(false);
                 this.player2.clickCard(this.wayOfTheScorpion);
                 this.player2.clickCard(this.utakuKamoko);
                 expect(this.utakuKamoko.isDishonored).toBe(true);
-                expect(this.utakuKamoko.getMilitarySkill()).toBe(3);
-                expect(this.utakuKamoko.getMilitarySkill()).toBe(3);
+                expect(this.utakuKamoko.militarySkill).toBe(3);
+                expect(this.utakuKamoko.militarySkill).toBe(3);
             });
 
             it('should still add glory to skills if honored', function() {
@@ -40,14 +42,14 @@ describe('Utaku Kamoko', function() {
                     defenders: []
                 });
                 this.player2.pass();
-                expect(this.utakuKamoko.getMilitarySkill()).toBe(3);
-                expect(this.utakuKamoko.getMilitarySkill()).toBe(3);
+                expect(this.utakuKamoko.militarySkill).toBe(3);
+                expect(this.utakuKamoko.militarySkill).toBe(3);
                 expect(this.utakuKamoko.isHonored).toBe(false);
                 this.player1.clickCard(this.soulBeyondReproach);
                 this.player1.clickCard(this.utakuKamoko);
                 expect(this.utakuKamoko.isHonored).toBe(true);
-                expect(this.utakuKamoko.getMilitarySkill()).toBe(6);
-                expect(this.utakuKamoko.getMilitarySkill()).toBe(6);
+                expect(this.utakuKamoko.militarySkill).toBe(6);
+                expect(this.utakuKamoko.militarySkill).toBe(6);
             });
         });
 
@@ -140,6 +142,55 @@ describe('Utaku Kamoko', function() {
                     expect(this.utakuKamoko.bowed).toBe(false);
                 });
             });
+        });
+    });
+});
+
+describe('Utaku Kamoko and a province broken outside a conflict', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['utaku-kamoko'],
+                    hand: ['soul-beyond-reproach']
+                },
+                player2: {}
+            });
+            this.utakuKamoko = this.player1.findCardByName('utaku-kamoko');
+            this.province = this.player1.findCardByName('shameful-display', 'province 1');
+        });
+
+        it('should react, as the opponent broke the province', function() {
+            expect(this.game.currentConflict).toBeNull();
+            this.game.queueSimpleStep(() => breakProvince().resolve(this.province, this.game.getFrameworkContext(this.player2.player)));
+            this.game.continue();
+            this.player2.clickPrompt('No');
+            expect(this.province.isBroken).toBe(true);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.utakuKamoko);
+        });
+    });
+});
+
+describe('Utaku Kamoko dishonored and tainted', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['utaku-kamoko']
+                }
+            });
+            this.kamoko = this.player1.findCardByName('utaku-kamoko');
+            this.kamoko.dishonor();
+            this.kamoko.taint();
+            this.game.checkGameState(true);
+        });
+
+        it('keeps the tainted bonus', function() {
+            expect(this.kamoko.militarySkill).toBe(5);
+            expect(this.kamoko.politicalSkill).toBe(5);
         });
     });
 });

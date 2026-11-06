@@ -57,23 +57,7 @@ describe('Shrewd Investigator', function() {
             this.player2.pass();
             this.player1.clickCard(this.investigator);
             expect(this.getChatLogs(4)).toContain('player1 uses Shrewd Investigator to look at 3 random cards in player2\'s hand');
-            let matches = 0;
-            if(this.getChatLog(2).includes('Assassination')) {
-                matches++;
-            }
-            if(this.getChatLog(2).includes('Banzai!')) {
-                matches++;
-            }
-            if(this.getChatLog(2).includes('Fine Katana')) {
-                matches++;
-            }
-            if(this.getChatLog(2).includes('Let Go')) {
-                matches++;
-            }
-            if(this.getChatLog(2).includes('Ornate Fan')) {
-                matches++;
-            }
-            expect(matches).toBe(3);
+            expect(['Assassination', 'Banzai!', 'Fine Katana', 'Let Go', 'Ornate Fan'].filter((name) => this.getChatLog(2).includes(name)).length).toBe(3);
         });
 
         it('should show you a number of randomly chosen cards in your opponent\'s hand equal to your facedown provinces - 1 facedown', function() {
@@ -89,23 +73,7 @@ describe('Shrewd Investigator', function() {
             this.player2.pass();
             this.player1.clickCard(this.investigator);
             expect(this.getChatLogs(4)).toContain('player1 uses Shrewd Investigator to look at 1 random card in player2\'s hand');
-            let matches = 0;
-            if(this.getChatLog(2).includes('Assassination')) {
-                matches++;
-            }
-            if(this.getChatLog(2).includes('Banzai!')) {
-                matches++;
-            }
-            if(this.getChatLog(2).includes('Fine Katana')) {
-                matches++;
-            }
-            if(this.getChatLog(2).includes('Let Go')) {
-                matches++;
-            }
-            if(this.getChatLog(2).includes('Ornate Fan')) {
-                matches++;
-            }
-            expect(matches).toBe(1);
+            expect(['Assassination', 'Banzai!', 'Fine Katana', 'Let Go', 'Ornate Fan'].filter((name) => this.getChatLog(2).includes(name)).length).toBe(1);
         });
 
         it('should not trigger if no facedown provinces', function() {
@@ -129,3 +97,32 @@ describe('Shrewd Investigator', function() {
     });
 });
 
+describe('Shrewd Investigator with a small opponent hand', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shrewd-investigator']
+                },
+                player2: {
+                    hand: ['fine-katana', 'banzai']
+                }
+            });
+            this.investigator = this.player1.findCardByName('shrewd-investigator');
+        });
+
+        it('should say how many cards were looked at', function() {
+            expect(this.player1.player.getNumberOfFacedownProvinces()).toBe(5);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.investigator],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.investigator);
+            expect(this.getChatLogs(4)).toContain('Shrewd Investigator sees Banzai! and Fine Katana');
+            expect(this.getChatLogs(4)).toContain('player1 uses Shrewd Investigator to look at 2 random cards in player2\'s hand');
+        });
+    });
+});

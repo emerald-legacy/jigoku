@@ -39,3 +39,30 @@ describe('The Empress\'s Legacy', function() {
         });
     });
 });
+
+describe('The Empress\'s Legacy on an opponent\'s character', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-yoshi'],
+                    hand: ['the-empress-legacy']
+                },
+                player2: {
+                    inPlay: ['hida-guardian']
+                }
+            });
+            this.legacy = this.player1.findCardByName('the-empress-legacy');
+            this.guardian = this.player2.findCardByName('hida-guardian');
+        });
+
+        it('gives the extra glory to the character\'s controller', function() {
+            this.player1.clickCard(this.legacy);
+            this.player1.clickCard(this.guardian);
+            expect(this.guardian.attachments).toContain(this.legacy);
+            expect(this.player2.player.gloryModifier).toBe(1);
+            expect(this.player1.player.gloryModifier).toBe(0);
+        });
+    });
+});

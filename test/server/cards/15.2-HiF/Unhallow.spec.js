@@ -72,7 +72,7 @@ describe('Unhallow', function () {
         });
 
         it('should give +3 strength', function () {
-            let strength = this.sd1.getStrength();
+            const strength = this.sd1.getStrength();
             this.player1.pass();
             this.player2.clickCard(this.unhallow);
             this.player2.clickCard(this.sd1);
@@ -89,7 +89,7 @@ describe('Unhallow', function () {
             this.player2.clickCard(this.adept);
             this.player2.clickPrompt('1');
 
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -110,7 +110,7 @@ describe('Unhallow', function () {
             this.player2.clickCard(this.adept);
             this.player2.clickPrompt('1');
 
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -133,7 +133,7 @@ describe('Unhallow', function () {
             this.player2.clickCard(this.adept);
             this.player2.clickPrompt('1');
 
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -170,7 +170,7 @@ describe('Unhallow', function () {
             expect(this.sd1.attachments).toContain(this.unhallow2);
             expect(this.sd1.attachments).toContain(this.unhallow3);
 
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
 
             this.noMoreActions();
             this.initiateConflict({
@@ -219,7 +219,7 @@ describe('Unhallow with Seven Stings Keep', function () {
             this.player2.clickCard(this.adept);
             this.player2.clickPrompt('1');
 
-            let honor = this.player2.honor;
+            const honor = this.player2.honor;
 
             this.noMoreActions();
             this.player1.clickCard(this.keep);

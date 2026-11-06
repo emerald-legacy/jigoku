@@ -115,7 +115,7 @@ describe('Sanguine Mastery', function() {
             expect(this.player1).not.toBeAbleToSelect(this.toshimoko);
         });
 
-        it('should fail to initiate and remain in hand if your dishonored character loses their glory', function() {
+        it('should fail to initiate and be discarded if your dishonored character loses their glory', function() {
             this.player1.moveCard(this.rumaru, 'play area');
             this.player1.playAttachment(this.katana, this.kuwanan);
             this.player2.playAttachment(this.jade, this.toshimoko);
@@ -129,7 +129,7 @@ describe('Sanguine Mastery', function() {
             this.player1.clickPrompt('1');
 
             expect(this.getChatLogs(5)).toContain('player1 attempted to use Sanguine Mastery, but there are insufficient legal targets');
-            expect(this.sanguine.location).toBe('hand');
+            expect(this.sanguine.location).toBe('conflict discard pile');
         });
     });
 });

@@ -21,7 +21,7 @@ describe('Dragonfly Mediator', function() {
             this.letGo = this.player2.findCardByName('let-go');
         });
 
-        it('should prompt each player to reveal a card from their hand', function() {
+        it('reveals your card before the opponent chooses theirs', function() {
             this.player1.clickCard(this.mediator);
             expect(this.player1).toHavePrompt('Choose a card to reveal');
             expect(this.player1).toBeAbleToSelect(this.swim);
@@ -29,8 +29,8 @@ describe('Dragonfly Mediator', function() {
 
             this.player1.clickCard(this.swim);
 
-            expect(this.getChatLogs(10)).not.toContain('player1 uses Dragonfly Mediator to have each player reveal cards from their hand');
-            expect(this.getChatLogs(10)).not.toContain('player1 reveals I Can Swim due to Dragonfly Mediator');
+            expect(this.getChatLogs(10)).toContain('player1 uses Dragonfly Mediator to have each player reveal cards from their hand');
+            expect(this.getChatLogs(10)).toContain('player1 reveals I Can Swim due to Dragonfly Mediator');
 
             expect(this.player2).toHavePrompt('Choose three cards to reveal');
             expect(this.player2).toBeAbleToSelect(this.afwtd);

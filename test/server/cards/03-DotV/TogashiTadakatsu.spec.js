@@ -67,3 +67,35 @@ describe('Togashi Tadakatsu', function() {
         });
     });
 });
+
+describe('Togashi Tadakatsu against a ring-restricted attacker', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['fire-tensai-acolyte']
+                },
+                player2: {
+                    inPlay: ['togashi-tadakatsu']
+                }
+            });
+            this.acolyte = this.player1.findCardByName('fire-tensai-acolyte');
+            this.noMoreActions();
+        });
+
+        // ruling #616: the defending player must choose a ring the attacker can declare with
+        it('makes the defending player choose a ring that makes the attack valid', function() {
+            this.player1.clickPrompt('Declare a conflict');
+            expect(this.player2).toHavePrompt('Defender chooses conflict ring');
+            expect(this.player2).toBeAbleToSelectRing('fire');
+            expect(this.player2).not.toBeAbleToSelectRing('air');
+            expect(this.player2).not.toBeAbleToSelectRing('earth');
+            expect(this.player2).not.toBeAbleToSelectRing('water');
+            expect(this.player2).not.toBeAbleToSelectRing('void');
+            this.player2.clickRing('fire');
+            this.player1.clickCard(this.acolyte);
+            expect(this.acolyte.inConflict).toBe(true);
+        });
+    });
+});

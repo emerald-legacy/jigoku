@@ -62,6 +62,34 @@ describe('Palm Strike', function () {
             });
         });
 
+        describe('when the opponent\'s character is already bowed', function () {
+            it('should not be playable with only a non-tattooed monk, as bowing it would do nothing', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.shrineMaiden, this.doomedShugenja],
+                    defenders: [this.brash]
+                });
+                this.brash.bowed = true;
+                this.player2.pass();
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                this.player1.clickCard(this.palmStrike);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+            });
+
+            it('should be able to choose it with a tattooed monk, who stops it from being readied', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.togashiIchi, this.doomedShugenja],
+                    defenders: [this.brash]
+                });
+                this.brash.bowed = true;
+                this.player2.pass();
+                this.player1.clickCard(this.palmStrike);
+                this.player1.clickCard(this.togashiIchi);
+                expect(this.player1).toBeAbleToSelect(this.brash);
+            });
+        });
+
         describe('when an non-tattooed monk and the opponent have no weapons', function () {
             beforeEach(function () {
                 this.player1.playAttachment(this.ancestralDaisho, this.doomedShugenja);
@@ -127,7 +155,7 @@ describe('Palm Strike', function () {
             it('displays messages', function () {
                 expect(this.getChatLogs(5)).toContain('player1 plays Palm Strike to bow Brash Samurai');
                 expect(this.getChatLogs(5)).toContain(
-                    'Brash Samurai cannot ready until the end of the conflict - they are overwhelmed by the mystical tattoos of Togashi Ichi!'
+                    'Brash Samurai cannot ready until the end of the conflict - they are overwhelmed by the mystical tattoos of Togashi Ichi'
                 );
             });
         });

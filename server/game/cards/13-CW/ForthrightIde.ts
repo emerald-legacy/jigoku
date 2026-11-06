@@ -1,27 +1,23 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { chosenDiscard, ready, sequential } from '../../GameActions/GameActions.js';
 
 class ForthrightIde extends DrawCard {
     static id = 'forthright-ide';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Ready a character',
-            condition: (context) => context.source.isParticipating(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Ready a character')
+            .condition((context) => context.source.isParticipating())
+            .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.costLessThan(4) && card.bowed,
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.ready(),
-                    AbilityDsl.actions.chosenDiscard((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                        amount: context.target.controller === context.player ? 1 : 0,
-                        target: context.player
-                    }))
-                ])
-            }
-        });
+                cardCondition: (card) => card.costLessThan(4) && card.bowed
+            }, sequential([
+                ready(),
+                chosenDiscard((context) => ({
+                    amount: context.target.controller === context.player ? 1 : 0,
+                    target: context.player
+                }))
+            ]));
     }
 }
 

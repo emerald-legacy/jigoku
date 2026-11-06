@@ -15,6 +15,8 @@ export enum Location {
     ProvinceDeck = 'province deck',
     RemovedFromGame = 'removed from game',
     UnderneathStronghold = 'underneath stronghold',
+    /** Underneath another card (`card.host`): in the pile kept under that card's uuid. */
+    Underneath = 'underneath',
     OutsideTheGame = 'outside the game',
     BeingPlayed = 'being played',
     Role = 'role'

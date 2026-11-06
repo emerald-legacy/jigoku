@@ -1,25 +1,21 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityType, CardType, Players } from '../../../Constants.js';
+import { gainAbility } from '../../../effects.js';
+import { bow, multiple, sendHome } from '../../../GameActions/GameActions.js';
+import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { ActionProps } from '../../../Interfaces.js';
 
 export default class DragonsClaw extends DrawCard {
     static id = 'dragon-s-claw';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
-            match: (card: DrawCard) => card.attachments.some((a) => a.name === 'Dragon\'s Fang'),
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Bow and send home a participating character with lower military skill',
-                condition: (context) => context.source.isParticipating(),
-                target: {
+            match: (card) => card.attachments.some((a) => a.name === 'Dragon\'s Fang'),
+            effect: gainAbility.conflictAction('Bow and send home a participating character with lower military skill', (ability) => ability
+                .target({
                     cardType: CardType.Character,
                     controller: Players.Any,
                     cardCondition: (card, context) =>
-                        card.isParticipating() && card.getMilitarySkill() < context.source.getMilitarySkill(),
-                    gameAction: AbilityDsl.actions.multiple([AbilityDsl.actions.bow(), AbilityDsl.actions.sendHome()])
-                }
-            } as ActionProps<DrawCard>)
+                        card.isParticipating() && card.militarySkill < context.source.militarySkill
+                }, multiple([bow(), sendHome()])))
         });
     }
 }

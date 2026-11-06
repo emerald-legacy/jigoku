@@ -135,5 +135,48 @@ describe('Shameless Gossip', function() {
                 expect(this.getChatLogs(5)).toContain('player1 chooses to move Honored Token');
             });
         });
+
+        describe('Shameless Gossip moving onto a character that cannot be honored or dishonored', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['shameless-gossip']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer', 'doji-hotaru', 'marauding-oni']
+                    }
+                });
+
+                this.shamelessGossip = this.player1.findCardByName('shameless-gossip');
+                this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
+                this.dojiWhisperer.dishonor();
+                this.dojiHotaru = this.player2.findCardByName('doji-hotaru');
+                this.dojiHotaru.honor();
+                this.maraudingOni = this.player2.findCardByName('marauding-oni');
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.shamelessGossip],
+                    defenders: []
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.shamelessGossip);
+            });
+
+            it('should not move a dishonored token onto a character that cannot be dishonored', function() {
+                this.player1.clickCard(this.dojiWhisperer);
+                expect(this.player1).toHavePrompt('Choose a Character to move the status token to');
+                expect(this.player1).toBeAbleToSelect(this.dojiHotaru);
+                expect(this.player1).not.toBeAbleToSelect(this.maraudingOni);
+            });
+
+            it('should not move an honored token onto a character that cannot be honored', function() {
+                this.player1.clickCard(this.dojiHotaru);
+                expect(this.player1).toHavePrompt('Choose a Character to move the status token to');
+                expect(this.player1).toBeAbleToSelect(this.dojiWhisperer);
+                expect(this.player1).not.toBeAbleToSelect(this.maraudingOni);
+            });
+        });
     });
 });

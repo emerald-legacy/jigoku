@@ -1,26 +1,24 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { blank } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class OniMask extends DrawCard {
     static id = 'oni-mask';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
 
-        this.action({
-            title: 'Blank participating character',
-            cost: ability.costs.removeFateFromParent(),
-
-            target: {
+        this.action('Blank participating character')
+            .cost(costs.removeFateFromParent())
+            .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating(),
-                gameAction: ability.actions.cardLastingEffect({ effect: ability.effects.blank() })
-            },
-            effect: 'blank {0} until the end of the conflict'
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, cardLastingEffect({ effect: blank() }))
+            .chatText('blank {0} until the end of the conflict');
     }
 }
 

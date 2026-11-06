@@ -1,21 +1,23 @@
-import Effect, { type EffectProperties } from './Effect.js';
-import type EffectSource from '../EffectSource.js';
-import type { Duel } from '../Duel.js';
+import { ActiveEffect, type EffectProperties } from './ActiveEffect.js';
+import type { EffectName } from '../Constants.js';
+import { Duel } from '../Duel.js';
+import type { EffectSource } from '../EffectSource.js';
 import type Game from '../Game.js';
-import type { GameObject } from '../GameObject.js';
-import type StaticEffect from './StaticEffect.js';
+import type { EffectApplier } from './EffectApplier.js';
 
-export default class DuelEffect extends Effect {
+export class DuelEffect extends ActiveEffect<Duel> {
     duel: Duel | undefined;
 
-    constructor(game: Game, source: EffectSource, properties: EffectProperties, effect: StaticEffect) {
+    constructor(game: Game, source: EffectSource, properties: EffectProperties<Duel>, effect: EffectApplier<EffectName, Duel>) {
         super(game, source, properties, effect);
         // Override any erroneous match passed through properties
         this.match = () => true;
-        this.duel = (properties.target as Duel[])[0];
+        // the lasting effect action hands over its targets as a list
+        const target = Array.isArray(properties.target) ? properties.target[0] : undefined;
+        this.duel = target instanceof Duel ? target : undefined;
     }
 
-    getTargets(): GameObject[] {
+    override getTargets(): Duel[] {
         return this.duel ? [this.duel] : [];
     }
 }

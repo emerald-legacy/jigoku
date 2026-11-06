@@ -43,6 +43,8 @@ describe('Soshi Shiori', function() {
                 this.player2.clickCard(this.reservist);
                 this.player1.pass();
                 this.player2.pass();
+                expect(this.getChatLogs(5)).toContain('player2 won a political conflict 4 vs 3');
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
                 expect(this.player1).not.toBeAbleToSelect(this.soshi);
             });
 

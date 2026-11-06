@@ -53,7 +53,7 @@ describe('Iron Foundations Stance', function() {
             this.player1.clickCard(this.stance);
             this.player1.clickCard(this.initiate);
 
-            expect(this.getChatLogs(3)).toContain('player1 plays Iron Foundations Stance to prevent opponents\' actions from bowing or moving home Togashi Initiate');
+            expect(this.getChatLogs(3)).toContain('player1 plays Iron Foundations Stance to prevent opponents\' card effects from bowing or moving home Togashi Initiate');
 
             this.player2.clickCard(this.kuwanan);
             expect(this.player2).not.toBeAbleToSelect(this.initiate);
@@ -74,7 +74,7 @@ describe('Iron Foundations Stance', function() {
             });
 
             this.player2.pass();
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.stance);
             this.player1.clickCard(this.initiate);
             expect(this.player1.hand.length).toBe(hand - 1);
@@ -90,7 +90,7 @@ describe('Iron Foundations Stance', function() {
 
             this.player2.clickCard(this.hurricane2);
             this.player2.clickCard(this.kazue);
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.stance);
             this.player1.clickCard(this.initiate);
             expect(this.player1.hand.length).toBe(hand - 1);
@@ -108,7 +108,7 @@ describe('Iron Foundations Stance', function() {
             this.player1.clickCard(this.katana);
             this.player1.clickCard(this.initiate);
             this.player2.pass();
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.stance);
             this.player1.clickCard(this.initiate);
             expect(this.player1.hand.length).toBe(hand - 1);
@@ -126,11 +126,11 @@ describe('Iron Foundations Stance', function() {
             this.player1.clickCard(this.hurricane);
             this.player1.clickCard(this.initiate);
             this.player2.pass();
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.stance);
             this.player1.clickCard(this.initiate);
             expect(this.player1.hand.length).toBe(hand);
-            expect(this.getChatLogs(3)).toContain('player1 plays Iron Foundations Stance to prevent opponents\' actions from bowing or moving home Togashi Initiate and draw 1 card');
+            expect(this.getChatLogs(3)).toContain('player1 plays Iron Foundations Stance to prevent opponents\' card effects from bowing or moving home Togashi Initiate and draw 1 card');
         });
 
         it('kiho being played should not carry over to the next conflict', function() {
@@ -158,11 +158,11 @@ describe('Iron Foundations Stance', function() {
                 ring: 'fire'
             });
 
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.stance);
             this.player1.clickCard(this.initiate);
             expect(this.player1.hand.length).toBe(hand - 1);
-            expect(this.getChatLogs(3)).toContain('player1 plays Iron Foundations Stance to prevent opponents\' actions from bowing or moving home Togashi Initiate');
+            expect(this.getChatLogs(3)).toContain('player1 plays Iron Foundations Stance to prevent opponents\' card effects from bowing or moving home Togashi Initiate');
         });
     });
 });

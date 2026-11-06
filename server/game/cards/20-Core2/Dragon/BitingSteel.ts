@@ -1,11 +1,16 @@
-import { CardType, DuelType, Duration, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Duration, ConflictType, Trait } from '../../../Constants.js';
+import { modifyDuelistSkill } from '../../../effects.js';
+import { cardLastingEffect, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import type BaseCard from '../../../BaseCard.js';
-import type Player from '../../../Player.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 
+// Blanking (Agasha Hiyori) removes the printed modifier effects; switching them keeps the sum.
 function getAttachmentSkill(card: DrawCard) {
+    if(!card.getPersistentEffects().some((effect) => effect.printedSkillBonus)) {
+        return 0;
+    }
+
     let amount = 0;
 
     const mil = parseInt(card.cardData.military_bonus ?? '');
@@ -24,56 +29,38 @@ function getAttachmentSkill(card: DrawCard) {
 export default class BitingSteel extends DrawCard {
     static id = 'biting-steel';
 
-    public setupCardAbilities() {
-        this.duelChallenge({
-            title: 'Add a Weapon to your duel stats',
-            duelCondition: (duel, context) =>
-                (duel.duelType === DuelType.Military || duel.duelType === DuelType.Political) &&
-                !!context.source.parentCharacter && duel.isInvolved(context.source.parentCharacter),
-            target: {
+    public override setupCardAbilities() {
+        this.playOnlyIf((context) => controlsShugenja(context.player));
+
+        this.attachmentConditions({
+            myControl: true,
+            cardCondition: (card) => card.attachments.some((attachment) => attachment.hasTrait(Trait.Weapon))
+        });
+
+        this.duelChallenge('Add a Weapon to your duel stats', (duel, context) =>
+            !!context.source.parentCharacter && duel.isInvolved(context.source.parentCharacter))
+            .target({
                 cardType: CardType.Attachment,
-                cardCondition: (card: DrawCard, context) =>
-                    !!card.parentCharacter && card.parentCharacter === context.source.parentCharacter && card.hasTrait('weapon') && getAttachmentSkill(card) !== 0,
-                gameAction: AbilityDsl.actions.cardLastingEffect<DrawCard>((context) => ({
-                    target: context.target?.parentCharacter ?? undefined,
-                    effect: AbilityDsl.effects.modifyDuelistSkill(
-                        context.target ? getAttachmentSkill(context.target) : 0,
-                        (context as TriggeredAbilityContext<BaseCard, DrawCard>).event.duel
-                    ),
-                    duration: Duration.UntilEndOfDuel
-                }))
-            },
-            effect: 'add the skill bonus of {0} ({1}) to their duel total',
-            effectArgs: (context) => [context.target ? getAttachmentSkill(context.target as DrawCard) : 0]
-        });
+                cardCondition: (card, context) =>
+                    !!card.parentCharacter && card.parentCharacter === context.source.parentCharacter && card.hasTrait(Trait.Weapon) && getAttachmentSkill(card) !== 0
+            }, cardLastingEffect((context) => ({
+                target: context.target?.parentCharacter ?? undefined,
+                effect: modifyDuelistSkill(
+                    context.target ? getAttachmentSkill(context.target) : 0,
+                    context.event.duel
+                ),
+                duration: Duration.UntilEndOfDuel
+            })))
+            .chatText((context) => msg`add the skill bonus of ${context.chatTarget()} (${getAttachmentSkill(context.target)}) to their duel total`);
 
-        this.action({
-            title: 'Send an enemy home',
-            condition: (context) =>
-                !!context.source.parentCharacter?.isParticipating('military') &&
-                (context.player as Player).hasAffinity('fire', context),
-            target: {
+        this.conflictAction('Send an enemy home', { conflictType: ConflictType.Military })
+            .ifCondition((context) => context.player.hasAffinity(Trait.Fire, context))
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Opponent,
-                cardCondition: (card: DrawCard, context) => card.militarySkill < (context.source.parentCharacter?.militarySkill ?? 0),
-                gameAction: AbilityDsl.actions.sendHome()
-            }
-        });
-    }
-
-    public canAttach(card: BaseCard) {
-        return (
-            card.getType() === CardType.Character &&
-            (card as DrawCard).attachments.some((c: DrawCard) => c.hasTrait('weapon')) &&
-            super.canAttach(card)
-        );
-    }
-
-    public canPlay(context: TriggeredAbilityContext, playType: string) {
-        return (
-            context.player.cardsInPlay.some(
-                (card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja')
-            ) && super.canPlay(context, playType)
-        );
+                cardCondition: (card, context) =>
+                    !!context.player.opponent &&
+                    card.isParticipatingFor(context.player.opponent) &&
+                    card.militarySkill < (context.source.parentCharacter?.militarySkill ?? 0)
+            }, sendHome());
     }
 }

@@ -1,22 +1,20 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import type BaseCard from '../../BaseCard.js';
-import { ProvinceCard } from '../../ProvinceCard.js';
-import { Location, CardType } from '../../Constants.js';
+import { Location, CardType, Trait } from '../../Constants.js';
 
 class SeppunIshikawa extends DrawCard {
     static id = 'seppun-ishikawa';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.persistentEffect({
-            effect: ability.effects.modifyBothSkills((card: DrawCard) => this.getImperialCardsInPlay(card))
+            effect: modifyBothSkills((card) => this.getImperialCardsInPlay(card))
         });
     }
 
     getImperialCardsInPlay(source: DrawCard) {
-        return this.game.allCards.reduce((sum: number, card: BaseCard) => {
-            if(card !== source && card.controller === source.controller && card.hasTrait('imperial') && card.isFaceup() &&
-                (card.location === Location.PlayArea || (card.isProvince && !(card as ProvinceCard).isBroken) ||
+        return this.game.allCards.reduce((sum, card) => {
+            if(card !== source && card.controller === source.controller && card.hasTrait(Trait.Imperial) && card.isFaceup() &&
+                (card.location === Location.PlayArea || (card.isProvinceCard() && !card.isBroken) ||
                 (card.isInProvince() && card.type === CardType.Holding))) {
                 return sum + 1;
             }

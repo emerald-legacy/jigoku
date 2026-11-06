@@ -26,6 +26,8 @@ describe('Ashalan Lantern', function () {
         });
 
         it('searches the top 3 dynasty cards for a character and play it, then discard attachment', function () {
+            this.leftPlay = [];
+            this.game.on('onCardLeavesPlay', (event) => this.leftPlay.push([event.card, event.destination]));
             this.player2.moveCard(this.brash, 'dynasty deck');
             this.player2.moveCard(this.courtly, 'dynasty deck');
             this.player2.moveCard(this.tengu, 'dynasty deck');
@@ -41,7 +43,7 @@ describe('Ashalan Lantern', function () {
 
             this.player2.pass();
 
-            let p1InitialFate = this.player1.fate;
+            const p1InitialFate = this.player1.fate;
             this.player1.clickCard(this.lantern);
 
             expect(this.player1).toHavePrompt('Name a card');
@@ -64,6 +66,33 @@ describe('Ashalan Lantern', function () {
                 'player1 uses Ashalan Lantern, naming Good Omen to look for a character on the top of player2\'s dynasty deck. They reveal Tengu Sensei, Courtly Challenger and Brash Samurai'
             );
             expect(this.lantern.location).toBe('conflict discard pile');
+            expect(this.leftPlay).toContain([this.lantern, 'conflict discard pile']);
+        });
+
+        it('discards itself before the character is played', function () {
+            this.lanternLocationOnPlay = [];
+            this.game.on('onCharacterEntersPlay', () => this.lanternLocationOnPlay.push(this.lantern.location));
+            this.player2.moveCard(this.brash, 'dynasty deck');
+            this.player2.moveCard(this.courtly, 'dynasty deck');
+            this.player2.moveCard(this.tengu, 'dynasty deck');
+
+            this.player1.clickCard(this.lantern);
+            this.player1.clickCard(this.recruit);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.recruit],
+                defenders: []
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.lantern);
+            this.player1.chooseCardInPrompt('Good Omen', 'card-name');
+            this.player1.clickPrompt(this.brash.name);
+            expect(this.lantern.location).toBe('conflict discard pile');
+            this.player1.clickPrompt('0');
+            expect(this.brash.location).toBe('play area');
+            expect(this.lanternLocationOnPlay).toEqual(['conflict discard pile']);
         });
 
         it('gives 3 fate discount if character chosen matches the name and lets you play even if you cannot afford the base price', function () {
@@ -82,7 +111,7 @@ describe('Ashalan Lantern', function () {
 
             this.player2.pass();
             this.player1.fate = 3;
-            let p1InitialFate = this.player1.fate;
+            const p1InitialFate = this.player1.fate;
             this.player1.clickCard(this.lantern);
 
             expect(this.player1).toHavePrompt('Name a card');
@@ -106,7 +135,7 @@ describe('Ashalan Lantern', function () {
             );
             expect(this.getChatLogs(10)).toContain('player1 compels Tengu Sensei into service');
             expect(this.getChatLogs(10)).toContain(
-                'player1 puts Courtly Challenger and Brash Samurai on the top of player2\' dynasty deck'
+                'player1 puts Courtly Challenger and Brash Samurai on the top of player2\'s dynasty deck'
             );
         });
 

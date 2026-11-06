@@ -1,21 +1,19 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { Trait } from '../../Constants.js';
+import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 class ShinjoShono extends DrawCard {
     static id = 'shinjo-shono';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Increase skill of friendly cavalry',
-            condition: (context: AbilityContext<this>) => context.source.isParticipating() &&
-                                  (context.game.currentConflict?.hasMoreParticipants(context.player, () => true) ?? false),
-            effect: 'give friendly, participating cavalry +1/+1',
-            gameAction: ability.actions.cardLastingEffect((context: AbilityContext) => ({
-                target: this.game.currentConflict?.getCharacters(context.player).filter(card => card.hasTrait('cavalry')) ?? [],
-                effect: ability.effects.modifyBothSkills(1)
+    override setupCardAbilities() {
+        this.action('Increase skill of friendly cavalry')
+            .condition((context) => context.source.isParticipating())
+            .ifCondition((context) => context.game.currentConflict?.hasMoreParticipants(context.player) ?? false)
+            .cardLastingEffect((context) => ({
+                target: this.game.currentConflict?.getCharacters(context.player).filter((card) => card.hasTrait(Trait.Cavalry)) ?? [],
+                effect: modifyBothSkills(1)
             }))
-        });
+            .chatText('give friendly, participating cavalry +1/+1');
     }
 }
 

@@ -1,23 +1,19 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { honor } from '../../GameActions/GameActions.js';
 
 class IronWarriorVanguard extends DrawCard {
     static id = 'iron-warrior-vanguard';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Honor a character',
-            when: {
-                afterConflict: (event, context) => event.conflict.winner === context.source.controller &&
-                                                   context.source.isParticipating()
-            },
-            target: {
+    override setupCardAbilities() {
+        this.reaction('Honor a character')
+            .when({
+                afterConflict: (event, context) => event.conflict.isOnWinningSide(context.source)
+            })
+            .target({
                 activePromptTitle: 'Choose a character to honor',
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.honor()
-            }
-        });
+                cardType: CardType.Character
+            }, honor());
     }
 }
 

@@ -1,13 +1,14 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../effects.js';
+import { ConflictType } from '../../Constants.js';
 
 export default class EntrenchedPosition extends ProvinceCard {
     static id = 'entrenched-position';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: () => this.game.isDuringConflict('military'),
-            effect: AbilityDsl.effects.modifyProvinceStrength(5)
+            condition: () => this.game.isDuringConflict(ConflictType.Military),
+            effect: modifyProvinceStrength(5)
         });
     }
 }

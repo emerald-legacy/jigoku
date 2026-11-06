@@ -1,51 +1,85 @@
 import { Event } from './Events/Event.js';
-import type { EventPayload, GameEvent } from './Events/EventPayloads.js';
-import InitiateCardAbilityEvent from './Events/InitiateCardAbilityEvent.js';
-import EventWindow from './Events/EventWindow.js';
-import ThenEventWindow from './Events/ThenEventWindow.js';
-import InitiateAbilityEventWindow from './Events/InitiateAbilityEventWindow.js';
-import { EventName } from './Constants.js';
-import { GameEventBus, type EventHandler } from './GameEventBus.js';
+import type { EventParams, EventPayload, GameEvent } from './Events/EventPayloads.js';
+import { EventWindow } from './Events/EventWindow.js';
+import { ThenEventWindow } from './Events/ThenEventWindow.js';
+import type { AbilityType, EventName } from './Constants.js';
+import { GameEventBus } from './GameEventBus.js';
 import type Game from './Game.js';
+import type { ChoiceWindow } from './TriggeredAbility.js';
 
+const windowKey = (eventName: EventName, abilityType: AbilityType) => `${eventName}:${abilityType}`;
+
+/**
+ * Raises game events and tells listeners about them: about a game event once it happened (`on`), and about
+ * each trigger window (`onTriggerWindow`, per event; `onAggregateWindow`, all of a window's events together).
+ */
 export class GameEventManager {
-    private bus = new GameEventBus();
+    private gameEvents = new GameEventBus<[event: Event]>();
+    private triggerWindows = new GameEventBus<[event: Event, window?: ChoiceWindow]>();
+    private aggregateWindows = new GameEventBus<[events: Event[], window: ChoiceWindow]>();
 
     constructor(private readonly game: Game) {}
 
-    getEvent<N extends EventName>(eventName: N, params?: EventPayload<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N>;
-    getEvent(eventName: string, params?: Record<string, unknown>, handler?: (event: Event) => void): Event;
-    getEvent(eventName: string, params: Record<string, unknown> = {}, handler?: (event: Event) => void): Event {
-        return new Event(eventName, params, handler);
+    getEvent<EventType extends EventName>(eventName: EventType, params?: EventParams<EventType>, handler?: (event: GameEvent<EventType>) => void): GameEvent<EventType> {
+        const payload: EventPayload<EventType> | undefined = params;
+        const event = Object.assign(new Event(eventName, {}), payload);
+        if(handler) {
+            event.replaceHandler(() => handler(event));
+        }
+        return event;
     }
 
-    raiseEvent<N extends EventName>(eventName: N, params?: EventPayload<N>, handler?: (event: GameEvent<N>) => void): GameEvent<N>;
-    raiseEvent(eventName: string, params?: Record<string, unknown>, handler?: (event: Event) => void): Event;
-    raiseEvent(eventName: string, params: Record<string, unknown> = {}, handler: (event: Event) => void = () => true): Event {
+    raiseEvent<EventType extends EventName>(eventName: EventType, params?: EventParams<EventType>, handler: (event: GameEvent<EventType>) => void = () => true): GameEvent<EventType> {
         const event = this.getEvent(eventName, params, handler);
         this.openEventWindow([event]);
         return event;
     }
 
-    emitEvent(eventName: string, params: Record<string, unknown> = {}): void {
-        const event = this.getEvent(eventName, params);
-        this.emit(event.name, event);
+    emitEvent<EventType extends EventName>(eventName: EventType, params?: EventParams<EventType>): void {
+        this.emit(this.getEvent(eventName, params));
     }
 
-    emit(eventName: string, ...args: unknown[]): void {
-        this.bus.emit(eventName, ...args);
+    /** Tells the listeners to a game event that it happened. */
+    emit(event: Event): void {
+        this.gameEvents.emit(event.name, event);
     }
 
-    on(eventName: string, handler: EventHandler): void {
-        this.bus.on(eventName, handler);
+    on<EventType extends EventName>(eventName: EventType, handler: (event: GameEvent<EventType>) => void): void {
+        this.gameEvents.on(eventName, handler);
     }
 
-    once(eventName: string, handler: EventHandler): void {
-        this.bus.once(eventName, handler);
+    off<EventType extends EventName>(eventName: EventType, handler: (event: GameEvent<EventType>) => void): void {
+        this.gameEvents.off(eventName, handler);
     }
 
-    removeListener(eventName: string, handler: EventHandler): void {
-        this.bus.off(eventName, handler);
+    /** Called for each event of an `abilityType` trigger window, with the window to offer abilities to (none for other effects). */
+    onTriggerWindow<EventType extends EventName>(eventName: EventType, abilityType: AbilityType, handler: (event: GameEvent<EventType>, window?: ChoiceWindow) => void): void {
+        this.triggerWindows.on(windowKey(eventName, abilityType), handler);
+    }
+
+    onceTriggerWindow<EventType extends EventName>(eventName: EventType, abilityType: AbilityType, handler: (event: GameEvent<EventType>, window?: ChoiceWindow) => void): void {
+        this.triggerWindows.once(windowKey(eventName, abilityType), handler);
+    }
+
+    offTriggerWindow<EventType extends EventName>(eventName: EventType, abilityType: AbilityType, handler: (event: GameEvent<EventType>, window?: ChoiceWindow) => void): void {
+        this.triggerWindows.off(windowKey(eventName, abilityType), handler);
+    }
+
+    emitTriggerWindow(event: Event, abilityType: AbilityType, window?: ChoiceWindow): void {
+        this.triggerWindows.emit(windowKey(event.name, abilityType), event, window);
+    }
+
+    /** Called once per `abilityType` trigger window, with all of its events. */
+    onAggregateWindow(abilityType: AbilityType, handler: (events: Event[], window: ChoiceWindow) => void): void {
+        this.aggregateWindows.on(abilityType, handler);
+    }
+
+    offAggregateWindow(abilityType: AbilityType, handler: (events: Event[], window: ChoiceWindow) => void): void {
+        this.aggregateWindows.off(abilityType, handler);
+    }
+
+    emitAggregateWindow(events: Event[], abilityType: AbilityType, window: ChoiceWindow): void {
+        this.aggregateWindows.emit(abilityType, events, window);
     }
 
     openEventWindow(events: Event | Event[]): EventWindow {
@@ -63,14 +97,5 @@ export class GameEventManager {
             return this.game.queueStep(new ThenEventWindow(this.game, events));
         }
         return this.openEventWindow(events);
-    }
-
-    raiseInitiateAbilityEvent(params: Record<string, unknown>, handler: () => void): void {
-        this.raiseMultipleInitiateAbilityEvents([{ params: params, handler: handler }]);
-    }
-
-    raiseMultipleInitiateAbilityEvents(eventProps: Array<{ params: Record<string, unknown>; handler: () => void }>): void {
-        const events = eventProps.map((event) => new InitiateCardAbilityEvent(event.params, event.handler));
-        this.game.queueStep(new InitiateAbilityEventWindow(this.game, events));
     }
 }

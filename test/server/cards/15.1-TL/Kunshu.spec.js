@@ -112,7 +112,7 @@ describe('Kunshu', function () {
                 defenders: [this.kachiko]
             });
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
 
             this.player2.pass();
             this.player1.clickCard(this.toshimoko);
@@ -136,7 +136,7 @@ describe('Kunshu', function () {
                 defenders: [this.kachiko]
             });
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
 
             this.player2.pass();
             this.player1.clickCard(this.toshimoko);
@@ -161,7 +161,7 @@ describe('Kunshu', function () {
                 defenders: [this.kachiko]
             });
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
 
             this.player2.pass();
             this.player1.clickCard(this.toshimoko);
@@ -184,7 +184,7 @@ describe('Kunshu', function () {
                 defenders: [this.kachiko]
             });
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
 
             this.player2.pass();
             this.player1.clickCard(this.gunbai);
@@ -215,7 +215,7 @@ describe('Kunshu', function () {
                 defenders: [this.kachiko]
             });
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
 
             this.player2.pass();
             this.player1.clickCard(this.toshimoko);
@@ -271,7 +271,7 @@ describe('Kunshu', function () {
             expect(this.player1).toHavePrompt('Action Window');
         });
 
-        it('favorable alliance', function () {
+        it('cannot play an X-cost card, as X is 0 (EmeraldDB ruling)', function () {
             this.player1.player.imperialFavor = 'political';
             this.player1.clickCard(this.kunshu);
             this.player1.clickCard(this.toshimoko);
@@ -281,21 +281,9 @@ describe('Kunshu', function () {
                 defenders: [this.kachiko]
             });
 
-            let fate = this.player1.fate;
-            let deckSize = this.player1.conflictDeck.length;
-
             this.player2.pass();
             this.player1.clickCard(this.toshimoko);
-            this.player1.clickCard(this.alliance);
-
-            expect(this.player1).toHavePromptButton('1');
-            expect(this.player1).toHavePromptButton('2');
-            expect(this.player1).toHavePromptButton(deckSize.toString());
-            expect(this.player1).not.toHavePromptButton((deckSize + 1).toString());
-
-            this.player1.clickPrompt(deckSize.toString());
-            expect(this.player1.fate).toBe(fate);
-            expect(this.player1.conflictDeck.length).toBe(0);
+            expect(this.player1).not.toBeAbleToSelect(this.alliance);
         });
 
         it('Kachiko 2 - should not use up a Kachiko usage', function () {
@@ -314,6 +302,14 @@ describe('Kunshu', function () {
             this.player1.clickCard(this.afwtd);
             this.player1.clickCard(this.kachiko);
 
+            expect(this.kachiko.bowed).toBe(true);
+            expect(this.kachiko.isDishonored).toBe(true);
+            expect(this.afwtd.location).toBe('conflict discard pile');
+            expect(this.player2.conflictDiscard).toContain(this.afwtd);
+            expect(this.player1.player.imperialFavor).toBe('');
+            expect(this.getChatLogs(10)).toContain(
+                'player1 uses Bayushi Kachiko\'s gained ability from Kunshu, discarding the Imperial Favor to play A Fate Worse Than Death'
+            );
             expect(this.getChatLogs(5)).not.toContain(
                 'player1 plays a card from their opponent\'s conflict discard pile due to the ability of Bayushi Kachiko (2 uses remaining)'
             );

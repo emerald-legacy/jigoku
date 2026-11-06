@@ -25,6 +25,9 @@ describe('Goblin Sneak', function() {
                 this.player2.player.fate = 0;
                 this.goblinSneak = this.player1.playCharacterFromHand('goblin-sneak');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.goblinSneak.location).toBe('play area');
+                expect(this.goblinSneak.fate).toBe(0);
+                expect(this.player2).toHavePrompt('Action Window');
             });
         });
     });

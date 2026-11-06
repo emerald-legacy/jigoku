@@ -314,3 +314,50 @@ describe('Bayushi Kachiko 2', function() {
         });
     });
 });
+
+describe('Bayushi Kachiko 2 and a play whose costs aren\'t paid', function() {
+    integration(function() {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['bayushi-kachiko-2', { card: 'kitsu-warrior', attachments: ['reprieve'] }]
+                },
+                player2: {
+                    inPlay: ['kakita-yoshi'],
+                    conflictDiscard: ['noble-sacrifice', 'soul-beyond-reproach']
+                }
+            });
+            this.kachiko = this.player1.findCardByName('bayushi-kachiko-2');
+            this.warrior = this.player1.findCardByName('kitsu-warrior');
+            this.reprieve = this.player1.findCardByName('reprieve');
+            this.yoshi = this.player2.findCardByName('kakita-yoshi');
+            this.sacrifice = this.player2.findCardByName('noble-sacrifice');
+            this.soul = this.player2.findCardByName('soul-beyond-reproach');
+            this.warrior.honor();
+            this.yoshi.dishonor();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.kachiko, this.warrior],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('counts it as one of her 3 cards (EmeraldDB ruling)', function () {
+            this.player1.clickCard(this.sacrifice);
+            this.player1.clickCard(this.yoshi);
+            this.player1.clickCard(this.warrior);
+            this.player1.clickCard(this.reprieve);
+            expect(this.warrior.location).toBe('play area');
+            expect(this.yoshi.location).toBe('play area');
+            expect(this.getChatLogs(5)).toContain('player1 attempted to use Noble Sacrifice, but did not successfully pay the required costs');
+            this.player2.pass();
+            this.player1.clickCard(this.soul);
+            this.player1.clickCard(this.kachiko);
+            expect(this.getChatLogs(5)).toContain('player1 plays a card from their opponent\'s conflict discard pile due to the ability of Bayushi Kachiko (1 use remaining)');
+        });
+    });
+});
+

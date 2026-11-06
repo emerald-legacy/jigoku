@@ -76,18 +76,18 @@ describe('Makeshift War Camp', function() {
                 defenders: [this.tsuko],
                 province: this.ancestralLands
             });
-            expect(this.kuwanan.getMilitarySkill()).toBe(this.kuwanan.getBaseMilitarySkill());
-            expect(this.prodigy.getMilitarySkill()).toBe(this.prodigy.getBaseMilitarySkill());
-            expect(this.toturi.getMilitarySkill()).toBe(this.toturi.getBaseMilitarySkill());
-            expect(this.tsuko.getMilitarySkill()).toBe(this.tsuko.getBaseMilitarySkill());
+            expect(this.kuwanan.militarySkill).toBe(this.kuwanan.getBaseMilitarySkill());
+            expect(this.prodigy.militarySkill).toBe(this.prodigy.getBaseMilitarySkill());
+            expect(this.toturi.militarySkill).toBe(this.toturi.getBaseMilitarySkill());
+            expect(this.tsuko.militarySkill).toBe(this.tsuko.getBaseMilitarySkill());
 
             this.player2.pass();
             this.player1.playAttachment(this.warCamp, this.ancestralLands);
 
-            expect(this.kuwanan.getMilitarySkill()).toBe(this.kuwanan.getBaseMilitarySkill() + 2);
-            expect(this.prodigy.getMilitarySkill()).toBe(this.prodigy.getBaseMilitarySkill() + 2);
-            expect(this.toturi.getMilitarySkill()).toBe(this.toturi.getBaseMilitarySkill() + 2);
-            expect(this.tsuko.getMilitarySkill()).toBe(this.tsuko.getBaseMilitarySkill());
+            expect(this.kuwanan.militarySkill).toBe(this.kuwanan.getBaseMilitarySkill() + 2);
+            expect(this.prodigy.militarySkill).toBe(this.prodigy.getBaseMilitarySkill() + 2);
+            expect(this.toturi.militarySkill).toBe(this.toturi.getBaseMilitarySkill() + 2);
+            expect(this.tsuko.militarySkill).toBe(this.tsuko.getBaseMilitarySkill());
         });
 
         it('should only work if the conflict is at the current province', function () {
@@ -98,18 +98,18 @@ describe('Makeshift War Camp', function() {
                 defenders: [this.tsuko],
                 province: this.ancestralLands
             });
-            expect(this.kuwanan.getMilitarySkill()).toBe(this.kuwanan.getBaseMilitarySkill());
-            expect(this.prodigy.getMilitarySkill()).toBe(this.prodigy.getBaseMilitarySkill());
-            expect(this.toturi.getMilitarySkill()).toBe(this.toturi.getBaseMilitarySkill());
-            expect(this.tsuko.getMilitarySkill()).toBe(this.tsuko.getBaseMilitarySkill());
+            expect(this.kuwanan.militarySkill).toBe(this.kuwanan.getBaseMilitarySkill());
+            expect(this.prodigy.militarySkill).toBe(this.prodigy.getBaseMilitarySkill());
+            expect(this.toturi.militarySkill).toBe(this.toturi.getBaseMilitarySkill());
+            expect(this.tsuko.militarySkill).toBe(this.tsuko.getBaseMilitarySkill());
 
             this.player2.pass();
             this.player1.playAttachment(this.warCamp, this.garden);
 
-            expect(this.kuwanan.getMilitarySkill()).toBe(this.kuwanan.getBaseMilitarySkill());
-            expect(this.prodigy.getMilitarySkill()).toBe(this.prodigy.getBaseMilitarySkill());
-            expect(this.toturi.getMilitarySkill()).toBe(this.toturi.getBaseMilitarySkill());
-            expect(this.tsuko.getMilitarySkill()).toBe(this.tsuko.getBaseMilitarySkill());
+            expect(this.kuwanan.militarySkill).toBe(this.kuwanan.getBaseMilitarySkill());
+            expect(this.prodigy.militarySkill).toBe(this.prodigy.getBaseMilitarySkill());
+            expect(this.toturi.militarySkill).toBe(this.toturi.getBaseMilitarySkill());
+            expect(this.tsuko.militarySkill).toBe(this.tsuko.getBaseMilitarySkill());
         });
     });
 });

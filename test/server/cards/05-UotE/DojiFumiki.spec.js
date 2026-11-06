@@ -28,6 +28,8 @@ describe('Doji Fumiki', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.fumiki);
                 expect(this.player1).not.toHavePrompt('Doji Fumiki');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.berserker.bowed).toBe(false);
             });
 
             it('should only target dishonored participating characters', function() {
@@ -67,6 +69,8 @@ describe('Doji Fumiki', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.fumiki);
                 expect(this.player1).not.toHavePrompt('Doji Fumiki');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.toturi.bowed).toBe(false);
             });
         });
     });

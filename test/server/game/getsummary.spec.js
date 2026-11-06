@@ -1,10 +1,11 @@
+import { rulesFor } from '../../../build/server/game/GameRules.js';
 
 import Game from '../../../build/server/game/Game.js';
 import Player from '../../../build/server/game/Player.js';
 import { Spectator } from '../../../build/server/game/Spectator.js';
 
 describe('the Game', () => {
-    var game = {};
+    var game = { rules: rulesFor('stronghold') };
     var player1 = new Player('1', { username: 'Player 1', settings: {} }, true, game);
     var player2 = new Player('2', { username: 'Player 2', settings: {} }, false, game);
     var spectator = new Spectator('3', 'Spectator 1');
@@ -26,6 +27,15 @@ describe('the Game', () => {
     });
 
     describe('getSummary function', () => {
+        it('should not include the chat', () => {
+            game.addMessage('a chat line');
+
+            var state = game.getSummary('');
+
+            expect(game.gameChat.messages.length).toBe(1);
+            expect(state.messages).toBeUndefined();
+        });
+
         describe('when there are no players', () => {
             it('should return basic empty state', () => {
                 var state = game.getSummary('');
@@ -61,6 +71,25 @@ describe('the Game', () => {
                     expect(Object.keys(state.players).length).toBe(2);
                     expect(state.players[player1.name].name).toBe(player1.name);
                     expect(state.players[player2.name].name).toBe(player2.name);
+                });
+
+                describe('and leaves', () => {
+                    beforeEach(() => {
+                        player2.left = true;
+                    });
+
+                    afterEach(() => {
+                        player2.left = false;
+                    });
+
+                    it('should keep that player, marked as left, so the lobby can offer Rejoin after a restart', () => {
+                        var state = game.getSummary('');
+
+                        expect(state.name).toBe('Test Game');
+                        expect(Object.keys(state.players)).toEqual([player1.name, player2.name]);
+                        expect(state.players[player1.name].left).toBe(false);
+                        expect(state.players[player2.name].left).toBe(true);
+                    });
                 });
             });
         });

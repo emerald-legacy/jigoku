@@ -1,32 +1,28 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { Phases, CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Phase, CardType } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { draw, returnToDeck, sequential } from '../../GameActions/GameActions.js';
 
 class InspiredVisionary extends DrawCard {
     static id = 'inspired-visionary';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Bow to discard an attachment',
-            when: {
-                onPhaseStarted: event => event.phase === Phases.Fate
-            },
-            cost: AbilityDsl.costs.bowSelf(),
-            target: {
-                cardType: CardType.Attachment,
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.returnToDeck((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                        target: context.target,
-                        destination: Location.ConflictDeck,
-                        shuffle: true
-                    })),
-                    AbilityDsl.actions.draw((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                        target: context.target.owner
-                    }))
-                ])
-            }
-        });
+    override setupCardAbilities() {
+        this.reaction('Bow to shuffle an attachment into its owner\'s deck')
+            .when({
+                onPhaseStarted: (event) => event.phase === Phase.Fate
+            })
+            .cost(costs.bowSelf())
+            .target({
+                cardType: CardType.Attachment
+            }, sequential([
+                returnToDeck((context) => ({
+                    target: context.target,
+                    shuffle: true
+                })),
+                draw((context) => ({
+                    target: context.target.owner
+                }))
+            ]));
     }
 }
 

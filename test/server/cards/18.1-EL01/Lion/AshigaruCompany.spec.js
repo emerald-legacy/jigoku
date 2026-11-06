@@ -55,7 +55,7 @@ describe('Ashigaru Company', function() {
             expect(this.player1).toHavePromptButton('Take nothing');
         });
 
-        it('should prompt you to attach the chosen card to a character you control and put the rest on the bottom of the deck', function() {
+        it('adds the chosen Follower to your hand and puts the rest on the bottom of the deck', function() {
             this.player1.clickCard(this.company1);
             this.player1.clickCard(this.doomed);
             this.player1.clickCard(this.company1);
@@ -77,6 +77,14 @@ describe('Ashigaru Company', function() {
             expect(this.getChatLogs(5)).toContain('player1 uses Ashigaru Company to look at the top five cards of their deck');
             expect(this.getChatLogs(5)).toContain('player1 takes Ayubune Pilot');
             expect(this.getChatLogs(5)).toContain('player1 puts 4 cards on the bottom of their conflict deck');
+        });
+
+        it('says how many cards it looks at when fewer than 5 are left', function() {
+            this.player1.reduceDeckToNumber('conflict deck', 3);
+            this.player1.clickCard(this.company1);
+            this.player1.clickCard(this.doomed);
+            this.player1.clickCard(this.company1);
+            expect(this.getChatLogs(5)).toContain('player1 uses Ashigaru Company to look at the top three cards of their deck');
         });
     });
 });

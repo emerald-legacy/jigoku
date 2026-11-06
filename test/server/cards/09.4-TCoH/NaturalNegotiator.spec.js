@@ -48,8 +48,8 @@ describe('Natural Negotatior', function() {
 
                 expect(this.player1.honor).toBe(9);
                 expect(this.player2.honor).toBe(11);
-                expect(this.ideTadaji.getMilitarySkill()).toBe(4);
-                expect(this.ideTadaji.getPoliticalSkill()).toBe(1);
+                expect(this.ideTadaji.militarySkill).toBe(4);
+                expect(this.ideTadaji.politicalSkill).toBe(1);
 
                 expect(this.getChatLogs(10)).toContain('player1 uses Natural Negotiator, giving 1 honor to player2 to switch Ide Tadaji\'s base military and political skill');
             });

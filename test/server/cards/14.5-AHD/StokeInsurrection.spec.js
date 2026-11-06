@@ -73,13 +73,13 @@ describe('Stoke Insurrection', function () {
         });
 
         it('should cost 2 if your opponent has 4 or more facedown cards', function () {
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.player2.clickCard(this.insurrection);
             expect(this.player2.fate).toBe(fate - 2);
         });
 
         it('should cost 4 if your opponent has 4 or more facedown cards', function () {
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.ujina.facedown = false;
             this.game.checkGameState(true);
             this.player2.clickCard(this.insurrection);
@@ -158,8 +158,15 @@ describe('Stoke Insurrection', function () {
                 'player2 plays Stoke Insurrection to reveal player1\'s dynasty cards and put up to two of them into play'
             );
             expect(this.getChatLogs(5)).toContain(
-                'player2 puts Isawa Ujina and Moto Youth into play into the conflict'
+                'player2 puts Isawa Ujina and Moto Youth into play in the conflict'
             );
+        });
+
+        it('should say no characters are put into play when none is chosen', function () {
+            this.player2.clickCard(this.insurrection);
+            this.player2.clickPrompt('Done');
+
+            expect(this.getChatLogs(5)).toContain('player2 puts no characters into play in the conflict');
         });
 
         it('you should control the characters', function () {
@@ -210,10 +217,10 @@ describe('Stoke Insurrection', function () {
             this.ground = this.player1.placeCardInProvince('favorable-ground', 'province 3');
             this.lies = this.player1.placeCardInProvince('city-of-lies', 'province 4');
 
-            let locations = ['province 1', 'province 2', 'province 3', 'province 4'];
+            const locations = ['province 1', 'province 2', 'province 3', 'province 4'];
 
             locations.forEach((location) => {
-                let cards = this.player1.player.getDynastyCardsInProvince(location);
+                const cards = this.player1.player.getDynastyCardsInProvince(location);
                 cards.forEach((card) => {
                     if(card.type !== 'holding') {
                         this.player1.moveCard(card, 'dynasty discard pile');
@@ -304,6 +311,66 @@ describe('Stoke Insurrection with Rally', function () {
             expect(this.toshimoko.location).toBe('province 1');
             expect(this.ujiaki.location).toBe('province 2');
             expect(this.player2).toHavePrompt('Choose up to two characters');
+        });
+    });
+});
+
+describe('Stoke Insurrection played through Bayushi Kachiko 2', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 10,
+                    inPlay: ['bayushi-kachiko-2']
+                },
+                player2: {
+                    dynastyDiscard: ['doji-whisperer'],
+                    conflictDiscard: ['stoke-insurrection']
+                }
+            });
+
+            this.kachiko = this.player1.findCardByName('bayushi-kachiko-2');
+            this.insurrection = this.player2.findCardByName('stoke-insurrection');
+            this.whisperer = this.player2.placeCardInProvince('doji-whisperer', 'province 1');
+
+            this.setFacedown = (wrapper, facedown) => {
+                for(const location of ['province 1', 'province 2', 'province 3', 'province 4']) {
+                    wrapper.player.getDynastyCardsInProvince(location).forEach((card) => {
+                        card.facedown = facedown;
+                    });
+                }
+            };
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.kachiko],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('should cost 4 when only the player playing it has 4 or more facedown cards', function() {
+            this.setFacedown(this.player1, true);
+            this.setFacedown(this.player2, false);
+            this.game.checkGameState(true);
+
+            const fate = this.player1.fate;
+            this.player1.clickCard(this.insurrection);
+            expect(this.player1).toHavePrompt('Choose up to two characters');
+            expect(this.player1.fate).toBe(fate - 4);
+        });
+
+        it('should cost 2 when the opponent of the player playing it has 4 or more facedown cards', function() {
+            this.setFacedown(this.player1, false);
+            this.setFacedown(this.player2, true);
+            this.game.checkGameState(true);
+
+            const fate = this.player1.fate;
+            this.player1.clickCard(this.insurrection);
+            expect(this.player1).toHavePrompt('Choose up to two characters');
+            expect(this.player1.fate).toBe(fate - 2);
         });
     });
 });

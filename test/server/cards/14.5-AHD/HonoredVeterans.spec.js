@@ -157,3 +157,84 @@ describe('Honored Veterans', function () {
         });
     });
 });
+
+describe('Honored Veterans with nothing to honor', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    fate: 50,
+                    dynastyDiscard: ['honored-veterans', 'honored-veterans', 'kakita-toshimoko']
+                },
+                player2: {
+                    fate: 50
+                }
+            });
+
+            const veterans = this.player1.filterCardsByName('honored-veterans', 'dynasty discard pile');
+            this.veterans1 = this.player1.placeCardInProvince(veterans[0], 'province 1');
+            this.veterans2 = this.player1.placeCardInProvince(veterans[1], 'province 2');
+            this.toshimoko = this.player1.placeCardInProvince('kakita-toshimoko', 'province 3');
+        });
+
+        it('should not be playable when every Bushi played this phase is already honored', function () {
+            this.player1.clickCard(this.toshimoko);
+            this.player1.clickPrompt('0');
+            this.player2.pass();
+
+            this.player1.clickCard(this.veterans1);
+            this.player1.clickCard(this.toshimoko);
+            expect(this.toshimoko.isHonored).toBe(true);
+            expect(this.veterans1.location).toBe('dynasty discard pile');
+
+            this.player1.clickCard(this.veterans2);
+            expect(this.player1).toHavePrompt('Play cards from provinces');
+            expect(this.veterans2.location).toBe('province 2');
+        });
+    });
+});
+
+describe('Honored Veterans with a Bushi that left play', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    fate: 50,
+                    inPlay: ['shosuro-isa'],
+                    hand: ['a-cleansing-death'],
+                    dynastyDiscard: ['honored-veterans', 'brash-samurai', 'doji-whisperer']
+                },
+                player2: {
+                    fate: 50
+                }
+            });
+
+            this.isa = this.player1.findCardByName('shosuro-isa');
+            this.cleansingDeath = this.player1.findCardByName('a-cleansing-death');
+            this.veterans = this.player1.placeCardInProvince('honored-veterans', 'province 1');
+            this.samurai = this.player1.placeCardInProvince('brash-samurai', 'province 2');
+            this.whisperer = this.player1.placeCardInProvince('doji-whisperer', 'province 3');
+        });
+
+        it('should forget a bushi that left play and was put into play again', function () {
+            this.player1.clickCard(this.samurai);
+            this.player1.clickPrompt('0');
+            this.player2.pass();
+
+            this.player1.clickCard(this.cleansingDeath);
+            this.player1.clickCard(this.samurai);
+            this.player1.clickCard(this.whisperer);
+            expect(this.samurai.location).toBe('dynasty discard pile');
+
+            this.player1.clickCard(this.isa);
+            this.player1.clickCard(this.samurai);
+            expect(this.samurai.location).toBe('play area');
+
+            this.player1.clickCard(this.veterans);
+            expect(this.player1).toHavePrompt('Play cards from provinces');
+            expect(this.veterans.location).toBe('province 1');
+        });
+    });
+});

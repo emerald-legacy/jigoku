@@ -46,7 +46,7 @@ describe('Endless Plains Skirmisher', function() {
             expect(this.game.currentConflict.attackers).not.toContain(this.skirmisher);
             expect(this.game.currentConflict.defenders).toContain(this.skirmisher);
 
-            expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player2!');
+            expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player2');
             expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 0 Defender: 3');
             expect(this.getChatLogs(1)).toContain('Defender is winning the conflict');
 
@@ -73,7 +73,7 @@ describe('Endless Plains Skirmisher', function() {
             expect(this.game.currentConflict.attackers).toContain(this.skirmisher);
             expect(this.game.currentConflict.defenders).not.toContain(this.skirmisher);
 
-            expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player1!');
+            expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player1');
             expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 3 Defender: 0');
             expect(this.getChatLogs(1)).toContain('Attacker is winning the conflict - Shameful Display is breaking!');
 
@@ -151,7 +151,7 @@ describe('Endless Plains Skirmisher', function() {
         });
 
         it('should count as unopposed (allow display of power, take the honor hit)', function() {
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.noMoreActions();
             this.player1.passConflict();
             this.noMoreActions();
@@ -170,7 +170,7 @@ describe('Endless Plains Skirmisher', function() {
             expect(this.game.currentConflict.attackers).toContain(this.skirmisher);
             expect(this.game.currentConflict.defenders).not.toContain(this.skirmisher);
 
-            expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player2!');
+            expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player2');
             expect(this.getChatLogs(2)).toContain('Political Air conflict - Attacker: 1 Defender: 0');
             expect(this.getChatLogs(1)).toContain('Attacker is winning the conflict');
 
@@ -229,7 +229,7 @@ describe('Endless Plains Skirmisher', function() {
                 expect(this.game.currentConflict.attackers).not.toContain(this.skirmisher);
                 expect(this.game.currentConflict.defenders).toContain(this.skirmisher);
 
-                expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player2!');
+                expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player2');
                 expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 0 Defender: 3');
                 expect(this.getChatLogs(1)).toContain('Defender is winning the conflict');
 
@@ -259,7 +259,7 @@ describe('Endless Plains Skirmisher', function() {
                 expect(this.game.currentConflict.attackers).toContain(this.skirmisher);
                 expect(this.game.currentConflict.defenders).not.toContain(this.skirmisher);
 
-                expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player1!');
+                expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player1');
                 expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 3 Defender: 0');
                 expect(this.getChatLogs(1)).toContain('Attacker is winning the conflict - Shameful Display is breaking!');
 
@@ -300,7 +300,7 @@ describe('Endless Plains Skirmisher', function() {
                 expect(this.game.currentConflict.attackers).not.toContain(this.skirmisher2);
                 expect(this.game.currentConflict.defenders).toContain(this.skirmisher2);
 
-                expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player2!');
+                expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player2');
                 expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 0 Defender: 3');
                 expect(this.getChatLogs(1)).toContain('Defender is winning the conflict');
 
@@ -319,7 +319,7 @@ describe('Endless Plains Skirmisher', function() {
                 expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
                 expect(this.game.currentConflict.defenders).not.toContain(this.skirmisher2);
 
-                expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player1!');
+                expect(this.getChatLogs(3)).toContain('player1 uses Endless Plains Skirmisher to join the conflict for player1');
                 expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 3 Defender: 0');
                 expect(this.getChatLogs(1)).toContain('Attacker is winning the conflict - Shameful Display is breaking!');
 
@@ -331,3 +331,40 @@ describe('Endless Plains Skirmisher', function() {
         });
     });
 });
+
+describe('Endless Plains Skirmisher with pride on the other side', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'endless-plains-skirmisher', attachments: ['magnificent-kimono'] }, 'ikoma-prodigy']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar']
+                }
+            });
+            this.skirmisher = this.player1.findCardByName('endless-plains-skirmisher');
+            this.ikomaProdigy = this.player1.findCardByName('ikoma-prodigy');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.ikomaProdigy],
+                defenders: [],
+                type: 'military',
+                ring: 'air'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.skirmisher);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('is honored when its side wins, though its controller lost', function() {
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher);
+            this.noMoreActions();
+            expect(this.game.rings.air.claimedBy).toBe(this.player2.player.name);
+            expect(this.skirmisher.isHonored).toBe(true);
+            expect(this.getChatLogs(5)).toContain('Endless Plains Skirmisher is honored due to their Pride');
+        });
+    });
+});
+

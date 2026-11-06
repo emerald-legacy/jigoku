@@ -1,22 +1,19 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { ConflictType } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 class KakitaAsami extends DrawCard {
     static id = 'kakita-asami';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action ({
-            title: 'Take one honor from your opponent',
-            condition: (context: AbilityContext) => {
-                if(!this.game.isDuringConflict('political') || !this.game.currentConflict) {
-                    return false;
-                }
-                let diff = this.game.currentConflict.attackerSkill - this.game.currentConflict.defenderSkill;
-                return context.player.isAttackingPlayer() ? diff > 0 : diff < 0;
-            },
-            gameAction: ability.actions.takeHonor()
-        });
+    override setupCardAbilities() {
+        this.action('Take one honor from your opponent')
+            .condition((context) => context.source.isParticipating(ConflictType.Political))
+            .ifCondition((context) => {
+                const conflict = context.game.currentConflict;
+                const opponent = context.player.opponent;
+                return !!conflict && !!opponent &&
+                    conflict.getCurrentSkill(context.player, ConflictType.Political) > conflict.getCurrentSkill(opponent, ConflictType.Political);
+            })
+            .takeHonor();
     }
 }
 

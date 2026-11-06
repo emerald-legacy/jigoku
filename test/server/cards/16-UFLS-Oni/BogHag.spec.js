@@ -46,7 +46,7 @@ describe('Bog Hag', function () {
             this.player2.pass();
             this.player1.pass();
 
-            let length = this.player2.conflictDeck.length;
+            const length = this.player2.conflictDeck.length;
 
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.hag);

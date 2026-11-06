@@ -19,6 +19,12 @@ describe('Invocation of Ash', function () {
                 this.player2.pass();
             });
 
+            it('can\'t move to the character it is attached to (RRG Move)', function () {
+                this.player1.clickCard(this.ash);
+                expect(this.player1).not.toBeAbleToSelect(this.mystic);
+                expect(this.player1).toBeAbleToSelect(this.rider);
+            });
+
             it('should cost the player 1 honor to use', function () {
                 this.initHonor = this.player1.honor;
                 this.player1.clickCard(this.ash);
@@ -30,6 +36,7 @@ describe('Invocation of Ash', function () {
                 this.player1.clickCard(this.ash);
                 this.player1.clickCard(this.rider);
                 expect(this.ash.parent).toBe(this.rider);
+                expect(this.getChatLogs(3)).toContain('player1 uses Invocation of Ash, losing 1 honor to move Invocation of Ash to Border Rider');
             });
 
             it('should remove a fate from a character with fate', function () {
@@ -38,7 +45,34 @@ describe('Invocation of Ash', function () {
                 this.player1.clickCard(this.scout);
                 expect(this.ash.parent).toBe(this.scout);
                 expect(this.scout.fate).toBe(this.initFate - 1);
+                expect(this.getChatLogs(3)).toContain('player1 uses Invocation of Ash, losing 1 honor to move Invocation of Ash to Shinjo Scout, then remove a fate from Shinjo Scout');
             });
+        });
+    });
+});
+
+describe('Invocation of Ash and a character it can\'t move to', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['miya-mystic', 'bayushi-s-whisperers'],
+                    hand: ['invocation-of-ash']
+                }
+            });
+            this.mystic = this.player1.findCardByName('miya-mystic');
+            this.whisperers = this.player1.findCardByName('bayushi-s-whisperers');
+            this.whisperers.modifyFate(1);
+            this.ash = this.player1.playAttachment('invocation-of-ash', this.mystic);
+            this.player2.pass();
+        });
+
+        it('can\'t choose a character with "No attachments"', function () {
+            this.player1.clickCard(this.ash);
+            expect(this.player1).not.toBeAbleToSelect(this.whisperers);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.ash.parent).toBe(this.mystic);
         });
     });
 });

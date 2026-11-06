@@ -1,26 +1,19 @@
-import AbilityDsl from '../../abilitydsl.js';
-import { AbilityType, EventName } from '../../Constants.js';
+import { gainAbility } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 export default class ScarletSabre extends DrawCard {
     static id = 'scarlet-sabre';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
-            match: (card: DrawCard) => card.controller.firstPlayer,
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Reaction, {
-                title: 'Make opponent lose 1 fate',
-                printedAbility: false,
-                when: {
-                    afterConflict: (event: EventPayload<EventName.AfterConflict>, context: TriggeredAbilityContext<this>) =>
+            condition: (context) => context.source.controller.firstPlayer,
+            effect: gainAbility.reaction('Make opponent lose 1 fate', (ability) => ability
+                .when({
+                    afterConflict: (event, context) =>
                         context.player.opponent &&
-                        context.source.isParticipating() &&
-                        event.conflict.winner === context.source.controller
-                },
-                gameAction: AbilityDsl.actions.loseFate((context) => ({ target: context.player.opponent }))
-            })
+                        event.conflict.isOnWinningSide(context.source)
+                })
+                .loseFate((context) => ({ target: context.player.opponent })))
         });
     }
 }

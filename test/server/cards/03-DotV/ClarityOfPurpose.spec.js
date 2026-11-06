@@ -56,6 +56,7 @@ describe('Clarity of Purpose', function() {
                     });
 
                     it('should prevent opponents\' card effects from bowing', function() {
+                        expect(this.getChatLogs(3)).toContain('player1 plays Clarity of Purpose to prevent opponents\' card effects from bowing Adept of the Waves and stop it bowing at the end of a political conflict');
                         this.adeptOfTheWaves.dishonor();
                         expect(this.player2).toHavePrompt('Conflict Action Window');
                         this.player2.clickCard(this.forShame);

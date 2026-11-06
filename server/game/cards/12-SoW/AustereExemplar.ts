@@ -1,23 +1,22 @@
 import DrawCard from '../../DrawCard.js';
 import { Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { perConflict } from '../../AbilityLimit.js';
+import { additionalAction } from '../../effects.js';
 
 class AustereExemplar extends DrawCard {
     static id = 'austere-exemplar';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Take three actions',
-            limit: AbilityDsl.limit.perConflict(1),
-            cost: AbilityDsl.costs.payFateToRing(),
-            condition: (context) => context.source.isAttacking(),
-            effect: 'take three actions',
-            gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
-                targetController: context.player,
+    override setupCardAbilities() {
+        this.action('Take three actions')
+            .condition((context) => context.source.isAttacking())
+            .cost(costs.payFateToRing())
+            .playerLastingEffect({
                 duration: Duration.UntilPassPriority,
-                effect: AbilityDsl.effects.additionalAction(3)
-            }))
-        });
+                effect: additionalAction(3)
+            })
+            .chatText('take three actions')
+            .max(perConflict(1));
     }
 }
 

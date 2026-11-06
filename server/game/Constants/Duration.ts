@@ -8,5 +8,5 @@ export enum Duration {
     UntilSelfPassPriority = 'untilSelfPassPriority',
     UntilNextPassPriority = 'untilNextPassPriority',
     Persistent = 'persistent',
-    Custom = 'lastingEffect'
+    Custom = 'custom'
 }

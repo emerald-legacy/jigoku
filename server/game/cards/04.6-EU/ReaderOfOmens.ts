@@ -1,39 +1,24 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyPoliticalSkill } from '../../effects.js';
 import { Element } from '../../Constants.js';
+import { claimedRingSymbols, hasClaimedAnyRing } from '../claimedRings.js';
 
-const elementKeys = {
-    air: 'reader-of-omens-air',
-    void: 'reader-of-omens-void'
-};
+const elementSymbols = [
+    { key: 'reader-of-omens-air', element: Element.Air },
+    { key: 'reader-of-omens-void', element: Element.Void }
+];
 
 class ReaderOfOmens extends DrawCard {
     static id = 'reader-of-omens';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => (
-                context.game.rings[this.getCurrentElementSymbol(elementKeys.air)].isConsideredClaimed(context.player) ||
-                context.game.rings[this.getCurrentElementSymbol(elementKeys.void)].isConsideredClaimed(context.player)
-            ),
-            effect: AbilityDsl.effects.modifyPoliticalSkill(3)
+            condition: (context) => hasClaimedAnyRing(this, elementSymbols, context.player),
+            effect: modifyPoliticalSkill(3)
         });
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKeys.air,
-            prettyName: 'Claimed Ring',
-            element: Element.Air
-        });
-        symbols.push({
-            key: elementKeys.void,
-            prettyName: 'Claimed Ring',
-            element: Element.Void
-        });
-        return symbols;
-    }
+    protected override printedElementSymbols = claimedRingSymbols(elementSymbols);
 }
 
 

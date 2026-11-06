@@ -53,7 +53,22 @@ describe('Gossip', function() {
                 this.player2.clickCard(this.solemnScholar);
                 expect(this.player2).toHavePrompt('Action Window');
             });
+
+            it('should name the card when played and log the effect', function() {
+                this.player1.clickCard('gossip');
+                expect(this.player1).toHavePrompt('Name a card');
+                // naming is the effect: the event has been played (and could have been cancelled) before the name is chosen
+                expect(this.getChatLogs(1)).toContain('player1 plays Gossip to name a card');
+                this.player1.chooseCardInPrompt(this.againstTheWaves.name, 'card-name');
+                expect(this.getChatLogs(3)).toContain('player1 names Against the Waves - player2 cannot play cards named Against the Waves from their hand this phase');
+            });
+
+            it('should still let your opponent play other cards', function() {
+                this.player1.clickCard('gossip');
+                this.player1.chooseCardInPrompt(this.againstTheWaves.name, 'card-name');
+                this.player2.clickCard(this.fineKatana);
+                expect(this.player2).toHavePrompt('Fine Katana');
+            });
         });
     });
 });
-

@@ -1,32 +1,35 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
 import { CardType, EventName, Location, TokenType } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export interface AddTokenProperties extends CardActionProperties {
     tokenType?: TokenType;
 }
 
-export class AddTokenAction extends CardGameAction<AddTokenProperties> {
-    name = 'addToken';
-    eventName = EventName.OnAddTokenToCard;
-    defaultProperties: AddTokenProperties = {
+/** An add-token event this action created: `addPropertiesToEvent` always sets its token type. */
+type AddTokenEvent<Context extends AbilityContext> = ActionEvent<EventName.OnAddTokenToCard, Context> & { tokenType: TokenType };
+
+export class AddTokenAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<AddTokenProperties, EventName.OnAddTokenToCard, Context, 'tokenType'> {
+    override name = 'addToken';
+    override eventName = EventName.OnAddTokenToCard;
+    override defaultProperties = {
         tokenType: TokenType.Honor
     };
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties: AddTokenProperties = this.getProperties(context);
-        return ['add a {1} token to {0}', [properties.target, properties.tokenType]];
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['add an {1} token to {0}', [this.getProperties(context, additionalProperties).tokenType]];
     }
 
-    canAffect(card: BaseCard, context: AbilityContext): boolean {
+    override canAffect(card: BaseCard, context: Context): boolean {
         if(!card.isFaceup()) {
             return false;
         }
         if([CardType.Holding, CardType.Province].includes(card.type)) {
-            if(!card.location.includes('province')) {
+            if(!card.isInProvince()) {
                 return false;
             }
         } else if(card.location !== Location.PlayArea) {
@@ -35,13 +38,13 @@ export class AddTokenAction extends CardGameAction<AddTokenProperties> {
         return super.canAffect(card, context);
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnAddTokenToCard>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnAddTokenToCard, Context>, card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): void {
         const { tokenType } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.tokenType = tokenType;
     }
 
-    eventHandler(event: GameEvent<EventName.OnAddTokenToCard>): void {
-        event.card.addToken(event.tokenType ?? '');
+    override eventHandler(event: AddTokenEvent<Context>): void {
+        event.card.addToken(event.tokenType);
     }
 }

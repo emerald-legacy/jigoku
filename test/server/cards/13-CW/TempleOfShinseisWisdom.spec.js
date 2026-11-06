@@ -26,7 +26,7 @@ describe('Temple of Shinseis Wisdom', function() {
             });
 
             it('should put a fate on the void ring if it is unclaimed', function() {
-                let fate = this.game.rings.void.fate;
+                const fate = this.game.rings.void.fate;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.shugenja],
@@ -39,7 +39,7 @@ describe('Temple of Shinseis Wisdom', function() {
             });
 
             it('should not put a fate on the void ring if it is contested', function() {
-                let fate = this.game.rings.void.fate;
+                const fate = this.game.rings.void.fate;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.shugenja],

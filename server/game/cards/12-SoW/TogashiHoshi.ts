@@ -1,33 +1,35 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { changeType, setBaseGlory, setBaseMilitarySkill, setBasePoliticalSkill } from '../../effects.js';
+import { cardLastingEffect, detach, multiple } from '../../GameActions/GameActions.js';
 
 import { CardType, Duration } from '../../Constants.js';
 
 class TogashiHoshi extends DrawCard {
     static id = 'togashi-hoshi';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Turn attachment into character',
-            gameAction: AbilityDsl.actions.selectCard({
+    override setupCardAbilities() {
+        this.action('Turn attachment into character')
+            .selectCard({
                 cardType: CardType.Attachment,
                 cardCondition: (card, context) => card.parentCharacter?.controller === context.player,
-                subActionProperties: (card: DrawCard) => ({
+                subActionProperties: (card) => ({
                     target: card,
-                    effect: [AbilityDsl.effects.changeType(CardType.Character)].concat(
+                    effect: [changeType(CardType.Character)].concat(
                         card.printedType === CardType.Attachment ? [
-                            AbilityDsl.effects.setBaseMilitarySkill(parseInt(card.cardData.military_bonus ?? '')),
-                            AbilityDsl.effects.setBasePoliticalSkill(parseInt(card.cardData.political_bonus ?? '')),
-                            AbilityDsl.effects.setBaseGlory(0)
+                            setBaseMilitarySkill(parseInt(card.cardData.military_bonus ?? '') || 0),
+                            setBasePoliticalSkill(parseInt(card.cardData.political_bonus ?? '') || 0),
+                            setBaseGlory(0)
                         ] : []
                     )
                 }),
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.detach(),
-                    AbilityDsl.actions.cardLastingEffect({ duration: Duration.Custom })
+                message: (_context, cards, player) => msg`${player} turns ${cards} into a character`,
+                gameAction: multiple([
+                    detach(),
+                    cardLastingEffect({ duration: Duration.Custom })
                 ])
             })
-        });
+            .chatText('turn an attachment into a character');
     }
 }
 

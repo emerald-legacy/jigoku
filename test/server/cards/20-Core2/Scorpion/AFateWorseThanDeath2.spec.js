@@ -134,3 +134,34 @@ describe('A Fate Worse Than Death 2', function () {
         });
     });
 });
+
+describe('A Fate Worse Than Death 2: a character at home', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['miya-mystic'],
+                    hand: ['a-fate-worse-than-death-2']
+                },
+                player2: {
+                    inPlay: ['steadfast-witch-hunter', 'borderlands-defender']
+                }
+            });
+            this.witchHunter = this.player2.findCardByName('steadfast-witch-hunter');
+            this.defender = this.player2.findCardByName('borderlands-defender');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: ['miya-mystic'],
+                defenders: [this.defender]
+            });
+            this.player2.pass();
+        });
+
+        it('is not a legal target', function () {
+            this.player1.clickCard('a-fate-worse-than-death-2');
+            expect(this.player1).toBeAbleToSelect(this.defender);
+            expect(this.player1).not.toBeAbleToSelect(this.witchHunter);
+        });
+    });
+});

@@ -43,8 +43,8 @@
             this.player1.clickCard(this.saboteur);
             this.player1.clickCard(this.kuwanan);
 
-            expect(this.saboteur.getMilitarySkill()).toBe(0);
-            expect(this.saboteur.getPoliticalSkill()).toBe(0);
+            expect(this.saboteur.militarySkill).toBe(0);
+            expect(this.saboteur.politicalSkill).toBe(0);
             expect(this.saboteur.hasTrait('shadow')).toBe(true);
 
             this.noMoreActions();
@@ -64,8 +64,8 @@
             expect(this.player1).toHavePrompt('Action Window');
             this.player1.clickCard(this.isa);
             this.player1.clickCard(this.bm2);
-            expect(this.bm2.getMilitarySkill()).toBe(0);
-            expect(this.bm2.getPoliticalSkill()).toBe(0);
+            expect(this.bm2.militarySkill).toBe(0);
+            expect(this.bm2.politicalSkill).toBe(0);
             expect(this.bm2.hasTrait('shadow')).toBe(true);
 
             this.noMoreActions();

@@ -57,3 +57,40 @@ describe('Guardian Kami', function() {
         });
     });
 });
+
+describe('Guardian Kami when not defending', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer']
+                },
+                player2: {
+                    inPlay: ['guardian-kami', 'guardian-kami']
+                }
+            });
+            this.dojiWhisperer = this.player1.findCardByName('doji-whisperer');
+            [this.attackingKami, this.homeKami] = this.player2.filterCardsByName('guardian-kami');
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.attackingKami],
+                defenders: [this.dojiWhisperer],
+                ring: 'fire'
+            });
+            this.player1.pass();
+        });
+
+        it('cannot be used while attacking or at home', function() {
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            this.player2.clickCard(this.attackingKami);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            this.player2.clickCard(this.homeKami);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.attackingKami.location).toBe('play area');
+            expect(this.homeKami.location).toBe('play area');
+        });
+    });
+});

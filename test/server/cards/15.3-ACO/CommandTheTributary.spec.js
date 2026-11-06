@@ -49,6 +49,8 @@ describe('Command the Tributary', function() {
             this.challenger.fate = 0;
             this.player1.clickCard(this.challenger);
             expect(this.player1).not.toHavePrompt('Choose a character');
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.challenger.fate).toBe(0);
         });
 
     });

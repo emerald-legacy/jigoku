@@ -31,7 +31,7 @@ describe('Mantra of Air', function () {
                     ring: 'air',
                     attackers: ['solemn-scholar']
                 });
-                let hand = this.player2.hand.length;
+                const hand = this.player2.hand.length;
                 expect(this.player2).toHavePrompt('Triggered Abilities');
                 expect(this.player2).toBeAbleToSelect(this.mantra);
                 this.player2.clickCard(this.mantra);

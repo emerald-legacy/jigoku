@@ -78,7 +78,9 @@ describe('Utaku Battle Steed', function () {
                 this.player1.clickCard(this.yumino);
                 this.player2.pass();
                 this.player1.pass();
+                expect(this.getChatLogs(5)).toContain('player1 won a political conflict 3 vs 0');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.yumino.isHonored).toBe(false);
             });
 
             it('should not trigger after losing a military conflict', function () {
@@ -90,7 +92,9 @@ describe('Utaku Battle Steed', function () {
                 this.player2.clickCard(this.warrior);
                 this.player1.pass();
                 this.player2.pass();
+                expect(this.getChatLogs(5)).toContain('player2 won a military conflict 5 vs 3');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.yumino.isHonored).toBe(false);
             });
         });
     });

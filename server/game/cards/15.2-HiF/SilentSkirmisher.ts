@@ -1,26 +1,23 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Duration } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { CardType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class SilentSkirmisher extends DrawCard {
     static id = 'silent-skirmisher';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Sacrifice another for +2 military',
-            condition: context => context.game.isDuringConflict(),
-            cost: AbilityDsl.costs.sacrifice({
+    override setupCardAbilities() {
+        this.action('Sacrifice another for +2 military')
+            .condition((context) => context.game.isDuringConflict())
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card !== context.source
-            }),
-            effect: 'give itself +2{1}',
-            effectArgs: () => ['military'],
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                duration: Duration.UntilEndOfConflict,
-                target: context.source,
-                effect: AbilityDsl.effects.modifyMilitarySkill(2)
             }))
-        });
+            .cardLastingEffect({
+                effect: modifyMilitarySkill(2)
+            })
+            .chatText(() => msg`give itself +2${'military'}`);
     }
 }
 

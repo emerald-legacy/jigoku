@@ -1,39 +1,53 @@
-import StaticEffect from './StaticEffect.js';
+import { EffectApplier } from './EffectApplier.js';
+import { EffectValue } from './EffectValue.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { EffectName } from '../Constants.js';
-import type { EffectTarget } from './EffectBuilder.js';
 import type { GameObject } from '../GameObject.js';
 
-type DetachedFunc = (target: EffectTarget, context: AbilityContext, state?: unknown) => unknown;
+// Method syntax on purpose: the effect's match picks its targets, so the callbacks may take a narrower target type.
+// `state` is what `apply` returned for this target.
+export interface DetachedValue<Value, State = unknown> {
+    apply(target: Value, context: AbilityContext, state?: unknown): State;
+    unapply(target: Value, context: AbilityContext, state: State): unknown;
+}
 
-export default class DetachedEffect extends StaticEffect {
-    applyFunc: DetachedFunc;
-    unapplyFunc: DetachedFunc;
-    state: Record<string, unknown>;
+/** Runs its callbacks when applied and unapplied; its targets never hold it, so it has no value to read. */
+export class DetachedEffect<EffectType extends EffectName = EffectName, Target extends GameObject = GameObject, State = unknown> extends EffectApplier<EffectType, Target, boolean> {
+    value = new EffectValue(true);
+    detached: DetachedValue<Target, State>;
+    // what apply returned, until unapply; then what unapply returned, until the next apply
+    applied: Record<string, State> = {};
+    leftover: Record<string, unknown> = {};
 
-    constructor(type: EffectName, applyFunc: DetachedFunc, unapplyFunc: DetachedFunc) {
-        super(type, undefined);
-        this.applyFunc = applyFunc;
-        this.unapplyFunc = unapplyFunc;
-        this.state = {};
+    constructor(type: EffectType, detached: DetachedValue<Target, State>) {
+        super(type);
+        this.detached = detached;
     }
 
-    apply(target: GameObject) {
-        this.state[target.uuid] = this.applyFunc(target as EffectTarget, this.context, this.state[target.uuid]);
+    apply(target: Target) {
+        this.applied[target.uuid] = this.detached.apply(target, this.context, this.leftover[target.uuid]);
+        delete this.leftover[target.uuid];
     }
 
-    unapply(target: GameObject) {
-        this.state[target.uuid] = this.unapplyFunc(target as EffectTarget, this.context, this.state[target.uuid]);
-        if(this.state[target.uuid] === undefined) {
-            delete this.state[target.uuid];
+    unapply(target: Target) {
+        const state = this.detached.unapply(target, this.context, this.applied[target.uuid]);
+        delete this.applied[target.uuid];
+        if(state !== undefined) {
+            this.leftover[target.uuid] = state;
         }
+    }
+
+    getValue(target: GameObject): boolean;
+    getValue(): boolean | undefined;
+    getValue(): boolean {
+        return this.value.getValue();
     }
 
     setContext(context: AbilityContext) {
         this.context = context;
-        for(const state of Object.values(this.state)) {
-            if(state && typeof state === 'object' && (state as { context?: AbilityContext }).context) {
-                (state as { context: AbilityContext }).context = context;
+        for(const state of [...Object.values(this.applied), ...Object.values(this.leftover)]) {
+            if(state && typeof state === 'object' && 'context' in state && state.context) {
+                state.context = context;
             }
         }
     }

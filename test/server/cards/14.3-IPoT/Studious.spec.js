@@ -73,6 +73,7 @@ describe('Studious', function() {
 
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.player1).not.toBeAbleToSelect(this.historian);
+            expect(this.getChatLogs(5)).toContain('player2 won a political conflict 6 vs 2');
 
             this.player1.clickCard(this.historian);
             expect(this.getChatLogs(10)).not.toContain('player1 uses Venerable Historian\'s gained ability from Studious to draw 1 card');

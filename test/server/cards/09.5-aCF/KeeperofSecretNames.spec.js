@@ -92,8 +92,8 @@ describe('Keeper of Secret Names', function() {
                     province: this.vassalFields
                 });
 
-                let p1fate = this.player1.fate;
-                let p2fate = this.player2.fate;
+                const p1fate = this.player1.fate;
+                const p2fate = this.player2.fate;
 
                 this.player1.clickCard(this.p1Keeper);
                 expect(this.player1).toBeAbleToSelect(this.vassalFields);
@@ -116,7 +116,7 @@ describe('Keeper of Secret Names', function() {
                     province: this.vassalFields
                 });
 
-                let p2fate = this.player2.fate;
+                const p2fate = this.player2.fate;
 
                 this.player1.clickCard(this.p1Keeper);
                 expect(this.player1).toBeAbleToSelect(this.vassalFields);
@@ -139,7 +139,7 @@ describe('Keeper of Secret Names', function() {
                     province: this.vassalFields
                 });
 
-                let p2fate = this.player2.fate;
+                const p2fate = this.player2.fate;
 
                 this.player1.clickCard(this.vassalFields);
                 expect(this.player2.fate).toBe(p2fate - 1);
@@ -179,7 +179,7 @@ describe('Keeper of Secret Names', function() {
                     defenders: [this.p2Keeper]
                 });
 
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 expect(this.game.currentConflict.defenders).toContain(this.p2Keeper);
                 this.player2.clickCard(this.p2Keeper);
@@ -197,7 +197,7 @@ describe('Keeper of Secret Names', function() {
                     defenders: [this.p2Keeper]
                 });
 
-                let fate = this.p1Keeper.fate;
+                const fate = this.p1Keeper.fate;
 
                 this.player2.clickCard(this.p2Keeper);
                 expect(this.player2).toBeAbleToSelect(this.meditationsOnTheTao);
@@ -242,8 +242,8 @@ describe('Keeper of Secret Names', function() {
                     province: this.frostbittenCrossing
                 });
 
-                let mil = this.brash.getMilitarySkill();
-                let pol = this.brash.getPoliticalSkill();
+                const mil = this.brash.militarySkill;
+                const pol = this.brash.politicalSkill;
 
                 this.player2.clickCard(this.p2Keeper);
                 expect(this.player2).toBeAbleToSelect(this.alongTheRiverOfGold);
@@ -251,8 +251,8 @@ describe('Keeper of Secret Names', function() {
                 expect(this.player2).toBeAbleToSelect(this.brash);
                 this.player2.clickCard(this.brash);
 
-                expect(this.brash.getMilitarySkill()).toBe(pol);
-                expect(this.brash.getPoliticalSkill()).toBe(mil);
+                expect(this.brash.militarySkill).toBe(pol);
+                expect(this.brash.politicalSkill).toBe(mil);
             });
 
             it('Kuroi Mori (province provides a choice, should not let opponent choose)', function() {
@@ -379,6 +379,60 @@ describe('Keeper of Secret Names', function() {
                 expect(this.player1).not.toBeAbleToSelect(this.frostbittenCrossing);
                 expect(this.player1).toBeAbleToSelect(this.brothersGiftDojo);
             });
+        });
+    });
+});
+
+describe('Keeper of Secret Names and Shrug Off Despair', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['keeper-of-secret-names', 'doji-challenger'],
+                    provinces: ['shrug-off-despair']
+                },
+                player2: {
+                    inPlay: ['keeper-of-secret-names', 'brash-samurai'],
+                    provinces: ['shrug-off-despair']
+                }
+            });
+            this.p1Keeper = this.player1.findCardByName('keeper-of-secret-names');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.p1Shrug = this.player1.findCardByName('shrug-off-despair');
+            this.p2Keeper = this.player2.findCardByName('keeper-of-secret-names');
+            this.p2Shrug = this.player2.findCardByName('shrug-off-despair');
+            this.p2Province = this.player2.findCardByName('shameful-display', 'province 2');
+            this.p1Shrug.facedown = false;
+            this.p2Shrug.facedown = false;
+            this.game.checkGameState(true);
+        });
+
+        it('cannot resolve Shrug Off Despair (EmeraldDB rulings)', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [this.p2Keeper],
+                province: this.p2Province
+            });
+            this.player2.clickCard(this.p2Keeper);
+            expect(this.player2).not.toBeAbleToSelect(this.p2Shrug);
+            this.player2.clickPrompt('Cancel');
+            this.player2.pass();
+            this.player1.clickCard(this.p1Keeper);
+            expect(this.player1).not.toBeAbleToSelect(this.p2Shrug);
+            expect(this.player1).not.toBeAbleToSelect(this.p1Shrug);
+        });
+
+        it('lets Shrug Off Despair itself be used by the defender', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [this.p2Keeper],
+                province: this.p2Province
+            });
+            this.player2.clickCard(this.p2Shrug);
+            expect(this.p2Shrug.isConflictProvince()).toBe(true);
         });
     });
 });

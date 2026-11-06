@@ -1,26 +1,23 @@
 import { TokenType } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyProvinceStrength } from '../../effects.js';
 
 export default class FortifiedAssembly extends ProvinceCard {
     static id = 'fortified-assembly';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Place an honor token on this province',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Place an honor token on this province')
+            .when({
                 onConflictDeclared: (event, context) => event.conflict.declaredProvince === context.source
-            },
-            gameAction: AbilityDsl.actions.addToken(),
-            effect: 'put an honor token on {0}',
-            effectArgs: (context) => context.source
-        });
+            })
+            .addToken()
+            .chatText('put an honor token on {0}');
         this.persistentEffect({
-            effect: AbilityDsl.effects.modifyProvinceStrength(() => this.getTokenCount(TokenType.Honor) * 2)
+            effect: modifyProvinceStrength((_province, context) => context.source.getTokenCount(TokenType.Honor) * 2)
         });
     }
 
-    cannotBeStrongholdProvince() {
+    override cannotBeStrongholdProvince() {
         return true;
     }
 }

@@ -1,43 +1,33 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { AbilityType, CardType, Players} from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Players } from '../../Constants.js';
+import { gainAbility } from '../../effects.js';
+import { chooseAmount, removeFate } from '../../GameActions/GameActions.js';
 
 class YogoJunzo extends DrawCard {
     static id = 'yogo-junzo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.dire({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Remove all fate from a character',
-                target: {
-                    cardType: CardType.Character,
-                    gameAction: AbilityDsl.actions.removeFate((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                        amount: context.target.getFate()
-                    }))
-                },
-                effect: 'remove all fate from {0}'
-            })
+            effect: gainAbility.action('Remove all fate from a character', (ability) => ability
+                .target({
+                    cardType: CardType.Character
+                }, removeFate((context) => ({
+                    amount: context.target?.getFate() ?? 0
+                })))
+                .chatText('remove all fate from {0}'))
         });
 
-        this.action({
-            title:'Return any amount of fate from a character you control',
-            target:{
+        this.action('Return any amount of fate from a character you control')
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.menuPrompt((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                    activePromptTitle: 'Select fate amount:',
-                    choices: Array.from(Array(context.target.getFate()), (x, i) => (i + 1).toString()),
-                    choiceHandler: (choice, displayMessage) => {
-                        if(displayMessage) {
-                            this.game.addMessage('{0} chooses to move {1} fate from {2} to {3}\'s pool', context.player, choice, context.target, context.player);
-                        }
-                        return { target: context.target, amount: parseInt(choice), recipient:context.target.controller };
-                    },
-                    gameAction: AbilityDsl.actions.removeFate()
-                }))
-            }
-        });
+                controller: Players.Self
+            }, chooseAmount((context) => ({
+                activePromptTitle: 'Select fate amount:',
+                max: context.target.getFate(),
+                gameAction: (amount) => removeFate({ amount, recipient: context.target.controller }),
+                message: (context, amount) => msg`${context.player} chooses to move ${amount} fate from ${context.target} to ${context.player}'s pool`
+            })));
     }
 }
 

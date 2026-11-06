@@ -1,15 +1,13 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
 
 class TeacherOfEmptyThought extends DrawCard {
     static id = 'teacher-of-empty-thought';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Draw a card',
-            condition: context => !!(context.source.isParticipating() && context.game.currentConflict && context.game.currentConflict.getNumberOfCardsPlayed(context.player) >= 3),
-            gameAction: AbilityDsl.actions.draw()
-        });
+    override setupCardAbilities() {
+        this.action('Draw a card')
+            .condition((context) => context.source.isParticipating())
+            .ifCondition((context) => (context.game.currentConflict?.getNumberOfCardsPlayed(context.player) ?? 0) >= 3)
+            .draw();
     }
 }
 

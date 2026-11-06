@@ -5,13 +5,14 @@ describe('Kakita Toshimoko', function() {
                 this.setupTest({
                     phase: 'conflict',
                     player1: {
-                        inPlay: ['kakita-toshimoko']
+                        inPlay: ['kakita-toshimoko', 'doji-whisperer']
                     },
                     player2: {
                         inPlay: ['akodo-toturi-2', 'lion-s-pride-brawler']
                     }
                 });
                 this.kakitaToshimoko = this.player1.findCardByName('kakita-toshimoko');
+                this.dojiWhisperer = this.player1.findCardByName('doji-whisperer');
 
                 this.akodoToturi2 = this.player2.findCardByName('akodo-toturi-2');
                 this.lionsPrideBrawler = this.player2.findCardByName('lion-s-pride-brawler');
@@ -53,12 +54,27 @@ describe('Kakita Toshimoko', function() {
                     ring: 'air'
                 });
                 this.noMoreActions();
+                const conflict = this.game.currentConflict;
                 this.player1.clickCard(this.kakitaToshimoko);
                 this.player2.clickCard(this.lionsPrideBrawler);
                 this.player1.clickPrompt('5');
                 this.player2.clickPrompt('1');
-                expect(this.player2.claimedRings.includes('air')).toBe(false);
+                expect(conflict.winner).toBeUndefined();
+                expect(this.game.rings.air.isUnclaimed()).toBe(true);
+                expect(this.game.rings.air.contested).toBe(false);
                 expect(this.player1).toHavePrompt('Action Window');
+            });
+
+            it('should not trigger when it is not participating', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.dojiWhisperer],
+                    defenders: [this.akodoToturi2],
+                    type: 'military'
+                });
+                this.noMoreActions();
+                expect(this.getChatLogs(5)).toContain('player2 won a military conflict 6 vs 0');
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
             });
         });
 

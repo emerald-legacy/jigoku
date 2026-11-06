@@ -60,3 +60,27 @@ describe('Beguiling Maiko', function () {
         });
     });
 });
+
+describe('Beguiling Maiko put into play', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-isa'],
+                    dynastyDiscard: ['beguiling-maiko']
+                }
+            });
+            this.maiko = this.player1.findCardByName('beguiling-maiko');
+            this.isa = this.player1.findCardByName('shosuro-isa');
+        });
+
+        it('does not react when put into play', function () {
+            this.player1.clickCard(this.isa);
+            this.player1.clickCard(this.maiko);
+            expect(this.maiko.location).toBe('play area');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Action Window');
+        });
+    });
+});

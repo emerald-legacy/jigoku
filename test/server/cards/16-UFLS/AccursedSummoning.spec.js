@@ -60,9 +60,9 @@ describe('Accursed Summoning', function() {
             this.player1.clickCard(this.doomed);
             this.player1.clickPrompt('1');
 
-            expect(this.player1.player.cardsInPlay.filter(a => a.id === 'oni-of-obsidian-and-blood').length).toBe(1);
+            expect(this.player1.player.charactersInPlay.filter(a => a.id === 'oni-of-obsidian-and-blood').length).toBe(1);
 
-            this.oni = this.player1.player.cardsInPlay.filter(a => a.id === 'oni-of-obsidian-and-blood')[0];
+            this.oni = this.player1.player.charactersInPlay.filter(a => a.id === 'oni-of-obsidian-and-blood')[0];
             expect(this.oni.isAttacking()).toBe(true);
             expect(this.getChatLogs(5)).toContain('player1 plays Accursed Summoning, losing 4 honor to summon an Oni of Obsidian and Blood from the depths of the Shadowlands!');
             expect(this.player2).toHavePrompt('Conflict Action Window');
@@ -155,9 +155,9 @@ describe('Accursed Summoning', function() {
             this.player1.clickCard(this.doomed);
             this.player1.clickPrompt('1');
 
-            expect(this.player1.player.cardsInPlay.filter(a => a.id === 'bog-hag').length).toBe(1);
+            expect(this.player1.player.charactersInPlay.filter(a => a.id === 'bog-hag').length).toBe(1);
 
-            this.oni = this.player1.player.cardsInPlay.filter(a => a.id === 'bog-hag')[0];
+            this.oni = this.player1.player.charactersInPlay.filter(a => a.id === 'bog-hag')[0];
             expect(this.oni.isAttacking()).toBe(true);
             expect(this.getChatLogs(5)).toContain('player1 plays Accursed Summoning, losing 2 honor to summon a Bog Hag from the depths of the Shadowlands!');
             expect(this.player2).toHavePrompt('Conflict Action Window');

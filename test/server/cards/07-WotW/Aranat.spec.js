@@ -65,7 +65,7 @@ describe('Aranat', function() {
 
             it('should not give any fate when all provinces are revealed', function() {
                 this.shamefulDisplay.facedown = false;
-                let player2Fate = this.player2.fate;
+                const player2Fate = this.player2.fate;
                 this.player1.clickPrompt('1');
                 expect(this.aranat.fate).toBe(1);
                 this.player1.clickCard(this.aranat);

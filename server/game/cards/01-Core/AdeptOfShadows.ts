@@ -1,15 +1,13 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 
 class AdeptOfShadows extends DrawCard {
     static id = 'adept-of-shadows';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Return to hand',
-            cost: AbilityDsl.costs.payHonor(1),
-            gameAction: AbilityDsl.actions.returnToHand()
-        });
+    override setupCardAbilities() {
+        this.action('Return to hand')
+            .cost(costs.payHonor(1))
+            .returnToHand();
     }
 }
 

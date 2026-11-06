@@ -31,7 +31,7 @@ describe('Adorned Temple', function() {
         });
 
         it('should draw a card if the character is honored', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.shoju.honor();
             this.player1.clickCard(this.warrior);
             this.player1.clickCard(this.shoju);
@@ -41,7 +41,7 @@ describe('Adorned Temple', function() {
         });
 
         it('should draw a card if the character is dishonored', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.shoju.dishonor();
             this.player1.clickCard(this.warrior);
             this.player1.clickCard(this.shoju);
@@ -51,7 +51,7 @@ describe('Adorned Temple', function() {
         });
 
         it('should draw two cards if the character is ordinary', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.warrior);
             this.player1.clickCard(this.shoju);
             this.player1.clickCard(this.temple);
@@ -59,14 +59,14 @@ describe('Adorned Temple', function() {
             expect(this.getChatLogs(5)).toContain('player1 uses Adorned Temple to draw 2 cards');
         });
 
-        it('should react to adding fate via framework effects', function() {
+        it('should not react to adding fate via framework effects', function() {
             this.player1.clickCard(this.shoju2);
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.getChatLogs(5)).toContain('player1 discards a duplicate to add 1 fate to Bayushi Shoju');
             expect(this.player2).toHavePrompt('Play cards from provinces');
         });
 
-        it('should react to playing with fate', function() {
+        it('should not react to playing with fate', function() {
             this.player1.clickCard(this.artist);
             this.player1.clickPrompt('2');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
@@ -75,7 +75,7 @@ describe('Adorned Temple', function() {
     });
 });
 
-describe('Shadowed Village - Putting fate on yourself', function() {
+describe('Adorned Temple - Putting fate on yourself', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({

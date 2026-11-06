@@ -48,6 +48,22 @@ describe('Steward of Cryptic Lore', function() {
             expect(this.getChatLogs(10)).toContain('player2 chooses to increase Fertile Fields\'s strength by 3');
         });
 
+        it('should choose before the ability initiates', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                ring: 'earth',
+                province: this.fields,
+                attackers: [this.chronicler],
+                defenders: []
+            });
+            this.player2.clickCard(this.steward);
+            expect(this.getChatLogs(10)).not.toContain('player2 uses Steward of Cryptic Lore to change the province strength of an attacked province');
+            this.player2.clickPrompt('Lower attacked province\'s strength by 3');
+            expect(this.getChatLogs(10)).toContain('player2 uses Steward of Cryptic Lore to change the province strength of an attacked province');
+            expect(this.fields.getStrength()).toBe(1);
+        });
+
         it('should only be useable when opponent attacks earth', function () {
             this.noMoreActions();
             this.initiateConflict({
@@ -71,7 +87,7 @@ describe('Steward of Cryptic Lore', function() {
                 attackers: [this.chronicler],
                 defenders: [this.steward]
             });
-            expect(this.steward.getPoliticalSkill()).toBe(6);
+            expect(this.steward.politicalSkill).toBe(6);
         });
 
         it('should be useable when player attacks earth', function () {

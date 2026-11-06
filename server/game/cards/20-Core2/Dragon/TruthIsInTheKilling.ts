@@ -1,47 +1,35 @@
-import { DuelType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { DuelType, ConflictType, Trait } from '../../../Constants.js';
+import { discardFromPlay, noAction, removeFate, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Duel } from '../../../Duel.js';
+import type { ResolvedDuel } from '../../../Duel.js';
 
-function applyFullEffect(duel: Duel) {
-    return duel.winner?.some((winner) => winner.hasTrait('duelist')) ?? false;
+function applyFullEffect(duel: ResolvedDuel) {
+    return duel.winner.some((winner) => winner.hasTrait(Trait.Duelist));
 }
 
 export default class TruthIsInTheKilling extends DrawCard {
     static id = 'truth-is-in-the-killing';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Initiate a military duel, discarding the loser',
-            condition: (context) => context.game.isDuringConflict('military'),
-            initiateDuel: {
+    override setupCardAbilities() {
+        this.conflictAction('Initiate a military duel, discarding the loser', { conflictType: ConflictType.Military })
+            .initiateDuel(() => ({
                 type: DuelType.Military,
-                challengerCondition: (card) => card.hasTrait('bushi') && card.isParticipating(),
-                gameAction: ((duel: Duel) =>
-                    (duel.loser ?
-                        AbilityDsl.actions.sequential(
-                            duel.loser.flatMap((loser) =>
-                                applyFullEffect(duel)
-                                    ? [
-                                        AbilityDsl.actions.removeFate({
-                                            target: loser,
-                                            amount: loser.getFate(),
-                                            recipient: loser.controller
-                                        }),
-                                        AbilityDsl.actions.discardFromPlay({ target: loser })
-                                    ]
-                                    : [
-                                        AbilityDsl.actions.removeFate({
-                                            target: loser,
-                                            amount: loser.getFate(),
-                                            recipient: loser.controller
-                                        })
-                                    ]
-                            )
-                        ) : AbilityDsl.actions.noAction())),
-                message: 'return all fate on {0} to {1}\'s fate pool{2}',
-                messageArgs: (duel) => [duel.loser, duel.losingPlayer, applyFullEffect(duel) ? ' and discard them' : '']
-            }
-        });
+                challengerCondition: (card) => card.hasTrait(Trait.Bushi) && card.isParticipating(),
+                gameAction: (duel) =>
+                    duel.loser ?
+                        sequential([
+                            ...duel.loser.map((loser) => removeFate({
+                                target: loser,
+                                amount: loser.getFate(),
+                                recipient: loser.owner
+                            })),
+                            // each loser whose fate was all returned
+                            discardFromPlay(() => ({
+                                target: applyFullEffect(duel) ? (duel.loser ?? []).filter((loser) => loser.getFate() === 0) : []
+                            }))
+                        ]) : noAction(),
+                chatText: (_context, duel) => msg`return all fate on ${duel.loser} to ${duel.loser?.[0]?.owner}'s fate pool${applyFullEffect(duel) ? ' and discard them' : ''}`
+            }));
     }
 }

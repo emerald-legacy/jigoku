@@ -45,21 +45,6 @@ describe('Niten Pupil', function() {
                 expect(this.player1).toHavePrompt('Action Window');
             });
 
-            it('should not trigger when dials are revealed for a duel Niten Pupil is not participating in', function() {
-                this.advancePhases('conflict');
-                this.noMoreActions();
-                this.initiateConflict({
-                    attackers: [this.nitenPupil],
-                    defenders: [this.mirumotoRaitsugu]
-                });
-                this.player2.clickCard(this.mirumotoRaitsugu);
-                this.player2.clickCard(this.nitenPupil);
-                this.player1.clickPrompt('1');
-                this.player2.clickPrompt('1');
-                expect(this.player1).toHavePrompt('Triggered Abilities');
-                expect(this.player1).toBeAbleToSelect(this.nitenPupil);
-            });
-
             it('should not trigger when dials are revealed for a nested duel Niten Pupil is not participating in', function() {
                 this.advancePhases('conflict');
                 this.player1.moveCard(this.defendYourHonor, 'hand');

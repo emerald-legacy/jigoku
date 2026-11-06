@@ -74,7 +74,7 @@ describe('Impossible Koan', function() {
 
         it('should still allow buffing (since its just the base skill being set)', function() {
             this.player2.playAttachment(this.katana, this.hidaAmoro);
-            expect(this.hidaAmoro.getMilitarySkill()).toBe(3); //base 1 + 2 katana
+            expect(this.hidaAmoro.militarySkill).toBe(3); //base 1 + 2 katana
 
             this.player1.clickCard(this.banzai);
             this.player1.clickCard(this.borderRider);
@@ -82,7 +82,7 @@ describe('Impossible Koan', function() {
             this.player1.clickCard(this.borderRider);
             this.player1.clickPrompt('Done');
 
-            expect(this.borderRider.getMilitarySkill()).toBe(5); //base 1 + 4 banzai
+            expect(this.borderRider.militarySkill).toBe(5); //base 1 + 4 banzai
         });
 
         it('should end when the conflict ends and not be playable out of conflict', function() {

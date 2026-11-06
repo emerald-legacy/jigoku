@@ -34,7 +34,6 @@ describe('Wise Quartermaster', function () {
             this.player2.playAttachment(this.ornateFan, this.dojiWhisperer);
             this.player1.playAttachment(this.fieryMadness, this.wanderingRonin);
             this.player2.playAttachment(this.treasuredGift, this.matsuBerserker);
-            this.player1.playAttachment(this.fieryMadness, this.wanderingRonin);
             this.player1.playAttachment(this.makeshiftWarCamp, this.manicuredGarden);
             this.player2.pass();
         });

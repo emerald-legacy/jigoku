@@ -1,16 +1,16 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Phase, RestrictionType } from '../../Constants.js';
+import { cardCannot } from '../../effects.js';
 
 class DojiShizue extends DrawCard {
     static id = 'doji-shizue';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => this.game.currentPhase === Phases.Fate && context.player.imperialFavor !== '',
+            condition: (context) => this.game.currentPhase === Phase.Fate && context.player.imperialFavor !== '',
             effect: [
-                ability.effects.cardCannot('removeFate'),
-                ability.effects.cardCannot('discardFromPlay')
+                cardCannot(RestrictionType.RemoveFate),
+                cardCannot(RestrictionType.DiscardFromPlay)
             ]
         });
     }

@@ -1,3 +1,5 @@
+import { breakProvince } from '../../../../build/server/game/GameActions/GameActions.js';
+
 describe('Moto Chagatai', function() {
     integration(function() {
         describe('Moto Chagatai\'s ability', function() {
@@ -101,6 +103,48 @@ describe('Moto Chagatai', function() {
                 expect(this.publicForum.isBroken).toBe(false);
             });
         });
+        describe('Moto Chagatai\'s ability after a province was broken outside a conflict', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['moto-chagatai']
+                    },
+                    player2: {
+                        inPlay: ['steward-of-law'],
+                        provinces: ['public-forum', 'endless-plains', 'fertile-fields']
+                    }
+                });
+
+                this.chagatai = this.player1.findCardByName('moto-chagatai');
+                this.steward = this.player2.findCardByName('steward-of-law');
+                this.endlessPlains = this.player2.findCardByName('endless-plains');
+                this.fertileFields = this.player2.findCardByName('fertile-fields');
+            });
+
+            it('should bow chagatai in a conflict that breaks nothing', function() {
+                expect(this.game.currentConflict).toBeNull();
+                this.game.queueSimpleStep(() => breakProvince().resolve(this.endlessPlains, this.game.getFrameworkContext(this.player1.player)));
+                this.game.continue();
+                this.player1.clickPrompt('No');
+                expect(this.endlessPlains.isBroken).toBe(true);
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    province: this.fertileFields,
+                    attackers: [this.chagatai],
+                    defenders: [this.steward],
+                    jumpTo: 'afterConflict'
+                });
+
+                this.player1.clickPrompt('Don\'t resolve');
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.fertileFields.isBroken).toBe(false);
+                expect(this.chagatai.bowed).toBe(true);
+            });
+        });
+
         describe('Moto Chagatai\'s ability and Join the Fray\'ed to the attacking opponent', function() {
             beforeEach(function() {
                 this.setupTest({
@@ -140,6 +184,42 @@ describe('Moto Chagatai', function() {
                 expect(this.getChatLogs(5)).toContain('player1 has broken Shameful Display!');
                 expect(this.player1).toHavePrompt('Action Window');
                 expect(this.chagatai.bowed).toBe(true);
+            });
+        });
+
+        describe('Moto Chagatai\'s ability while defending', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['moto-chagatai']
+                    },
+                    player2: {
+                        inPlay: ['steward-of-law']
+                    }
+                });
+
+                this.chagatai = this.player1.findCardByName('moto-chagatai');
+                this.steward = this.player2.findCardByName('steward-of-law');
+                this.attackerProvince = this.player2.findCardByName('shameful-display', 'province 1');
+            });
+
+            it('does not bow when a province of the attacking opponent was broken in the conflict', function() {
+                this.noMoreActions();
+                this.player1.passConflict();
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.steward],
+                    defenders: [this.chagatai]
+                });
+                this.game.queueSimpleStep(() => breakProvince().resolve(this.attackerProvince, this.game.getFrameworkContext(this.player1.player)));
+                this.game.continue();
+                this.player1.clickPrompt('No');
+                expect(this.attackerProvince.isBroken).toBe(true);
+
+                this.noMoreActions();
+                expect(this.chagatai.bowed).toBe(false);
             });
         });
     });

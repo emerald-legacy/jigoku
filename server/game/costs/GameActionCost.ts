@@ -1,6 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type { MsgArg } from '../GameChat.js';
-import type { Cost, Result } from './Cost.js';
+import type { Cost, CostMessage, Result } from './Cost.js';
 import type { Event } from '../Events/Event.js';
 import type { GameAction } from '../GameActions/GameAction.js';
 
@@ -20,7 +19,7 @@ export class GameActionCost implements Cost {
         this.action.addEventsToArray(events, context);
     }
 
-    getCostMessage(context: AbilityContext): MsgArg[] {
+    getCostMessage(context: AbilityContext): CostMessage {
         return this.action.getCostMessage(context) ?? [];
     }
 }

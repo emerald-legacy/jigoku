@@ -58,6 +58,26 @@ describe('Ikoma Master Hunter', function () {
                 expect(this.ikomaMasterHunter.bowed).toBe(false);
             });
 
+            it('readies the master hunter only once when the tracked character attacks', function () {
+                this.noMoreActions();
+
+                this.player1.clickCard(this.ikomaMasterHunter);
+                this.player1.clickCard(this.scholar);
+
+                this.noMoreActions();
+                this.noMoreActions();
+
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.scholar]
+                });
+                expect(this.ikomaMasterHunter.isParticipating()).toBe(true);
+                this.ikomaMasterHunter.bow();
+                this.player1.assignDefenders([]);
+
+                expect(this.ikomaMasterHunter.bowed).toBe(true);
+            });
+
             it('should move in and ready the master hunter when the targeted character moves to a conflict', function () {
                 this.noMoreActions();
 

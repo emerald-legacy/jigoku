@@ -1,20 +1,20 @@
-import AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { cardCannot, doesNotBow } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
+import { ConflictType, RestrictionType } from '../../Constants.js';
 
 export default class HidaYakamo extends DrawCard {
     static id = 'hida-yakamo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: (context: AbilityContext) => Boolean(context.player.opponent) && context.player.isLessHonorable(),
-            effect: AbilityDsl.effects.cardCannot('loseDuels')
+            condition: (context) => Boolean(context.player.opponent) && context.player.isLessHonorable(),
+            effect: cardCannot(RestrictionType.LoseDuels)
         });
 
         this.persistentEffect({
-            condition: (context: AbilityContext) =>
-                Boolean(context.player.opponent) && context.player.isLessHonorable() && this.game.isDuringConflict('military'),
-            effect: AbilityDsl.effects.doesNotBow()
+            condition: (context) =>
+                Boolean(context.player.opponent) && context.player.isLessHonorable() && this.game.isDuringConflict(ConflictType.Military),
+            effect: doesNotBow()
         });
     }
 }

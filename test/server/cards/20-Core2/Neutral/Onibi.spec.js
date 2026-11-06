@@ -24,6 +24,9 @@ describe('Onibi', function () {
             this.player2.player.fate = 0;
             this.onibi = this.player1.playCharacterFromHand('onibi');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.onibi.location).toBe('play area');
+            expect(this.onibi.fate).toBe(0);
+            expect(this.player2).toHavePrompt('Action Window');
         });
     });
 });

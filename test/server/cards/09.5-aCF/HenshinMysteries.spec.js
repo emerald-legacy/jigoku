@@ -11,7 +11,7 @@ describe('Henshin Mysteries', function() {
                     player2: {
                         inPlay: ['shrine-maiden'],
                         provinces: ['henshin-mysteries'],
-                        hand: ['fine-katana']
+                        hand: ['fine-katana', 'commune-with-the-spirits']
                     }
                 });
                 this.agashaSwordsmith = this.player1.findCardByName('agasha-swordsmith');
@@ -60,8 +60,15 @@ describe('Henshin Mysteries', function() {
                 expect(this.game.rings.air.claimed).toBe(true);
             });
 
+            it('should not stop another ring being claimed', function() {
+                this.player2.clickCard('commune-with-the-spirits');
+                this.player2.clickRing('fire');
+                expect(this.game.rings.fire.claimed).toBe(true);
+                expect(this.game.rings.fire.claimedBy).toBe(this.player2.player.name);
+            });
+
             it('should not stop the ring effect', function() {
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.noMoreActions();
                 this.player1.clickPrompt('Gain 2 Honor');
                 expect(this.player1).toHavePrompt('Action Window');

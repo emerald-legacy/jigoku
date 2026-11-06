@@ -48,6 +48,7 @@ describe('Storied Defeat', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.storiedDefeat);
                 this.player1.clickCard(this.dojiWhisperer);
+                this.player1.clickPrompt('No');
                 expect(this.dojiWhisperer.bowed).toBe(true);
                 expect(this.dojiWhisperer.isDishonored).toBe(false);
             });
@@ -65,7 +66,7 @@ describe('Storied Defeat', function() {
             });
 
             it('should dishonor the target if the player spends fate', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player2.pass();
                 this.player1.clickCard(this.storiedDefeat);
                 this.player1.clickCard(this.dojiWhisperer);
@@ -125,7 +126,7 @@ describe('Storied Defeat', function() {
             });
 
             it('should not prompt the player to spend a fate when playing Storied Defeat on Borderlands Defender', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.storiedDefeat);
                 this.player1.clickCard(this.borderlandsDefender);
                 expect(this.borderlandsDefender.isDishonored).toBe(true);
@@ -222,6 +223,87 @@ describe('Storied Defeat', function() {
                 expect(this.player1).toHavePrompt('Conflict Action Window');
             });
         });
+
+        describe('Storied Defeat and Voice of Honor', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['mirumoto-raitsugu'],
+                        hand: ['storied-defeat']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer', 'doji-challenger'],
+                        hand: ['voice-of-honor']
+                    }
+                });
+                this.raitsugu = this.player1.findCardByName('mirumoto-raitsugu');
+                this.whisperer = this.player2.findCardByName('doji-whisperer');
+                this.challenger = this.player2.findCardByName('doji-challenger');
+                this.whisperer.fate = 1;
+                this.challenger.honor();
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.raitsugu],
+                    defenders: [this.whisperer, this.challenger]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.raitsugu);
+                this.player1.clickCard(this.whisperer);
+                this.player1.clickPrompt('5');
+                this.player2.clickPrompt('1');
+                this.player2.pass();
+            });
+
+            it('decides on the fate after the cancel window, then bows and dishonors together', function() {
+                this.player1.clickCard('storied-defeat');
+                this.player1.clickCard(this.whisperer);
+                expect(this.player2).toHavePrompt('Triggered Abilities');
+                this.player2.clickPrompt('Pass');
+                this.player1.clickPrompt('Yes');
+                expect(this.player2).not.toHavePrompt('Triggered Abilities');
+                expect(this.whisperer.bowed).toBe(true);
+                expect(this.whisperer.isDishonored).toBe(true);
+            });
+        });
+
+        describe('Storied Defeat and a duel before the conflict', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['kakita-yoshi', 'doji-challenger'],
+                        hand: ['unyielding-terms', 'storied-defeat']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer', 'doji-hotaru']
+                    }
+                });
+                this.yoshi = this.player1.findCardByName('kakita-yoshi');
+                this.challenger = this.player1.findCardByName('doji-challenger');
+                this.whisperer = this.player2.findCardByName('doji-whisperer');
+                this.hotaru = this.player2.findCardByName('doji-hotaru');
+            });
+
+            it('does not count a duel lost before the conflict', function() {
+                this.player1.clickCard('unyielding-terms');
+                this.player1.clickCard(this.yoshi);
+                this.player1.clickCard(this.whisperer);
+                this.player1.clickPrompt('5');
+                this.player2.clickPrompt('1');
+                expect(this.whisperer.bowed).toBe(true);
+                this.whisperer.ready();
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.challenger],
+                    defenders: [this.hotaru],
+                    type: 'military'
+                });
+                this.player2.pass();
+                this.player1.clickCard('storied-defeat');
+                expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+            });
+        });
     });
 });
-

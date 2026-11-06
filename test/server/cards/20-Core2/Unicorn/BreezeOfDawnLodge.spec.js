@@ -20,6 +20,15 @@ describe('Breeze of Dawn Lodge', function () {
                 this.fushicho.bowed = true;
             });
 
+            it('cannot be used before a conflict (Conflict Action)', function () {
+                expect(this.game.currentConflict).toBeNull();
+                expect(this.player1).toHavePrompt('Initiate an action');
+                this.player1.clickCard(this.breezeOfDawnLodge);
+                expect(this.player1).not.toHavePrompt('Choose a character');
+                expect(this.player1).toHavePrompt('Initiate an action');
+                expect(this.breezeOfDawnLodge.bowed).toBe(false);
+            });
+
             it('moves a ready character to the conflict', function () {
                 this.noMoreActions();
                 this.initiateConflict({
@@ -67,6 +76,28 @@ describe('Breeze of Dawn Lodge', function () {
                     'player1 uses Breeze of Dawn Lodge, bowing Breeze of Dawn Lodge to send Bayushi Manipulator home'
                 );
             });
+        });
+    });
+});
+
+describe('Breeze of Dawn Lodge during setup', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {},
+                player2: {
+                    stronghold: 'breeze-of-dawn-lodge'
+                },
+                skipAutoFirstPlayer: true
+            });
+        });
+
+        it('makes its controller the first player after setup', function () {
+            expect(this.player2.player.firstPlayer).toBe(true);
+            expect(this.player1.player.firstPlayer).toBe(false);
+            expect(this.game.getFirstPlayer()).toBe(this.player2.player);
+            expect(this.game.currentPhase).toBe('dynasty');
         });
     });
 });

@@ -1,36 +1,34 @@
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import { Location, CardType, TargetMode } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import type Player from '../../Player.js';
+import { Location, CardType, TargetMode, Trait } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { bow } from '../../GameActions/GameActions.js';
 
 class AkodoMastermind extends DrawCard {
     static id = 'akodo-mastermind';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Remove tactics to bow a character',
-            condition: context => context.source.isParticipating(),
-            cost: AbilityDsl.costs.removeFromGame({
+    override setupCardAbilities() {
+        this.action('Remove tactics to bow a character')
+            .condition((context) => context.source.isParticipating())
+            .cost(costs.removeFromGame({
                 cardType: [CardType.Event, CardType.Character, CardType.Attachment],
                 location: Location.ConflictDiscardPile,
                 mode: TargetMode.Unlimited,
-                cardCondition: card => card.hasTrait('tactic')
-            }),
-            target: {
+                cardCondition: (card) => card.hasTrait(Trait.Tactic)
+            }))
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isParticipating() && card.getGlory() <= this.getGloryCheck(context),
-                gameAction: AbilityDsl.actions.bow()
-            },
-            cannotTargetFirst: true
-        });
+                cardCondition: (card, context) => card.isParticipating() && card.glory <= this.getGloryCheck(context.player, context.costs.removeFromGame)
+            }, bow())
+            .cannotTargetFirst();
     }
 
-    getGloryCheck(context: AbilityContext) {
-        if(context.costs.removeFromGame) {
-            return (context.costs.removeFromGame as BaseCard[]).length;
+    getGloryCheck(player: Player, removed: BaseCard | BaseCard[] | undefined) {
+        if(removed) {
+            return Array.isArray(removed) ? removed.length : 1;
         }
-        return context.player.conflictDiscardPile.filter((card) => card.hasTrait('tactic')).length;
+        return player.conflictDiscardPile.filter((card) => card.hasTrait(Trait.Tactic)).length;
     }
 }
 

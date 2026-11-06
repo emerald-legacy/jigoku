@@ -57,8 +57,8 @@ describe('Shosuro Deceiver', function() {
                 type: 'military'
             });
 
-            let hand1 = this.player1.hand.length;
-            let hand2 = this.player2.hand.length;
+            const hand1 = this.player1.hand.length;
+            const hand2 = this.player2.hand.length;
             this.player2.pass();
             expect(this.player1).toHavePrompt('Conflict Action Window');
             this.player1.clickCard(this.deceiver);
@@ -66,7 +66,7 @@ describe('Shosuro Deceiver', function() {
             expect(this.player1.hand.length).toBe(hand1 + 1);
             expect(this.player2.hand.length).toBe(hand2 + 1);
 
-            expect(this.getChatLogs(5)).toContain('player1 uses Shosuro Deceiver\'s gained ability from Beloved Advisor to draw 1 card');
+            expect(this.getChatLogs(5)).toContain('player1 uses Shosuro Deceiver\'s gained ability from Beloved Advisor to make player1 and player2 draw 1 card');
         });
 
         it('should not let you use the same ability twice', function() {
@@ -125,7 +125,7 @@ describe('Shosuro Deceiver', function() {
             this.player2.clickCard(this.advisor);
             expect(this.player1).toHavePrompt('Conflict Action Window');
             this.player1.clickCard(this.deceiver);
-            expect(this.getChatLogs(5)).not.toContain('player1 uses Shosuro Deceiver\'s gained ability from Beloved Advisor to draw 1 card');
+            expect(this.getChatLogs(5)).not.toContain('player1 uses Shosuro Deceiver\'s gained ability from Beloved Advisor to make player1 and player2 draw 1 card');
             expect(this.player1).toHavePrompt('Conflict Action Window');
             this.player1.clickCard(this.letGo);
             this.player1.clickCard(this.cloud);
@@ -133,7 +133,7 @@ describe('Shosuro Deceiver', function() {
             expect(this.player1).toHavePrompt('Conflict Action Window');
             this.player1.clickCard(this.deceiver);
             expect(this.player2).toHavePrompt('Conflict Action Window');
-            expect(this.getChatLogs(5)).toContain('player1 uses Shosuro Deceiver\'s gained ability from Beloved Advisor to draw 1 card');
+            expect(this.getChatLogs(5)).toContain('player1 uses Shosuro Deceiver\'s gained ability from Beloved Advisor to make player1 and player2 draw 1 card');
         });
 
         it('should not regain the ability if the target is clouded', function() {
@@ -148,7 +148,7 @@ describe('Shosuro Deceiver', function() {
             this.player2.pass();
             this.player1.clickCard(this.deceiver);
             expect(this.player2).toHavePrompt('Conflict Action Window');
-            expect(this.getChatLogs(5)).toContain('player1 uses Shosuro Deceiver\'s gained ability from Beloved Advisor to draw 1 card');
+            expect(this.getChatLogs(5)).toContain('player1 uses Shosuro Deceiver\'s gained ability from Beloved Advisor to make player1 and player2 draw 1 card');
             this.player2.clickCard(this.cloud);
             this.player2.clickCard(this.advisor);
             expect(this.player1).toHavePrompt('Conflict Action Window');
@@ -234,8 +234,8 @@ describe('Shosuro Deceiver', function() {
                 type: 'political'
             });
 
-            let honor1 = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor1 = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.noMoreActions();
             expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -260,8 +260,8 @@ describe('Shosuro Deceiver', function() {
                 type: 'political'
             });
 
-            let honor1 = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor1 = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.noMoreActions();
             expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -306,7 +306,7 @@ describe('Shosuro Deceiver', function() {
 
             this.player2.pass();
             this.player1.clickCard(this.deceiver);
-            expect(this.getChatLogs(5)).toContain('player1 uses Shosuro Deceiver\'s gained ability from Beloved Advisor to draw 1 card');
+            expect(this.getChatLogs(5)).toContain('player1 uses Shosuro Deceiver\'s gained ability from Beloved Advisor to make player1 and player2 draw 1 card');
             this.player2.clickCard(this.openHand);
             this.player2.clickCard(this.deceiver);
             expect(this.player1).toHavePrompt('Conflict Action Window');
@@ -349,8 +349,8 @@ describe('Shosuro Deceiver', function() {
                 type: 'political'
             });
 
-            let honor1 = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor1 = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player2.pass();
             this.player1.clickCard(this.soul);
@@ -376,8 +376,8 @@ describe('Shosuro Deceiver', function() {
                 type: 'political'
             });
 
-            let honor1 = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor1 = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player2.pass();
             this.player1.playAttachment(this.words, this.deceiver);
@@ -432,7 +432,7 @@ describe('Shosuro Deceiver -  Two Deceivers', function() {
             expect(this.player1).toHavePrompt('Conflict Action Window');
             this.player1.clickCard(this.deceiver1);
             expect(this.player2).toHavePrompt('Conflict Action Window');
-            expect(this.getChatLogs(5)).toContain('player1 uses Shosuro Deceiver\'s gained ability from Beloved Advisor to draw 1 card');
+            expect(this.getChatLogs(5)).toContain('player1 uses Shosuro Deceiver\'s gained ability from Beloved Advisor to make player1 and player2 draw 1 card');
         });
 
         it('should not gain abilities from other deceivers (reaction abilities)', function() {

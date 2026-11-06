@@ -57,22 +57,22 @@ describe('Jewel of the Khamasin', function() {
                 });
 
                 it('should cost 1 honor', function() {
-                    let honor = this.player1.player.honor;
+                    const honor = this.player1.player.honor;
                     this.player2.pass();
                     this.player1.clickCard(this.jewelOfTheKhamasin);
                     expect(this.player1.player.honor).toBe(honor - 1);
                 });
 
                 it('if it resolves should reduce the attacked province by 1 strength', function() {
-                    let provinceStrength = this.game.currentConflict.conflictProvince.getStrength();
+                    const provinceStrength = this.game.currentConflict.conflictProvince.getStrength();
                     this.player2.pass();
                     this.player1.clickCard(this.jewelOfTheKhamasin);
                     expect(this.game.currentConflict.conflictProvince.getStrength()).toBe(provinceStrength - 1);
                 });
 
                 it('it should be able to be resolved unlimited times (until province strength is zero)', function() {
-                    let provinceStrength = this.game.currentConflict.conflictProvince.getStrength();
-                    let honor = this.player1.player.honor;
+                    const provinceStrength = this.game.currentConflict.conflictProvince.getStrength();
+                    const honor = this.player1.player.honor;
                     this.player2.pass();
                     this.player1.clickCard(this.jewelOfTheKhamasin);
                     expect(this.player1.player.honor).toBe(honor - 1);

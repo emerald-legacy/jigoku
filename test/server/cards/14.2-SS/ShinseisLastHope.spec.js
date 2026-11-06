@@ -133,3 +133,32 @@ describe('Shinsei\'s Last Hope', function() {
         });
     });
 });
+
+describe('Shinsei\'s Last Hope with a dynasty event', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    fate: 30,
+                    dynastyDiscard: ['dispatch-to-nowhere'],
+                    provinces: ['shinsei-s-last-hope']
+                },
+                player2: {
+                    inPlay: ['doji-challenger']
+                }
+            });
+            this.lastHope = this.player1.findCardByName('shinsei-s-last-hope', 'province 1');
+            this.dispatch = this.player1.placeCardInProvince('dispatch-to-nowhere', this.lastHope.location);
+            this.challenger = this.player2.findCardByName('doji-challenger');
+        });
+
+        it('should not reduce the cost of the event', function() {
+            const fate = this.player1.fate;
+            this.player1.clickCard(this.dispatch);
+            this.player1.clickCard(this.challenger);
+            expect(this.challenger.location).toBe('dynasty discard pile');
+            expect(this.player1.fate).toBe(fate - 1);
+        });
+    });
+});

@@ -23,6 +23,7 @@ describe('Feral Ningyo', function () {
                 this.player2.pass();
                 this.player1.clickCard(this.feral);
                 expect(this.player1).not.toHavePromptButton('Put into play');
+                expect(this.player1).toHavePromptButton('0');
             });
 
             it('should not activate during non-water conflicts', function () {
@@ -36,6 +37,7 @@ describe('Feral Ningyo', function () {
                 this.player2.clickPrompt('Pass');
                 this.player1.clickCard(this.feral);
                 expect(this.player1).not.toHavePromptButton('Put into play');
+                expect(this.player1).toHavePromptButton('0');
             });
 
             describe('when Hida Kisada\'s ability is active', function () {
@@ -122,23 +124,149 @@ describe('Feral Ningyo', function () {
                     expect(this.game.emitEvent).toHaveBeenCalledWith('onDeckShuffled', jasmine.anything());
                 });
 
-                it('should be triggerable if played from hand and then triggered in play', function() {
+                it('can use its action in play when played normally, to return at the end of the conflict (EmeraldDB ruling)', function() {
                     this.player1.clickPrompt('Play this character');
                     this.player1.clickPrompt('0');
                     this.player1.clickPrompt('Conflict');
                     this.player2.pass();
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                     this.player1.clickCard(this.feral);
-                    expect(this.player2).toHavePrompt('Conflict Action Window');
                     expect(this.getChatLogs(3)).toContain('player1 uses Feral Ningyo to return Feral Ningyo to the deck at the end of the conflict');
-                    this.noMoreActions();
-                    this.player1.clickPrompt('No');
-                    this.player1.clickPrompt('Don\'t resolve');
-                    expect(this.feral.location).toBe('conflict deck');
-                    expect(this.getChatLogs(2)).toContain('Feral Ningyo returns to the deck and shuffles due to its delayed effect');
-                    expect(this.getChatLogs(1)).toContain('player1 is shuffling their conflict deck');
                 });
             });
+        });
+    });
+});
+
+describe('Feral Ningyo played normally', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 4,
+                    inPlay: ['adept-of-the-waves'],
+                    hand: ['feral-ningyo']
+                }
+            });
+            this.feral = this.player1.findCardByName('feral-ningyo');
+            this.adept = this.player1.findCardByName('adept-of-the-waves');
+            this.player1.clickCard(this.feral);
+            this.player1.clickPrompt('0');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                ring: 'water',
+                attackers: [this.adept],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('can use its Action in play to return at the end of the Water conflict (EmeraldDB ruling)', function () {
+            expect(this.feral.location).toBe('play area');
+            this.player1.clickCard(this.feral);
+            expect(this.getChatLogs(3)).toContain('player1 uses Feral Ningyo to return Feral Ningyo to the deck at the end of the conflict');
+            this.noMoreActions();
+            this.player1.clickPrompt('Don\'t Resolve');
+            expect(this.feral.location).toBe('conflict deck');
+        });
+    });
+});
+
+describe('Feral Ningyo when it cannot enter play', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    inPlay: ['expert-interpreter', 'matsu-berserker']
+                },
+                player2: {
+                    hand: ['feral-ningyo']
+                }
+            });
+            this.interpreter = this.player1.findCardByName('expert-interpreter');
+            this.ningyo = this.player2.findCardByName('feral-ningyo');
+
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.noMoreActions();
+            this.player1.clickCard(this.interpreter);
+            this.player1.clickRing('water');
+            this.player2.clickPrompt('No');
+            this.noMoreActions();
+            this.initiateConflict({
+                ring: 'water',
+                type: 'military',
+                attackers: ['matsu-berserker'],
+                defenders: []
+            });
+        });
+
+        it('cannot use the Action from hand while characters cannot enter play', function () {
+            expect(this.game.currentConflict.ring.element).toBe('water');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            this.player2.clickCard(this.ningyo);
+            expect(this.ningyo.location).toBe('hand');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.getChatLogs(5)).not.toContain(jasmine.stringMatching('uses Feral Ningyo'));
+        });
+    });
+});
+
+describe('Feral Ningyo put into play by its ability', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 4,
+                    inPlay: ['adept-of-the-waves'],
+                    hand: ['feral-ningyo'],
+                    dynastyDeck: ['funeral-pyre']
+                },
+                player2: {
+                    inPlay: ['adept-of-the-waves'],
+                    hand: ['cloud-the-mind']
+                }
+            });
+            this.feral = this.player1.findCardByName('feral-ningyo');
+            this.adept = this.player1.findCardByName('adept-of-the-waves');
+            this.pyre = this.player1.placeCardInProvince('funeral-pyre');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                ring: 'water',
+                attackers: [this.adept],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.feral);
+            this.player1.clickPrompt('Put into play');
+            expect(this.feral.location).toBe('play area');
+        });
+
+        it('is not shuffled into the deck when it left play before the end of the conflict (ruling #460)', function () {
+            this.player2.pass();
+            this.player1.clickCard(this.pyre);
+            this.player1.clickCard(this.feral);
+            expect(this.feral.location).toBe('conflict discard pile');
+            this.noMoreActions();
+            this.player1.clickPrompt('Don\'t resolve');
+            expect(this.game.currentConflict).toBeNull();
+            expect(this.feral.location).toBe('conflict discard pile');
+            expect(this.getChatLogs(5)).not.toContain('Feral Ningyo returns to the deck and shuffles due to its delayed effect');
+        });
+
+        it('is still shuffled into the deck when its text was blanked (ruling #542)', function () {
+            this.player2.playAttachment('cloud-the-mind', this.feral);
+            expect(this.feral.attachments).toContain(this.player2.findCardByName('cloud-the-mind'));
+            this.noMoreActions();
+            this.player1.clickPrompt('No');
+            this.player1.clickPrompt('Don\'t resolve');
+            expect(this.feral.location).toBe('conflict deck');
+            expect(this.getChatLogs(5)).toContain('Feral Ningyo returns to the deck and shuffles due to its delayed effect');
         });
     });
 });

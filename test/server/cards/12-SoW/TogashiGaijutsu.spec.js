@@ -5,7 +5,7 @@ describe('Togashi Gaijutsu', function() {
                 phase: 'conflict',
                 player1: {
                     inPlay: ['togashi-gaijutsu', 'togashi-mitsu'],
-                    hand: ['centipede-tattoo', 'fine-katana']
+                    hand: ['centipede-tattoo', 'fine-katana', 'niten']
                 },
                 player2: {
                     inPlay: ['togashi-kazue'],
@@ -17,6 +17,7 @@ describe('Togashi Gaijutsu', function() {
             this.mitsu = this.player1.findCardByName('togashi-mitsu');
             this.p1Tattoo = this.player1.findCardByName('centipede-tattoo');
             this.katana = this.player1.findCardByName('fine-katana');
+            this.niten = this.player1.findCardByName('niten');
 
             this.kazue = this.player2.findCardByName('togashi-kazue');
             this.p2Tattoo = this.player2.findCardByName('centipede-tattoo');
@@ -63,6 +64,28 @@ describe('Togashi Gaijutsu', function() {
             this.player1.clickCard(this.mitsu);
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.player2).toHavePrompt('Action Window');
+        });
+
+        it('should not react when a tattoo is put into play by a card effect (ruling #822)', function() {
+            this.mitsu.bowed = false;
+            this.player1.playAttachment(this.niten, this.mitsu);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.mitsu]
+            });
+            expect(this.player1).toHavePrompt('Choose covert target for Togashi Mitsu');
+            this.player1.clickPrompt('No Target');
+            this.player2.clickPrompt('Done');
+            this.player2.pass();
+            this.mitsu.bowed = true;
+            this.player1.clickCard(this.niten);
+            expect(this.player1).toHavePrompt('Niten');
+            this.player1.clickCard(this.p1Tattoo);
+            expect(this.p1Tattoo.parent).toBe(this.mitsu);
+            expect(this.niten.location).toBe('hand');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.mitsu.bowed).toBe(true);
         });
     });
 });

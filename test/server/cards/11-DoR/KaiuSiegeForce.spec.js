@@ -30,6 +30,14 @@ describe('Kaiu Siege Force', function () {
                 expect(this.getChatLogs(3)).toContain('player1 uses Kaiu Siege Force, returning Imperial Storehouse to the bottom of their deck to ready Kaiu Siege Force');
             });
 
+            it('should not be usable with only a facedown holding', function () {
+                this.storehouse.facedown = true;
+                this.player1.clickCard(this.siegeForce);
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.siegeForce.bowed).toBe(true);
+                expect(this.storehouse.location).toBe('province 1');
+            });
+
             it('should not be usable without a holding', function () {
                 this.player1.clickCard(this.storehouse);
                 this.player2.pass();

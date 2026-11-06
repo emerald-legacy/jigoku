@@ -1,6 +1,11 @@
-import { RandomDiscardAction } from '../../../build/server/game/GameActions/RandomDiscardAction.js';
+import { DiscardAtRandomAction } from '../../../build/server/game/GameActions/DiscardAtRandomAction.js';
+import BaseCard from '../../../build/server/game/BaseCard.js';
 
-describe('RandomDiscardAction', function() {
+// fake cards that pick their discard pile as real cards do
+const discardPile = Object.getOwnPropertyDescriptor(BaseCard.prototype, 'discardPile');
+const fakeCard = (name, isDynasty) => Object.defineProperty({ name, isDynasty }, 'discardPile', discardPile);
+
+describe('DiscardAtRandomAction', function() {
     beforeEach(function() {
         this.game = jasmine.createSpyObj('game', ['addMessage']);
         this.player = jasmine.createSpyObj('player', ['moveCard', 'checkRestrictions']);
@@ -14,7 +19,7 @@ describe('RandomDiscardAction', function() {
         describe('when hand is empty', function() {
             beforeEach(function() {
                 this.player.hand = [];
-                this.action = new RandomDiscardAction({ amount: 1, target: [this.player] });
+                this.action = new DiscardAtRandomAction({ amount: 1, target: [this.player] });
             });
 
             it('should return false', function() {
@@ -25,7 +30,7 @@ describe('RandomDiscardAction', function() {
         describe('when amount is 0', function() {
             beforeEach(function() {
                 this.player.hand = [{ name: 'Card A' }];
-                this.action = new RandomDiscardAction({ amount: 0, target: [this.player] });
+                this.action = new DiscardAtRandomAction({ amount: 0, target: [this.player] });
             });
 
             it('should return false', function() {
@@ -36,7 +41,7 @@ describe('RandomDiscardAction', function() {
         describe('when hand has cards and amount > 0', function() {
             beforeEach(function() {
                 this.player.hand = [{ name: 'Card A' }, { name: 'Card B' }];
-                this.action = new RandomDiscardAction({ amount: 1, target: [this.player] });
+                this.action = new DiscardAtRandomAction({ amount: 1, target: [this.player] });
             });
 
             it('should return true', function() {
@@ -47,35 +52,35 @@ describe('RandomDiscardAction', function() {
 
     describe('eventHandler()', function() {
         beforeEach(function() {
-            this.cardA = { name: 'Card A', isDynasty: false };
-            this.cardB = { name: 'Card B', isDynasty: false };
-            this.cardC = { name: 'Card C', isDynasty: false };
+            this.cardA = fakeCard('Card A', false);
+            this.cardB = fakeCard('Card B', false);
+            this.cardC = fakeCard('Card C', false);
             this.player.hand = [this.cardA, this.cardB, this.cardC];
             this.event = { player: this.player, amount: 2 };
         });
 
         it('should discard the requested number of cards', function() {
-            this.action = new RandomDiscardAction({ amount: 2, target: [this.player] });
+            this.action = new DiscardAtRandomAction({ amount: 2, target: [this.player] });
             this.action.eventHandler(this.event);
             expect(this.event.cards.length).toBe(2);
         });
 
         it('should cap amount at hand size', function() {
             this.event.amount = 10;
-            this.action = new RandomDiscardAction({ amount: 10, target: [this.player] });
+            this.action = new DiscardAtRandomAction({ amount: 10, target: [this.player] });
             this.action.eventHandler(this.event);
             expect(this.event.cards.length).toBe(3);
         });
 
         it('should set discardedCards to the discarded cards', function() {
-            this.action = new RandomDiscardAction({ amount: 1, target: [this.player] });
+            this.action = new DiscardAtRandomAction({ amount: 1, target: [this.player] });
             this.event.amount = 1;
             this.action.eventHandler(this.event);
             expect(this.event.discardedCards).toBe(this.event.cards);
         });
 
         it('should move each discarded card to the conflict discard pile', function() {
-            this.action = new RandomDiscardAction({ amount: 2, target: [this.player] });
+            this.action = new DiscardAtRandomAction({ amount: 2, target: [this.player] });
             this.action.eventHandler(this.event);
             expect(this.player.moveCard.calls.count()).toBe(2);
         });
@@ -84,7 +89,7 @@ describe('RandomDiscardAction', function() {
             this.cardA.isDynasty = true;
             this.player.hand = [this.cardA];
             this.event.amount = 1;
-            this.action = new RandomDiscardAction({ amount: 1, target: [this.player] });
+            this.action = new DiscardAtRandomAction({ amount: 1, target: [this.player] });
             this.action.eventHandler(this.event);
             expect(this.player.moveCard).toHaveBeenCalledWith(this.cardA, 'dynasty discard pile');
         });
@@ -93,13 +98,13 @@ describe('RandomDiscardAction', function() {
             this.cardA.isDynasty = false;
             this.player.hand = [this.cardA];
             this.event.amount = 1;
-            this.action = new RandomDiscardAction({ amount: 1, target: [this.player] });
+            this.action = new DiscardAtRandomAction({ amount: 1, target: [this.player] });
             this.action.eventHandler(this.event);
             expect(this.player.moveCard).toHaveBeenCalledWith(this.cardA, 'conflict discard pile');
         });
 
         it('should log the discard message', function() {
-            this.action = new RandomDiscardAction({ amount: 1, target: [this.player] });
+            this.action = new DiscardAtRandomAction({ amount: 1, target: [this.player] });
             this.event.amount = 1;
             this.action.eventHandler(this.event);
             expect(this.game.addMessage).toHaveBeenCalled();
@@ -109,7 +114,7 @@ describe('RandomDiscardAction', function() {
             beforeEach(function() {
                 this.player.hand = [];
                 this.event.amount = 0;
-                this.action = new RandomDiscardAction({ amount: 0, target: [this.player] });
+                this.action = new DiscardAtRandomAction({ amount: 0, target: [this.player] });
             });
 
             it('should not move any cards', function() {

@@ -60,7 +60,7 @@ describe('Never Yield', function() {
             expect(this.player1).toBeAbleToSelect(this.neverYield);
 
             this.player1.clickCard(this.neverYield);
-            expect(this.getChatLogs(2)).toContain('player1 plays Never Yield to make it so player2\'s card effects can\'t bow or send home player1\'s characters currently in play until the end of the conflict.');
+            expect(this.getChatLogs(2)).toContain('player1 plays Never Yield to make it so player2\'s card effects can\'t bow or send home player1\'s characters currently in play until the end of the conflict');
 
             this.player2.clickPrompt('Done');
             this.player2.clickCard(this.fury);
@@ -80,7 +80,7 @@ describe('Never Yield', function() {
             expect(this.player1).toBeAbleToSelect(this.neverYield);
 
             this.player1.clickCard(this.neverYield);
-            expect(this.getChatLogs(2)).toContain('player1 plays Never Yield to make it so player2\'s card effects can\'t bow or send home player1\'s characters currently in play until the end of the conflict.');
+            expect(this.getChatLogs(2)).toContain('player1 plays Never Yield to make it so player2\'s card effects can\'t bow or send home player1\'s characters currently in play until the end of the conflict');
 
             this.player2.clickCard(this.dojiWhisperer);
             this.player2.clickPrompt('Done');
@@ -103,7 +103,7 @@ describe('Never Yield', function() {
             expect(this.player1).toBeAbleToSelect(this.neverYield);
 
             this.player1.clickCard(this.neverYield);
-            expect(this.getChatLogs(2)).toContain('player1 plays Never Yield to make it so player2\'s card effects can\'t bow or send home player1\'s characters currently in play until the end of the conflict.');
+            expect(this.getChatLogs(2)).toContain('player1 plays Never Yield to make it so player2\'s card effects can\'t bow or send home player1\'s characters currently in play until the end of the conflict');
 
             this.player2.clickCard(this.dojiWhisperer);
             this.player2.clickPrompt('Done');

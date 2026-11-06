@@ -50,9 +50,6 @@ describe('Unyielding Terms', function () {
             expect(this.player2).toBeAbleToSelect(this.atw);
 
             expect(this.player2).toHavePrompt('Choose 2 cards to discard');
-            expect(this.getChatLogs(5)).toContain(
-                'player2 chooses to refuse the duel and discard 2 cards from their hand'
-            );
 
             this.player2.clickCard(this.letgo);
             expect(this.player2).not.toHavePromptButton('Done');
@@ -64,6 +61,9 @@ describe('Unyielding Terms', function () {
             expect(this.katana.location).toBe('conflict discard pile');
 
             expect(this.getChatLogs(5)).toContain('player2 discards Let Go and Fine Katana');
+            expect(this.getChatLogs(5)).toContain(
+                'player2 chooses to refuse the duel and discard 2 cards from their hand'
+            );
             expect(this.player2).toHavePrompt('Action Window');
         });
 
@@ -81,6 +81,37 @@ describe('Unyielding Terms', function () {
 
             expect(this.getChatLogs(10)).toContain('Duel Effect: bow and remove 1 fate from Isawa Atsuko');
             expect(this.atsuko.bowed).toBe(true);
+            expect(this.atsuko.fate).toBe(1);
+        });
+
+        it('names only the bow when the loser has no fate', function () {
+            this.atsuko.fate = 0;
+
+            this.player1.clickCard(this.unyieldingTerms);
+            this.player1.clickCard(this.akikore);
+            this.player1.clickCard(this.atsuko);
+            this.player2.clickPrompt('No');
+
+            this.player1.clickPrompt('5');
+            this.player2.clickPrompt('1');
+
+            expect(this.getChatLogs(10)).toContain('Duel Effect: bow Isawa Atsuko');
+            expect(this.atsuko.bowed).toBe(true);
+        });
+
+        it('names only the fate removal when the loser is already bowed', function () {
+            this.atsuko.fate = 2;
+            this.atsuko.bowed = true;
+
+            this.player1.clickCard(this.unyieldingTerms);
+            this.player1.clickCard(this.akikore);
+            this.player1.clickCard(this.atsuko);
+            this.player2.clickPrompt('No');
+
+            this.player1.clickPrompt('5');
+            this.player2.clickPrompt('1');
+
+            expect(this.getChatLogs(10)).toContain('Duel Effect: remove 1 fate from Isawa Atsuko');
             expect(this.atsuko.fate).toBe(1);
         });
 

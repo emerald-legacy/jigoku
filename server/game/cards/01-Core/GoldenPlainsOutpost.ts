@@ -1,21 +1,19 @@
-import { CardType, Players } from '../../Constants.js';
+import { CardType, Players, ConflictType, Trait } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { moveToConflict } from '../../GameActions/GameActions.js';
 
 export default class GoldenPlainsOutpost extends StrongholdCard {
     static id = 'golden-plains-outpost';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Move a cavalry character to the conflict',
-            cost: AbilityDsl.costs.bowSelf(),
-            condition: () => this.game.isDuringConflict('military'),
-            target: {
+    override setupCardAbilities() {
+        this.action('Move a cavalry character to the conflict')
+            .condition(() => this.game.isDuringConflict(ConflictType.Military))
+            .cost(costs.bowSelf())
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('cavalry'),
-                gameAction: AbilityDsl.actions.moveToConflict()
-            }
-        });
+                cardCondition: (card) => card.hasTrait(Trait.Cavalry)
+            }, moveToConflict());
     }
 }

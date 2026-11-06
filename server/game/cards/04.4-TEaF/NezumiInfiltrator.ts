@@ -1,62 +1,48 @@
-import { CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Trait } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
+import { perConflict } from '../../AbilityLimit.js';
+import { immunity, modifyProvinceStrength } from '../../effects.js';
+import { cardLastingEffect, chooseAction } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class NezumiInfiltrator extends DrawCard {
     static id = 'nezumi-infiltrator';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             effect: [
-                AbilityDsl.effects.immunity({
-                    restricts: 'maho'
+                immunity({
+                    appliesTo: { trait: Trait.Maho }
                 }),
-                AbilityDsl.effects.immunity({
-                    restricts: 'shadowlands'
+                immunity({
+                    appliesTo: { trait: Trait.Shadowlands }
                 })
             ]
         });
 
-        this.reaction({
-            title: 'Change attacked province\'s strength',
-            when: {
+        this.reaction('Change attacked province\'s strength')
+            .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source && this.game.isDuringConflict()
-            },
-            max: AbilityDsl.limit.perConflict(1),
-            effect: 'change the province strength of an attacked province',
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                cardCondition: (card) => card.isConflictProvince(),
-                subActionProperties: (card) => {
-                    context.target = card;
-                    return { target: card };
-                },
-                gameAction: AbilityDsl.actions.chooseAction(() => ({
-                    messages: {},
-                    options: {
+            })
+            .selectAttackedProvince(() => ({
+                gameAction: (province) => chooseAction(() => ({
+                    choices: {
                         'Raise attacked province\'s strength by 1': {
-                            action: AbilityDsl.actions.cardLastingEffect(() => ({
-                                targetLocation: Location.Provinces,
-                                effect: AbilityDsl.effects.modifyProvinceStrength(1)
-                            })),
-                            message: '{0} chooses to increase {1}\'s strength by 1'
+                            action: cardLastingEffect({
+                                effect: modifyProvinceStrength(1)
+                            }),
+                            message: (_context, target, player) => msg`${player} chooses to increase ${target}'s strength by 1`
                         },
                         'Lower attacked province\'s strength by 1': {
-                            action: AbilityDsl.actions.cardLastingEffect((context) => ({
-                                targetLocation: Location.Provinces,
-                                effect:
-                                    context.target?.getStrength() > 1
-                                        ? AbilityDsl.effects.modifyProvinceStrength(-1)
-                                        : []
+                            action: cardLastingEffect(() => ({
+                                effect: province.getStrength() > 1 ? modifyProvinceStrength(-1) : []
                             })),
-                            message: '{0} chooses to reduce {1}\'s strength by 1'
+                            message: (_context, target, player) => msg`${player} chooses to reduce ${target}'s strength by 1`
                         }
                     }
                 }))
             }))
-        });
+            .chatText('change the province strength of an attacked province')
+            .max(perConflict(1));
     }
 }

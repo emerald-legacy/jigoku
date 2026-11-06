@@ -86,7 +86,7 @@ describe('Shintao Monastery', function() {
             this.player1.placeCardInProvince(this.monastery2, 'province 2');
             this.game.checkGameState(true);
 
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
             this.player2.clickCard(this.kageyu);
             expect(this.player2.hand.length).toBe(hand + 2);
         });

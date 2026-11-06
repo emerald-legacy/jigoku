@@ -1,0 +1,21 @@
+import DrawCard from '../../DrawCard.js';
+import { blank } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { CardType } from '../../Constants.js';
+
+class TrickOfTheLight extends DrawCard {
+    static id = 'trick-of-the-light';
+
+    override setupCardAbilities() {
+        this.action('blanks printed text for conflict')
+            .target({
+                cardType: CardType.Character,
+                cardCondition: (card) => card.isParticipating()
+            }, cardLastingEffect({
+                effect: blank()
+            }))
+            .chatText('blank {0} until the end of the conflict');
+    }
+}
+
+export default TrickOfTheLight;

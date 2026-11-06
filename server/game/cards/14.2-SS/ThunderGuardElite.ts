@@ -1,18 +1,14 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 
 class ThunderGuardElite extends DrawCard {
     static id = 'thunder-guard-elite';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Opponent discards a random card',
-            condition: context => context.source.isParticipating(),
-            cost: AbilityDsl.costs.payHonor(1),
-            gameAction: AbilityDsl.actions.discardAtRandom(context => ({
-                target: context.player.opponent
-            }))
-        });
+    override setupCardAbilities() {
+        this.action('Opponent discards a random card')
+            .condition((context) => context.source.isParticipating())
+            .cost(costs.payHonor(1))
+            .discardAtRandom();
     }
 }
 

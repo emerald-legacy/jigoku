@@ -2,24 +2,22 @@ import { z } from 'zod';
 
 const parsedEnv = z
     .object({
-        CAPTCHA_KEY: z.string().optional(),
-        COOKIE_LIFETIME: z.string().optional(),
         DOMAIN: z.string(),
-        EMAIL_PATH: z.string().optional(),
         ENVIRONMENT: z.string(),
         GAME_NODE_CERT_PATH: z.string().optional(),
         GAME_NODE_KEY_PATH: z.string().optional(),
         GAME_NODE_NAME: z.string(),
         GAME_NODE_PROXY_PORT: z.coerce.number().int().optional(),
         GAME_NODE_SOCKET_IO_PORT: z.coerce.number().int(),
-        HMAC_SECRET: z.string().optional(),
-        HTTPS: z.string(),
+        HTTPS: z.string().transform((value) => value === 'true'),
         LOBBY_PORT: z.coerce.number().int(),
         MAX_GAMES: z.coerce.number().int().positive().default(20),
         LOBBY_WS_URL: z.string(),
         NODE_SECRET: z.string().optional(),
         SECRET: z.string(),
-        BUILD_VERSION: z.string().optional()
+        BUILD_VERSION: z.string().optional(),
+        // empty disables the game reports
+        ANALYTICS_URL: z.string().default('https://l5r-analytics-engine-production.up.railway.app/api/game-report')
     })
     .safeParse(process.env);
 
@@ -27,17 +25,13 @@ if(!parsedEnv.success) {
     throw Error(`Failed to initialize environment variables: ${parsedEnv.error.message}`);
 }
 
-export const captchaKey = parsedEnv.data.CAPTCHA_KEY;
-export const cookieLifetime = parsedEnv.data.COOKIE_LIFETIME;
 export const domain = parsedEnv.data.DOMAIN;
-export const emailPath = parsedEnv.data.EMAIL_PATH;
 export const environment = parsedEnv.data.ENVIRONMENT;
 export const gameNodeCertPath = parsedEnv.data.GAME_NODE_CERT_PATH;
 export const gameNodeKeyPath = parsedEnv.data.GAME_NODE_KEY_PATH;
 export const gameNodeName = parsedEnv.data.GAME_NODE_NAME;
 export const gameNodeProxyPort = parsedEnv.data.GAME_NODE_PROXY_PORT;
 export const gameNodeSocketIoPort = parsedEnv.data.GAME_NODE_SOCKET_IO_PORT;
-export const hmacSecret = parsedEnv.data.HMAC_SECRET;
 export const https = parsedEnv.data.HTTPS;
 export const lobbyPort = parsedEnv.data.LOBBY_PORT;
 export const maxGames = parsedEnv.data.MAX_GAMES;
@@ -45,3 +39,4 @@ export const lobbyWsUrl = parsedEnv.data.LOBBY_WS_URL;
 export const nodeSecret = parsedEnv.data.NODE_SECRET;
 export const secret = parsedEnv.data.SECRET;
 export const buildVersion = parsedEnv.data.BUILD_VERSION ?? 'LOCAL';
+export const analyticsUrl = parsedEnv.data.ANALYTICS_URL;

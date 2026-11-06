@@ -1,74 +1,47 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Location, Phases, PlayType } from '../../../Constants.js';
-import type { Cost } from '../../../costs/Cost.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import type BaseCard from '../../../BaseCard.js';
+import { Location, Phase, PlayType, Trait } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { canPlayFromOwn, cannotParticipateAsAttacker, cannotParticipateAsDefender } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
-
-function captureParentCost(): Cost {
-    return {
-        canPay() {
-            return true;
-        },
-        resolve(context: AbilityContext) {
-            context.costs.captureParentCost = (context.source as DrawCard).parentCharacter;
-        },
-        pay() {}
-    };
-}
+import { captureParentCost, capturedParent } from '../../captureParentCost.js';
+import { msg } from '../../../GameChat.js';
+import { randomItem } from '../../../utils/random.js';
 
 export default class DevelopingMasterpiece extends DrawCard {
     static id = 'developing-masterpiece';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
+        this.playOnlyIf((context) => context.game.currentPhase === Phase.Draw);
+
+        this.attachmentConditions({
+            myControl: true,
+            cardCondition: (card) => card.hasTrait(Trait.Courtier) || card.hasTrait(Trait.Artisan) || card.isFaction('crane')
+        });
+
         this.whileAttached({
-            effect: [AbilityDsl.effects.cannotParticipateAsAttacker(), AbilityDsl.effects.cannotParticipateAsDefender()]
+            effect: [cannotParticipateAsAttacker(), cannotParticipateAsDefender()]
         });
 
         this.persistentEffect({
             location: Location.ConflictDiscardPile,
-            effect: AbilityDsl.effects.canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
+            effect: canPlayFromOwn(Location.ConflictDiscardPile, [this], this, PlayType.Other)
         });
 
-        this.action({
-            title: 'Gain honor',
-            phase: Phases.Fate,
-            condition: (context) => !!context.source.parentCharacter,
-            cost: [captureParentCost(), AbilityDsl.costs.removeSelfFromGame()],
-            gameAction: AbilityDsl.actions.gainHonor((context) => ({
-                amount: this.getHonorGain(context),
-                target: context.player
-            })),
-            effect: 'gain {1} honor',
-            effectArgs: (context: AbilityContext) => [this.getHonorGain(context)],
-            then: (context) => {
-                const haiku = randomHaiku();
-                if(haiku && context) {
-                    haiku.forEach((line) => context.game.addMessage(`>> ${line}`));
-                    context.game.addMessage('>>>> Matsuo Bashō <<<<');
-                }
-            }
-        });
+        this.action('Gain honor')
+            .condition((context) => !!context.source.parentCharacter)
+            .phase(Phase.Fate)
+            .cost(captureParentCost())
+            .cost(costs.sacrificeSelf())
+            .gainHonor((context) => ({
+                amount: capturedParent(context)?.glory ?? 0
+            }))
+            .moveCard((context) => ({ target: context.source, destination: Location.RemovedFromGame }))
+            .onResolve((context) => {
+                randomHaiku().forEach((line) => context.game.addMessage(msg`>> ${line}`));
+                context.game.addMessage(msg`>>>> Matsuo Bashō <<<<`);
+            })
+            .chatText((context) => msg`gain ${capturedParent(context)?.glory ?? 0} honor`);
     }
 
-    public canAttach(card: BaseCard): boolean {
-        return (
-            card.controller === this.controller &&
-            card.getType() === CardType.Character &&
-            (card.hasTrait('courtier') || card.hasTrait('artisan') || card.isFaction('crane')) &&
-            super.canAttach(card)
-        );
-    }
-
-    public canPlay(context: AbilityContext, playType: string): boolean {
-        return context.game.currentPhase === Phases.Draw && super.canPlay(context, playType);
-    }
-
-    private getHonorGain(context: AbilityContext): number {
-        return context.costs.captureParentCost
-            ? (context.costs.captureParentCost as DrawCard).getGlory()
-            : ((context.source as DrawCard).parentCharacter?.getGlory() ?? 0);
-    }
 }
 
 /**
@@ -101,5 +74,5 @@ const haikus = [
     ['The summer grasses—', 'Of the brave soldiers\' dreams', 'The aftermath.']
 ];
 function randomHaiku(): string[] {
-    return haikus[Math.floor(haikus.length * Math.random())];
+    return randomItem(haikus) ?? [];
 }

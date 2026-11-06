@@ -1,29 +1,26 @@
 import DrawCard from '../../DrawCard.js';
-import { CardType, EventName } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Trait } from '../../Constants.js';
+import { unlimited } from '../../AbilityLimit.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class ThirdTower extends DrawCard {
     static id = 'third-tower';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Take an honor from your opponent',
-            when: {
-                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) => {
+    override setupCardAbilities() {
+        this.reaction('Take an honor from your opponent')
+            .when({
+                onConflictDeclared: (event, context) => {
                     if(event.conflict.attackingPlayer === context.player) {
                         return false;
                     }
                     if(!event.conflict.declaredProvince) {
                         return false;
                     }
-                    let cards = context.player.getDynastyCardsInProvince(event.conflict.declaredProvince.location);
-                    return !cards.some((card) => card.isFaceup() && card.type === CardType.Holding && card.hasTrait('kaiu-wall'));
+                    const cards = context.player.getDynastyCardsInProvince(event.conflict.declaredProvince.location);
+                    return !cards.some((card) => card.isFaceup() && card.type === CardType.Holding && card.hasTrait(Trait.KaiuWall));
                 }
-            },
-            gameAction: AbilityDsl.actions.takeHonor(),
-            limit: AbilityDsl.limit.unlimitedPerConflict()
-        });
+            })
+            .takeHonor()
+            .limit(unlimited());
     }
 }
 

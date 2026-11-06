@@ -49,8 +49,8 @@ describe('Pragmatism', function() {
                 });
 
                 it('should increase attached characters military and political skills by 1', function () {
-                    expect(this.borderlandsDefender.getMilitarySkill()).toBe(this.borderlandsDefender.getBaseMilitarySkill() + 1);
-                    expect(this.borderlandsDefender.getPoliticalSkill()).toBe(this.borderlandsDefender.getBasePoliticalSkill() + 1);
+                    expect(this.borderlandsDefender.militarySkill).toBe(this.borderlandsDefender.getBaseMilitarySkill() + 1);
+                    expect(this.borderlandsDefender.politicalSkill).toBe(this.borderlandsDefender.getBasePoliticalSkill() + 1);
                 });
 
                 it('attached character can be honored', function () {
@@ -95,11 +95,11 @@ describe('Pragmatism', function() {
                 });
 
                 it('should increase attached characters military and political skills by 2', function () {
-                    expect(this.borderlandsDefender.getMilitarySkill()).toBe(this.borderlandsDefender.getBaseMilitarySkill() + 2);
-                    expect(this.borderlandsDefender.getPoliticalSkill()).toBe(this.borderlandsDefender.getBasePoliticalSkill() + 2);
+                    expect(this.borderlandsDefender.militarySkill).toBe(this.borderlandsDefender.getBaseMilitarySkill() + 2);
+                    expect(this.borderlandsDefender.politicalSkill).toBe(this.borderlandsDefender.getBasePoliticalSkill() + 2);
                 });
 
-                it('attached character can be honored', function () {
+                it('attached character cannot be honored', function () {
                     this.player2.clickCard(this.shamefulDisplay);
                     expect(this.player2).toHavePrompt('Shameful Display');
                     expect(this.player2).toHavePrompt('Select two characters');
@@ -114,7 +114,7 @@ describe('Pragmatism', function() {
                     expect(this.player2).toBeAbleToSelect(this.keeperInitiate);
                 });
 
-                it('attached character can be dishonored', function () {
+                it('attached character cannot be dishonored', function () {
                     this.player2.clickCard(this.shamefulDisplay);
                     expect(this.player2).toHavePrompt('Shameful Display');
                     expect(this.player2).toHavePrompt('Select two characters');

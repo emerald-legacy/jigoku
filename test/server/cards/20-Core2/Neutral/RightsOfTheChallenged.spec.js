@@ -56,3 +56,93 @@ describe('Rights of the Challenged', function () {
         });
     });
 });
+
+describe('Rights of the Challenged\'s Duel Challenge', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['brash-samurai', 'doji-kuwanan', 'doji-whisperer'],
+                    hand: ['rights-of-the-challenged']
+                },
+                player2: {
+                    inPlay: ['kakita-toshimoko'],
+                    hand: ['policy-debate']
+                }
+            });
+
+            this.brash = this.player1.findCardByName('brash-samurai');
+            this.kuwanan = this.player1.findCardByName('doji-kuwanan');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.rights = this.player1.findCardByName('rights-of-the-challenged');
+            this.toshimoko = this.player2.findCardByName('kakita-toshimoko');
+            this.pd = this.player2.findCardByName('policy-debate');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.brash, this.kuwanan],
+                defenders: [this.toshimoko]
+            });
+            this.player2.clickCard(this.pd);
+            this.player2.clickCard(this.toshimoko);
+            this.player2.clickCard(this.brash);
+        });
+
+        it('replaces the challenged character with another one at the same location', function () {
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.rights);
+            this.player1.clickCard(this.rights);
+            expect(this.player1).toHavePrompt('Choose a challenged character');
+            expect(this.player1).toBeAbleToSelect(this.brash);
+            expect(this.player1).not.toBeAbleToSelect(this.kuwanan);
+            this.player1.clickCard(this.brash);
+            expect(this.player1).toHavePrompt('Choose a character to replace it');
+            expect(this.player1).toBeAbleToSelect(this.kuwanan);
+            expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+            expect(this.player1).not.toBeAbleToSelect(this.brash);
+            this.player1.clickCard(this.kuwanan);
+
+            expect(this.game.currentDuel.targets).toEqual([this.kuwanan]);
+            expect(this.getChatLogs(5)).toContain('player1 plays Rights of the Challenged to replace Brash Samurai with Doji Kuwanan in the duel');
+        });
+    });
+});
+
+
+describe('Rights of the Challenged for the challenger', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-toshimoko', 'doji-whisperer'],
+                    hand: ['policy-debate', 'rights-of-the-challenged']
+                },
+                player2: {
+                    inPlay: ['brash-samurai', 'doji-kuwanan']
+                }
+            });
+            this.toshimoko = this.player1.findCardByName('kakita-toshimoko');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.rights = this.player1.findCardByName('rights-of-the-challenged');
+            this.brash = this.player2.findCardByName('brash-samurai');
+            this.kuwanan = this.player2.findCardByName('doji-kuwanan');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.toshimoko, this.whisperer],
+                defenders: [this.brash, this.kuwanan]
+            });
+            this.player2.pass();
+        });
+
+        it('cannot be used when you challenged', function () {
+            this.player1.clickCard('policy-debate');
+            this.player1.clickCard(this.toshimoko);
+            this.player1.clickCard(this.brash);
+            expect(this.game.currentDuel.challenger).toBe(this.toshimoko);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.rights.location).toBe('hand');
+        });
+    });
+});

@@ -1,41 +1,47 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import DrawCard from '../DrawCard.js';
-import { GameAction, type GameActionProperties } from './GameAction.js';
-
+import { GameAction, targetList, type GameActionProperties, type GameActionTarget, type ActionEvent } from './GameAction.js';
 import type { Event } from '../Events/Event.js';
-export interface HandlerProperties extends GameActionProperties {
-    handler?: (context: AbilityContext) => void;
+import type { EventName } from '../Constants.js';
+import type { GameObject } from '../GameObject.js';
+
+export interface HandlerProperties<Context extends AbilityContext = AbilityContext> extends GameActionProperties {
+    /** `targets` are what the action resolved for, such as the card a `selectCard` chose. */
+    handler?: (context: Context, targets: GameActionTarget[]) => void;
     hasTargetsChosenByInitiatingPlayer?: boolean;
 }
 
-export class HandlerAction extends GameAction<HandlerProperties> {
-    defaultProperties: HandlerProperties = {
+export class HandlerAction<Context extends AbilityContext = AbilityContext> extends GameAction<HandlerProperties<Context>, EventName.Unnamed, Context, 'handler' | 'hasTargetsChosenByInitiatingPlayer'> {
+    override defaultProperties = {
         handler: () => true,
         hasTargetsChosenByInitiatingPlayer: false
     };
 
-    hasLegalTarget(): boolean {
+    override hasLegalTarget(_context: Context): boolean {
         return true;
     }
 
-    canAffect(_card: DrawCard, _context: AbilityContext): boolean {
+    override canAffect(_target: GameObject, _context: Context): boolean {
         return true;
     }
 
-    addEventsToArray(events: Event[], context: AbilityContext, additionalProperties = {}): void {
+    override addEventsToArray(events: Event[], context: Context, additionalProperties: ActionOverrides = {}): void {
         events.push(this.getEvent(null, context, additionalProperties));
     }
 
-    eventHandler(event: Event, additionalProperties: Record<string, unknown> = {}): void {
-        const properties = this.getProperties((event.context as AbilityContext), additionalProperties) as HandlerProperties;
-        properties.handler?.((event.context as AbilityContext));
+    override eventHandler(event: ActionEvent<EventName, Context>, additionalProperties: ActionOverrides = {}): void {
+        const properties = this.getProperties(event.context, additionalProperties);
+        properties.handler(event.context, targetList(properties.target));
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
-        const { hasTargetsChosenByInitiatingPlayer } = this.getProperties(
-            context,
-            additionalProperties
-        ) as HandlerProperties;
-        return !!hasTargetsChosenByInitiatingPlayer;
+    override hasTargetsChosenByInitiatingPlayer(context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        return this.getProperties(context, additionalProperties).hasTargetsChosenByInitiatingPlayer;
     }
+}
+
+/** An action that does nothing, such as the branch of a choice that resolves no effect. */
+export function noAction(): GameAction {
+    const action = new HandlerAction({});
+    action.isNoAction = true;
+    return action;
 }

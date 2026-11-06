@@ -89,6 +89,10 @@ describe('Game - getPlayers', function() {
                     expect(this.players[0]).toBe(this.setPlayer2);
                     expect(this.players[1]).toBe(this.notSetPlayer1);
                 });
+
+                it('should leave getPlayers in seat order', function() {
+                    expect(this.game.getPlayers()).toEqual([this.notSetPlayer1, this.setPlayer2]);
+                });
             });
 
             describe('when player 2 is first player and player 1 is explicitly not first player', function() {

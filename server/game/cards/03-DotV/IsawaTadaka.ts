@@ -1,32 +1,25 @@
 import DrawCard from '../../DrawCard.js';
-import { Players, Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Players, Element, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { playerCannot } from '../../effects.js';
+import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
-const elementKey = 'isawa-tadaka-earth';
+const elementSymbol = { key: 'isawa-tadaka-earth', element: Element.Earth };
 
 class IsawaTadaka extends DrawCard {
     static id = 'isawa-tadaka';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             targetController: Players.Opponent,
-            condition: context => !context.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player.opponent),
-            effect: AbilityDsl.effects.playerCannot({
-                cannot: 'play',
-                restricts: 'copiesOfDiscardEvents'
+            condition: (context) => context.player.opponent === undefined || !hasClaimedRing(this, elementSymbol.key, context.player.opponent),
+            effect: playerCannot({
+                cannot: RestrictionType.Play,
+                appliesTo: RestrictionScope.CopiesOfDiscardEvents
             })
         });
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Earth
-        });
-        return symbols;
-    }
+    protected override printedElementSymbols = claimedRingSymbols([elementSymbol]);
 }
 
 

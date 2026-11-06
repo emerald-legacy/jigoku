@@ -53,13 +53,13 @@ describe('A Legion Of One', function() {
                     attackers: [this.miyaMystic],
                     defenders: []
                 });
-                this.milStat = this.miyaMystic.getMilitarySkill();
-                this.polStat = this.miyaMystic.getMilitarySkill();
+                this.milStat = this.miyaMystic.militarySkill;
+                this.polStat = this.miyaMystic.militarySkill;
                 this.player2.pass();
                 this.player1.clickCard(this.legion);
                 this.player1.clickCard(this.miyaMystic);
-                expect(this.miyaMystic.getMilitarySkill()).toBe(this.milStat + 3);
-                expect(this.miyaMystic.getPoliticalSkill()).toBe(this.polStat);
+                expect(this.miyaMystic.militarySkill).toBe(this.milStat + 3);
+                expect(this.miyaMystic.politicalSkill).toBe(this.polStat);
             });
 
             it('should not allow player to remove a fate from targeted character if it has none', function() {
@@ -112,15 +112,15 @@ describe('A Legion Of One', function() {
                     attackers: [this.miyaMystic],
                     defenders: []
                 });
-                this.milStat = this.miyaMystic.getMilitarySkill();
-                this.polStat = this.miyaMystic.getMilitarySkill();
+                this.milStat = this.miyaMystic.militarySkill;
+                this.polStat = this.miyaMystic.militarySkill;
                 this.player2.pass();
                 this.player1.clickCard(this.legion);
                 this.player1.clickCard(this.miyaMystic);
                 this.player1.clickPrompt('Remove 1 fate to resolve this ability again');
                 this.player1.clickCard(this.miyaMystic);
-                expect(this.miyaMystic.getMilitarySkill()).toBe(this.milStat + 6);
-                expect(this.miyaMystic.getPoliticalSkill()).toBe(this.polStat);
+                expect(this.miyaMystic.militarySkill).toBe(this.milStat + 6);
+                expect(this.miyaMystic.politicalSkill).toBe(this.polStat);
                 expect(this.miyaMystic.fate).toBe(0);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
@@ -132,8 +132,8 @@ describe('A Legion Of One', function() {
                     attackers: [this.miyaMystic],
                     defenders: []
                 });
-                this.milStat = this.miyaMystic.getMilitarySkill();
-                this.polStat = this.miyaMystic.getMilitarySkill();
+                this.milStat = this.miyaMystic.militarySkill;
+                this.polStat = this.miyaMystic.militarySkill;
                 this.player2.pass();
                 this.player1.clickCard(this.legion);
                 this.player1.clickCard(this.miyaMystic);
@@ -141,8 +141,8 @@ describe('A Legion Of One', function() {
                 this.player1.clickCard(this.miyaMystic);
                 expect(this.player1).toHavePromptButton('Remove 1 fate for no effect');
                 this.player1.clickPrompt('Remove 1 fate for no effect');
-                expect(this.miyaMystic.getMilitarySkill()).toBe(this.milStat + 6);
-                expect(this.miyaMystic.getPoliticalSkill()).toBe(this.polStat);
+                expect(this.miyaMystic.militarySkill).toBe(this.milStat + 6);
+                expect(this.miyaMystic.politicalSkill).toBe(this.polStat);
                 expect(this.miyaMystic.fate).toBe(0);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
@@ -162,8 +162,8 @@ describe('A Legion Of One', function() {
                 this.player2.clickCard('forged-edict');
                 this.player2.clickCard(this.bayushiLiar);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
-                expect(this.miyaMystic.getMilitarySkill()).toBe(1);
-                expect(this.miyaMystic.getPoliticalSkill()).toBe(1);
+                expect(this.miyaMystic.militarySkill).toBe(1);
+                expect(this.miyaMystic.politicalSkill).toBe(1);
             });
 
             it('should allow cancelling at second prompt', function() {
@@ -173,8 +173,8 @@ describe('A Legion Of One', function() {
                     attackers: [this.miyaMystic],
                     defenders: []
                 });
-                this.milStat = this.miyaMystic.getMilitarySkill();
-                this.polStat = this.miyaMystic.getMilitarySkill();
+                this.milStat = this.miyaMystic.militarySkill;
+                this.polStat = this.miyaMystic.militarySkill;
                 this.player2.putIntoPlay(this.bayushiLiar);
                 this.player2.pass();
                 this.player1.clickCard(this.legion);
@@ -187,10 +187,50 @@ describe('A Legion Of One', function() {
                 this.player2.clickCard('forged-edict');
                 this.player2.clickCard(this.bayushiLiar);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
-                expect(this.miyaMystic.getMilitarySkill()).toBe(this.milStat + 3);
-                expect(this.miyaMystic.getPoliticalSkill()).toBe(this.polStat);
+                expect(this.miyaMystic.militarySkill).toBe(this.milStat + 3);
+                expect(this.miyaMystic.politicalSkill).toBe(this.polStat);
                 expect(this.miyaMystic.fate).toBe(0);
             });
+        });
+    });
+});
+
+describe('A Legion Of One with a character on the other side than its controller', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['miya-mystic', 'endless-plains-skirmisher'],
+                    hand: ['a-legion-of-one']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar']
+                }
+            });
+            this.mystic = this.player1.findCardByName('miya-mystic');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.legion = this.player1.findCardByName('a-legion-of-one');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.mystic],
+                defenders: [this.scholar]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('chooses the character alone on your side, not your character on the enemy side', function() {
+            this.player2.pass();
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard(this.legion);
+            expect(this.player1).toBeAbleToSelect(this.mystic);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher1);
         });
     });
 });

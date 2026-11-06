@@ -75,3 +75,36 @@ describe('Public Forum', function() {
         });
     });
 });
+
+describe('Public Forum turned facedown', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    provinces: ['public-forum']
+                },
+                player2: {
+                    inPlay: ['saadiyah-al-mozedu'],
+                    hand: ['fine-katana']
+                }
+            });
+            this.publicForum = this.player1.findCardByName('public-forum');
+            this.saadiyah = this.player2.findCardByName('saadiyah-al-mozedu');
+            this.katana = this.player2.findCardByName('fine-katana');
+            this.publicForum.facedown = false;
+            this.publicForum.addToken('honor');
+        });
+
+        // ruling #985
+        it('loses its honor token', function() {
+            expect(this.publicForum.getTokenCount('honor')).toBe(1);
+            this.player1.pass();
+            this.player2.clickCard(this.saadiyah);
+            this.player2.clickCard(this.publicForum);
+            this.player2.clickCard(this.katana);
+            expect(this.publicForum.facedown).toBe(true);
+            expect(this.publicForum.hasToken('honor')).toBe(false);
+        });
+    });
+});

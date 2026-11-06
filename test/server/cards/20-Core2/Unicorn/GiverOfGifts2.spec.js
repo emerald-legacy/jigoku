@@ -63,6 +63,7 @@ describe('Giver of Gifts 2', function () {
             // Pacifism is owned and controlled by player2, even though it's on player1's character
             this.player1.clickCard(this.giverOfGifts);
             expect(this.player1).not.toBeAbleToSelect(this.pacifism);
+            expect(this.player1).toBeAbleToSelect(this.katana);
         });
 
         it('should not allow moving attachment to a character controlled by a different player', function () {
@@ -81,6 +82,8 @@ describe('Giver of Gifts 2', function () {
             this.player1.clickCard(this.giverOfGifts);
             this.player1.clickCard(this.katana);
             expect(this.player1).not.toBeAbleToSelect(this.outrider);
+            expect(this.player1).toBeAbleToSelect(this.youth);
+            expect(this.player1).toBeAbleToSelect(this.giverOfGifts);
         });
 
         it('should respect attachment restrictions when choosing a destination', function () {
@@ -94,6 +97,8 @@ describe('Giver of Gifts 2', function () {
             // So no valid targets and it should not prompt for a destination
             expect(this.player1).not.toBeAbleToSelect(this.outrider);
             expect(this.player1).not.toBeAbleToSelect(this.giverOfGifts);
+            expect(this.player1).toBeAbleToSelect(this.katana);
+            expect(this.doomed.attachments).toContain(this.river);
         });
     });
 });

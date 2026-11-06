@@ -1,10 +1,13 @@
 import { cards } from '../../../build/server/game/cards/index.js';
+import DeckBuilder from '../../../build/test/helpers/deckbuilder.js';
+
+const cardData = new DeckBuilder().cards;
 
 describe('All Cards:', function () {
     beforeEach(function () {
         this.gameSpy = jasmine.createSpyObj('game', [
             'on',
-            'removeListener',
+            'off', 'onTriggerWindow', 'offTriggerWindow', 'onAggregateWindow', 'offAggregateWindow',
             'addPower',
             'addMessage',
             'addEffect',
@@ -32,7 +35,7 @@ describe('All Cards:', function () {
 
     cards.forEach((CardClass, cardId) => {
         it(`should be able to create '${cardId}' and set it up`, function () {
-            expect(() => new CardClass(this.playerSpy, {})).not.toThrow();
+            expect(() => new CardClass(this.playerSpy, cardData[cardId])).not.toThrow();
         });
     });
 });

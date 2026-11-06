@@ -33,7 +33,7 @@ describe('Shiba Peacemaker', function() {
                 this.spy = spyOn(this.game, 'addMessage');
                 this.noMoreActions();
 
-                expect(this.spy).toHaveBeenCalledWith('{0} passes their conflict opportunity as none of their characters can be declared as an attacker', this.player1.player);
+                expect(this.spy).toHaveBeenCalledWith(['{0} passes their conflict opportunity as none of their characters can be declared as an attacker', [this.player1.player]]);
             });
         });
 

@@ -1,23 +1,21 @@
-import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Players, RestrictionScope } from '../../Constants.js';
+import { immunity } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class NorthernWallSensei extends DrawCard {
     static id = 'northern-wall-sensei';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Grant immunity to events',
-            condition: (context) => context.source.isParticipating(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Grant immunity to events')
+            .condition((context) => context.source.isParticipating())
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.isParticipating() && card.attachments.length > 0,
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    effect: AbilityDsl.effects.immunity({ restricts: 'events' })
-                })
-            },
-            effect: 'grant immunity to events to {0}'
-        });
+                cardCondition: (card) => card.isParticipating() && card.attachments.length > 0
+            }, cardLastingEffect({
+                effect: immunity({ appliesTo: RestrictionScope.Events })
+            }))
+            .chatText('grant immunity to events to {0}');
     }
 }

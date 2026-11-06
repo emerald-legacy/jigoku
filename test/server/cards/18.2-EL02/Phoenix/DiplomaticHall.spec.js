@@ -39,8 +39,8 @@ describe('Diplomatic Hall', function() {
                 defenders: []
             });
             this.player2.pass();
-            let hand = this.player1.hand.length;
-            let hand2 = this.player2.hand.length;
+            const hand = this.player1.hand.length;
+            const hand2 = this.player2.hand.length;
             this.player1.clickCard(this.hall);
             expect(this.player1).toHavePromptButton('player1');
             expect(this.player1).toHavePromptButton('player2');
@@ -58,8 +58,8 @@ describe('Diplomatic Hall', function() {
                 defenders: []
             });
             this.player2.pass();
-            let hand = this.player1.hand.length;
-            let hand2 = this.player2.hand.length;
+            const hand = this.player1.hand.length;
+            const hand2 = this.player2.hand.length;
             this.player1.clickCard(this.hall);
             expect(this.player1).toHavePromptButton('player1');
             expect(this.player1).toHavePromptButton('player2');

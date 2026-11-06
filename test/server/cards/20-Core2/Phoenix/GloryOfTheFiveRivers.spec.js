@@ -68,3 +68,89 @@ describe('Glory of the Five Rivers', function () {
         });
     });
 });
+
+describe('Glory of the Five Rivers when no character can be dishonored', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    hand: ['glory-of-the-five-rivers'],
+                    inPlay: ['solemn-scholar', 'seppun-truthseeker']
+                },
+                player2: {
+                    inPlay: ['brash-samurai']
+                }
+            });
+            this.glory = this.player1.findCardByName('glory-of-the-five-rivers');
+            this.solemn = this.player1.findCardByName('solemn-scholar');
+            this.brash = this.player2.findCardByName('brash-samurai');
+            this.truthseeker = this.player1.findCardByName('seppun-truthseeker');
+            this.truthseeker.dishonor();
+            this.solemn.dishonor();
+            this.brash.dishonor();
+        });
+
+        it('honors nothing', function () {
+            this.player1.clickCard(this.glory);
+            this.player1.clickPrompt('0');
+            this.player2.clickPrompt('1');
+            expect(this.player2).not.toHavePrompt('Choose a character');
+            expect(this.solemn.isDishonored).toBe(true);
+            expect(this.brash.isDishonored).toBe(true);
+        });
+    });
+});
+
+describe('Glory of the Five Rivers when the players cannot spend fate', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 5,
+                    inPlay: ['doji-whisperer', 'doji-challenger'],
+                    hand: ['glory-of-the-five-rivers']
+                },
+                player2: {
+                    fate: 5,
+                    inPlay: ['solemn-scholar'],
+                    provinces: ['blood-of-onnotangu']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.glory = this.player1.findCardByName('glory-of-the-five-rivers');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+            this.blood = this.player2.findCardByName('blood-of-onnotangu');
+        });
+
+        it('offers only the 0 bid at Blood of Onnotangu, so nobody wins', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger],
+                defenders: [],
+                province: this.blood
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.glory);
+            expect(this.player1).toHavePrompt('Choose an amount of fate');
+            expect(this.player1).toHavePromptButton('0');
+            expect(this.player1).not.toHavePromptButton('1');
+            expect(this.player2).toHavePromptButton('0');
+            expect(this.player2).not.toHavePromptButton('1');
+
+            this.player1.clickPrompt('0');
+            this.player2.clickPrompt('0');
+            expect(this.player1.fate).toBe(5);
+            expect(this.player2.fate).toBe(5);
+            expect(this.getChatLogs(5)).toContain('player1 spends 0 fate');
+            expect(this.getChatLogs(5)).toContain('player2 spends 0 fate');
+            expect(this.player1).not.toHavePrompt('Choose a character');
+            expect(this.player2).not.toHavePrompt('Choose a character');
+            expect(this.challenger.isDishonored).toBe(false);
+            expect(this.scholar.isDishonored).toBe(false);
+        });
+    });
+});

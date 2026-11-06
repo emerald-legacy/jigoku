@@ -26,7 +26,7 @@ describe('Temple of The Thunders', function() {
             });
 
             it('should put a fate on the fire ring if it is unclaimed', function() {
-                let fate = this.game.rings.fire.fate;
+                const fate = this.game.rings.fire.fate;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.shugenja],
@@ -40,7 +40,7 @@ describe('Temple of The Thunders', function() {
             });
 
             it('should not put a fate on the fire ring if it is contested', function() {
-                let fate = this.game.rings.fire.fate;
+                const fate = this.game.rings.fire.fate;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.shugenja],

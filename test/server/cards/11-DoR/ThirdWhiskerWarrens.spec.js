@@ -112,7 +112,7 @@ describe('Third Whisker Warrens', function() {
                     defenders: [],
                     province: this.pWarrens
                 });
-                let hand = this.player2.hand.length;
+                const hand = this.player2.hand.length;
                 this.player2.clickCard(this.storehouse);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 expect(this.player2.hand.length).toBe(hand);
@@ -121,6 +121,21 @@ describe('Third Whisker Warrens', function() {
             it('should allow you to use the disguised keyword when you play from discard', function() {
                 this.player2.moveCard(this.akodoZentaro, 'dynasty deck');
                 expect(this.player2.player.dynastyDeck[0]).toBe(this.akodoZentaro);
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.agashaSwordsmith],
+                    defenders: [this.akodoGunso],
+                    province: this.pWarrens
+                });
+                this.player2.clickCard(this.akodoZentaro);
+                expect(this.player2).toHavePrompt('Akodo Zentarō');
+                expect(this.player2).toHavePromptButton('Play this character with Disguise');
+                expect(this.player2).toHavePromptButton('Play this character');
+            });
+
+            it('should allow you to use the disguised keyword on a facedown card', function() {
+                this.player2.moveCard(this.akodoZentaro, 'dynasty deck');
+                this.akodoZentaro.facedown = true;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.agashaSwordsmith],

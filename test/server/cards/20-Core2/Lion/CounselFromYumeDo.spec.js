@@ -45,6 +45,18 @@ describe('Counsel from Yume-do', function () {
             );
             expect(this.getChatLogs(5)).toContain('player1 is shuffling their conflict deck');
             expect(this.player1.hand.length).toBe(0);
+            expect(this.counselFromYumeDo.location).toBe('removed from game');
+        });
+
+        it('cannot be played without a Shugenja', function () {
+            this.player1.moveCard(this.adept, 'dynasty discard pile');
+            this.player1.moveCard(this.solemn, 'dynasty discard pile');
+            this.game.checkGameState(true);
+
+            this.player1.clickCard(this.counselFromYumeDo);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.counselFromYumeDo.location).toBe('hand');
+            expect(this.aPerfectCut.location).toBe('conflict discard pile');
         });
 
         it('with affinity, also draw a card', function () {

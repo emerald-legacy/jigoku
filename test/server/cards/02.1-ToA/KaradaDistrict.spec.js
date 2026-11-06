@@ -135,7 +135,7 @@ describe('Karada District', function () {
                     expect(this.watchCommander.controller).toBe(this.player2.player);
                     expect(this.miyaMystic.attachments).toContain(this.watchCommander);
                     expect(this.getChatLogs(2)).toContain(
-                        'player2 uses Karada District, giving 1 fate to player1 to choose a target for Watch Commander'
+                        'player2 uses Karada District, giving 1 fate to player1 to take control of Watch Commander'
                     );
                     expect(this.getChatLogs(1)).toContain('player2 chooses to attach Watch Commander to Miya Mystic');
                 });

@@ -1,65 +1,57 @@
-import { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { chatMessage, discardAtRandom, discardFromPlay, joint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Conflict } from '../../../Conflict.js';
+
+function controlsParticipatingShinobi(context: AbilityContext): boolean {
+    return context.player.charactersInPlay.some((card) => card.isParticipating() && card.hasTrait(Trait.Shinobi));
+}
 
 function shinobiCount(context: AbilityContext): number {
-    return (
-        (context.game.currentConflict as Conflict | null)?.getParticipants(
-            (card: DrawCard) => card.controller === context.player && card.hasTrait('shinobi')
-        )?.length ?? 0
-    );
+    return context.game.currentConflict?.getCharacters(context.player).filter((card) => card.hasTrait(Trait.Shinobi)).length ?? 0;
 }
 
 export default class SpiderwebPassage extends DrawCard {
     static id = 'spiderweb-passage';
 
-    setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Discard a participating character with 0 skill',
-            condition: (context) => shinobiCount(context) > 0,
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            target: {
+    override setupCardAbilities() {
+        this.conflictAction('Discard a participating character with 0 skill')
+            .ifCondition((context) => controlsParticipatingShinobi(context))
+            .cost(costs.sacrificeSelf())
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Opponent,
-                cardCondition: (card: DrawCard) =>
-                    card.isParticipating() &&
-                    ((!card.hasDash('political') && card.getPoliticalSkill() === 0) ||
-                        (!card.hasDash('military') && card.getMilitarySkill() === 0))
-            },
-            gameAction: AbilityDsl.actions.conditional(context => {
-                const discardCount = shinobiCount(context);
-                const discardFromHandAction = AbilityDsl.actions.discardAtRandom({
-                    amount: discardCount,
-                    target: context.player.opponent
-                });
-                const killAction = AbilityDsl.actions.discardFromPlay({ target: context.target });
-
+                cardCondition: (card, context) =>
+                    !!context.player.opponent &&
+                    card.isParticipatingFor(context.player.opponent) &&
+                    (card.politicalSkill === 0 || card.militarySkill === 0)
+            })
+            // "Its controller selects one" is before the dash: made with the target (RRG Select)
+            .selectFrom({
+                name: 'select',
+                dependsOn: 'target',
+                player: (context) => context.target.controller === context.player ? Players.Self : Players.Opponent
+            }, (context) => {
+                const targetController = context.target?.controller ?? context.player.opponent;
                 return {
-                    condition: () =>
-                        (context.player.opponent?.hand.length ?? 0) >= discardCount &&
-                        discardFromHandAction.canAffect(context.player.opponent, context),
-                    falseGameAction: killAction,
-                    trueGameAction: AbilityDsl.actions.chooseAction(context => ({
-                        player: Players.Opponent,
-                        activePromptTitle: 'Select one',
-                        options: {
-                            [`Discard ${discardCount} random cards from hand`]: {
-                                action: discardFromHandAction,
-                                message: '{0} distracts the Shinobi'
-                            },
-                            [`Discard ${context.target?.name}`]: {
-                                action: killAction,
-                                message: `{0} refuses to discard ${discardCount} cards. {2} is discarded`
-                            }
-                        },
-                        messageArgs: [context.target]
-                    }))
+                    // a smaller hand can still be discarded: the option changes the game state (RRG Select)
+                    [`Discard ${shinobiCount(context)} random card${shinobiCount(context) === 1 ? '' : 's'} from hand`]: joint([
+                        discardAtRandom({
+                            amount: shinobiCount(context),
+                            target: targetController
+                        }),
+                        chatMessage(() => msg`${targetController} distracts the Shinobi`)
+                    ]),
+                    [`Discard ${context.target?.name}`]: joint([
+                        discardFromPlay({ target: context.target }),
+                        // with an empty hand there was nothing to refuse
+                        chatMessage(() => (targetController?.hand.length ?? 0) > 0
+                            ? msg`${targetController} refuses to discard ${shinobiCount(context)} card${shinobiCount(context) === 1 ? '' : 's'}. ${context.target} is discarded`
+                            : undefined)
+                    ])
                 };
-            }),
-            effect: 'ambush {1}',
-            effectArgs: (context) => context.target ?? ''
-        });
+            })
+            .chatText((context) => msg`ambush ${context.target}`);
     }
 }

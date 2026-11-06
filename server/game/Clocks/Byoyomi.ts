@@ -3,21 +3,21 @@ import { ChessClock } from './ChessClock.js';
 import type { ClockInterface } from './types.js';
 
 export class Byoyomi extends ChessClock implements ClockInterface {
-    name = 'Byoyomi';
+    override name = 'Byoyomi';
 
     constructor(player: Player, time: number, private periods: number, private timePeriod: number) {
         super(player, time);
         this.timeLeft = time + periods * timePeriod;
     }
 
-    reset() {
+    override reset() {
         if(this.timeLeft > 0 && this.timeLeft < this.periods * this.timePeriod) {
             this.periods = Math.ceil(this.timeLeft / this.timePeriod);
             this.timeLeft = this.periods * this.timePeriod;
         }
     }
 
-    getState() {
+    override getState() {
         const state = super.getState();
         return Object.assign(
             {

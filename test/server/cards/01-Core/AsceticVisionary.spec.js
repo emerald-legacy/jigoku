@@ -48,8 +48,8 @@ describe('Ascetic Visionary', function () {
             });
 
             it('should ready the monk and put a fate onto the chosen unclaimed ring', function () {
-                let playerFate = this.player1.player.fate;
-                let airFate = this.game.rings.air.fate;
+                const playerFate = this.player1.player.fate;
+                const airFate = this.game.rings.air.fate;
                 this.initiateConflict({
                     ring: 'fire',
                     attackers: [this.asceticVisionary],
@@ -78,8 +78,10 @@ describe('Ascetic Visionary', function () {
                     attackers: [this.miyaMystic],
                     defenders: [this.asceticVisionary]
                 });
+                expect(this.asceticVisionary.isDefending()).toBe(true);
                 this.player1.clickCard(this.asceticVisionary);
                 expect(this.player1).not.toHavePrompt('Ascetic Visionary');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
             });
 
             it('should not be able to trigger when at home', function () {
@@ -89,9 +91,51 @@ describe('Ascetic Visionary', function () {
                     defenders: []
                 });
                 this.player2.pass();
+                expect(this.mirumotoRaitsugu.isAttacking()).toBe(true);
                 this.player1.clickCard(this.asceticVisionary);
                 expect(this.player1).not.toHavePrompt('Ascetic Visionary');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
             });
+        });
+    });
+});
+
+describe('Ascetic Visionary\'s attachment restriction', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 5,
+                    inPlay: ['ascetic-visionary', 'togashi-initiate'],
+                    hand: ['fine-katana', 'vine-tattoo', 'tattooed-wanderer']
+                }
+            });
+            this.asceticVisionary = this.player1.findCardByName('ascetic-visionary');
+            this.togashiInitiate = this.player1.findCardByName('togashi-initiate');
+            this.katana = this.player1.findCardByName('fine-katana');
+            this.vineTattoo = this.player1.findCardByName('vine-tattoo');
+            this.tattooedWanderer = this.player1.findCardByName('tattooed-wanderer');
+        });
+
+        it('cannot have an attachment that is neither Monk nor Tattoo', function () {
+            this.player1.clickCard(this.katana);
+            expect(this.player1).toHavePrompt('Fine Katana');
+            expect(this.player1).toBeAbleToSelect(this.togashiInitiate);
+            expect(this.player1).not.toBeAbleToSelect(this.asceticVisionary);
+        });
+
+        it('can have a Tattoo attachment', function () {
+            this.player1.playAttachment(this.vineTattoo, this.asceticVisionary);
+            expect(this.vineTattoo.parent).toBe(this.asceticVisionary);
+        });
+
+        it('can have a Monk attachment', function () {
+            this.player1.clickCard(this.tattooedWanderer);
+            this.player1.clickPrompt('Play Tattooed Wanderer as an attachment');
+            expect(this.player1).toBeAbleToSelect(this.asceticVisionary);
+            this.player1.clickCard(this.asceticVisionary);
+            expect(this.tattooedWanderer.parent).toBe(this.asceticVisionary);
         });
     });
 });

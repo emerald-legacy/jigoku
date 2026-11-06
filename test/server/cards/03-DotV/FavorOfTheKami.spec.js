@@ -13,7 +13,7 @@ describe('Favor of the Kami', function() {
         });
 
         it('should give the attached character +1 glory', function() {
-            let glory = this.adeptOfTheWaves.glory;
+            const glory = this.adeptOfTheWaves.glory;
             this.player1.playAttachment(this.favorOfTheKami, this.adeptOfTheWaves);
             expect(this.adeptOfTheWaves.glory).toBe(glory + 1);
         });

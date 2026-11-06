@@ -1,5 +1,3 @@
-import { discardFromPlay } from '../../../../../build/server/game/GameActions/GameActions.js';
-
 describe('Bake Kujira', function () {
     integration(function () {
         beforeEach(function () {
@@ -12,7 +10,7 @@ describe('Bake Kujira', function () {
                 },
                 player2: {
                     inPlay: ['doji-kuwanan', 'doji-fumiki', 'daidoji-uji', 'isawa-skycaller'],
-                    hand: ['way-of-the-scorpion', 'charge', 'forebearer-s-echoes', 'reprieve', 'fine-katana'],
+                    hand: ['way-of-the-scorpion', 'charge', 'forebearer-s-echoes', 'reprieve', 'fine-katana', 'fallen-in-battle'],
                     conflictDiscard: ['mushin-no-shin'],
                     dynastyDiscard: ['bake-kujira', 'doji-challenger']
                 }
@@ -44,29 +42,24 @@ describe('Bake Kujira', function () {
         });
 
         it('should not be able to be saved', function () {
-            this.player2.moveCard(this.whale2, 'play area');
             this.player1.placeCardInProvince(this.mine, 'province 2');
-
-            this.fumiki.action({
-                title: 'Discard a character',
-                target: {
-                    gameAction: discardFromPlay()
-                }
-            });
 
             this.noMoreActions();
             this.initiateConflict({
+                type: 'military',
                 attackers: [this.whale],
-                defenders: [this.kuwanan, this.whale2, this.fumiki]
+                defenders: [this.kuwanan, this.uji]
             });
+            this.whale.bow();
 
-            this.player2.clickCard(this.fumiki);
+            this.noMoreActions();
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard('fallen-in-battle');
             this.player2.clickCard(this.whale);
 
             expect(this.whale.location).toBe('dynasty discard pile');
-
-            expect(this.getChatLogs(5)).toContain('player2 uses Doji Fumiki to discard Bake-Kujira');
-            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.mine.location).toBe('province 2');
+            expect(this.getChatLogs(5)).toContain('player2 plays Fallen in Battle to discard Bake-Kujira');
         });
 
         it('eats a character when it wins a conflict', function () {
@@ -87,7 +80,23 @@ describe('Bake Kujira', function () {
 
             this.player1.clickCard(this.kuwanan);
             expect(this.kuwanan.location).toBe('dynasty discard pile');
-            expect(this.getChatLogs(5)).toContain('player1 uses Bake-Kujira to discard Doji Kuwanan');
+            expect(this.getChatLogs(5)).toContain('player1 uses Bake-Kujira to injure Doji Kuwanan');
+        });
+
+        it('removes a fate from a character with fate when it wins a conflict', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.whale],
+                defenders: [this.kuwanan, this.fumiki],
+                type: 'military'
+            });
+
+            this.noMoreActions();
+            this.player1.clickCard(this.whale);
+            this.player1.clickCard(this.fumiki);
+            expect(this.fumiki.location).toBe('play area');
+            expect(this.fumiki.fate).toBe(4);
+            expect(this.getChatLogs(5)).toContain('player1 uses Bake-Kujira to injure Doji Fumiki');
         });
     });
 });

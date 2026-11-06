@@ -48,6 +48,7 @@ describe('Emissary of lies\'', function() {
                 this.player1.clickCard(this.tsukune);
                 this.player2.chooseCardInPrompt(this.katana.name, 'card-name');
                 expect(this.player1).toHavePrompt('Do you want to reveal your hand?');
+                expect(this.player2).toHavePrompt('Waiting for opponent to choose to reveal their hand or not');
                 expect(this.player1).toHavePromptButton('Yes');
                 expect(this.player1).toHavePromptButton('No');
             });
@@ -77,6 +78,55 @@ describe('Emissary of lies\'', function() {
                 expect(this.game.currentConflict.defenders).toContain(this.tsukune);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
+
+            it('should log the named card', function() {
+                this.player1.clickCard(this.emissary);
+                this.player1.clickCard(this.tsukune);
+                this.player2.chooseCardInPrompt(this.banzai.name, 'card-name');
+                expect(this.getChatLogs(3)).toContain('player2 names Banzai! - player1 must choose if they want to reveal their hand');
+            });
+
+            it('should reveal the hand when choosing to reveal it', function() {
+                this.player1.clickCard(this.emissary);
+                this.player1.clickCard(this.tsukune);
+                this.player2.chooseCardInPrompt(this.banzai.name, 'card-name');
+                this.player1.clickPrompt('Yes');
+                expect(this.getChatLogs(5)).toContain('player1 reveals their hand: Fine Katana');
+            });
+        });
+    });
+});
+
+describe('Emissary of Lies and a defending Borderlands Defender', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['emissary-of-lies'],
+                    hand: ['fine-katana']
+                },
+                player2: {
+                    inPlay: ['borderlands-defender', 'shiba-tsukune'],
+                    hand: ['banzai']
+                }
+            });
+            this.emissary = this.player1.findCardByName('emissary-of-lies');
+            this.defender = this.player2.findCardByName('borderlands-defender');
+            this.tsukune = this.player2.findCardByName('shiba-tsukune');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.emissary],
+                defenders: [this.defender, this.tsukune]
+            });
+            this.player2.pass();
+        });
+
+        it('should not be able to choose a character it cannot move home', function() {
+            this.player1.clickCard(this.emissary);
+            expect(this.player1).toHavePrompt('Emissary of Lies');
+            expect(this.player1).toBeAbleToSelect(this.tsukune);
+            expect(this.player1).not.toBeAbleToSelect(this.defender);
         });
     });
 });

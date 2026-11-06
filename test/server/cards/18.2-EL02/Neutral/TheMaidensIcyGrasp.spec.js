@@ -9,6 +9,7 @@ describe('The Maidens Icy Grasp', function () {
                 },
                 player2: {
                     honor: 11,
+                    fate: 10,
                     inPlay: ['daidoji-uji', 'kitsu-spiritcaller','shiba-ryuu'],
                     hand: ['tattooed-wanderer', 'shosuro-miyako-2','one-with-the-sea','the-maiden-s-icy-grasp'],
                     dynastyDiscard: ['doji-challenger']
@@ -51,6 +52,19 @@ describe('The Maidens Icy Grasp', function () {
                 expect(this.getChatLogs(5)).toContain(
                     'player1 plays The Maiden\'s Icy Grasp to prevent Tattooed Wanderer from contributing to resolution of this conflict'
                 );
+                expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 1 Defender: 9');
+            });
+
+            it('does not remove fate from it without Water affinity', function () {
+                this.player2.clickCard(this.wanderer);
+                this.player2.clickPrompt('Play this character');
+                this.player2.clickPrompt('1');
+                this.player2.clickPrompt('Conflict');
+                expect(this.wanderer.fate).toBe(1);
+
+                this.player1.clickCard(this.grasp);
+                this.player1.clickCard(this.wanderer);
+                expect(this.wanderer.fate).toBe(1);
                 expect(this.getChatLogs(2)).toContain('Military Air conflict - Attacker: 1 Defender: 9');
             });
 
@@ -97,20 +111,188 @@ describe('The Maidens Icy Grasp', function () {
                     'player2 plays The Maiden\'s Icy Grasp to prevent Village Dōshin from contributing to resolution of this conflict'
                 );
                 expect(this.getChatLogs(10)).toContain(`Military Air conflict - Attacker: ${
-                    this.mystic.getMilitarySkill()
-            + this.mystic.getPoliticalSkill()
+                    this.mystic.militarySkill
+            + this.mystic.politicalSkill
                 } Defender: ${
-                    this.uji.getMilitarySkill()
-            + this.uji.getPoliticalSkill()
-            + this.spiritcaller.getMilitarySkill()
-            + this.spiritcaller.getPoliticalSkill()
-            + this.ryuu.getMilitarySkill()
-            + this.ryuu.getPoliticalSkill()
+                    this.uji.militarySkill
+            + this.uji.politicalSkill
+            + this.spiritcaller.militarySkill
+            + this.spiritcaller.politicalSkill
+            + this.ryuu.militarySkill
+            + this.ryuu.politicalSkill
                 }`);
 
                 this.noMoreActions();
                 expect(this.getChatLogs(2)).toContain('player2 won a military conflict 21 vs 2');
             });
+        });
+    });
+});
+
+describe('The Maidens Icy Grasp and a character put into play when the conflict is declared', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['miya-mystic'],
+                    hand: ['the-maiden-s-icy-grasp']
+                },
+                player2: {
+                    inPlay: ['moto-beastmaster'],
+                    dynastyDiscard: ['border-rider']
+                }
+            });
+            this.grasp = this.player1.findCardByName('the-maiden-s-icy-grasp');
+            this.mystic = this.player1.findCardByName('miya-mystic');
+            this.beastmaster = this.player2.findCardByName('moto-beastmaster');
+            this.rider = this.player2.placeCardInProvince('border-rider', 'province 1');
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.beastmaster]
+            });
+            this.player2.clickCard(this.beastmaster);
+            this.player2.clickCard(this.rider);
+            this.player1.clickCard(this.mystic);
+            this.player1.clickPrompt('Done');
+        });
+
+        it('can choose it, as it entered play during this conflict', function () {
+            expect(this.rider.isParticipating()).toBe(true);
+            this.player1.clickCard(this.grasp);
+            expect(this.player1).toBeAbleToSelect(this.rider);
+        });
+    });
+});
+
+describe('The Maidens Icy Grasp and a character that leaves play and returns', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['miya-mystic'],
+                    hand: ['the-maiden-s-icy-grasp', 'assassination']
+                },
+                player2: {
+                    inPlay: ['kitsu-spiritcaller-2', 'kitsu-spiritcaller-2'],
+                    dynastyDiscard: ['akodo-gunso']
+                }
+            });
+            this.grasp = this.player1.findCardByName('the-maiden-s-icy-grasp');
+            this.assassination = this.player1.findCardByName('assassination');
+            this.mystic = this.player1.findCardByName('miya-mystic');
+            [this.spiritcaller, this.spiritcaller2] = this.player2.filterCardsByName('kitsu-spiritcaller-2');
+            this.gunso = this.player2.findCardByName('akodo-gunso');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.mystic],
+                defenders: []
+            });
+        });
+
+        it('the returned character contributes again', function () {
+            this.player2.clickCard(this.spiritcaller);
+            this.player2.clickCard(this.gunso);
+            this.player1.clickCard(this.grasp);
+            this.player1.clickCard(this.gunso);
+            expect(this.game.currentConflict.defenderSkill).toBe(0);
+
+            this.player2.pass();
+            this.player1.clickCard(this.assassination);
+            this.player1.clickCard(this.gunso);
+            expect(this.gunso.location).toBe('dynasty discard pile');
+
+            this.player2.clickCard(this.spiritcaller2);
+            this.player2.clickCard(this.gunso);
+            expect(this.gunso.isParticipating()).toBe(true);
+            expect(this.game.currentConflict.defenderSkill).toBe(this.gunso.militarySkill);
+        });
+    });
+});
+
+describe('The Maidens Icy Grasp with Water affinity', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kitsu-spiritcaller'],
+                    hand: ['the-maiden-s-icy-grasp']
+                },
+                player2: {
+                    fate: 10,
+                    hand: ['tattooed-wanderer']
+                }
+            });
+            this.grasp = this.player1.findCardByName('the-maiden-s-icy-grasp');
+            this.spiritcaller = this.player1.findCardByName('kitsu-spiritcaller');
+            this.wanderer = this.player2.findCardByName('tattooed-wanderer');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.spiritcaller],
+                defenders: []
+            });
+            this.player2.clickCard(this.wanderer);
+            this.player2.clickPrompt('Play this character');
+            this.player2.clickPrompt('1');
+            this.player2.clickPrompt('Conflict');
+        });
+
+        it('also removes 1 fate from the chosen character', function () {
+            expect(this.wanderer.fate).toBe(1);
+            expect(this.game.currentConflict.defenderSkill).toBe(2);
+            this.player1.clickCard(this.grasp);
+            this.player1.clickCard(this.wanderer);
+            expect(this.wanderer.fate).toBe(0);
+            expect(this.wanderer.isParticipating()).toBe(true);
+            expect(this.game.currentConflict.defenderSkill).toBe(0);
+        });
+    });
+});
+
+describe('The Maidens Icy Grasp without a participating Shugenja', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger', 'miya-mystic'],
+                    hand: ['the-maiden-s-icy-grasp']
+                },
+                player2: {
+                    fate: 10,
+                    hand: ['tattooed-wanderer']
+                }
+            });
+            this.grasp = this.player1.findCardByName('the-maiden-s-icy-grasp');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.mystic = this.player1.findCardByName('miya-mystic');
+            this.wanderer = this.player2.findCardByName('tattooed-wanderer');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger],
+                defenders: []
+            });
+            this.player2.clickCard(this.wanderer);
+            this.player2.clickPrompt('Play this character');
+            this.player2.clickPrompt('0');
+            this.player2.clickPrompt('Conflict');
+        });
+
+        it('cannot be played when the only Shugenja is at home', function () {
+            expect(this.mystic.isParticipating()).toBe(false);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            this.player1.clickCard(this.grasp);
+            expect(this.grasp.location).toBe('hand');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.game.currentConflict.defenderSkill).toBe(2);
         });
     });
 });

@@ -47,6 +47,24 @@ describe('Isawa House Guard', function () {
             expect(this.yoshi.fate).toBe(1);
         });
 
+        it('tie - nobody is dishonored', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [this.house]
+            });
+
+            this.player2.clickCard(this.house);
+            this.player2.clickCard(this.challenger);
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+
+            expect(this.getChatLogs(5)).toContain('Isawa House Guard: 4 vs 4: Doji Challenger');
+            expect(this.getChatLogs(5)).toContain('The duel ends in a draw');
+            expect(this.challenger.isDishonored).toBe(false);
+            expect(this.house.isDishonored).toBe(false);
+        });
+
         it('duel focus', function () {
             this.house.honor();
 

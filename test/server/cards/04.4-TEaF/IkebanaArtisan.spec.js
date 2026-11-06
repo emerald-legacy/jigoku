@@ -56,6 +56,7 @@ describe('Ikebana Artisan', function() {
                         it('should result in a fate loss instead of honor', function() {
                             expect(this.player2.honor).toBe(originalHonor);
                             expect(this.player2.fate).toBe(originalFate - 1);
+                            expect(this.getChatLogs(3)).toContain('player2 uses Ikebana Artisan to lose 1 fate rather than 1 honor for not defending the conflict');
                         });
                     });
 
@@ -126,6 +127,7 @@ describe('Ikebana Artisan', function() {
                         it('should result in no fate or honor loss', function() {
                             expect(this.player2.honor).toBe(originalHonor);
                             expect(this.player2.fate).toBe(originalFate);
+                            expect(this.getChatLogs(3)).toContain('player2 uses Ikebana Artisan to cancel the honor loss for not defending the conflict');
                         });
                     });
                 });

@@ -187,7 +187,7 @@ describe('Province Card - strengthSummary', function() {
                 const summary = this.manicured.strengthSummary;
                 expect(summary.stat).toBe(this.manicured.strength.toString());
                 expect(summary.modifiers).toBeDefined();
-                expect(summary.modifiers.length).toBeGreaterThan(0);
+                expect(summary.modifiers.length).toBe(1);
 
                 const printedModifier = summary.modifiers.find(m => m.name === 'Printed');
                 expect(printedModifier).toBeDefined();
@@ -354,9 +354,9 @@ describe('Province Card - strengthSummary', function() {
             });
 
             it('should never show negative strength in the summary stat', function() {
-                expect(this.manicured.strength).toBeGreaterThanOrEqual(0);
+                expect(this.manicured.strength).toBe(4);
                 const summary = this.manicured.strengthSummary;
-                expect(parseInt(summary.stat)).toBeGreaterThanOrEqual(0);
+                expect(summary.stat).toBe('4');
             });
         });
     });

@@ -97,7 +97,25 @@ describe('A Game of Letters', function() {
             expect(this.dojiWhisperer.isDishonored).toBe(false);
         });
 
-        it('should apply the same effect as the token (non-participating target)', function() {
+        it('should not let you choose a non-participating character', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.yoshi, this.keepsakes],
+                defenders: [],
+                type: 'political'
+            });
+
+            this.player2.clickCard(this.game);
+            this.player2.clickCard(this.dojiWhisperer);
+            expect(this.player2).toBeAbleToSelect(this.yoshi);
+            expect(this.player2).not.toBeAbleToSelect(this.fumiki);
+            this.player2.clickCard(this.yoshi);
+            expect(this.yoshi.isHonored).toBe(false);
+            expect(this.yoshi.isDishonored).toBe(false);
+            expect(this.fumiki.isDishonored).toBe(false);
+        });
+
+        it('should apply the same effect as a token on a non-participating character', function() {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.yoshi, this.fumiki, this.keepsakes],
@@ -148,6 +166,44 @@ describe('A Game of Letters', function() {
             this.player2.clickCard(this.dojiWhisperer);
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.dojiWhisperer.isDishonored).toBe(false);
+        });
+    });
+});
+
+describe('A Game of Letters on a character with several tokens', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-yoshi']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['a-game-of-letters']
+                }
+            });
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.yoshi.taint();
+            this.yoshi.honor();
+            this.whisperer.dishonor();
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.yoshi],
+                defenders: [this.whisperer]
+            });
+        });
+
+        it('can choose its honored token to honor a dishonored character', function() {
+            this.player2.clickCard('a-game-of-letters');
+            expect(this.player2).toBeAbleToSelect(this.yoshi);
+            this.player2.clickCard(this.yoshi);
+            this.player2.clickCard(this.whisperer);
+            expect(this.whisperer.isDishonored).toBe(false);
+            expect(this.whisperer.isHonored).toBe(false);
         });
     });
 });

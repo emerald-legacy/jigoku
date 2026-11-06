@@ -1,14 +1,14 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 
 class PetalVillageEstate extends DrawCard {
     static id = 'petal-village-estate';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            match: (card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('imperial'),
-            effect: AbilityDsl.effects.modifyBothSkills(1)
+            match: (card) => card.type === CardType.Character && card.hasTrait(Trait.Imperial),
+            effect: modifyBothSkills(1)
         });
     }
 }

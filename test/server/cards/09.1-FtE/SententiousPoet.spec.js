@@ -134,7 +134,7 @@ describe('Sententious Poet', function() {
                 this.player2.clickCard(this.tattooedWanderer);
                 this.player2.clickPrompt('Play this character');
                 this.player2.clickPrompt('0');
-                let fate = this.player1.player.fate;
+                const fate = this.player1.player.fate;
                 this.player1.clickCard(this.sententiousPoet);
                 expect(this.player1.player.fate).toBe(fate + 1);
                 expect(this.getChatLogs(3)).toContain('player1 uses Sententious Poet to gain 1 fate');

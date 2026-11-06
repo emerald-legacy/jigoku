@@ -63,7 +63,7 @@ describe('Karmic Twist', function() {
             });
 
             it('should move the fate from the donor to the recipient (self)', function() {
-                let fate = this.asakoDiplomat.fate;
+                const fate = this.asakoDiplomat.fate;
                 this.player1.clickCard(this.karmicTwist);
                 this.player1.clickCard(this.asakoDiplomat);
                 this.player1.clickCard(this.adeptOfTheWaves);
@@ -72,13 +72,51 @@ describe('Karmic Twist', function() {
             });
 
             it('should move the fate from the donor to the recipient (opponent)', function() {
-                let fate = this.bayushiManipulator.fate;
+                const fate = this.bayushiManipulator.fate;
                 this.player1.clickCard(this.karmicTwist);
                 this.player1.clickCard(this.bayushiManipulator);
                 this.player1.clickCard(this.soshiIllusionist);
                 expect(this.bayushiManipulator.fate).toBe(0);
                 expect(this.soshiIllusionist.fate).toBe(fate);
             });
+        });
+    });
+});
+
+describe('Karmic Twist without a recipient', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['asako-diplomat', 'asako-tsuki'],
+                    hand: ['karmic-twist']
+                },
+                player2: {
+                    inPlay: ['bayushi-manipulator', 'soshi-illusionist']
+                }
+            });
+            this.asakoDiplomat = this.player1.findCardByName('asako-diplomat');
+            this.asakoDiplomat.fate = 2;
+            this.karmicTwist = this.player1.findCardByName('karmic-twist');
+            this.bayushiManipulator = this.player2.findCardByName('bayushi-manipulator');
+            this.bayushiManipulator.fate = 1;
+            this.soshiIllusionist = this.player2.findCardByName('soshi-illusionist');
+        });
+
+        it('cannot choose a donor whose controller has no eligible recipient (#340)', function() {
+            this.player1.clickCard(this.karmicTwist);
+            expect(this.player1).toHavePrompt('Choose a donor character');
+            expect(this.player1).not.toBeAbleToSelect(this.asakoDiplomat);
+            expect(this.player1).toBeAbleToSelect(this.bayushiManipulator);
+        });
+
+        it('cannot be played when no donor has an eligible recipient (#340)', function() {
+            this.soshiIllusionist.fate = 1;
+            this.player1.clickCard(this.karmicTwist);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.karmicTwist.location).toBe('hand');
+            expect(this.asakoDiplomat.fate).toBe(2);
         });
     });
 });

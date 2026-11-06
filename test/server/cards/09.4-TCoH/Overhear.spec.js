@@ -38,8 +38,8 @@ describe('Overhear', function() {
             });
 
             it('should put a random card from your opponent\'s hand on top of their deck, and correctly log it', function() {
-                let handSize = this.player2.hand.length;
-                let deckSize = this.player2.conflictDeck.length;
+                const handSize = this.player2.hand.length;
+                const deckSize = this.player2.conflictDeck.length;
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'political',
@@ -51,12 +51,12 @@ describe('Overhear', function() {
                 expect(this.player2.hand.length).toBe(handSize - 1);
                 expect(this.player2.conflictDeck.length).toBe(deckSize + 1);
                 expect([
-                    'player1 sees Fine Katana',
-                    'player1 sees Ornate Fan',
-                    'player1 sees Banzai!'
+                    'player2 reveals Fine Katana',
+                    'player2 reveals Ornate Fan',
+                    'player2 reveals Banzai!'
                 ]).toContain(this.getChatLogs(1)[0]);
                 expect(
-                    `player1 sees ${ this.player2.conflictDeck[0].name }`
+                    `player2 reveals ${ this.player2.conflictDeck[0].name }`
                 ).toEqual(this.getChatLogs(1)[0]);
             });
 
@@ -95,12 +95,12 @@ describe('Overhear', function() {
                 });
                 this.player2.pass();
                 this.player1.clickCard(this.overhear);
-                let honorP1 = this.player1.player.honor;
-                let honorP2 = this.player2.player.honor;
+                const honorP1 = this.player1.player.honor;
+                const honorP2 = this.player2.player.honor;
                 this.player1.clickPrompt('Give 1 honor to resolve this ability again');
                 expect(this.player1.player.honor).toBe(honorP1 - 1);
                 expect(this.player2.player.honor).toBe(honorP2 + 1);
-                expect(this.getChatLogs(3)).toContain('player1 chooses to give an honor to player2 to resolve Overhear again');
+                expect(this.getChatLogs(3)).toContain('player1 chooses to give 1 honor to resolve Overhear again');
             });
 
             it('should end if you choose not to resolve again', function() {
@@ -112,18 +112,18 @@ describe('Overhear', function() {
                 });
                 this.player2.pass();
                 this.player1.clickCard(this.overhear);
-                let honorP1 = this.player1.player.honor;
-                let honorP2 = this.player2.player.honor;
+                const honorP1 = this.player1.player.honor;
+                const honorP2 = this.player2.player.honor;
                 this.player1.clickPrompt('Done');
                 expect(this.player1.player.honor).toBe(honorP1);
                 expect(this.player2.player.honor).toBe(honorP2);
-                expect(this.getChatLogs(3)).toContain('player1 chooses not to give an honor to player2 to resolve Overhear again');
+                expect(this.getChatLogs(3)).toContain('player1 chooses not to give 1 honor to resolve Overhear again');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
 
             it('should resolve again if you choose to do so', function() {
-                let handSize = this.player2.hand.length;
-                let deckSize = this.player2.conflictDeck.length;
+                const handSize = this.player2.hand.length;
+                const deckSize = this.player2.conflictDeck.length;
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'political',

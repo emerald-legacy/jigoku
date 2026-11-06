@@ -26,16 +26,16 @@ Check out the [About page](https://jigoku.online/about) of a Jigoku live deploym
 
 #### Required Software
 * Git
-* Node.js 22+
-* MongoDB 7
-* TypeScript
+* Node.js 26+
+
+The game server needs no database; MongoDB belongs to the lobby (`jigoku-client`).
 
 #### Getting Started
 
 ```
 git clone <repo>
 npm install
-tsc
+npx tsc
 node build/server/gamenode
 ```
 
@@ -43,18 +43,22 @@ The game server communicates with the lobby server via WebSocket. Configure the 
 
 | Variable | Description |
 |----------|-------------|
-| `LOBBY_WS_URL` | WebSocket URL for lobby (e.g. `ws://lobby:6000`) |
+| `LOBBY_WS_URL` | WebSocket URL for lobby (e.g. `ws://lobby:6100`) |
 | `GAME_NODE_NAME` | Node identity (e.g. `node-1`) |
 | `GAME_NODE_SOCKET_IO_PORT` | Socket.IO port for player connections (e.g. `9500`) |
-| `GAME_NODE_PROXY_PORT` | External port advertised to lobby (e.g. `443`) |
-| `DB_PATH` | MongoDB connection string |
+| `GAME_NODE_PROXY_PORT` | Optional. External port advertised to the lobby (e.g. `443`); defaults to the Socket.IO port |
 | `DOMAIN` | Site domain |
-| `SECRET` | Session secret |
+| `SECRET` | JWT secret shared with the lobby |
 | `HTTPS` | `true` or `false` |
-| `ENVIRONMENT` | `production` or `development` |
+| `ENVIRONMENT` | Environment name, also used in the game report URL (e.g. `production`; `npm run jasmine` uses `test`) |
 | `LOBBY_PORT` | Lobby port number |
+| `MAX_GAMES` | Optional. Games this node accepts, default `20` |
+| `NODE_SECRET` | Optional. Secret sent to the lobby when the node connects |
+| `GAME_NODE_CERT_PATH`, `GAME_NODE_KEY_PATH` | Optional. TLS certificate and key for the node itself |
+| `BUILD_VERSION` | Optional. Version reported to the lobby, default `LOCAL` |
+| `ANALYTICS_URL` | Optional. Game report endpoint; defaults to the analytics engine, empty disables the reports |
 
-See `server/env.ts` for the full list of supported environment variables.
+See `server/env.ts` for the definitions.
 
 ### Coding Guidelines
 
@@ -70,7 +74,7 @@ All tests should also pass:
 npm test
 ```
 
-TypeScript type checking:
+TypeScript type checking (the server and the specs):
 
 ```
 npm run typecheck

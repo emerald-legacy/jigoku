@@ -32,6 +32,7 @@ describe('Warriors of the Wind', function() {
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.clickCard(this.warriorsOfTheWind);
                 expect(this.player1).toHavePrompt('Warriors of the Wind');
+                expect(this.getChatLogs(1)).toContain('player1 plays Warriors of the Wind to move any number of their Cavalry characters to the conflict');
             });
 
             it('should send all participating cavalry characters you control home', function() {
@@ -47,7 +48,7 @@ describe('Warriors of the Wind', function() {
                 expect(this.battleMaidenRecruit.isParticipating()).toBe(false);
                 expect(this.wanderingRonin.isParticipating()).toBe(false);
                 expect(this.matsuMitsuko.isParticipating()).toBe(true);
-                expect(this.getChatLogs(1)).toContain('player1 plays Warriors of the Wind to send Border Rider and Battle Maiden Recruit home');
+                expect(this.getChatLogs(1)).toContain('player1 plays Warriors of the Wind to send Border Rider and Battle Maiden Recruit home and move any number of their Cavalry characters to the conflict');
             });
 
             it('should allow you to choose multiple cavalry characters to send to the conflict', function() {
@@ -88,6 +89,7 @@ describe('Warriors of the Wind', function() {
                 expect(this.wanderingRonin.isParticipating()).toBe(false);
                 expect(this.matsuMitsuko.isParticipating()).toBe(true);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.getChatLogs(3)).toContain('player1 chooses to move no characters to the conflict');
             });
 
             it('should send all chosen characters to the conflict', function() {

@@ -111,6 +111,41 @@ describe('Agahsa Taiko', function() {
                 expect(this.player2).toBeAbleToSelect(this.oppShamefulDisplay4);
             });
         });
+
+        describe('Agasha Taiko put into play by a card effect', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['matsu-berserker'],
+                        dynastyDiscard: ['agasha-taiko'],
+                        hand: ['charge']
+                    },
+                    player2: {
+                    }
+                });
+
+                this.agashaTaiko = this.player1.placeCardInProvince('agasha-taiko', 'province 1');
+                this.berserker = this.player1.findCardByName('matsu-berserker');
+                this.charge = this.player1.findCardByName('charge');
+            });
+
+            it('does not trigger when put into play by Charge! (ruling #752)', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.berserker],
+                    defenders: []
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.charge);
+                this.player1.clickCard(this.agashaTaiko);
+                expect(this.agashaTaiko.location).toBe('play area');
+                expect(this.agashaTaiko.isParticipating()).toBe(true);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+            });
+        });
     });
 });
 

@@ -66,6 +66,16 @@ describe('Infiltrator', function () {
                     expect(this.player2.currentButtons).toContain('Play this card');
                 });
 
+                it('should discard the top card and say which', function () {
+                    this.infiltrator = this.player2.playAttachment('infiltrator', this.matsuBerserker);
+                    this.player1.pass();
+                    this.player1.player.moveCard(this.assassination, 'conflict deck');
+                    this.player2.clickCard(this.infiltrator);
+                    this.player2.clickPrompt('Discard this card');
+                    expect(this.assassination.location).toBe('conflict discard pile');
+                    expect(this.getChatLogs(3)).toContain('player2 chooses to discard Assassination');
+                });
+
                 it('should allow the player to play an event from the deck', function () {
                     this.infiltrator = this.player2.playAttachment('infiltrator', this.matsuBerserker);
                     this.player1.pass();

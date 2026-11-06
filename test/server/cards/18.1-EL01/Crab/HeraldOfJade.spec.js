@@ -42,7 +42,7 @@ describe('Herald of Jade', function() {
         });
 
         it('should discard the chosen token and give you 1 honor', function() {
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.player1.clickCard(this.herald);
             this.player1.clickPrompt('0');
             this.player1.clickCard(this.herald);

@@ -95,7 +95,7 @@ describe('Acclaimed Geisha House', function() {
         });
 
         it('should give the fate from the chosen ring to the attacking player (user attacking)', function() {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.youth],
@@ -115,8 +115,8 @@ describe('Acclaimed Geisha House', function() {
         });
 
         it('should give the fate from the chosen ring to the attacking player (user defending)', function() {
-            let fate = this.player1.fate;
-            let p2fate = this.player2.fate;
+            const fate = this.player1.fate;
+            const p2fate = this.player2.fate;
             this.noMoreActions();
             this.player1.passConflict();
             this.noMoreActions();

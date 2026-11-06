@@ -185,3 +185,76 @@ describe('Shosuro Actor - Copying Business', function() {
         });
     });
 });
+
+describe('Shosuro Actor and a character with the same title', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-actor']
+                },
+                player2: {
+                    inPlay: ['shosuro-actor', 'doji-whisperer']
+                }
+            });
+
+            this.actor = this.player1.findCardByName('shosuro-actor');
+            this.opponentsActor = this.player2.findCardByName('shosuro-actor');
+            this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
+        });
+
+        it('should not choose a character with the same title', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.actor],
+                defenders: [this.dojiWhisperer],
+                type: 'military'
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.actor);
+            expect(this.player1).toHavePrompt('Choose a character');
+            expect(this.player1).toBeAbleToSelect(this.dojiWhisperer);
+            expect(this.player1).not.toBeAbleToSelect(this.opponentsActor);
+        });
+    });
+});
+
+describe('Shosuro Actor copying a character with no attachments', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-actor'],
+                    hand: ['ornate-fan', 'fine-katana']
+                },
+                player2: {
+                    inPlay: ['iron-crane-legion']
+                }
+            });
+            this.actor = this.player1.findCardByName('shosuro-actor');
+            this.legion = this.player2.findCardByName('iron-crane-legion');
+            this.fan = this.player1.playAttachment('ornate-fan', this.actor);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.actor],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('should take the copied card\'s attachment restriction', function() {
+            this.player1.clickCard(this.actor);
+            this.player1.clickCard(this.legion);
+            expect(this.actor.name).toBe('Iron Crane Legion');
+            expect(this.fan.location).toBe('conflict discard pile');
+            expect(this.actor.attachments).not.toContain(this.fan);
+
+            this.player2.pass();
+            const katana = this.player1.playAttachment('fine-katana', this.actor);
+            expect(katana.location).toBe('play area');
+        });
+    });
+});

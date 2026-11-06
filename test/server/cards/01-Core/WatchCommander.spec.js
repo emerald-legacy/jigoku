@@ -70,7 +70,7 @@ describe('Watch Commander', function () {
                 this.player1.clickCard(this.watchCommander);
                 this.player1.clickCard(this.wanderingRonin);
                 expect(this.wanderingRonin.attachments).toContain(this.watchCommander);
-                let honor = this.player2.player.honor;
+                const honor = this.player2.player.honor;
                 this.player2.clickCard(this.banzai);
                 this.player2.clickCard(this.adeptOfTheWaves);
                 this.player2.clickPrompt('Done');
@@ -93,6 +93,63 @@ describe('Watch Commander', function () {
                 expect(this.watchCommander.location).toBe('conflict discard pile');
                 expect(this.player1).toHavePrompt('Conflict Action Window');
             });
+        });
+    });
+});
+
+describe('Watch Commander rulings', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['wandering-ronin'],
+                    hand: ['watch-commander', 'voice-of-honor']
+                },
+                player2: {
+                    fate: 3,
+                    inPlay: ['hida-kisada'],
+                    hand: ['banzai', 'rout']
+                }
+            });
+            this.wanderingRonin = this.player1.findCardByName('wandering-ronin');
+            this.voiceOfHonor = this.player1.findCardByName('voice-of-honor');
+            this.kisada = this.player2.findCardByName('hida-kisada');
+            this.banzai = this.player2.findCardByName('banzai');
+            this.rout = this.player2.findCardByName('rout');
+
+            this.watchCommander = this.player1.playAttachment('watch-commander', this.wanderingRonin);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.wanderingRonin],
+                defenders: [this.kisada]
+            });
+        });
+
+        it('triggers when the played event\'s effects are cancelled (#625)', function () {
+            this.wanderingRonin.honor();
+            const honor = this.player2.player.honor;
+            this.player2.clickCard(this.banzai);
+            this.player2.clickCard(this.kisada);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.voiceOfHonor);
+            this.player1.clickCard(this.voiceOfHonor);
+            expect(this.kisada.getMilitarySkill()).toBe(7);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.watchCommander);
+            this.player1.clickCard(this.watchCommander);
+            expect(this.player2.player.honor).toBe(honor - 1);
+        });
+
+        it('does not trigger when the played card moves the attached character home (#123)', function () {
+            const honor = this.player2.player.honor;
+            this.player2.clickCard(this.rout);
+            this.player2.clickCard(this.wanderingRonin);
+            expect(this.wanderingRonin.isParticipating()).toBe(false);
+            expect(this.rout.location).toBe('conflict discard pile');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.player2.player.honor).toBe(honor);
         });
     });
 });

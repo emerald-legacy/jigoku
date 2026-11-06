@@ -8,7 +8,7 @@ describe('A Season of War', function() {
                         inPlay: ['daidoji-nerishma', 'kakita-yoshi', 'kakita-toshimoko', 'matsu-berserker', 'ikoma-prodigy', 'doji-challenger', 'prodigy-of-the-waves', 'hida-kisada', 'aranat', 'kakita-ryoku'],
                         dynastyDeck: [],
                         hand: ['way-of-the-crane', 'those-who-serve'],
-                        dynastyDiscard: ['a-season-of-war', 'a-season-of-war']
+                        dynastyDiscard: ['a-season-of-war', 'a-season-of-war', 'imperial-storehouse']
                     },
                     player2: {
                         inPlay: ['acolyte-of-koyane', 'adept-of-the-waves', 'agasha-hiyori', 'agasha-shunsen', 'agasha-sumiko', 'agasha-swordsmith', 'agasha-taiko', 'akodo-kaede', 'akodo-makoto'],
@@ -112,6 +112,13 @@ describe('A Season of War', function() {
                 expect(this.acolyte.facedown).toBe(false);
             });
 
+            it('should forget the honor gained earlier in the dynasty phase', function() {
+                this.player1.player.modifyHonor(2);
+                expect(this.player1.player.honorGained(this.game.roundNumber, 'dynasty')).toBe(2);
+                this.player1.clickCard(this.season);
+                expect(this.player1.player.honorGained(this.game.roundNumber, 'dynasty')).toBe(0);
+            });
+
             it('should start a new dynasty phase - testing with on phase started reactions', function() {
                 this.player1.player.imperialFavor = 'military';
                 this.player1.clickCard(this.season);
@@ -132,7 +139,7 @@ describe('A Season of War', function() {
                 this.player1.pass();
 
                 expect(this.acolyte.location).toBe('province 4');
-                let fate = this.player2.fate;
+                const fate = this.player2.fate;
                 this.player2.clickCard(this.acolyte);
                 this.player2.clickPrompt('0');
                 expect(this.player2.fate).toBe(fate - 3); //no discount
@@ -154,9 +161,30 @@ describe('A Season of War', function() {
                 expect(this.acolyte.location).toBe('play area');
             });
 
+            // ruling #849
+            it('should discard other cards in the stronghold province but not the stronghold', function() {
+                const storehouse = this.player1.findCardByName('imperial-storehouse');
+                const stronghold = this.player1.player.stronghold;
+                this.player1.moveCard(storehouse, 'stronghold province');
+                storehouse.facedown = false;
+                this.player1.clickCard(this.season);
+                expect(storehouse.location).toBe('dynasty discard pile');
+                expect(stronghold.location).toBe('stronghold province');
+                expect(this.player1.player.getDynastyCardsInProvince('stronghold province').length).toBe(0);
+            });
+
+            // ruling #875
+            it('should still give 1 fate to the first player to pass in the additional dynasty phase', function() {
+                this.player1.clickCard(this.season);
+                const fate = this.player1.fate;
+                this.player1.pass();
+                expect(this.player1.fate).toBe(fate + 1);
+                expect(this.getChatLogs(3)).toContain('player1 is the first to pass, and gains 1 fate');
+            });
+
             it('players should not collect fate', function() {
-                let p1Fate = this.player1.fate;
-                let p2Fate = this.player2.fate;
+                const p1Fate = this.player1.fate;
+                const p2Fate = this.player2.fate;
                 this.player1.clickCard(this.season);
                 expect(this.player1.fate).toBe(p1Fate - 1); //-1 from Season of War
                 expect(this.player2.fate).toBe(p2Fate);
@@ -197,6 +225,17 @@ describe('A Season of War', function() {
                 expect(this.getChatLogs(10)).toContain('player1 plays A Season of War to discard all cards in all provinces, and refill each province faceup');
                 expect(this.getChatLogs(10)).toContain('The dynasty phase is ended due to the effects of A Season of War');
                 expect(this.getChatLogs(10)).toContain('A Season of War has started a new dynasty phase!');
+            });
+
+            it('lets the first player win if both players lose all honor by decking (EmeraldDB ruling)', function() {
+                this.player1.player.honor = 5;
+                this.player2.player.honor = 5;
+                this.player1.reduceDeckToNumber('dynasty deck', 1);
+                this.player2.reduceDeckToNumber('dynasty deck', 1);
+                this.player1.clickCard(this.season);
+                expect(this.player1.honor).toBe(0);
+                expect(this.player2.honor).toBe(0);
+                expect(this.game.winner).toBe(this.player1.player);
             });
 
             it('decking yourself should not cause multiple honor losses', function() {

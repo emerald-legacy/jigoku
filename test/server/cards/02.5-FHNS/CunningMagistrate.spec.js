@@ -38,7 +38,23 @@ describe('Cunning Magistrate', function() {
                 expect(this.game.currentConflict.defenderSkill).toBe(3);
             });
 
-            it('should not prevent itselft contributing to the conflict', function() {
+            it('should not affect the conflict while it isn\'t participating', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.adeptOfShadows],
+                    defenders: [this.dojiWhisperer, this.dojiChallenger],
+                    type: 'political'
+                });
+                expect(this.game.currentConflict.defenderSkill).toBe(6);
+                this.player2.pass();
+                this.player1.clickCard(this.wayOfTheScorpion);
+                this.player1.clickCard(this.dojiWhisperer);
+                expect(this.dojiWhisperer.isDishonored).toBe(true);
+                expect(this.dojiWhisperer.politicalSkill).toBe(2);
+                expect(this.game.currentConflict.defenderSkill).toBe(5);
+            });
+
+            it('should not prevent itself contributing to the conflict', function() {
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.cunningMagistrate, this.adeptOfShadows],

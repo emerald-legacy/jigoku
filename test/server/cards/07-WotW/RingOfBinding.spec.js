@@ -73,16 +73,55 @@ describe('Ring of Binding', function() {
             expect(this.mirumotoRaitsugu.location).toBe('dynasty discard pile');
         });
 
-        it('should stop opponent characters from being discarded', function () {
+        it('does not protect a character when the Ring\'s controller isn\'t the first player', function () {
             this.player1.clickPrompt('Pass Conflict');
             this.player1.clickPrompt('Yes');
             this.player1.clickCard(this.shrineMaiden);
             this.player1.clickPrompt('0');
-            this.player2.playAttachment('ring-of-binding', this.shrineMaiden);
+            this.player1.clickPrompt('Pass');
+            const ring = this.player2.playAttachment('ring-of-binding', this.shrineMaiden);
+            expect(ring.parent).toBe(this.shrineMaiden);
+            expect(this.player2.player.firstPlayer).toBe(false);
             this.nextPhase();
             this.player1.clickPrompt('Done');
             this.player2.clickPrompt('Done');
             expect(this.shrineMaiden.location).toBe('conflict discard pile');
+        });
+    });
+});
+
+describe('Ring of Binding on an opponent\'s character', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    hand: ['ring-of-binding']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
+            expect(this.player1.player.firstPlayer).toBe(true);
+            this.ring = this.player1.playAttachment('ring-of-binding', this.dojiWhisperer);
+            expect(this.ring.parent).toBe(this.dojiWhisperer);
+        });
+
+        it('stops it from being discarded in the fate phase when you are the first player', function () {
+            expect(this.dojiWhisperer.fate).toBe(0);
+            this.nextPhase();
+            this.player1.clickPrompt('Done');
+            this.player2.clickPrompt('Done');
+            expect(this.dojiWhisperer.location).toBe('play area');
+        });
+
+        it('stops it from losing fate in the fate phase when you are the first player', function () {
+            this.dojiWhisperer.fate = 1;
+            this.nextPhase();
+            this.player1.clickPrompt('Done');
+            this.player2.clickPrompt('Done');
+            expect(this.dojiWhisperer.fate).toBe(1);
         });
     });
 });

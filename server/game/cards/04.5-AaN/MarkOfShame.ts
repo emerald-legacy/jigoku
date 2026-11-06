@@ -1,22 +1,20 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { dishonor, sequential } from '../../GameActions/GameActions.js';
 
 class MarkOfShame extends DrawCard {
     static id = 'mark-of-shame';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Dishonor attached character',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Dishonor attached character')
+            .when({
                 onCardPlayed: (event, context) => event.card === context.source
-            },
-            gameAction: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.dishonor(context => ({ target: context.source.parentCharacter })),
-                AbilityDsl.actions.dishonor(context => ({ target: context.source.parentCharacter }))
-            ]),
-            effect: 'dishonor {1}, then dishonor it again',
-            effectArgs: context => context.source.parentCharacter
-        });
+            })
+            .gameAction(sequential([
+                dishonor((context) => ({ target: context.source.parentCharacter ?? [] })),
+                dishonor((context) => ({ target: context.source.parentCharacter ?? [] }))
+            ]))
+            .chatText((context) => msg`dishonor ${context.source.parentCharacter}, then dishonor it again`);
     }
 }
 

@@ -24,7 +24,7 @@ describe('Bonsai Garden', function() {
                     defenders: []
                 });
                 this.player2.pass();
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.player1.clickCard('bonsai-garden');
                 expect(this.player1.honor).toBe(honor + 1);
             });
@@ -37,7 +37,7 @@ describe('Bonsai Garden', function() {
                     defenders: []
                 });
                 this.player2.pass();
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.player1.clickCard('bonsai-garden');
                 expect(this.player1.honor).toBe(honor);
             });

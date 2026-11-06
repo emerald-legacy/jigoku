@@ -48,7 +48,7 @@ describe('Kitsuki Sano', function() {
             });
 
             it('does not work when opposed', function() {
-                const _initialHand = this.player1.hand.length;
+                const initialHand = this.player1.hand.length;
                 this.initiateConflict({
                     attackers: [this.kitsukiSano],
                     defenders: [this.miyaMystic]
@@ -56,7 +56,47 @@ describe('Kitsuki Sano', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.kitsukiSano);
                 expect(this.player1).not.toHavePrompt('Choose 2 cards to discard');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.player1.hand.length).toBe(initialHand);
+                expect(initialHand).toBe(3);
             });
+        });
+    });
+});
+
+describe('Kitsuki Sano when its draw is replaced', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 12,
+                    inPlay: ['kitsuki-sano'],
+                    hand: ['fine-katana', 'court-games', 'stowaway']
+                },
+                player2: {
+                    honor: 9,
+                    hand: ['subterfuge']
+                }
+            });
+
+            this.kitsukiSano = this.player1.findCardByName('kitsuki-sano');
+            this.subterfuge = this.player2.findCardByName('subterfuge');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.kitsukiSano],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('does not discard ("then" needs the draw)', function() {
+            this.player1.clickCard(this.kitsukiSano);
+            expect(this.player2).toBeAbleToSelect(this.subterfuge);
+            this.player2.clickCard(this.subterfuge);
+            this.player2.clickPrompt('2');
+            expect(this.player1).not.toHavePrompt('Choose 2 cards to discard');
+            expect(this.player1.hand.length).toBe(3);
         });
     });
 });

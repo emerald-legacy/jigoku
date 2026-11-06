@@ -77,3 +77,39 @@ describe('Doji Hotaru', function () {
         });
     });
 });
+
+describe('Doji Hotaru and a ring claimed by a card effect', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-hotaru'],
+                    hand: ['commune-with-the-spirits']
+                },
+                player2: {
+                    inPlay: ['togashi-initiate']
+                }
+            });
+            this.dojiHotaru = this.player1.findCardByName('doji-hotaru');
+            this.commune = this.player1.findCardByName('commune-with-the-spirits');
+            this.noMoreActions();
+        });
+
+        it('resolves the claimed ring, not the contested one', function () {
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.dojiHotaru],
+                defenders: [],
+                ring: 'air'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.commune);
+            this.player1.clickRing('fire');
+            expect(this.game.rings.fire.claimedBy).toBe(this.player1.player.name);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.dojiHotaru);
+            expect(this.player1).toHavePrompt('Fire Ring');
+        });
+    });
+});

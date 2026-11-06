@@ -22,7 +22,7 @@ describe('SoD - Crab', function () {
             });
 
             it('should dishonor characters and draw', function () {
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.skirmisher, this.swordsmith],
@@ -45,8 +45,21 @@ describe('SoD - Crab', function () {
                 expect(this.player1).toHavePrompt('Action Window');
                 expect(this.yokuni.isDishonored).toBe(true);
                 expect(this.player1.hand.length).toBe(hand);
-                expect(this.getChatLogs(5)).toContain('player1 plays A Bad Death, dishonoring and sacrificing Agasha Swordsmith to dishonor Togashi Yokuni');
-                expect(this.getChatLogs(5)).toContain('player1 draws a card');
+                expect(this.getChatLogs(5)).toContain('player1 plays A Bad Death, dishonoring and sacrificing Agasha Swordsmith to dishonor Togashi Yokuni and draw 1 card');
+            });
+
+            it('cannot pay its cost with a character that is already dishonored', function () {
+                this.swordsmith.dishonor();
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.skirmisher, this.swordsmith],
+                    defenders: [this.yokuni, this.challenger]
+                });
+                this.player2.pass();
+                this.player1.pass();
+                this.player1.clickCard(this.badDeath);
+                expect(this.player1).toBeAbleToSelect(this.skirmisher);
+                expect(this.player1).not.toBeAbleToSelect(this.swordsmith);
             });
 
             it('sacrificing berserker', function () {
@@ -72,9 +85,51 @@ describe('SoD - Crab', function () {
                 this.player1.clickPrompt('Done');
                 expect(this.player1).toHavePrompt('Action Window');
                 expect(this.yokuni.isDishonored).toBe(true);
-                expect(this.getChatLogs(5)).toContain('player1 plays A Bad Death, dishonoring and sacrificing Silent Skirmisher to dishonor Togashi Yokuni and Doji Challenger');
+                expect(this.getChatLogs(5)).toContain('player1 plays A Bad Death, dishonoring and sacrificing Silent Skirmisher to dishonor Togashi Yokuni and Doji Challenger and draw 1 card');
             });
 
+        });
+
+        describe('A Bad Death when the dishonor is replaced', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['silent-skirmisher', 'agasha-swordsmith'],
+                        hand: ['a-bad-death']
+                    },
+                    player2: {
+                        inPlay: ['togashi-yokuni', 'kitsuki-shomon']
+                    }
+                });
+
+                this.skirmisher = this.player1.findCardByName('silent-skirmisher');
+                this.swordsmith = this.player1.findCardByName('agasha-swordsmith');
+                this.badDeath = this.player1.findCardByName('a-bad-death');
+                this.yokuni = this.player2.findCardByName('togashi-yokuni');
+                this.shomon = this.player2.findCardByName('kitsuki-shomon');
+            });
+
+            it('still draws a card', function () {
+                const hand = this.player1.hand.length;
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.skirmisher, this.swordsmith],
+                    defenders: [this.yokuni]
+                });
+                this.player2.pass();
+                this.player1.pass();
+
+                this.player1.clickCard(this.badDeath);
+                this.player1.clickCard(this.swordsmith);
+                this.player1.clickCard(this.yokuni);
+                this.player1.clickPrompt('Done');
+
+                this.player2.clickCard(this.shomon);
+                expect(this.yokuni.isDishonored).toBe(false);
+                expect(this.shomon.isDishonored).toBe(true);
+                expect(this.player1.hand.length).toBe(hand);
+            });
         });
 
         describe('Caretaker of The Dead Eyes', function () {
@@ -170,7 +225,7 @@ describe('SoD - Crab', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['silent-skirmisher', 'agasha-swordsmith'],
-                        hand: ['dead-eyes']
+                        hand: ['dead-eyes', 'retreat']
                     },
                     player2: {
                         inPlay: ['togashi-yokuni'],
@@ -200,9 +255,9 @@ describe('SoD - Crab', function () {
                 });
                 this.player2.pass();
 
-                let mil = this.skirmisher.getMilitarySkill();
+                const mil = this.skirmisher.militarySkill;
                 this.player1.clickCard(this.deadeyes);
-                expect(this.skirmisher.getMilitarySkill()).toBe(mil + 2);
+                expect(this.skirmisher.militarySkill).toBe(mil + 2);
 
                 expect(this.getChatLogs(5)).toContain('player1 uses Dead Eyes to grant +2military to Silent Skirmisher, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill');
 
@@ -216,6 +271,162 @@ describe('SoD - Crab', function () {
 
                 expect(this.skirmisher.location).toBe('dynasty discard pile');
                 expect(this.getChatLogs(5)).toContain('Silent Skirmisher is sacrificed due to the delayed effect of Dead Eyes');
+            });
+
+            it('cannot be moved home by its controller\'s effects either', function () {
+                this.player1.clickCard(this.deadeyes);
+                this.player1.clickCard(this.skirmisher);
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.skirmisher, this.swordsmith],
+                    defenders: [this.yokuni]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.deadeyes);
+                this.player2.pass();
+
+                this.player1.clickCard('retreat');
+                expect(this.player1).toHavePrompt('Retreat');
+                expect(this.player1).toBeAbleToSelect(this.swordsmith);
+                expect(this.player1).not.toBeAbleToSelect(this.skirmisher);
+                this.player1.clickCard(this.swordsmith);
+                expect(this.swordsmith.isParticipating()).toBe(false);
+                expect(this.skirmisher.isParticipating()).toBe(true);
+            });
+
+            it('cannot be used when the attached character is not participating', function () {
+                this.player1.clickCard(this.deadeyes);
+                this.player1.clickCard(this.skirmisher);
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.swordsmith],
+                    defenders: [this.yokuni]
+                });
+                this.player2.pass();
+
+                const mil = this.skirmisher.militarySkill;
+                this.player1.clickCard(this.deadeyes);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.skirmisher.militarySkill).toBe(mil);
+            });
+        });
+
+        describe('Dead Eyes and a switched conflict type', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['damned-hida'],
+                        hand: ['dead-eyes']
+                    },
+                    player2: {
+                        inPlay: [{ card: 'doji-kuwanan', attachments: ['shukujo'] }]
+                    }
+                });
+                this.hida = this.player1.findCardByName('damned-hida');
+                this.kuwanan = this.player2.findCardByName('doji-kuwanan');
+                this.deadEyes = this.player1.playAttachment('dead-eyes', this.hida);
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.hida],
+                    defenders: [this.kuwanan]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.deadEyes);
+            });
+
+            it('still sends a character home that can no longer participate', function () {
+                this.player2.clickCard(this.kuwanan);
+                expect(this.game.currentConflict.conflictType).toBe('political');
+                expect(this.hida.isParticipating()).toBe(false);
+                expect(this.hida.bowed).toBe(true);
+                expect(this.getChatLogs(5)).toContain('Damned Hida cannot participate in the conflict any more and is sent home bowed');
+            });
+        });
+
+        describe('Dead Eyes at the end of the conflict', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['matsu-berserker'],
+                        hand: ['dead-eyes']
+                    },
+                    player2: {
+                        inPlay: ['matsu-berserker']
+                    }
+                });
+
+                this.berserker = this.player1.findCardByName('matsu-berserker');
+                this.deadeyes = this.player1.findCardByName('dead-eyes');
+                this.opponentBerserker = this.player2.findCardByName('matsu-berserker');
+
+                this.player1.playAttachment(this.deadeyes, this.berserker);
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    ring: 'fire',
+                    attackers: [this.berserker],
+                    defenders: [this.opponentBerserker]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.deadeyes);
+            });
+
+            it('sacrifices the character only after the ring effect, when it won by less than double', function () {
+                this.noMoreActions();
+                this.player1.clickPrompt('No');
+                expect(this.player1).toHavePrompt('Fire Ring');
+                expect(this.player1).toBeAbleToSelect(this.berserker);
+                this.player1.clickCard(this.berserker);
+                this.player1.clickPrompt('Honor Matsu Berserker');
+                expect(this.berserker.location).toBe('dynasty discard pile');
+                expect(this.getChatLogs(5)).toContain('Matsu Berserker is sacrificed due to the delayed effect of Dead Eyes');
+            });
+        });
+
+        describe('Dead Eyes winning by more than double', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['matsu-berserker'],
+                        hand: ['dead-eyes']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer']
+                    }
+                });
+
+                this.berserker = this.player1.findCardByName('matsu-berserker');
+                this.whisperer = this.player2.findCardByName('doji-whisperer');
+                this.deadeyes = this.player1.playAttachment('dead-eyes', this.berserker);
+            });
+
+            it('sets the attached character\'s glory to 0', function () {
+                expect(this.berserker.glory).toBe(0);
+            });
+
+            it('does not sacrifice the character', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    ring: 'air',
+                    attackers: [this.berserker],
+                    defenders: [this.whisperer]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.deadeyes);
+                this.noMoreActions();
+                expect(this.getChatLogs(10)).toContain('player1 won a military conflict 6 vs 0');
+                this.player1.clickPrompt('No');
+                this.player1.clickPrompt('Gain 2 Honor');
+                expect(this.berserker.location).toBe('play area');
+                expect(this.getChatLogs(5)).not.toContain('Matsu Berserker is sacrificed due to the delayed effect of Dead Eyes');
             });
         });
 
@@ -269,7 +480,7 @@ describe('SoD - Crab', function () {
             });
         });
 
-        describe('Unbridled Assault', function () {
+        describe('Unbridled Rage', function () {
             beforeEach(function () {
                 this.setupTest({
                     phase: 'conflict',
@@ -289,6 +500,19 @@ describe('SoD - Crab', function () {
                 this.yokuni = this.player2.findCardByName('togashi-yokuni');
             });
 
+            it('needs a participating Berserker', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.swordsmith],
+                    defenders: [this.yokuni]
+                });
+                this.player2.pass();
+
+                this.player1.clickCard(this.rage);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.rage.location).toBe('hand');
+            });
+
             it('refuse duel', function () {
                 this.noMoreActions();
                 this.initiateConflict({
@@ -297,7 +521,7 @@ describe('SoD - Crab', function () {
                 });
                 this.player2.pass();
 
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.clickCard(this.rage);
                 expect(this.player1).toBeAbleToSelect(this.skirmisher);
                 expect(this.player1).not.toBeAbleToSelect(this.swordsmith);
@@ -327,7 +551,7 @@ describe('SoD - Crab', function () {
                 });
                 this.player2.pass();
 
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.clickCard(this.rage);
                 expect(this.player1).toBeAbleToSelect(this.skirmisher);
                 expect(this.player1).not.toBeAbleToSelect(this.swordsmith);
@@ -347,6 +571,56 @@ describe('SoD - Crab', function () {
 
                 expect(this.getChatLogs(5)).toContain('Duel Effect: prevent Silent Skirmisher from contributing to resolution of this conflict');
                 expect(this.getChatLogs(5)).toContain('Military Air conflict - Attacker: 1 Defender: 5');
+            });
+        });
+
+        describe('Unbridled Rage and a loser that leaves play and returns', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['matsu-berserker', 'kitsu-spiritcaller-2'],
+                        hand: ['unbridled-rage']
+                    },
+                    player2: {
+                        inPlay: ['togashi-yokuni'],
+                        hand: ['assassination']
+                    }
+                });
+
+                this.berserker = this.player1.findCardByName('matsu-berserker');
+                this.spiritcaller = this.player1.findCardByName('kitsu-spiritcaller-2');
+                this.rage = this.player1.findCardByName('unbridled-rage');
+                this.yokuni = this.player2.findCardByName('togashi-yokuni');
+                this.assassination = this.player2.findCardByName('assassination');
+            });
+
+            it('the returned character contributes again', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.berserker],
+                    defenders: [this.yokuni]
+                });
+                this.player2.pass();
+
+                this.player1.clickCard(this.rage);
+                this.player1.clickCard(this.berserker);
+                this.player1.clickCard(this.yokuni);
+                this.player2.clickPrompt('No');
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('1');
+                expect(this.getChatLogs(5)).toContain('Duel Effect: prevent Matsu Berserker from contributing to resolution of this conflict');
+                expect(this.game.currentConflict.attackerSkill).toBe(0);
+
+                this.player2.clickCard(this.assassination);
+                this.player2.clickCard(this.berserker);
+                expect(this.berserker.location).toBe('dynasty discard pile');
+
+                this.player1.clickCard(this.spiritcaller);
+                this.player1.clickCard(this.berserker);
+                expect(this.berserker.isParticipating()).toBe(true);
+                expect(this.game.currentConflict.attackerSkill).toBe(this.berserker.militarySkill);
             });
         });
     });

@@ -1,16 +1,16 @@
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { RingAbilities } from '../../RingAbilities.js';
 
 export default class TempleOfTheDragons extends ProvinceCard {
     static id = 'temple-of-the-dragons';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Resolve the ring as if you were the attacker',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Resolve the ring as if you were the attacker')
+            .when({
                 onCardRevealed: (event, context) => event.card === context.source
-            },
-            gameAction: AbilityDsl.actions.resolveConflictRing()
-        });
+            })
+            .condition((context) => (context.game.currentConflict?.elements ?? []).some((element) =>
+                RingAbilities.contextFor(context.player, element, false).ability.hasLegalTargets(context)))
+            .resolveConflictRing();
     }
 }

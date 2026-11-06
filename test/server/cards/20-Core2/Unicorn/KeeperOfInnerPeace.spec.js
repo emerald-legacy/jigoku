@@ -93,3 +93,33 @@ describe('Keeper of Inner Peace', function () {
         });
     });
 });
+
+describe('Keeper of Inner Peace own ring effects', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['keeper-of-inner-peace', 'doji-challenger']
+                }
+            });
+            this.keeperOfInnerPeace = this.player1.findCardByName('keeper-of-inner-peace');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.challenger.fate = 1;
+        });
+
+        it('reacts to your own ring effect', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [],
+                ring: 'void'
+            });
+            this.noMoreActions();
+            this.player1.clickPrompt('No');
+            this.player1.clickCard(this.challenger);
+            expect(this.challenger.fate).toBe(0);
+            expect(this.player1).toBeAbleToSelect(this.keeperOfInnerPeace);
+        });
+    });
+});

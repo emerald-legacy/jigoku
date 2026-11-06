@@ -1,21 +1,18 @@
 import DrawCard from '../../../DrawCard.js';
-import { Phases } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityContext } from '../../../AbilityContext.js';
+import { Phase, Trait } from '../../../Constants.js';
+import { perRound } from '../../../AbilityLimit.js';
 
 export default class APoisonedBanquet extends DrawCard {
     static id = 'a-poisoned-banquet';
 
-    setupCardAbilities() {
-        this.interrupt({
-            title: 'Injure everyone poisoned',
-            when: {
-                onPhaseEnded: event => event.phase === Phases.Conflict
-            },
-            gameAction: AbilityDsl.actions.injure((context: AbilityContext) => ({
-                target: context.game.findAnyCardsInPlay(card => card.attachments.some(attachment => attachment.hasTrait('poison')))
-            })),
-            max: AbilityDsl.limit.perRound(1)
-        });
+    override setupCardAbilities() {
+        this.interrupt('Injure everyone poisoned')
+            .when({
+                onPhaseEnded: (event) => event.phase === Phase.Conflict
+            })
+            .injure((context) => ({
+                target: context.game.findAnyCardsInPlay((card) => card.attachments.some((attachment) => attachment.hasTrait(Trait.Poison)))
+            }))
+            .max(perRound(1));
     }
 }

@@ -36,13 +36,14 @@ describe('Eloquent Advocate', function() {
                 type: 'political'
             });
 
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
             this.noMoreActions();
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.advocate);
             this.player2.clickCard(this.advocate);
 
             expect(this.player2).toHavePrompt('Select a card');
+            expect(this.player2).not.toHavePromptButton('Take nothing');
             expect(this.player2).toHavePromptButton('Policy Debate');
             expect(this.player2).toHavePromptButton('Ornate Fan');
             expect(this.policyDebate.location).toBe('conflict deck');
@@ -52,6 +53,21 @@ describe('Eloquent Advocate', function() {
             expect(this.getChatLogs(5)).toContain('player2 uses Eloquent Advocate to look at the top two cards of their conflict deck');
             expect(this.getChatLogs(5)).toContain('player2 takes 1 card');
             expect(this.getChatLogs(5)).toContain('player2 puts 1 card on the bottom of their conflict deck');
+        });
+
+        it('says it looks at the top card when only one is left', function() {
+            this.player2.reduceDeckToNumber('conflict deck', 1);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.borderRider],
+                defenders: [this.advocate],
+                type: 'political'
+            });
+
+            this.noMoreActions();
+            this.player2.clickCard(this.advocate);
+            expect(this.player2).toHavePrompt('Select a card');
+            expect(this.getChatLogs(5)).toContain('player2 uses Eloquent Advocate to look at the top card of their conflict deck');
         });
 
         it('should not react to losing a pol conflict', function() {
@@ -65,6 +81,7 @@ describe('Eloquent Advocate', function() {
             this.advocate.bow();
             this.noMoreActions();
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 won a political conflict 1 vs 0');
         });
 
         it('should not react to winning a mil conflict', function() {
@@ -78,6 +95,7 @@ describe('Eloquent Advocate', function() {
 
             this.noMoreActions();
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 won a military conflict 6 vs 2');
         });
     });
 });

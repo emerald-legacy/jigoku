@@ -83,5 +83,34 @@ describe('Peasant\'s Advice', function() {
                 expect(this.player1).not.toBeAbleToSelect(this.shamefulDisplay);
             });
         });
+
+        describe('Peasant\'s Advice on your own facedown province', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['seppun-guardsman'],
+                        hand: ['peasant-s-advice'],
+                        dynastyDiscard: ['shiba-tsukune']
+                    }
+                });
+                this.ownProvince = this.player1.findCardByName('shameful-display', 'province 1');
+                this.shibaTsukune = this.player1.placeCardInProvince('shiba-tsukune', 'province 1');
+                this.shibaTsukune.facedown = false;
+            });
+
+            it('should give only the province\'s location in chat', function() {
+                expect(this.ownProvince.isFacedown()).toBe(true);
+                this.player1.clickCard('peasant-s-advice');
+                this.player1.clickCard(this.ownProvince);
+                this.player1.clickCard('seppun-guardsman');
+                expect(this.player1).toHavePrompt('Choose a faceup card to return to its owner\'s deck');
+                this.player1.clickPrompt('Done');
+                expect(this.player2).toHavePrompt('Action Window');
+                expect(this.ownProvince.isFacedown()).toBe(true);
+                expect(this.getChatLogs(10)).toContain('Peasant\'s Advice looks at player1\'s province 1');
+                expect(this.getChatLogs(10).some((line) => line.includes('Shameful Display'))).toBe(false);
+            });
+        });
     });
 });

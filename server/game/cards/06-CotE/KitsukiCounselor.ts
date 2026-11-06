@@ -1,11 +1,11 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import { modifyBothSkills } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 class KitsukiCounselor extends DrawCard {
     static id = 'kitsuki-counselor';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.composure({
-            effect: ability.effects.modifyBothSkills(1)
+            effect: modifyBothSkills(1)
         });
     }
 }

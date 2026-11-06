@@ -33,6 +33,12 @@ describe('Shiro Gisu', function() {
 
         });
 
+        it('must add one of the cards to your hand', function() {
+            this.player1.clickCard(this.gisu);
+            expect(this.player1).toHavePrompt('Choose a card to put in your hand');
+            expect(this.player1).not.toHavePromptButton('Take nothing');
+        });
+
         it('should show you a number of cards equal to characters without fate (2)', function() {
             this.whisperer.fate = 1;
             this.challenger.fate = 1;

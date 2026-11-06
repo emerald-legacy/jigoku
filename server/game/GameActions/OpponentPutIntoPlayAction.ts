@@ -1,30 +1,23 @@
-import { AbilityContext } from '../AbilityContext.js';
-import { Players } from '../Constants.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import { EntersPlayStatus, Players } from '../Constants.js';
 import type Player from '../Player.js';
-import { PutIntoPlayAction, PutIntoPlayProperties } from './PutIntoPlayAction.js';
+import { PutIntoPlayAction, type PutIntoPlayDefaults, type PutIntoPlayProperties } from './PutIntoPlayAction.js';
+import type { Defaults } from './GameAction.js';
 
 export type OpponentPutIntoPlayProperties = PutIntoPlayProperties;
 
-export class OpponentPutIntoPlayAction extends PutIntoPlayAction {
-    defaultProperties: PutIntoPlayProperties = {
+export class OpponentPutIntoPlayAction<Context extends AbilityContext = AbilityContext> extends PutIntoPlayAction<Context> {
+    override defaultProperties: Defaults<PutIntoPlayProperties, PutIntoPlayDefaults> = {
         fate: 0,
-        status: 'ordinary',
-        controller: Players.Opponent,
-        side: undefined
+        status: EntersPlayStatus.Ordinary,
+        controller: Players.Opponent
     };
 
-    getDefaultSide(context: AbilityContext): Player {
+    override getDefaultSide(context: AbilityContext): Player {
         return context.player.opponent ?? context.player;
     }
 
-    constructor(
-        properties: ((context: AbilityContext) => PutIntoPlayProperties) | PutIntoPlayProperties,
-        intoConflict = true
-    ) {
-        super(properties, intoConflict);
-    }
-
-    getPutIntoPlayPlayer(context: AbilityContext): Player {
+    override getPutIntoPlayPlayer(context: AbilityContext): Player {
         return context.player.opponent ?? context.player;
     }
 }

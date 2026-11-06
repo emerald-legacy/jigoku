@@ -1,33 +1,24 @@
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
-import type BaseCard from '../../BaseCard.js';
+import { msg } from '../../GameChat.js';
+import { cannotBeDeclaredAsAttacker } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { Duration } from '../../Constants.js';
 
 class TenguSensei extends DrawCard {
     static id = 'tengu-sensei';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Prevent a character from attacking this phase',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Prevent a character from attacking this phase')
+            .when({
                 onCovertResolved: (event, context) => {
                     return (event.card === context.source || (Array.isArray(event.card) && event.card.includes(context.source)));
                 }
-            },
-            effect: 'prevent {1} from attacking this phase',
-            effectArgs: context => {
-                return (context.event.context as AbilityContext).target as BaseCard;
-            },
-            gameAction: AbilityDsl.actions.cardLastingEffect((context: TriggeredAbilityContext<DrawCard, DrawCard>) => {
-                return ({
-                    target: (context.event.context as AbilityContext).target,
-                    duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker()
-                });
             })
-        });
+            .cardLastingEffect((context) => ({
+                target: context.event.context.target ?? [],
+                duration: Duration.UntilEndOfPhase,
+                effect: cannotBeDeclaredAsAttacker()
+            }))
+            .chatText((context) => msg`prevent ${context.event.context.target} from attacking this phase`);
     }
 }
 

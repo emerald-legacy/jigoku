@@ -1,21 +1,21 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { FavorType } from '../../../Constants.js';
+import { modifyMilitarySkill, modifyPoliticalSkill } from '../../../effects.js';
+import { FavorType, Trait } from '../../../Constants.js';
 
 class SakeHouseInformant extends DrawCard {
     static id = 'sake-house-informant';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.game.getFavorSide() === FavorType.Military,
-            match: (card: DrawCard) => card.hasTrait('shinobi'),
-            effect: AbilityDsl.effects.modifyMilitarySkill(1)
+            condition: (context) => context.game.getFavorSide() === FavorType.Military,
+            match: (card) => card.hasTrait(Trait.Shinobi),
+            effect: modifyMilitarySkill(1)
         });
 
         this.persistentEffect({
-            condition: context => context.game.getFavorSide() === FavorType.Political,
-            match: (card: DrawCard) => card.hasTrait('shinobi'),
-            effect: AbilityDsl.effects.modifyPoliticalSkill(1)
+            condition: (context) => context.game.getFavorSide() === FavorType.Political,
+            match: (card) => card.hasTrait(Trait.Shinobi),
+            effect: modifyPoliticalSkill(1)
         });
     }
 }

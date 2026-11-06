@@ -1,16 +1,15 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { increaseCost } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, PlayType } from '../../Constants.js';
 
 class UtakuTetsuko extends DrawCard {
     static id = 'utaku-tetsuko';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: (context: AbilityContext<this>) => context.source.isAttacking(),
+            condition: (context) => context.source.isAttacking(),
             targetController: Players.Opponent,
-            effect: ability.effects.increaseCost({
+            effect: increaseCost({
                 amount: 1,
                 playingTypes: PlayType.PlayFromHand
             })

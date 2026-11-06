@@ -20,8 +20,8 @@ describe('InsolentOutcast', function() {
         });
 
         it('should start as a 1/1', function() {
-            expect(this.outcast.getMilitarySkill()).toBe(1);
-            expect(this.outcast.getPoliticalSkill()).toBe(1);
+            expect(this.outcast.militarySkill).toBe(1);
+            expect(this.outcast.politicalSkill).toBe(1);
         });
 
         it('should increase skills by 1 for each honored character an opponent controls', function() {
@@ -29,28 +29,28 @@ describe('InsolentOutcast', function() {
             this.player2.clickCard('way-of-the-crane');
             this.player2.clickCard(this.whisperer);
             expect(this.whisperer.isHonored).toBe(true);
-            expect(this.outcast.getMilitarySkill()).toBe(2);
-            expect(this.outcast.getPoliticalSkill()).toBe(2);
+            expect(this.outcast.militarySkill).toBe(2);
+            expect(this.outcast.politicalSkill).toBe(2);
             this.player1.pass();
             this.player2.clickCard('soul-beyond-reproach');
             this.player2.clickCard(this.ronin);
             expect(this.ronin.isHonored).toBe(true);
-            expect(this.outcast.getMilitarySkill()).toBe(3);
-            expect(this.outcast.getPoliticalSkill()).toBe(3);
+            expect(this.outcast.militarySkill).toBe(3);
+            expect(this.outcast.politicalSkill).toBe(3);
         });
 
         it('should not increase skills for friendly honored characters', function() {
             this.player1.clickCard('way-of-the-crane');
             this.player1.clickCard(this.brash);
             expect(this.brash.isHonored).toBe(true);
-            expect(this.outcast.getMilitarySkill()).toBe(1);
-            expect(this.outcast.getPoliticalSkill()).toBe(1);
+            expect(this.outcast.militarySkill).toBe(1);
+            expect(this.outcast.politicalSkill).toBe(1);
             this.player2.pass();
             this.player1.clickCard('soul-beyond-reproach');
             this.player1.clickCard(this.outcast);
             expect(this.outcast.isHonored).toBe(true);
-            expect(this.outcast.getMilitarySkill()).toBe(1);
-            expect(this.outcast.getPoliticalSkill()).toBe(1);
+            expect(this.outcast.militarySkill).toBe(1);
+            expect(this.outcast.politicalSkill).toBe(1);
         });
     });
 });

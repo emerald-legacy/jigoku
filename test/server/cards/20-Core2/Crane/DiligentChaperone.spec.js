@@ -168,3 +168,76 @@ describe('Diligent Chaperone', function () {
         });
     });
 });
+
+describe('Diligent Chaperone when several characters lose status tokens at once', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['diligent-chaperone', 'doji-whisperer']
+                },
+                player2: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['perfect-land-ethos']
+                }
+            });
+            this.chaperone = this.player1.findCardByName('diligent-chaperone');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.whisperer.dishonor();
+            this.challenger.honor();
+        });
+
+        it('doesn\'t react to an honored token removed from an opponent\'s character', function () {
+            this.player1.pass();
+            this.player2.clickCard('perfect-land-ethos');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.whisperer.isOrdinary()).toBe(true);
+            expect(this.challenger.isOrdinary()).toBe(true);
+        });
+    });
+});
+
+
+describe('Diligent Chaperone when a dishonored token is moved onto an honored character', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shameless-gossip']
+                },
+                player2: {
+                    inPlay: ['diligent-chaperone', 'doji-whisperer', 'doji-challenger']
+                }
+            });
+            this.gossip = this.player1.findCardByName('shameless-gossip');
+            this.chaperone = this.player2.findCardByName('diligent-chaperone');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.whisperer.honor();
+            this.challenger.dishonor();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.gossip],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('rehonors the character whose honored token was discarded', function () {
+            this.player1.clickCard(this.gossip);
+            this.player1.clickCard(this.challenger);
+            this.player1.clickCard(this.whisperer);
+            expect(this.whisperer.isOrdinary()).toBe(true);
+            expect(this.challenger.isOrdinary()).toBe(true);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.chaperone);
+            this.player2.clickCard(this.chaperone);
+            expect(this.whisperer.isHonored).toBe(true);
+            expect(this.challenger.isOrdinary()).toBe(true);
+            expect(this.getChatLogs(5)).toContain('player2 honors Doji Whisperer');
+        });
+    });
+});

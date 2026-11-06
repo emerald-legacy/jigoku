@@ -60,7 +60,7 @@ describe('Hero Of Three Trees', function() {
                 defenders: []
             });
 
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
 
             this.player2.pass();
             this.player1.clickCard(this.jewel);
@@ -85,7 +85,7 @@ describe('Hero Of Three Trees', function() {
                 province: this.p2Shameful
             });
 
-            let strength = this.p2Shameful.strength;
+            const strength = this.p2Shameful.strength;
 
             this.player2.pass();
             this.player1.clickCard(this.jewel);
@@ -105,7 +105,7 @@ describe('Hero Of Three Trees', function() {
             expect(this.getChatLogs(5)).toContain('player1 reduces the strength of Shameful Display by 1');
         });
 
-        it('Option 2: Should be be selectable if the province strength is already 0', function() {
+        it('Option 2: should not be offered if the province strength is already 0', function() {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.hero],
@@ -118,12 +118,16 @@ describe('Hero Of Three Trees', function() {
             this.player1.clickCard(this.hero);
             this.player2.pass();
 
-            while(this.p2Shameful.strength > 0) {
-                this.player1.clickCard(this.jewel);
-                this.player2.pass();
-            }
+            expect(this.p2Shameful.strength).toBe(3);
+            this.player1.clickCard(this.jewel);
+            this.player2.pass();
+            this.player1.clickCard(this.jewel);
+            this.player2.pass();
+            this.player1.clickCard(this.jewel);
+            this.player2.pass();
+            expect(this.p2Shameful.strength).toBe(0);
 
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
 
             this.player1.clickCard(this.hero);
             expect(this.player1).toHavePrompt('Select one');
@@ -142,7 +146,7 @@ describe('Hero Of Three Trees', function() {
                 province: this.p2Shameful
             });
 
-            let strength = this.p2Shameful.strength;
+            const strength = this.p2Shameful.strength;
 
             this.player2.pass();
             this.player1.clickCard(this.jewel);
@@ -174,7 +178,7 @@ describe('Hero Of Three Trees', function() {
                 province: this.p1Shameful
             });
 
-            let strength = this.p1Shameful.strength;
+            const strength = this.p1Shameful.strength;
 
             this.player1.clickCard(this.jewel);
             this.player1.clickCard(this.hero);

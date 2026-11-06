@@ -45,5 +45,26 @@ describe('Traveling Philosopher', function() {
             expect(this.travelingPhilosopher.location).toBe('dynasty discard pile');
             expect(this.manicured.facedown).toBe(true);
         });
+
+        it('should not be able to target a broken province', function() {
+            this.manicured.facedown = false;
+            this.brokenProvince = this.player1.findCardByName('shameful-display', 'province 2');
+            this.brokenProvince.facedown = false;
+            this.brokenProvince.isBroken = true;
+
+            this.game.checkGameState(true);
+            this.player1.clickCard(this.ichi);
+            this.player1.clickCard(this.travelingPhilosopher);
+
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.travelingPhilosopher);
+            expect(this.player1).toBeAbleToSelect(this.manicured);
+            expect(this.player1).not.toBeAbleToSelect(this.brokenProvince);
+            this.player1.clickCard(this.brokenProvince);
+            expect(this.brokenProvince.facedown).toBe(false);
+            this.player1.clickCard(this.manicured);
+            expect(this.manicured.facedown).toBe(true);
+            expect(this.travelingPhilosopher.location).toBe('dynasty discard pile');
+        });
     });
 });

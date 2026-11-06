@@ -1,20 +1,17 @@
-import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, Trait } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class AsceticVisionary2 extends DrawCard {
     static id = 'ascetic-visionary-2';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Ready a character',
-            cost: AbilityDsl.costs.payFateToRing(1),
-            condition: (context) => context.game.isDuringConflict(),
-            target: {
+    override setupCardAbilities() {
+        this.conflictAction('Ready a character', { evenFromHome: true })
+            .cost(costs.payFateToRing(1))
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('monk'),
-                gameAction: AbilityDsl.actions.ready()
-            }
-        });
+                cardCondition: (card) => card.hasTrait(Trait.Monk)
+            }, ready());
     }
 }

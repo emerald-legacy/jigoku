@@ -64,7 +64,7 @@ describe('Masashigi\'s Sacrifice', function () {
             });
             this.player2.clickCard(this.sac);
             this.player2.clickCard(this.diplomat);
-            expect(this.getChatLogs(5)).toContain('player2 plays Masashigi\'s Sacrifice, sacrificing Doji Diplomat to prevent defending characters from bowing at the end of a the conflict');
+            expect(this.getChatLogs(5)).toContain('player2 plays Masashigi\'s Sacrifice, sacrificing Doji Diplomat to prevent defending characters from bowing at the end of the conflict');
             this.noMoreActions();
             this.player1.clickPrompt('Don\'t Resolve');
 

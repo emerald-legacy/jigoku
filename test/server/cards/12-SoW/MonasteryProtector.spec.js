@@ -516,7 +516,7 @@ describe('Monastery Protector', function() {
             expect(this.player2.fate).toBe(1);
         });
 
-        it('should allow for using alternate fate pools to pay for the event, and if not chosen then the event should not resolve (paying costs first)', function() {
+        it('should allow for using alternate fate pools to pay for the event, and if not chosen then the event is discarded without resolving (paying costs first)', function() {
             this.game.rings.air.fate = 1;
             this.player2.fate = 1;
             this.noMoreActions();
@@ -535,12 +535,12 @@ describe('Monastery Protector', function() {
             expect(this.player2.currentButtons).toContain('Cancel');
             this.player2.clickPrompt('0');
             expect(this.getChatLogs(3)).toContain('player2 attempted to use Hurricane Punch, but there are insufficient legal targets');
-            expect(this.hurricanePunch.location).toBe('hand');
+            expect(this.hurricanePunch.location).toBe('conflict discard pile');
             expect(this.player2.fate).toBe(0);
             expect(this.player1).toHavePrompt('Conflict Action Window');
         });
 
-        it('should allow for using alternate fate pools to pay for the event, and if not chosen then the event should not resolve (choosing targets first)', function() {
+        it('should allow for using alternate fate pools to pay for the event, and if not chosen then the event is discarded without resolving (choosing targets first)', function() {
             this.game.rings.air.fate = 1;
             this.player2.fate = 1;
             this.noMoreActions();
@@ -560,7 +560,7 @@ describe('Monastery Protector', function() {
             expect(this.player2.currentButtons).toContain('Cancel');
             this.player2.clickPrompt('0');
             expect(this.getChatLogs(3)).toContain('player2 attempted to use Hurricane Punch, but there are insufficient legal targets');
-            expect(this.hurricanePunch.location).toBe('hand');
+            expect(this.hurricanePunch.location).toBe('conflict discard pile');
             expect(this.player2.fate).toBe(0);
             expect(this.player1).toHavePrompt('Conflict Action Window');
         });

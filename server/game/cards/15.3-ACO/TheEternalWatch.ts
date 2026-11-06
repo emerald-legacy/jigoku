@@ -1,37 +1,33 @@
-import { CardType, Players, TargetMode } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
+import { CardType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import type DrawCard from '../../DrawCard.js';
-import type Player from '../../Player.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { bow, takeHonor } from '../../GameActions/GameActions.js';
 
 export default class TheEternalWatch extends ProvinceCard {
     static id = 'the-eternal-watch';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Bow a character or take an honor from your opponent',
-            targets: {
-                character: {
-                    cardType: CardType.Character,
-                    cardCondition: (card, context) => card.isAttacking() && card.allowGameAction('bow', context)
+    override setupCardAbilities() {
+        this.action('Bow a character or take an honor from your opponent')
+            .target({
+                name: 'character',
+                cardType: CardType.Character,
+                cardCondition: (card, context) => card.isAttacking() && bow().canAffect(card, context)
+            })
+            .select({
+                name: 'select',
+                dependsOn: 'character',
+                player: Players.Opponent
+            }, {
+                'Bow this character': {
+                    action: bow((context) => ({
+                        target: context.targets.character
+                    })),
+                    chatText: (context) => msg`bow ${context.targets.character}`
                 },
-                select: {
-                    mode: TargetMode.Select,
-                    dependsOn: 'character',
-                    player: Players.Opponent,
-                    choices: {
-                        'Bow this character': AbilityDsl.actions.bow((context) => ({
-                            target: context.targets.character
-                        })),
-                        'Give your opponent 1 honor': AbilityDsl.actions.takeHonor()
-                    }
+                'Give your opponent 1 honor': {
+                    action: takeHonor(),
+                    chatText: (context) => msg`${'take 1 honor from '}${context.player.opponent}`
                 }
-            },
-            effect: '{1}{2}',
-            effectArgs: (context) =>
-                context.selects.select.choice === 'Give your opponent 1 honor'
-                    ? ['take 1 honor from ', context.player.opponent as Player]
-                    : ['bow ', context.targets.character as DrawCard]
-        });
+            });
     }
 }

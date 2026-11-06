@@ -1,13 +1,13 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
-export default class YogoOutcast extends DrawCard {
+export default class YogoOutcast2 extends DrawCard {
     static id = 'yogo-outcast-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.player.isLessHonorable(),
-            effect: AbilityDsl.effects.modifyBothSkills(1)
+            effect: modifyBothSkills(1)
         });
     }
 }

@@ -38,11 +38,12 @@ describe('Spectral Visitation', function() {
             expect(this.player2).toBeAbleToSelect(this.spectralVisitation);
         });
 
-        it('should not trigger if your deck doesn\'t have enough cards', function() {
+        it('discards what is left if your deck has fewer than 4 cards (errata: the discard is part of the effect)', function() {
             this.noMoreActions();
             expect(this.spectralVisitation.facedown).toBe(true);
 
-            this.player2.reduceDeckToNumber('dynasty deck', 3);
+            this.player2.reduceDeckToNumber('dynasty deck', 1);
+            this.player2.player.moveCard(this.toshimoko, 'dynasty deck');
 
             this.initiateConflict({
                 attackers: [this.berserker],
@@ -50,9 +51,12 @@ describe('Spectral Visitation', function() {
                 type: 'military'
             });
 
-            expect(this.player2).toHavePrompt('Choose defenders');
-            expect(this.player2).not.toHavePrompt('Triggered Abilities');
-            expect(this.player2).not.toBeAbleToSelect(this.spectralVisitation);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.spectralVisitation);
+            expect(this.player2.player.dynastyDeck.length).toBe(0);
+            expect(this.player2).toBeAbleToSelect(this.toshimoko);
+            this.player2.clickCard(this.toshimoko);
+            expect(this.toshimoko.location).toBe('play area');
         });
 
         it('should not allow you to target enemy dynasty discard pile', function() {
@@ -92,7 +96,7 @@ describe('Spectral Visitation', function() {
 
             expect(this.toshimoko.location).toBe('dynasty discard pile');
             expect(this.yoshi.location).toBe('play area');
-            expect(this.getChatLogs(10)).toContain('player2 uses Spectral Visitation, discarding Kakita Toshimoko, Adept of the Waves, Adept of the Waves and Adept of the Waves to put a dynasty character into play');
+            expect(this.getChatLogs(10)).toContain('player2 uses Spectral Visitation to discard Kakita Toshimoko, Adept of the Waves, Adept of the Waves and Adept of the Waves and put a dynasty character into play');
             expect(this.getChatLogs(10)).toContain('player2 puts Kakita Yoshi into play. Kakita Yoshi will be put on the bottom of the deck if it\'s still in play by the end of the phase');
         });
 

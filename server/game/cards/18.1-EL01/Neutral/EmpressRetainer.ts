@@ -1,5 +1,5 @@
 import type { AbilityContext } from '../../../AbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyBothSkills } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
 
 function modifier(_: unknown, context: AbilityContext) {
@@ -15,10 +15,10 @@ function modifier(_: unknown, context: AbilityContext) {
 export default class EmpressRetainer extends DrawCard {
     static id = 'empress-retainer';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             match: (card, context) => card === context?.source,
-            effect: AbilityDsl.effects.modifyBothSkills(modifier)
+            effect: modifyBothSkills(modifier)
         });
     }
 }

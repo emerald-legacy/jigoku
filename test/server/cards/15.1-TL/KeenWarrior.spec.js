@@ -64,7 +64,7 @@ describe('Keen Warrior', function() {
                 province: this.ua
             });
 
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
 
             this.player2.clickCard(this.shrewd);
             this.player2.clickCard(this.warrior);
@@ -275,7 +275,7 @@ describe('Keen Warrior', function() {
             });
 
             it('specific triggers - Kitsuki Chiari: should draw 2 and return 1 to bottom of deck', function() {
-                let hand = this.player2.hand.length;
+                const hand = this.player2.hand.length;
 
                 this.player2.clickCard(this.chiari);
                 this.player2.chooseCardInPrompt(this.assassination.name, 'card-name');

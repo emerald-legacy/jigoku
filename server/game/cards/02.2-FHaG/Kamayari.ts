@@ -1,23 +1,20 @@
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Trait } from '../../Constants.js';
 
 class Kamayari extends DrawCard {
     static id = 'kamayari';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.attachmentConditions({
-            trait: 'bushi'
+            trait: Trait.Bushi
         });
 
-        this.reaction({
-            title: 'Bow character who triggered ability',
-            when: {
-                onCardAbilityInitiated: (event, context) => event.card.type === CardType.Character && context.source.parentCharacter && context.source.parentCharacter.isParticipating()
-            },
-            gameAction: ability.actions.bow((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({ target: context.event.card }))
-        });
+        this.reaction('Bow character who triggered ability')
+            .when({
+                onCardAbilityInitiated: (event, context) => !event.resolvedWithoutTriggering && event.card.type === CardType.Character && event.ability.isTriggeredAbility() &&
+                    !!context.source.parentCharacter && context.source.parentCharacter.isParticipating()
+            })
+            .bow((context) => ({ target: context.event.card }));
     }
 }
 

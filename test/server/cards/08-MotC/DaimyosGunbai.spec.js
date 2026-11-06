@@ -100,5 +100,121 @@ describe('Daimyo\'s Gunbai', function () {
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
         });
+
+        describe('Daimyo\'s Gunbai outside a conflict', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['doji-challenger'],
+                        hand: ['daimyo-s-gunbai']
+                    },
+                    player2: {
+                        inPlay: ['solemn-scholar']
+                    }
+                });
+
+                this.dojiChallenger = this.player1.findCardByName('doji-challenger');
+                this.daimyosGunbai = this.player1.findCardByName('daimyo-s-gunbai');
+            });
+
+            it('cannot be used outside a conflict', function () {
+                expect(this.game.isDuringConflict()).toBe(false);
+                this.player1.clickCard(this.daimyosGunbai);
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.daimyosGunbai.location).toBe('hand');
+            });
+        });
+
+        describe('Daimyo\'s Gunbai with an opponent\'s copy attached', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['doji-challenger'],
+                        hand: ['daimyo-s-gunbai']
+                    },
+                    player2: {
+                        inPlay: ['solemn-scholar'],
+                        hand: ['daimyo-s-gunbai']
+                    }
+                });
+
+                this.dojiChallenger = this.player1.findCardByName('doji-challenger');
+                this.ownGunbai = this.player1.findCardByName('daimyo-s-gunbai', 'hand');
+                this.solemnScholar = this.player2.findCardByName('solemn-scholar');
+                this.oppGunbai = this.player2.findCardByName('daimyo-s-gunbai', 'hand');
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.dojiChallenger],
+                    defenders: [this.solemnScholar]
+                });
+
+                this.player2.clickCard(this.oppGunbai);
+                this.player2.clickCard(this.solemnScholar);
+                this.player1.clickCard(this.dojiChallenger);
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('1');
+            });
+
+            it('attaches your copy to your character that wins the duel (ruling #660)', function () {
+                expect(this.dojiChallenger.attachments).toContain(this.oppGunbai);
+                expect(this.oppGunbai.controller).toBe(this.player2.player);
+
+                this.player1.clickCard(this.ownGunbai);
+                this.player1.clickCard(this.dojiChallenger);
+                this.player2.clickCard(this.solemnScholar);
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('1');
+
+                expect(this.ownGunbai.location).toBe('play area');
+                expect(this.dojiChallenger.attachments).toContain(this.ownGunbai);
+                expect(this.dojiChallenger.attachments).toContain(this.oppGunbai);
+                expect(this.ownGunbai.controller).toBe(this.player1.player);
+                expect(this.oppGunbai.controller).toBe(this.player2.player);
+            });
+        });
+    });
+});
+
+describe('Daimyo\'s Gunbai cancelled by Hida Kisada', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['daimyo-s-gunbai']
+                },
+                player2: {
+                    inPlay: ['hida-kisada', 'solemn-scholar']
+                }
+            });
+
+            this.dojiChallenger = this.player1.findCardByName('doji-challenger');
+            this.daimyosGunbai = this.player1.findCardByName('daimyo-s-gunbai');
+            this.solemnScholar = this.player2.findCardByName('solemn-scholar');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.dojiChallenger],
+                defenders: [this.solemnScholar]
+            });
+            this.player2.pass();
+        });
+
+        it('stays in hand and can be used again (#628)', function () {
+            this.player1.clickCard(this.daimyosGunbai);
+            this.player1.clickCard(this.dojiChallenger);
+            this.player2.clickCard(this.solemnScholar);
+            expect(this.getChatLogs(5)).toContain('player1 attempts to initiate Daimyō\'s Gunbai\'s ability, but Hida Kisada cancels it');
+            expect(this.daimyosGunbai.location).toBe('hand');
+            this.player2.pass();
+            this.player1.clickCard(this.daimyosGunbai);
+            expect(this.player1).toHavePrompt('Daimyō\'s Gunbai');
+            this.player1.clickCard(this.dojiChallenger);
+            expect(this.player2).toHavePrompt('Daimyō\'s Gunbai');
+        });
     });
 });

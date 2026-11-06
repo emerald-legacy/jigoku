@@ -174,3 +174,37 @@ describe('Daidoji Ahma - reported dynasty bug', function() {
         });
     });
 });
+
+describe('Daidoji Ahma and Covert', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['political-rival']
+                },
+                player2: {
+                    inPlay: ['daidoji-uji', 'daidoji-ahma']
+                }
+            });
+            this.politicalRival = this.player1.findCardByName('political-rival');
+            this.daidojiUji = this.player2.findCardByName('daidoji-uji');
+            this.ahma = this.player2.findCardByName('daidoji-ahma');
+            this.daidojiUji.dishonor();
+            this.shamefulDisplay = this.player2.findCardByName('shameful-display', 'province 1');
+        });
+
+        it('cancels Covert choosing a dishonored Crane character', function() {
+            this.noMoreActions();
+            this.player1.clickRing('air');
+            this.player1.clickCard(this.shamefulDisplay);
+            this.player1.clickCard(this.politicalRival);
+            this.player1.clickPrompt('Initiate Conflict');
+            this.player1.clickCard(this.daidojiUji);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.ahma);
+            this.player2.clickCard(this.ahma);
+            expect(this.daidojiUji.covert).toBe(false);
+        });
+    });
+});

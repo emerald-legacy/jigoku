@@ -1,27 +1,23 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { msg } from '../../GameChat.js';
+import { attach, selectCard } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
 
 class GiverOfGifts extends DrawCard {
     static id = 'giver-of-gifts';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Move an attachment',
-            target: {
+    override setupCardAbilities() {
+        this.action('Move an attachment')
+            .target({
                 cardType: CardType.Attachment,
+                controller: Players.Self
+            }, selectCard((context) => ({
                 controller: Players.Self,
-                gameAction: ability.actions.selectCard((context: AbilityContext) => ({
-                    controller: Players.Self,
-                    cardCondition: (card: DrawCard) => card !== (context.target as DrawCard).parentCharacter,
-                    message: '{0} moves {1} to {2}',
-                    messageArgs: (card: DrawCard) => [context.player, context.target, card],
-                    gameAction: ability.actions.attach({ attachment: context.target as DrawCard })
-                }))
-            },
-            effect: 'move {0} to another character'
-        });
+                cardCondition: (card) => card !== context.target.parentCharacter,
+                message: (context, card) => msg`${context.player} moves ${context.target} to ${card}`,
+                gameAction: attach({ attachment: context.target })
+            })))
+            .chatText('move {0} to another character');
     }
 }
 

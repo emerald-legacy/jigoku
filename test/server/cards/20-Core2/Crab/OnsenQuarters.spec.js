@@ -94,3 +94,54 @@ describe('Onsen Quarter', function() {
         });
     });
 });
+
+describe('Onsen Quarters with an Allied role', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-kuwanan'],
+                    provinces: ['onsen-quarters'],
+                    role: ['allied-with-the-crab']
+                },
+                player2: {
+                    inPlay: ['brash-samurai']
+                }
+            });
+            this.kuwanan = this.player1.findCardByName('doji-kuwanan');
+            this.brash = this.player2.findCardByName('brash-samurai');
+            this.onsen = this.player1.findCardByName('onsen-quarters', 'province 1');
+            this.onsen.facedown = false;
+            this.game.checkGameState(true);
+        });
+
+        it('lets the player pick which of the role\'s elements to resolve', function() {
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.brash],
+                defenders: [this.kuwanan],
+                province: this.onsen,
+                type: 'military',
+                ring: 'void'
+            });
+            this.noMoreActions();
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.onsen);
+            this.player1.clickCard(this.onsen);
+            expect(this.player1).toHavePrompt('Choose a ring effect to resolve');
+            for(const ring of ['Air Ring', 'Earth Ring', 'Fire Ring', 'Void Ring', 'Water Ring']) {
+                expect(this.player1).toHavePromptButton(ring);
+            }
+            this.player1.clickPrompt('Fire Ring');
+            expect(this.player1).toHavePrompt('Fire Ring');
+            this.player1.clickCard(this.kuwanan);
+            this.player1.clickPrompt('Honor Doji Kuwanan');
+            expect(this.kuwanan.isHonored).toBe(true);
+            expect(this.getChatLogs(5)).toContain('player1 uses Onsen Quarters to resolve the ring effect of one of their role\'s elements');
+            expect(this.getChatLogs(5)).toContain('player1 chooses to resolve Fire Ring effect');
+        });
+    });
+});

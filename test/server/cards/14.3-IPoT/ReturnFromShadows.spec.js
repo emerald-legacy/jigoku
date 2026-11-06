@@ -64,6 +64,7 @@ describe('Return From Shadows', function() {
             });
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player1 won a military conflict 2 vs 1');
         });
 
         it('should not prompt after you win unopposed on defense (RAW - not unopposed)', function () {
@@ -79,6 +80,7 @@ describe('Return From Shadows', function() {
             this.player2.clickCard(this.dojiRep);
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player1 won a military conflict 2 vs 0');
         });
 
         it('should let you choose a province controlled by the conflict loser regardless of revealed or not', function () {
@@ -202,7 +204,7 @@ describe('Return From Shadows', function() {
                 province: this.manicured
             });
 
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             expect(this.player2).toHavePrompt('Conflict Action Window');
             this.player2.clickCard(this.manicured);
             expect(this.player1).toHavePrompt('Conflict Action Window');

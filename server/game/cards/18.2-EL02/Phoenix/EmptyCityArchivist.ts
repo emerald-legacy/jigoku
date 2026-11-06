@@ -1,33 +1,28 @@
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import { EventName, Location } from '../../../Constants.js';
+import { moveCard } from '../../../GameActions/GameActions.js';
+import { Location, RemainingCards, Trait } from '../../../Constants.js';
 
-import type { AbilityContext } from '../../../AbilityContext.js';
-import type { EventPayload } from '../../../Events/EventPayloads.js';
-class SearchTheArchives extends DrawCard {
+class EmptyCityArchivist extends DrawCard {
     static id = 'empty-city-archivist';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Search your deck for a card',
-            when: {
-                onCardAttached: (event: EventPayload<EventName.OnCardAttached>, context) => event.card === context.source && event.originalLocation !== Location.PlayArea
-            },
-            gameAction: AbilityDsl.actions.deckSearch({
-                amount: 4,
-                cardCondition: (card: DrawCard, context: AbilityContext) => {
-                    const parent = (context.source as DrawCard).parentCharacter;
-                    return card.hasTrait('spell') || card.hasTrait('kiho') || (!!parent && parent.hasTrait('scholar'));
+    override setupCardAbilities() {
+        this.reaction('Search your deck for a card')
+            .when({
+                onCardAttached: (event, context) => event.card === context.source && event.originalLocation !== Location.PlayArea
+            })
+            .deckSearch({
+                cardsToLookAt: 4,
+                cardCondition: (card, context) => {
+                    const parent = context.source.parentCharacter;
+                    return card.hasTrait(Trait.Spell) || card.hasTrait(Trait.Kiho) || (!!parent && parent.hasTrait(Trait.Scholar));
                 },
-                placeOnBottomInRandomOrder: true,
-                shuffle: false,
-                gameAction: AbilityDsl.actions.moveCard({
+                remainingCards: RemainingCards.BottomRandom,
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
-            })
-        });
+            });
     }
 }
 
 
-export default SearchTheArchives;
+export default EmptyCityArchivist;

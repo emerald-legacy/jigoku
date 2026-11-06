@@ -1,31 +1,24 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { modifyProvinceStrength } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class FulfillYourDuty extends DrawCard {
     static id = 'fulfill-your-duty';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Add Province Strength',
-            condition: () => this.game.isDuringConflict(),
-            cost: AbilityDsl.costs.sacrifice({ cardType: CardType.Character }),
-            effect: 'add {1} to an attacked province\'s strength',
-            effectArgs: context => context.costs.sacrificeStateWhenChosen ? (context.costs.sacrificeStateWhenChosen as DrawCard).getMilitarySkill() : 0,
-            gameAction: AbilityDsl.actions.selectCard(context => ({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                cardCondition: card => card.isConflictProvince(),
-                message: '{0} increases the strength of {1}',
-                messageArgs: cards => [context.player, cards],
-                gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                    targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.modifyProvinceStrength(context.costs.sacrificeStateWhenChosen ? context.costs.sacrificeStateWhenChosen.getMilitarySkill() : 0)
+    override setupCardAbilities() {
+        this.action('Add Province Strength')
+            .condition(() => this.game.isDuringConflict())
+            .cost(costs.sacrifice({ cardType: CardType.Character }))
+            .selectAttackedProvince((context) => ({
+                message: (context, cards) => msg`${context.player} increases the strength of ${cards}`,
+                gameAction: cardLastingEffect(() => ({
+                    effect: modifyProvinceStrength(context.costs.sacrificeStateWhenChosen ? context.costs.sacrificeStateWhenChosen.militarySkill : 0)
                 }))
             }))
-        });
+            .chatText((context) => msg`add ${context.costs.sacrificeStateWhenChosen ? context.costs.sacrificeStateWhenChosen.militarySkill : 0} to an attacked province's strength`);
     }
 }
 

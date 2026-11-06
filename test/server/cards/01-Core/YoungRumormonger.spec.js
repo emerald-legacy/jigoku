@@ -98,5 +98,98 @@ describe('Young Rumormonger', function() {
                 expect(this.seppunGuardsman.isDishonored).toBe(true);
             });
         });
+
+        describe('honor and dishonor redirects', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['young-rumormonger', 'otomo-courtier', { card: 'doji-whisperer', honor: 'honored' }, { card: 'seppun-guardsman', honor: 'dishonored' }],
+                        hand: ['court-games']
+                    },
+                    player2: {
+                        inPlay: ['doji-challenger', 'kaiu-envoy'],
+                        hand: ['court-games']
+                    }
+                });
+                this.youngRumormonger = this.player1.findCardByName('young-rumormonger');
+                this.otomoCourtier = this.player1.findCardByName('otomo-courtier');
+                this.whisperer = this.player1.findCardByName('doji-whisperer');
+                this.guardsman = this.player1.findCardByName('seppun-guardsman');
+                this.challenger = this.player2.findCardByName('doji-challenger');
+                this.envoy = this.player2.findCardByName('kaiu-envoy');
+                this.p1CourtGames = this.player1.findCardByName('court-games', 'hand');
+                this.p2CourtGames = this.player2.findCardByName('court-games', 'hand');
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.otomoCourtier],
+                    defenders: [this.challenger]
+                });
+            });
+
+            it('gives the honor to another character instead', function() {
+                this.player2.pass();
+                this.player1.clickCard(this.p1CourtGames);
+                this.player1.clickPrompt('Honor a friendly character');
+                this.player1.clickCard(this.otomoCourtier);
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                this.player1.clickCard(this.youngRumormonger);
+                expect(this.player1).toHavePrompt('Young Rumormonger');
+                this.player1.clickCard(this.youngRumormonger);
+                expect(this.youngRumormonger.isHonored).toBe(true);
+                expect(this.otomoCourtier.isHonored).toBe(false);
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+            });
+
+            it('gives the dishonor to another character instead', function() {
+                this.player2.clickCard(this.p2CourtGames);
+                this.player2.clickPrompt('Dishonor an opposing character');
+                this.player1.clickCard(this.otomoCourtier);
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                this.player1.clickCard(this.youngRumormonger);
+                expect(this.player1).toHavePrompt('Young Rumormonger');
+                this.player1.clickCard(this.youngRumormonger);
+                expect(this.youngRumormonger.isDishonored).toBe(true);
+                expect(this.otomoCourtier.isDishonored).toBe(false);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+            });
+
+            it('can only choose another character controlled by the same player', function() {
+                this.player2.pass();
+                this.player1.clickCard(this.p1CourtGames);
+                this.player1.clickPrompt('Honor a friendly character');
+                this.player1.clickCard(this.otomoCourtier);
+                this.player1.clickCard(this.youngRumormonger);
+                expect(this.player1).toHavePrompt('Young Rumormonger');
+                expect(this.player1).toBeAbleToSelect(this.youngRumormonger);
+                expect(this.player1).not.toBeAbleToSelect(this.otomoCourtier);
+                expect(this.player1).not.toBeAbleToSelect(this.challenger);
+                expect(this.player1).not.toBeAbleToSelect(this.envoy);
+            });
+
+            it('cannot redirect honor to an honored character (ruling #130)', function() {
+                this.player2.pass();
+                this.player1.clickCard(this.p1CourtGames);
+                this.player1.clickPrompt('Honor a friendly character');
+                this.player1.clickCard(this.otomoCourtier);
+                this.player1.clickCard(this.youngRumormonger);
+                expect(this.player1).toHavePrompt('Young Rumormonger');
+                expect(this.player1).toBeAbleToSelect(this.youngRumormonger);
+                expect(this.player1).toBeAbleToSelect(this.guardsman);
+                expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+            });
+
+            it('cannot redirect dishonor to a dishonored character (ruling #130)', function() {
+                this.player2.clickCard(this.p2CourtGames);
+                this.player2.clickPrompt('Dishonor an opposing character');
+                this.player1.clickCard(this.otomoCourtier);
+                this.player1.clickCard(this.youngRumormonger);
+                expect(this.player1).toHavePrompt('Young Rumormonger');
+                expect(this.player1).toBeAbleToSelect(this.youngRumormonger);
+                expect(this.player1).toBeAbleToSelect(this.whisperer);
+                expect(this.player1).not.toBeAbleToSelect(this.guardsman);
+            });
+        });
     });
 });

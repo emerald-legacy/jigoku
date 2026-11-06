@@ -1,5 +1,7 @@
-import TriggeredAbility from '../../../server/game/TriggeredAbility.js';
-import { AbilityType } from '../../../server/game/Constants.js';
+/* eslint-disable @typescript-eslint/no-explicit-any -- stub-based unit test: partial fakes of game, card and context */
+import { TriggeredAbility } from '../../../server/game/TriggeredAbility.js';
+import { AbilityType, EventName } from '../../../server/game/Constants.js';
+import { Event } from '../../../server/game/Events/Event.js';
 
 interface TriggeredAbilityTestContext {
     gameSpy: any;
@@ -17,8 +19,9 @@ interface TriggeredAbilityTestContext {
 
 describe('TriggeredAbility', function () {
     beforeEach(function (this: TriggeredAbilityTestContext) {
-        this.gameSpy = jasmine.createSpyObj('game', ['on', 'removeListener', 'registerAbility', 'getPlayers']);
-        this.cardSpy = jasmine.createSpyObj('card', ['getType', 'isBlank', 'canTriggerAbilities', 'anyEffect']);
+        this.gameSpy = jasmine.createSpyObj('game', ['on', 'off', 'onTriggerWindow', 'offTriggerWindow', 'onAggregateWindow', 'offAggregateWindow', 'registerAbility', 'getPlayers']);
+        this.cardSpy = jasmine.createSpyObj('card', ['getType', 'isBlank', 'canTriggerAbilities', 'anyEffect', 'isCard', 'getReactions']);
+        this.cardSpy.isCard.and.returnValue(true);
         this.cardSpy.game = this.gameSpy;
         this.player = { name: 'player1', playableLocations: [], findPlayType: () => undefined };
         this.cardSpy.controller = this.player;
@@ -27,21 +30,21 @@ describe('TriggeredAbility', function () {
 
         this.properties = {
             when: {
-                onSomething: jasmine.createSpy('when condition')
+                [EventName.OnCardPlayed]: jasmine.createSpy('when condition')
             },
             handler: jasmine.createSpy('handler')
         };
 
-        this.properties.when.onSomething.and.returnValue(true);
+        this.properties.when[EventName.OnCardPlayed].and.returnValue(true);
 
         this.reaction = new TriggeredAbility(this.cardSpy, AbilityType.Reaction, this.properties);
-        this.cardSpy.reactions = [this.reaction];
+        this.cardSpy.getReactions.and.returnValue([this.reaction]);
     });
 
     describe('eventHandler()', function() {
         beforeEach(function(this: TriggeredAbilityTestContext) {
             this.executeEventHandler = (): void => {
-                this.event = { name: 'onSomething' };
+                this.event = new Event(EventName.OnCardPlayed, {});
                 this.window = jasmine.createSpyObj('window', ['addChoice']);
                 this.reaction.eventHandler(this.event, this.window);
                 this.context = this.reaction.createContext(this.player, this.event);
@@ -50,12 +53,12 @@ describe('TriggeredAbility', function () {
 
         it('should call the when handler with the appropriate arguments', function(this: TriggeredAbilityTestContext) {
             this.executeEventHandler();
-            expect(this.properties.when.onSomething).toHaveBeenCalledWith(this.event, this.context);
+            expect(this.properties.when[EventName.OnCardPlayed]).toHaveBeenCalledWith(this.event, this.context);
         });
 
         describe('when the when condition returns false', function() {
             beforeEach(function(this: TriggeredAbilityTestContext) {
-                this.properties.when.onSomething.and.returnValue(false);
+                this.properties.when[EventName.OnCardPlayed].and.returnValue(false);
                 this.executeEventHandler();
             });
 
@@ -70,7 +73,7 @@ describe('TriggeredAbility', function () {
                 this.spy1.and.returnValue('');
                 this.spy2 = spyOn(this.reaction, 'isInValidLocation');
                 this.spy2.and.returnValue(true);
-                this.properties.when.onSomething.and.returnValue(true);
+                this.properties.when[EventName.OnCardPlayed].and.returnValue(true);
                 this.executeEventHandler();
             });
 
@@ -84,8 +87,8 @@ describe('TriggeredAbility', function () {
         beforeEach(function(this: TriggeredAbilityTestContext) {
             this.properties = {
                 when: {
-                    onFoo: () => true,
-                    onBar: () => true
+                    onCardBowed: () => true,
+                    onCardHonored: () => true
                 },
                 handler: () => true
             };
@@ -94,14 +97,14 @@ describe('TriggeredAbility', function () {
         });
 
         it('should register all when event handlers with the proper event type suffix', function(this: TriggeredAbilityTestContext) {
-            expect(this.gameSpy.on).toHaveBeenCalledWith('onFoo:reaction', jasmine.any(Function));
-            expect(this.gameSpy.on).toHaveBeenCalledWith('onBar:reaction', jasmine.any(Function));
+            expect(this.gameSpy.onTriggerWindow).toHaveBeenCalledWith('onCardBowed', 'reaction', jasmine.any(Function));
+            expect(this.gameSpy.onTriggerWindow).toHaveBeenCalledWith('onCardHonored', 'reaction', jasmine.any(Function));
         });
 
         it('should not reregister events already registered', function(this: TriggeredAbilityTestContext) {
-            expect(this.gameSpy.on.calls.count()).toBe(4);
+            expect(this.gameSpy.onTriggerWindow.calls.count()).toBe(2);
             this.reaction.registerEvents();
-            expect(this.gameSpy.on.calls.count()).toBe(4);
+            expect(this.gameSpy.onTriggerWindow.calls.count()).toBe(2);
         });
     });
 
@@ -109,8 +112,8 @@ describe('TriggeredAbility', function () {
         beforeEach(function(this: TriggeredAbilityTestContext) {
             this.properties = {
                 when: {
-                    onFoo: () => true,
-                    onBar: () => true
+                    onCardBowed: () => true,
+                    onCardHonored: () => true
                 },
                 handler: () => true
             };
@@ -120,21 +123,21 @@ describe('TriggeredAbility', function () {
         it('should unregister all previously registered when event handlers', function(this: TriggeredAbilityTestContext) {
             this.reaction.registerEvents();
             this.reaction.unregisterEvents();
-            expect(this.gameSpy.removeListener).toHaveBeenCalledWith('onFoo:reaction', jasmine.any(Function));
-            expect(this.gameSpy.removeListener).toHaveBeenCalledWith('onBar:reaction', jasmine.any(Function));
+            expect(this.gameSpy.offTriggerWindow).toHaveBeenCalledWith('onCardBowed', 'reaction', jasmine.any(Function));
+            expect(this.gameSpy.offTriggerWindow).toHaveBeenCalledWith('onCardHonored', 'reaction', jasmine.any(Function));
         });
 
         it('should not remove listeners when they have not been registered', function(this: TriggeredAbilityTestContext) {
             this.reaction.unregisterEvents();
-            expect(this.gameSpy.removeListener).not.toHaveBeenCalled();
+            expect(this.gameSpy.offTriggerWindow).not.toHaveBeenCalled();
         });
 
         it('should not unregister events already unregistered', function(this: TriggeredAbilityTestContext) {
             this.reaction.registerEvents();
             this.reaction.unregisterEvents();
-            expect(this.gameSpy.removeListener.calls.count()).toBe(2);
+            expect(this.gameSpy.offTriggerWindow.calls.count()).toBe(2);
             this.reaction.unregisterEvents();
-            expect(this.gameSpy.removeListener.calls.count()).toBe(2);
+            expect(this.gameSpy.offTriggerWindow.calls.count()).toBe(2);
         });
     });
 });

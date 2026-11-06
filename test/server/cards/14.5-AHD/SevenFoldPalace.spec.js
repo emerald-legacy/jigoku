@@ -29,7 +29,7 @@ describe('Seven Fold Palace', function() {
             });
 
             this.noMoreActions();
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
 
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.sevenFoldPalace);
@@ -39,7 +39,7 @@ describe('Seven Fold Palace', function() {
             expect(this.getChatLogs(10)).toContain('player1 uses Seven Fold Palace, bowing Seven Fold Palace to gain 2 honor');
         });
 
-        it('should trigger when you lose a conflict with an honored attacking character', function() {
+        it('should not trigger when you lose a conflict with an honored attacking character', function() {
             this.callow.honor();
             this.noMoreActions();
             this.initiateConflict({
@@ -49,6 +49,7 @@ describe('Seven Fold Palace', function() {
             });
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player2 won a political conflict 3 vs 2');
         });
 
         it('should not trigger when you win a conflict without an honored character', function() {
@@ -60,6 +61,7 @@ describe('Seven Fold Palace', function() {
             });
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player1 won a political conflict 1 vs 0');
         });
 
         it('should not trigger when you win a conflict on defense', function() {
@@ -74,6 +76,7 @@ describe('Seven Fold Palace', function() {
             });
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player1 won a political conflict 9 vs 3');
         });
     });
 });

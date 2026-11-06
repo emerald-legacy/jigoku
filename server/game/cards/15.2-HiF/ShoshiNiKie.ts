@@ -1,21 +1,19 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { ready } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 
 class ShoshiNiKie extends DrawCard {
     static id = 'shoshi-ni-kie';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'ready an ordinary character',
-            cost: AbilityDsl.costs.selectedReveal({ cardCondition: card => card.isFacedown(), cardType: CardType.Province }),
-            target: {
-                cardCondition: card => card.isOrdinary(),
+    override setupCardAbilities() {
+        this.action('ready an ordinary character')
+            .cost(costs.reveal({ cardCondition: (card) => card.isFacedown(), cardType: CardType.Province }))
+            .target({
+                cardCondition: (card) => card.isOrdinary(),
                 cardType: CardType.Character,
-                player: Players.Self,
-                gameAction: AbilityDsl.actions.ready()
-            }
-        });
+                player: Players.Self
+            }, ready());
     }
 }
 

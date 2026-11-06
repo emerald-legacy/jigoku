@@ -1,27 +1,31 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import type CardAbility from '../CardAbility.js';
-import { EventName } from '../Constants.js';
+import type { CardAbility } from '../CardAbility.js';
+import { EventName, Blocker } from '../Constants.js';
+import type BaseCard from '../BaseCard.js';
 import type DrawCard from '../DrawCard.js';
 import type { Event } from '../Events/Event.js';
-import InitiateCardAbilityEvent from '../Events/InitiateCardAbilityEvent.js';
+import { InitiateCardAbilityEvent } from '../Events/InitiateCardAbilityEvent.js';
 import type Game from '../Game.js';
-import AbilityResolver from '../gamesteps/AbilityResolver.js';
+import { AbilityResolver } from '../gamesteps/AbilityResolver.js';
 import { SimpleStep } from '../gamesteps/SimpleStep.js';
+import { payTargetingCosts, targetingCosts } from './targetingCosts.js';
 import type Player from '../Player.js';
-import type TriggeredAbility from '../TriggeredAbility.js';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent } from './GameAction.js';
+import { canResolveAbility, getResolutionContext } from './Shared/abilityResolution.js';
 
 class ResolveAbilityActionResolver extends AbilityResolver {
     ignoreCosts: boolean;
 
-    constructor(game: Game, context: TriggeredAbilityContext, ignoreCosts: boolean) {
+    /** `ability` is the ability `context` was created for. */
+    constructor(game: Game, context: AbilityContext, private readonly ability: CardAbility, ignoreCosts: boolean) {
         super(game, context);
         this.ignoreCosts = ignoreCosts;
     }
 
-    initialise() {
+    override initialise() {
         this.pipeline.initialise([
             new SimpleStep(this.game, () => this.createSnapshot()),
             new SimpleStep(this.game, () => this.openInitiateAbilityEventWindow()),
@@ -29,7 +33,7 @@ class ResolveAbilityActionResolver extends AbilityResolver {
         ]);
     }
 
-    getCostResults() {
+    override getCostResults() {
         const results = super.getCostResults();
         results.canCancel = false;
         results.playCosts = false;
@@ -37,50 +41,51 @@ class ResolveAbilityActionResolver extends AbilityResolver {
         return results;
     }
 
-    openInitiateAbilityEventWindow() {
-        const params = { card: this.context.source, ability: this.context.ability, context: this.context };
-        const events = [
-            this.game.getEvent(EventName.OnCardAbilityInitiated, params, () => this.queueInitiateAbilitySteps())
-        ];
-        if(this.context.ability.isTriggeredAbility() && !this.context.subResolution) {
-            events.push(
+    override openInitiateAbilityEventWindow() {
+        const params = { card: this.context.source, ability: this.context.ability, context: this.context, resolvedWithoutTriggering: true };
+        this.events.push(this.game.getEvent(EventName.OnCardAbilityInitiated, params, () => this.queueInitiateAbilitySteps()));
+        const ability = this.context.ability;
+        if(ability.isTriggeredAbility() && ability.isCardAbilityInstance() && !this.context.subResolution) {
+            this.events.push(
                 this.game.getEvent(EventName.OnCardAbilityTriggered, {
                     player: this.context.player,
                     card: this.context.source,
-                    context: this.context
+                    ability,
+                    context: this.context,
+                    resolvedWithoutTriggering: true
                 })
             );
         }
-        this.game.openEventWindow(events);
+        this.game.openEventWindow(this.events);
     }
 
-    initiateAbilityEffects() {
-        if(this.cancelled) {
-            for(const event of this.events) {
-                event.cancel();
-            }
+    override initiateAbilityEffects() {
+        const costsToTarget = this.ignoreCosts ? [] : targetingCosts(this.context, Object.values(this.context.targets).flat());
+        if(!this.canInitiateEffects(costsToTarget)) {
             return;
         }
-        const cardAbility = this.context.ability as CardAbility;
+        const cardAbility = this.ability;
         if(cardAbility.max && !this.context.subResolution) {
             this.context.player.incrementAbilityMax(cardAbility.maxIdentifier);
         }
         cardAbility.displayMessage(this.context, 'resolves');
-        this.game.openEventWindow(
+        payTargetingCosts(this.context, costsToTarget);
+        // like AbilityResolver: reactions to the effects come after them (Supporting Cast)
+        this.game.openThenEventWindow(
             new InitiateCardAbilityEvent(
-                { card: this.context.source, context: this.context },
+                { card: this.context.source, context: this.context, resolvedWithoutTriggering: true },
                 () => (this.initiateAbility = true)
             )
         );
     }
 
-    resolveCosts() {
+    override resolveCosts() {
         if(!this.ignoreCosts) {
             super.resolveCosts();
         }
     }
 
-    payCosts() {
+    override payCosts() {
         if(!this.ignoreCosts) {
             super.payCosts();
         }
@@ -90,80 +95,57 @@ class ResolveAbilityActionResolver extends AbilityResolver {
 export interface ResolveAbilityProperties extends CardActionProperties {
     ability: CardAbility;
     subResolution?: boolean;
-    ignoredRequirements?: string[];
+    ignoredBlockers?: Blocker[];
     player?: Player;
     event?: Event;
     choosingPlayerOverride?: Player | null;
+    /** The ability resolves "as if the conflict were at" this province (Keeper of Secret Names). */
+    asIfConflictAt?: BaseCard;
 }
 
-type ResolvedResolveAbilityProperties = ResolveAbilityProperties & {
-    ignoredRequirements: NonNullable<ResolveAbilityProperties['ignoredRequirements']>;
-};
-
-export class ResolveAbilityAction extends CardGameAction {
-    name = 'resolveAbility';
-    defaultProperties: ResolveAbilityProperties = {
-        ability: null as unknown as CardAbility,
-        ignoredRequirements: [],
-        subResolution: false,
-        choosingPlayerOverride: undefined
+export class ResolveAbilityAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<ResolveAbilityProperties, EventName.Unnamed, Context, 'ignoredBlockers' | 'subResolution'> {
+    override name = 'resolveAbility';
+    override defaultProperties = {
+        ignoredBlockers: [],
+        subResolution: false
     };
-    constructor(
-        properties: ((context: TriggeredAbilityContext) => ResolveAbilityProperties) | ResolveAbilityProperties
-    ) {
-        super(properties as CardActionProperties | ((context: AbilityContext) => CardActionProperties));
+
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['resolve {0}\'s {1} ability', [this.getProperties(context, additionalProperties).ability.title]];
     }
 
-    getEffectMessage(context: TriggeredAbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as ResolveAbilityProperties;
-        return ['resolve {0}\'s {1} ability', [properties.target, properties.ability.title]];
-    }
-
-    canAffect(card: DrawCard, context: TriggeredAbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties) as ResolvedResolveAbilityProperties;
-        let ability = properties.ability as TriggeredAbility;
-        let player = properties.player || context.player;
-        let newContextEvent = properties.event;
-        if(
-            !super.canAffect(card, context) ||
-            !ability ||
-            (!properties.subResolution && player.isAbilityAtMax(ability.maxIdentifier))
-        ) {
-            return false;
-        }
-        let newContext = ability.createContext(player, newContextEvent);
-        let ignoredRequirements = properties.ignoredRequirements.concat(
-            'player',
-            'location',
-            'limit',
-            'triggeringRestrictions'
-        );
-        return !ability.meetsRequirements(newContext, ignoredRequirements);
-    }
-
-    eventHandler(event: Event, additionalProperties: Record<string, unknown>): void {
-        let properties = this.getProperties((event.context as AbilityContext), additionalProperties) as ResolvedResolveAbilityProperties;
-        let player = properties.player || (event.context as AbilityContext).player;
-        let newContextEvent = properties.event;
-        let newContext = (properties.ability as TriggeredAbility).createContext(player, newContextEvent);
-        newContext.subResolution = !!properties.subResolution;
-        if(properties.subResolution) {
-            newContext.originatingContext = (event.context as AbilityContext).triggeringContext;
-        }
-        if(properties.choosingPlayerOverride) {
-            newContext.choosingPlayerOverride = properties.choosingPlayerOverride;
-        }
-        (event.context as AbilityContext).game.queueStep(
-            new ResolveAbilityActionResolver(
-                (event.context as AbilityContext).game,
-                newContext,
-                properties.ignoredRequirements.includes('cost')
+    override canAffect(card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
+        return (
+            super.canAffect(card, context) &&
+            canResolveAbility(
+                properties,
+                context,
+                // resolving isn't playing (RRG Resolve an Ability): play restrictions and the Limited rule don't apply
+                properties.ignoredBlockers.concat(Blocker.WrongPlayer, Blocker.WrongLocation, Blocker.LimitReached, Blocker.CannotTrigger,
+                    Blocker.CannotPlay, Blocker.LimitedAlreadyPlayed)
             )
         );
     }
 
-    hasTargetsChosenByInitiatingPlayer(context: TriggeredAbilityContext): boolean {
-        let properties = this.getProperties(context) as ResolveAbilityProperties;
-        return properties.ability.hasTargetsChosenByInitiatingPlayer(context);
+    override eventHandler(event: ActionEvent<EventName, Context>, additionalProperties: ActionOverrides): void {
+        const properties = this.getProperties(event.context, additionalProperties);
+        const newContext = getResolutionContext(properties, event.context);
+        if(properties.choosingPlayerOverride) {
+            newContext.choosingPlayerOverride = properties.choosingPlayerOverride;
+        }
+        event.context.game.queueStep(
+            new ResolveAbilityActionResolver(
+                event.context.game,
+                newContext,
+                properties.ability,
+                properties.ignoredBlockers.includes(Blocker.CannotPayCost)
+            )
+        );
+    }
+
+    /** The resolved ability isn't triggered (RRG Resolve an Ability), so its targets aren't chosen by triggering this one (Hantei XXXVIII; EmeraldDB ruling). */
+    override hasTargetsChosenByInitiatingPlayer(): boolean {
+        return false;
     }
 }

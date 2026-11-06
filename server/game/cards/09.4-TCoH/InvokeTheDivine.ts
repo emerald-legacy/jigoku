@@ -1,34 +1,32 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { playCard, selectCard } from '../../GameActions/GameActions.js';
 
-import { Location, Players } from '../../Constants.js';
+import { Location, PlayType, Players, Trait } from '../../Constants.js';
 
 class InvokeTheDivine extends DrawCard {
     static id = 'invoke-the-divine';
 
-    setupCardAbilities() {
-        const getSelectCardAction = (fate: number, spellsCast: number) => AbilityDsl.actions.selectCard({
+    override setupCardAbilities() {
+        const getSelectCardAction = (fate: number, spellsCast: number) => selectCard({
             location: Location.Hand,
             controller: Players.Self,
-            cardCondition: (card: DrawCard) => card.hasTrait('spell') && (card.getCost() ?? 0) <= fate,
+            cardCondition: (card) => card.isDrawCard() && card.hasTrait(Trait.Spell) && card.costAtMost(fate),
             optional: spellsCast > 0,
-            gameAction: AbilityDsl.actions.playCard(invokeContext => ({
+            gameAction: playCard((invokeContext) => ({
                 resetOnCancel: true,
                 payCosts: false,
+                playType: PlayType.PlayFromHand,
                 source: this,
-                postHandler: (context: AbilityContext) => {
+                postHandler: (context) => {
                     if(spellsCast < 2) {
-                        getSelectCardAction(fate - ((context.source as DrawCard).getCost() ?? 0), spellsCast + 1).resolve(undefined, invokeContext);
+                        getSelectCardAction(fate - ((context.source.isDrawCard() ? context.source.getCost() : null) ?? 0), spellsCast + 1).resolve(undefined, invokeContext);
                     }
                 }
             }))
         });
-        this.action({
-            title: 'Play 3 spells',
-            effect: 'play 3 spells from their hand',
-            gameAction: getSelectCardAction(5, 0)
-        });
+        this.action('Play 3 spells')
+            .gameAction(getSelectCardAction(5, 0))
+            .chatText('play up to 3 spells from their hand');
     }
 }
 

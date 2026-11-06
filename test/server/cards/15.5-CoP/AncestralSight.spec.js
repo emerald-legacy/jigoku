@@ -72,8 +72,8 @@ describe('Ancestral Sight', function() {
         });
 
         it('should put a fate on the selected character from your pool', function() {
-            let pfate = this.player1.fate;
-            let fate = this.toshimoko.fate;
+            const pfate = this.player1.fate;
+            const fate = this.toshimoko.fate;
             this.player1.clickCard(this.sight);
             this.player1.clickCard(this.spiritcaller);
             this.player2.pass();

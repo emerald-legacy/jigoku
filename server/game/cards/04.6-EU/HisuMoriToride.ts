@@ -1,34 +1,32 @@
-import { CardType, Duration } from '../../Constants.js';
+import { CardType, Duration, ConflictType, Trait } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { additionalConflict } from '../../effects.js';
+import { msg } from '../../GameChat.js';
+import { extraConflictPossible } from '../extraConflictPossible.js';
 
 export default class HisuMoriToride extends StrongholdCard {
     static id = 'hisu-mori-toride-unicorn';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Gain additional military conflict',
-            effect: 'allow {1} to declare an additional military conflict this phase',
-            effectArgs: (context) => [context.player],
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Gain additional military conflict')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.player &&
-                    event.conflict.conflictType === 'military' &&
+                    event.conflict.conflictType === ConflictType.Military &&
                     !!context.game.currentConflict &&
-                    context.game.currentConflict.hasMoreParticipants(context.player, () => true)
-            },
-            cost: [
-                AbilityDsl.costs.bowSelf(),
-                AbilityDsl.costs.sacrifice({
-                    cardType: CardType.Character,
-                    cardCondition: (card) => card.hasTrait('cavalry')
-                })
-            ],
-            gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
-                targetController: context.player,
-                duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.additionalConflict('military')
+                    context.game.currentConflict.hasMoreParticipants(context.player)
+            })
+            .condition((context) => extraConflictPossible(context.player))
+            .cost(costs.bowSelf())
+            .cost(costs.sacrifice({
+                cardType: CardType.Character,
+                cardCondition: (card) => card.hasTrait(Trait.Cavalry)
             }))
-        });
+            .playerLastingEffect({
+                duration: Duration.UntilEndOfPhase,
+                effect: additionalConflict(ConflictType.Military)
+            })
+            .chatText((context) => msg`allow ${context.player} to declare an additional military conflict this phase`);
     }
 }

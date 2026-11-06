@@ -206,5 +206,20 @@ describe('Soshi Diviner', function() {
                 expect(this.getChatLogs(10)).toContain('player1 uses Soshi Diviner to move a facedown card to province 2');
             });
         });
+
+        it('cannot choose a card in the stronghold province', function() {
+            this.player1.moveCard(this.whisperer, 'stronghold province');
+            expect(this.whisperer.location).toBe('stronghold province');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.shoju],
+                defenders: []
+            });
+            this.player2.pass();
+
+            this.player1.clickCard(this.diviner);
+            expect(this.player1).toBeAbleToSelect(this.yoshi);
+            expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+        });
     });
 });

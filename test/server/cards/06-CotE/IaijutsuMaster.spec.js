@@ -137,7 +137,8 @@ describe('Iaijutsu Master', function () {
                 this.player2.clickPrompt('1');
                 this.player2.clickCard(this.iaijutsu);
                 expect(this.player2).toHavePrompt('Select one');
-                expect(this.player2.currentButtons).toContain('Increase honor bid', 'Decrease honor bid');
+                expect(this.player2.currentButtons).toContain('Increase honor bid');
+                expect(this.player2.currentButtons).toContain('Decrease honor bid');
                 this.player2.clickPrompt('Decrease honor bid');
                 expect(this.player2.honor).toBe(12);
                 expect(this.player1.honor).toBe(10);

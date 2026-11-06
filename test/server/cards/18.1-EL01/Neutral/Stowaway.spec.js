@@ -52,7 +52,7 @@ describe('Stowaway', function() {
             expect(this.player1).toBeAbleToSelect(this.fan);
             expect(this.player1).toBeAbleToSelect(this.katana);
 
-            let mil = this.stowaway.getMilitarySkill();
+            const mil = this.stowaway.militarySkill;
 
             this.player1.clickCard(this.katana);
             expect(this.player1).not.toBeAbleToSelect(this.mine);
@@ -64,9 +64,9 @@ describe('Stowaway', function() {
 
             this.player1.clickPrompt('Done');
 
-            expect(this.stowaway.getMilitarySkill()).toBe(mil + 1);
-            expect(this.katana.location).toBe(this.stowaway.uuid);
-            expect(this.letGo.location).toBe(this.stowaway.uuid);
+            expect(this.stowaway.militarySkill).toBe(mil + 1);
+            expect(this.katana.isUnderneath(this.stowaway)).toBe(true);
+            expect(this.letGo.isUnderneath(this.stowaway)).toBe(true);
 
             expect(this.getChatLogs(5)).toContain('player1 uses Stowaway to place Fine Katana and Let Go beneath Stowaway');
 
@@ -97,7 +97,7 @@ describe('Stowaway', function() {
             expect(this.player1).toBeAbleToSelect(this.fan);
             expect(this.player1).toBeAbleToSelect(this.katana);
 
-            let mil = this.stowaway.getMilitarySkill();
+            const mil = this.stowaway.militarySkill;
 
             this.player1.clickCard(this.mine);
             expect(this.player1).toBeAbleToSelect(this.mine);
@@ -108,8 +108,8 @@ describe('Stowaway', function() {
 
             this.player1.clickPrompt('Done');
 
-            expect(this.stowaway.getMilitarySkill()).toBe(mil);
-            expect(this.mine.location).toBe(this.stowaway.uuid);
+            expect(this.stowaway.militarySkill).toBe(mil);
+            expect(this.mine.isUnderneath(this.stowaway)).toBe(true);
 
             expect(this.getChatLogs(5)).toContain('player1 uses Stowaway to place Iron Mine beneath Stowaway');
         });
@@ -127,6 +127,98 @@ describe('Stowaway', function() {
 
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.stowaway);
+        });
+    });
+});
+
+describe('Stowaway after a change of control', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 11,
+                    inPlay: ['kakita-yoshi'],
+                    hand: ['stowaway'],
+                    conflictDiscard: ['let-go', 'fine-katana']
+                },
+                player2: {
+                    honor: 8,
+                    inPlay: ['hida-yakamo'],
+                    hand: ['blackmail', 'assassination']
+                }
+            });
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.stowaway = this.player1.findCardByName('stowaway');
+            this.letGo = this.player1.findCardByName('let-go');
+            this.katana = this.player1.findCardByName('fine-katana');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.yoshi],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.stowaway);
+            this.player1.clickPrompt('0');
+            this.player1.clickPrompt('Conflict');
+            this.player1.clickCard(this.stowaway);
+            this.player1.clickCard(this.katana);
+            this.player1.clickCard(this.letGo);
+            this.player1.clickPrompt('Done');
+            this.mil = this.stowaway.militarySkill;
+            this.player2.clickCard('blackmail');
+            this.player2.clickCard(this.stowaway);
+        });
+
+        it('still counts and removes the cards under it (EmeraldDB ruling)', function() {
+            expect(this.stowaway.controller).toBe(this.player2.player);
+            expect(this.stowaway.militarySkill).toBe(this.mil);
+            this.player1.pass();
+            this.player2.clickCard('assassination');
+            this.player2.clickCard(this.stowaway);
+            expect(this.stowaway.location).toBe('conflict discard pile');
+            expect(this.katana.location).toBe('removed from game');
+            expect(this.letGo.location).toBe('removed from game');
+        });
+    });
+});
+
+
+describe('Stowaway copied by Shosuro Actor', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-actor']
+                },
+                player2: {
+                    inPlay: ['stowaway'],
+                    conflictDiscard: ['let-go', 'fine-katana', 'ornate-fan', 'banzai']
+                }
+            });
+            this.actor = this.player1.findCardByName('shosuro-actor');
+            this.stowaway = this.player2.findCardByName('stowaway');
+            for(const name of ['let-go', 'fine-katana', 'ornate-fan', 'banzai']) {
+                this.player2.player.placeUnderneath(this.player2.findCardByName(name), this.stowaway);
+            }
+            this.game.checkGameState(true);
+        });
+
+        it('counts the cards under the copy', function() {
+            expect(this.stowaway.militarySkill).toBe(this.stowaway.printedMilitarySkill + 2);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.actor],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.actor);
+            this.player1.clickCard(this.stowaway);
+            expect(this.actor.name).toBe('Stowaway');
+            expect(this.actor.militarySkill).toBe(this.stowaway.printedMilitarySkill);
         });
     });
 });

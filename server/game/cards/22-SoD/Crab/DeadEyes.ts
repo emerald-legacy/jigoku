@@ -1,54 +1,48 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { cardCannot, modifyMilitarySkill, setGlory } from '../../../effects.js';
+import { sacrifice } from '../../../GameActions/GameActions.js';
+import type { Conflict } from '../../../Conflict.js';
 import DrawCard from '../../../DrawCard.js';
-import { ConflictType, EventName } from '../../../Constants.js';
+import type Player from '../../../Player.js';
+import { ConflictType, RestrictionType, Trait } from '../../../Constants.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 export default class DeadEyes extends DrawCard {
     static id = 'dead-eyes';
 
-    public setupCardAbilities() {
-        this.attachmentConditions({ trait: 'berserker' });
+    public override setupCardAbilities() {
+        this.attachmentConditions({ trait: Trait.Berserker });
 
         this.whileAttached({
-            match: _card => true,
-            effect: AbilityDsl.effects.setGlory(0)
+            effect: setGlory(0)
         });
 
-        this.action({
-            title: 'Increase a character\'s military skill',
-            condition: context => !!(context.game.isDuringConflict(ConflictType.Military) && context.source.parentCharacter),
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: context.source.parentCharacter,
+        this.conflictAction('Increase a character\'s military skill', { conflictType: ConflictType.Military })
+            .cardLastingEffect((context) => ({
+                target: context.source.parentCharacter ?? [],
                 effect: [
-                    AbilityDsl.effects.modifyMilitarySkill(2),
-                    AbilityDsl.effects.cardCannot({
-                        cannot: 'sendHome',
-                        restricts: 'opponentsCardEffects',
-                        applyingPlayer: context.player
-                    }),
-                    AbilityDsl.effects.delayedEffect({
-                        when: {
-                            afterConflict: (event: EventPayload<EventName.AfterConflict>) => {
-                                if(!context.source.parentCharacter) {
-                                    return false;
-                                }
-                                if(context.source.controller !== event.conflict.winner) {
-                                    return true;
-                                }
-                                const controllerIsAttacker = event.conflict.attackingPlayer === context.source.controller;
-                                const mySkill = controllerIsAttacker ? event.conflict.attackerSkill : event.conflict.defenderSkill;
-                                const opponentSkill = controllerIsAttacker ? event.conflict.defenderSkill : event.conflict.attackerSkill;
-                                return mySkill <= opponentSkill * 2;
-                            }
-                        },
-                        gameAction: AbilityDsl.actions.sacrifice(),
-                        message: '{0} is sacrificed due to the delayed effect of {1}',
-                        messageArgs: [context.source.parentCharacter, context.source]
-                    })
+                    modifyMilitarySkill(2),
+                    cardCannot(RestrictionType.SendHome)
                 ]
-            })),
-            effect: 'grant +2{2} to {1}, prevent them from being moved home. They will be sacrificed if they don\'t win the conflict by enough skill',
-            effectArgs: context => [context.source.parentCharacter ?? '', 'military']
-        });
+            }))
+            .atEndOfConflict((context) => {
+                const conflict = context.game.currentConflict;
+                return {
+                    target: context.source.parentCharacter ?? [],
+                    onlyIf: () => !!conflict && !this.contributedMoreThanDouble(conflict, context.source.controller),
+                    message: () => msg`${context.source.parentCharacter} is sacrificed due to the delayed effect of ${context.source}`,
+                    gameAction: sacrifice()
+                };
+            })
+            .chatText((context) => msg`grant +2${'military'} to ${context.source.parentCharacter ?? ''}, prevent them from being moved home. They will be sacrificed if they don't win the conflict by enough skill`);
+    }
+
+    private contributedMoreThanDouble(conflict: Conflict, player: Player): boolean {
+        if(conflict.winner !== player) {
+            return false;
+        }
+        const isAttacker = conflict.attackingPlayer === player;
+        const mySkill = isAttacker ? conflict.attackerSkill : conflict.defenderSkill;
+        const opponentSkill = isAttacker ? conflict.defenderSkill : conflict.attackerSkill;
+        return mySkill > opponentSkill * 2;
     }
 }

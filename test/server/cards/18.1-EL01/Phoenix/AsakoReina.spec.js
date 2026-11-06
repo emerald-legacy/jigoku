@@ -36,7 +36,7 @@ describe('Asako Reina', function () {
         it('when the earth ring is claimed', function () {
             this.game.rings.earth.claimRing(this.player1.player);
             this.game.checkGameState(true);
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.asakoReina);
             expect(this.player1.hand.length).toBe(hand + 1);
         });
@@ -73,7 +73,7 @@ describe('Asako Reina', function () {
         it('when the void ring is claimed', function () {
             this.game.rings.void.claimRing(this.player1.player);
             this.game.checkGameState(true);
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.asakoReina);
             expect(this.player1.fate).toBe(fate + 1);
         });
@@ -86,9 +86,9 @@ describe('Asako Reina', function () {
             this.game.rings.fire.claimRing(this.player1.player);
             this.game.checkGameState(true);
 
-            let fate = this.player1.fate;
-            let handsize = this.player1.hand.length;
-            let honor = this.player1.honor;
+            const fate = this.player1.fate;
+            const handsize = this.player1.hand.length;
+            const honor = this.player1.honor;
             this.player1.clickCard(this.asakoReina);
             expect(this.player1).toBeAbleToSelect(this.seeker);
             this.player1.clickCard(this.seeker);
@@ -116,9 +116,9 @@ describe('Asako Reina', function () {
             this.player2.clickCard(this.asakoReina);
             this.player1.pass();
 
-            let fate = this.player2.fate;
-            let handsize = this.player2.hand.length;
-            let honor = this.player2.honor;
+            const fate = this.player2.fate;
+            const handsize = this.player2.hand.length;
+            const honor = this.player2.honor;
             this.player2.clickCard(this.yokuni);
             expect(this.player2).toBeAbleToSelect(this.seeker);
             this.player2.clickCard(this.seeker);

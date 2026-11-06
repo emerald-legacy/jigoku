@@ -1,18 +1,13 @@
 import { ConflictType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
 
 export default class EmpressFavorite extends DrawCard {
     static id = 'empress-favorite';
 
-    setupCardAbilities() {
-        this.conflictAction({
-            conflictType: 'political',
-            title: 'Take 1 honor',
-            condition: (context) => context.source.isDefending() &&
-                !!context.player.opponent &&
-                !context.player.opponent.hasDeclaredConflictOfType(context, ConflictType.Military),
-            gameAction: AbilityDsl.actions.takeHonor()
-        });
+    override setupCardAbilities() {
+        this.conflictAction('Take 1 honor', { conflictType: ConflictType.Political })
+            .condition((context) => context.source.isDefending())
+            .ifCondition((context) => !!context.player.opponent && !context.player.opponent.hasDeclaredConflictOfType(context, ConflictType.Military))
+            .takeHonor();
     }
 }

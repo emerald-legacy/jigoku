@@ -70,11 +70,36 @@ describe('Second Wind', function () {
             );
         });
 
-        it('should place on the bottom of the deck at the end of the phase', function () {
+        it('should place on the bottom of the deck at the end of the conflict', function () {
             this.player2.clickCard(this.secondWind);
             this.player2.clickCard(this.masterTactician);
             this.noMoreActions();
             expect(this.masterTactician.location).toBe('dynasty deck');
+            expect(this.player2.player.dynastyDeck.at(-1)).toBe(this.masterTactician);
+        });
+
+    });
+});
+
+describe('Second Wind timing', function () {
+    integration(function () {
+        describe('outside a conflict', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player2: {
+                        hand: ['second-wind'],
+                        dynastyDiscard: ['master-tactician']
+                    }
+                });
+                this.secondWind = this.player2.findCardByName('second-wind');
+            });
+
+            it('cannot be played', function () {
+                this.player1.pass();
+                this.player2.clickCard(this.secondWind);
+                expect(this.secondWind.location).toBe('hand');
+            });
         });
     });
 });

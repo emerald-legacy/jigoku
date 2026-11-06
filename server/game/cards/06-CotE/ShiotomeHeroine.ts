@@ -1,22 +1,19 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { EventName, Stage } from '../../Constants.js';
+import { Stage } from '../../Constants.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
 class ShiotomeHeroine extends DrawCard {
     static id = 'shiotome-heroine';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Ready this character',
-            when: {
-                onModifyHonor: (event: EventPayload<EventName.OnModifyHonor>, context: TriggeredAbilityContext) =>
-                    (event.amount ?? 0) > 0 && context.player.opponent &&
-                    event.player === context.player.opponent && event.context?.stage === Stage.Effect
-            },
-            gameAction: AbilityDsl.actions.ready()
-        });
+    override setupCardAbilities() {
+        this.reaction('Ready this character')
+            .when({
+                onModifyHonor: (event, context) =>
+                    event.amount > 0 && event.player === context.player.opponent && event.context?.stage === Stage.Effect,
+                // the opponent takes honor from you (not the honor bid, a framework effect)
+                onTransferHonor: (event, context) =>
+                    event.amount > 0 && event.player === context.player && !event.afterBid && event.context?.stage === Stage.Effect
+            })
+            .ready();
     }
 }
 

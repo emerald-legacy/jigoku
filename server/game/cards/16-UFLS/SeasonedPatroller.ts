@@ -1,28 +1,37 @@
 import DrawCard from '../../DrawCard.js';
-import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Players, Location } from '../../Constants.js';
-import type StaticEffect from '../../Effects/StaticEffect.js';
+import { EffectName, Location, Players } from '../../Constants.js';
+import { cannotApplyLastingEffects, provinceCannotHaveSkillIncreased, suppressEffects } from '../../effects.js';
+import type { EffectApplier } from '../../Effects/EffectApplier.js';
+import { isEffectOf } from '../../Effects/types.js';
+import type { GameObject } from '../../GameObject.js';
 
 class SeasonedPatroller extends DrawCard {
     static id = 'seasoned-patroller';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            match: (card: ProvinceCard) => card.isConflictProvince(),
+            match: (card) => card.isConflictProvince(),
             targetLocation: Location.Provinces,
             targetController: Players.Any,
-            condition: context => context.source.isAttacking(),
+            condition: (context) => context.source.isAttacking(),
             effect: [
-                AbilityDsl.effects.suppressEffects((effect: unknown) =>
-                    (effect as StaticEffect).isProvinceStrengthModifier() && (effect as StaticEffect).getValue<number>() > 0
-                ),
-                AbilityDsl.effects.provinceCannotHaveSkillIncreased(),
-                AbilityDsl.effects.cannotApplyLastingEffects((effect: StaticEffect) =>
-                    effect.isProvinceStrengthModifier() && effect.getValue<number>() > 0
-                )
+                suppressEffects((effect) => this.increasesStrength(effect)),
+                provinceCannotHaveSkillIncreased(),
+                cannotApplyLastingEffects((effect) => this.increasesStrength(effect))
             ]
         });
+    }
+
+    // a set strength is not an increase; a calculated one has its value per province
+    private increasesStrength(effect: EffectApplier<EffectName, GameObject, unknown>): boolean {
+        const provinces = this.game.currentConflict?.getConflictProvinces() ?? [];
+        if(isEffectOf(effect, EffectName.ModifyProvinceStrength)) {
+            return provinces.some((province) => (effect.getValue(province) ?? 0) > 0);
+        }
+        if(isEffectOf(effect, EffectName.ModifyProvinceStrengthMultiplier)) {
+            return provinces.some((province) => (effect.getValue(province) ?? 1) > 1);
+        }
+        return false;
     }
 }
 

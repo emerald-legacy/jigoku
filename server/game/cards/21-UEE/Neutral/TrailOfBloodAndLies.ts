@@ -1,45 +1,36 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Phases, Players } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { perPhase } from '../../../AbilityLimit.js';
+import { dishonor, selectCard } from '../../../GameActions/GameActions.js';
+import { CardType, Phase, Players, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class TrailOfBloodAndLies extends DrawCard {
     static id = 'trail-of-blood-and-lies';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Dishonor a character',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Dishonor a character')
+            .when({
                 onMoveFate: (event, context) => {
-                    const origin = event.origin as { type?: string; controller?: unknown } | undefined;
+                    const origin = event.origin;
                     return (
-                        context.game.currentPhase !== Phases.Fate &&
-                        event.fate > 0 &&
-                        !!origin &&
+                        context.game.currentPhase !== Phase.Fate &&
+                        (event.fate ?? 0) > 0 &&
+                        !!origin?.isCard() &&
                         origin.type === CardType.Character &&
                         origin.controller === context.player.opponent
                     );
                 }
-            },
-            target: {
+            })
+            .gameAction(selectCard({
                 cardType: CardType.Character,
                 player: Players.Opponent,
                 controller: Players.Opponent,
-                gameAction: AbilityDsl.actions.dishonor()
-            },
-            then: () => ({
-                gameAction: AbilityDsl.actions.conditional({
-                    condition: (context) => context.player.isCharacterTraitInPlay('magistrate'),
-                    falseGameAction: AbilityDsl.actions.noAction(),
-                    trueGameAction: AbilityDsl.actions.selectCard({
-                        activePromptTitle: 'Choose a character to dishonor',
-                        cardType: CardType.Character,
-                        player: Players.Opponent,
-                        controller: Players.Opponent,
-                        gameAction: AbilityDsl.actions.dishonor()
-                    })
-                })
-            }),
-            max: AbilityDsl.limit.perPhase(1)
-        });
+                targets: true,
+                message: (context, card) => msg`${context.player.opponent ?? ''} chooses to dishonor ${card}`,
+                gameAction: dishonor()
+            }))
+            .chatText((context) => msg`force ${context.player.opponent ?? ''} to dishonor a character`)
+            .max(perPhase(1))
+            .mayResolveAgain({ condition: (context) => context.player.isCharacterTraitInPlay(Trait.Magistrate) });
     }
 }

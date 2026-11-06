@@ -58,6 +58,16 @@ describe('Kitsu Spiritcaller', function() {
                     expect(this.game.currentConflict.attackers).toContain(this.masterOfTheSpear);
                 });
 
+                it('should return a conflict character to the bottom of the conflict deck at the end of the conflict', function() {
+                    this.masterOfTheSpear = this.player1.clickCard('master-of-the-spear');
+                    this.noMoreActions();
+                    this.player1.clickPrompt('No');
+                    this.player1.clickPrompt('Gain 2 honor');
+                    expect(this.masterOfTheSpear.location).toBe('conflict deck');
+                    expect(this.player1.player.conflictDeck.at(-1)).toBe(this.masterOfTheSpear);
+                    expect(this.getChatLogs(10)).toContain('Master of the Spear returns to the bottom of the deck due to Kitsu Spiritcaller\'s effect');
+                });
+
                 it('should bow Kitsu Spiritcaller', function() {
                     this.honoredGeneral = this.player1.clickCard('honored-general');
                     expect(this.kitsuSpiritcaller.bowed).toBe(true);

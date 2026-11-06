@@ -49,8 +49,8 @@ describe('Trading on the Sand Road', function () {
 
             it('should remove the top 4 cards from both player\'s decks from the game', function () {
                 this.noMoreActions();
-                let player1DeckSize = this.player1.conflictDeck.length;
-                let player2DeckSize = this.player2.conflictDeck.length;
+                const player1DeckSize = this.player1.conflictDeck.length;
+                const player2DeckSize = this.player2.conflictDeck.length;
                 this.player1.clickCard(this.tradingOnTheSandRoad);
                 expect(this.fineKatana.location).toBe('removed from game');
                 expect(this.iuchiWayfinder.location).toBe('removed from game');
@@ -64,6 +64,18 @@ describe('Trading on the Sand Road', function () {
                     'player2 removes the top 4 cards from their conflict deck from the game: ' +
                         'Feral Ningyo, Fine Katana, Supernatural Storm and Supernatural Storm'
                 );
+            });
+
+            it('says how many cards each player removes when the decks are short', function () {
+                this.player1.reduceDeckToNumber('conflict deck', 2);
+                this.player2.reduceDeckToNumber('conflict deck', 1);
+                this.noMoreActions();
+                this.player1.clickCard(this.tradingOnTheSandRoad);
+                expect(this.player1.conflictDeck.length).toBe(0);
+                expect(this.player2.conflictDeck.length).toBe(0);
+                expect(this.getChatLogs(5)).toContain('player1 plays Trading on the Sand Road to remove the top 2 cards from each player\'s deck and make them playable by both players until the end of the round');
+                expect(this.getChatLogs(3)).toContain('player1 removes the top 2 cards from their conflict deck from the game: Iuchi Wayfinder and Supernatural Storm');
+                expect(this.getChatLogs(3)).toContain('player2 removes the top card from their conflict deck from the game: Feral Ningyo');
             });
 
             it('should allow opponent to use the cards removed from the game (attachment)', function () {
@@ -215,7 +227,7 @@ describe('Trading on the Sand Road', function () {
                 this.player1.clickPrompt('Lose 1 honor to resolve this ability again');
                 this.player1.clickCard(this.wanderingRonin);
                 this.player1.clickPrompt('Done');
-                expect(this.wanderingRonin.getMilitarySkill()).toBe(6);
+                expect(this.wanderingRonin.militarySkill).toBe(6);
                 expect(this.banzai.location).toBe('conflict discard pile');
             });
         });

@@ -201,3 +201,45 @@ describe('Show Me Your Stance', function () {
         });
     });
 });
+
+describe('Show Me Your Stance and The Mirror\'s Gaze', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['show-me-your-stance']
+                },
+                player2: {
+                    inPlay: ['kakita-toshimoko', 'adept-of-the-waves'],
+                    hand: ['policy-debate', 'the-mirror-s-gaze']
+                },
+                gameMode: 'emerald'
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.stance = this.player1.findCardByName('show-me-your-stance');
+            this.toshimoko = this.player2.findCardByName('kakita-toshimoko');
+            this.adept = this.player2.findCardByName('adept-of-the-waves');
+            this.pd = this.player2.findCardByName('policy-debate');
+            this.challenger.honor();
+            this.toshimoko.dishonor();
+            this.player1.pass();
+            this.gaze = this.player2.playAttachment('the-mirror-s-gaze', this.adept);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [this.toshimoko]
+            });
+        });
+
+        it('cannot be copied, as it is a Duel Challenge', function () {
+            this.player2.clickCard(this.pd);
+            this.player2.clickCard(this.toshimoko);
+            this.player2.clickCard(this.challenger);
+            this.player1.clickCard(this.stance);
+            expect(this.getChatLogs(5)).toContain('player1 plays Show Me Your Stance to have status tokens count when resolving this duel');
+            expect(this.player2).not.toBeAbleToSelect(this.gaze);
+        });
+    });
+});

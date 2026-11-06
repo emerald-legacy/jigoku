@@ -33,6 +33,18 @@ describe('Graceful Guardian', function() {
                 });
             });
 
+            it('ends with the conflict\'s action window when both players pass (EmeraldDB ruling)', function () {
+                this.player2.clickCard(this.gracefulGuardian);
+                this.noMoreActions();
+                this.player1.clickPrompt('Gain 2 Honor');
+                expect(this.game.currentConflict).toBeNull();
+                const fate = this.player1.fate;
+                this.player1.clickCard(this.fineKatana);
+                this.player1.clickCard(this.solemn);
+                expect(this.fineKatana.location).toBe('play area');
+                expect(this.player1.fate).toBe(fate);
+            });
+
             it('should increase the cost of the next actions by each player by 1.', function () {
                 this.player2.clickCard(this.gracefulGuardian);
 

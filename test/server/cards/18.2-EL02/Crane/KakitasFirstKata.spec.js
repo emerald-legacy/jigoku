@@ -53,7 +53,7 @@ describe('Kakita\'s First Kata', function() {
             expect(this.player2).toBeAbleToSelect(this.sotorii);
             expect(this.player2).toBeAbleToSelect(this.raitsugu);
             expect(this.player2).not.toBeAbleToSelect(this.yoshi);
-            expect(this.getChatLogs(5)).toContain('player2 plays Kakita\'s First Kata to prevent opponents\' actions from bowing or moving Kakita Yoshi');
+            expect(this.getChatLogs(5)).toContain('player2 plays Kakita\'s First Kata to prevent opponents\' card effects from bowing or moving Kakita Yoshi');
         });
 
         it('should prevent bowing and moving (AFWTD interaction)', function() {
@@ -90,7 +90,7 @@ describe('Kakita\'s First Kata', function() {
             this.player2.clickCard(this.yoshi);
 
             expect(this.yoshi.bowed).toBe(false);
-            expect(this.getChatLogs(5)).toContain('player2 plays Kakita\'s First Kata to ready and prevent opponents\' actions from bowing or moving Kakita Yoshi');
+            expect(this.getChatLogs(5)).toContain('player2 plays Kakita\'s First Kata to ready and prevent opponents\' card effects from bowing or moving Kakita Yoshi');
         });
 
         it('should not ready if not bowed during conflict', function() {
@@ -113,3 +113,47 @@ describe('Kakita\'s First Kata', function() {
         });
     });
 });
+
+describe('Kakita\'s First Kata with a bow before the conflict', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['vice-proprietor']
+                },
+                player2: {
+                    inPlay: ['kakita-yoshi', 'doji-challenger'],
+                    hand: ['kakita-s-first-kata', 'in-lady-doji-s-service']
+                }
+            });
+
+            this.vice = this.player1.findCardByName('vice-proprietor');
+            this.yoshi = this.player2.findCardByName('kakita-yoshi');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.stance = this.player2.findCardByName('kakita-s-first-kata');
+            this.service = this.player2.findCardByName('in-lady-doji-s-service');
+        });
+
+        it('does not ready a character bowed before the conflict', function() {
+            this.player1.pass();
+            this.player2.clickCard(this.service);
+            this.player2.clickCard(this.vice);
+            this.player2.clickPrompt('Prevent Defending');
+            this.player2.clickCard(this.yoshi);
+            expect(this.yoshi.bowed).toBe(true);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.vice],
+                defenders: [this.challenger],
+                type: 'political'
+            });
+
+            this.player2.clickCard(this.stance);
+            this.player2.clickCard(this.yoshi);
+            expect(this.yoshi.bowed).toBe(true);
+        });
+    });
+});
+

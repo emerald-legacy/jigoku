@@ -1,3 +1,5 @@
+import { addTrait } from '../../../../../build/server/game/effects.js';
+
 describe('Mangrove Safehouse', function () {
     integration(function () {
         describe('Mangrove Safehouse\'s ability', function () {
@@ -192,6 +194,23 @@ describe('Mangrove Safehouse', function () {
                         });
                     });
 
+                    describe('if a character that gained the Mantis Clan trait is selected', function () {
+                        beforeEach(function () {
+                            // no card grants the Mantis Clan trait
+                            this.adeptOfTheWaves.applyDurationEffect('untilEndOfRound', {
+                                match: this.adeptOfTheWaves,
+                                effect: addTrait('mantis-clan')
+                            });
+                            this.player1.clickCard(this.adeptOfTheWaves);
+                        });
+
+                        it('moves the target home and steals 1 fate', function () {
+                            expect(this.adeptOfTheWaves.inConflict).toBe(false);
+                            expect(this.player1.fate).toBe(this.p1FateBefore + 1);
+                            expect(this.player2.fate).toBe(this.p2FateBefore - 1);
+                        });
+                    });
+
                     describe('if a Mantis character is selected but opponent has 0 fate', function () {
                         beforeEach(function () {
                             this.player2.player.fate = 0;
@@ -213,6 +232,48 @@ describe('Mangrove Safehouse', function () {
                     });
                 });
             });
+        });
+    });
+});
+
+describe('Mangrove Safehouse and a Mantis character that lost its traits', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    dynastyDiscard: ['mangrove-safehouse'],
+                    inPlay: ['kudaka']
+                },
+                player2: {
+                    inPlay: ['togashi-initiate'],
+                    hand: ['lightning-ascends']
+                }
+            });
+            this.kudaka = this.player1.findCardByName('kudaka');
+            this.mangroveSafehouse = this.player1.placeCardInProvince('mangrove-safehouse', 'province 2');
+            this.initiate = this.player2.findCardByName('togashi-initiate');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.kudaka],
+                defenders: [this.initiate]
+            });
+            this.player2.clickCard('lightning-ascends');
+            this.player2.clickCard(this.initiate);
+            this.player2.clickCard(this.kudaka);
+            this.p1FateBefore = this.player1.fate;
+            this.p2FateBefore = this.player2.fate;
+        });
+
+        it('moves the target home and steals no fate', function () {
+            expect(this.kudaka.hasTrait('mantis-clan')).toBe(false);
+            this.player1.clickCard(this.mangroveSafehouse);
+            this.player1.clickCard(this.kudaka);
+            expect(this.kudaka.inConflict).toBe(false);
+            expect(this.player1.fate).toBe(this.p1FateBefore);
+            expect(this.player2.fate).toBe(this.p2FateBefore);
+            expect(this.getChatLogs(3)).toContain('player1 uses Mangrove Safehouse to move Kudaka home');
         });
     });
 });

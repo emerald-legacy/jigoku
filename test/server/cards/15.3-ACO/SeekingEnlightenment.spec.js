@@ -1,6 +1,6 @@
 describe('Seeking Enlightenment', function() {
     integration(function() {
-        describe('Vassal Fields\'s ability', function() {
+        describe('Seeking Enlightenment\'s ability', function() {
             beforeEach(function() {
                 this.setupTest({
                     phase: 'conflict',

@@ -114,6 +114,7 @@ describe('Kakita Dojo', function() {
                 this.player2.clickPrompt('1');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 expect(this.mirumotoRaitsugu.bowed).toBe(true);
+                expect(this.getChatLogs(5)).toContain('Duel Effect: Mirumoto Raitsugu is bowed and cannot trigger its abilities until the end of the conflict');
             });
 
             it('should not bow a borderlands defender when it is defending, but still prevent triggered abilities', function() {
@@ -131,6 +132,7 @@ describe('Kakita Dojo', function() {
                 this.player1.clickPrompt('5');
                 this.player2.clickPrompt('1');
                 expect(this.borderlandsDefender.bowed).toBe(false);
+                expect(this.getChatLogs(5)).toContain('Duel Effect: Borderlands Defender cannot trigger its abilities until the end of the conflict');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 this.player2.clickCard(this.borderlandsDefender);
                 expect(this.player2).toHavePrompt('Conflict Action Window');

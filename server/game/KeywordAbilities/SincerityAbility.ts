@@ -1,29 +1,14 @@
-import { AbilityType, EventName } from '../Constants.js';
-import type { TriggeredAbilityContext } from '../TriggeredAbilityContext.js';
 import type DrawCard from '../DrawCard.js';
-import TriggeredAbility from '../TriggeredAbility.js';
+import { draw } from '../GameActions/GameActions.js';
+import { LeavesPlayKeywordAbility } from './LeavesPlayKeywordAbility.js';
 
-import type { EventPayload } from '../Events/EventPayloads.js';
-export default class SincerityAbility extends TriggeredAbility<DrawCard> {
+export class SincerityAbility extends LeavesPlayKeywordAbility {
     constructor(card: DrawCard) {
-        super(card, AbilityType.KeywordInterrupt, {
-            when: {
-                onCardLeavesPlay: (event: EventPayload<EventName.OnCardLeavesPlay>, context: TriggeredAbilityContext<DrawCard>) => event.card === context.source &&
-                                                      context.source.hasSincerity()
-            },
-            title: card.name + '\'s Sincerity',
-            printedAbility: false,
-            message: '{0} draws a card due to {1}\'s Sincerity',
-            messageArgs: (context: TriggeredAbilityContext) => [context.player, context.source],
-            handler: (context: TriggeredAbilityContext) => context.game.applyGameAction(context, { draw: context.player })
+        super(card, {
+            name: 'Sincerity',
+            hasKeyword: (card) => card.hasSincerity(),
+            gain: 'draws a card',
+            gameAction: (context) => draw({ target: context.player })
         });
-    }
-
-    isTriggeredAbility() {
-        return false;
-    }
-
-    isKeywordAbility() {
-        return true;
     }
 }

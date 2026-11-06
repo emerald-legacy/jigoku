@@ -81,3 +81,40 @@ describe('Moto Stables', function() {
         });
     });
 });
+
+describe('Moto Stables with an opponent\'s character', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['moto-youth'],
+                    dynastyDiscard: ['moto-stables']
+                },
+                player2: {
+                    inPlay: ['moto-juro']
+                }
+            });
+
+            this.motoYouth = this.player1.findCardByName('moto-youth');
+            this.juro = this.player2.findCardByName('moto-juro');
+            this.motoStables = this.player1.placeCardInProvince('moto-stables', 'province 1');
+        });
+
+        it('should not react to an opponent\'s character moving to the conflict', function() {
+            this.noMoreActions();
+
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.motoYouth],
+                defenders: []
+            });
+
+            this.player2.clickCard(this.juro);
+            expect(this.juro.isParticipating()).toBe(true);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.juro.militarySkill).toBe(5);
+        });
+    });
+});

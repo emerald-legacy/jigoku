@@ -45,3 +45,36 @@ describe('Kanjo District', function() {
         });
     });
 });
+
+describe('Kanjo District without the Imperial Favor', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker']
+                },
+                player2: {
+                    dynastyDeck: ['kanjo-district']
+                }
+            });
+            this.matsuBerserker = this.player1.findCardByName('matsu-berserker');
+            this.kanjoDistrict = this.player2.placeCardInProvince('kanjo-district');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.matsuBerserker],
+                defenders: []
+            });
+        });
+
+        it('cannot be used', function() {
+            expect(this.player2.player.imperialFavor).toBe('');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            this.player2.clickCard(this.kanjoDistrict);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.player2).not.toBeAbleToSelect(this.matsuBerserker);
+            expect(this.matsuBerserker.bowed).toBe(false);
+            expect(this.matsuBerserker.isParticipating()).toBe(true);
+        });
+    });
+});

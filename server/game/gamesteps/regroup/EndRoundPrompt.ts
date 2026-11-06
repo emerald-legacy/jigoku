@@ -2,22 +2,18 @@ import type Player from '../../Player.js';
 import { PlayerOrderPrompt } from '../PlayerOrderPrompt.js';
 
 export class EndRoundPrompt extends PlayerOrderPrompt {
-    activePrompt() {
+    override activePrompt() {
         return {
             menuTitle: '',
             buttons: [{ text: 'End Round' }]
         };
     }
 
-    waitingPrompt() {
+    override waitingPrompt() {
         return { menuTitle: 'Waiting for opponent to end the round' };
     }
 
-    onMenuCommand(player: Player): boolean {
-        if(player !== this.currentPlayer) {
-            return false;
-        }
-
+    override menuCommand(_player: Player): boolean {
         this.completePlayer();
         return true;
     }

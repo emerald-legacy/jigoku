@@ -23,9 +23,12 @@ describe('Kudaka', function () {
                     defenders: []
                 });
                 this.noMoreActions();
-                // Discard card in province
+                expect(this.player1).toHavePromptButton('Yes');
                 this.player1.clickPrompt('Yes');
-                this.player1.clickPrompt('Don\'t Resolve');
+                expect(this.player1).toHavePromptButton('Don\'t resolve');
+                this.player1.clickPrompt('Don\'t resolve');
+                expect(this.game.rings.water.claimedBy).toBe(this.player1.player.name);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
                 expect(this.player1).not.toBeAbleToSelect(this.kudaka);
             });
 

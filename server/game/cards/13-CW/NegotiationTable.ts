@@ -1,154 +1,99 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { draw, gainFate, ready, selectCard } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
+import type { HandlerMenuOption } from '../../gamesteps/HandlerMenuPrompt.js';
+import type Player from '../../Player.js';
+import type { Event } from '../../Events/Event.js';
+import type { GameAction } from '../../GameActions/GameAction.js';
 
 export default class NegotiationTable extends DrawCard {
     static id = 'negotiation-table';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Make opponent pick from several options',
-            condition: (context) => context.player.opponent !== undefined,
-            handler: (context: AbilityContext) => {
-                let choices: string[] = [];
-                let handlers: (() => void)[] = [];
-
-                let drawChoice = 'Draw 1 card';
-                let drawHandler = () => {
-                    choices.splice(choices.indexOf(drawChoice), 1);
-                    handlers.splice(handlers.indexOf(drawHandler), 1);
-                    this.getDrawChoice(context);
-                    this.getHandlerMenu(context, choices, handlers);
+    public override setupCardAbilities() {
+        this.action('Make opponent pick from several options')
+            .condition((context) => context.player.opponent !== undefined)
+            .handler((context) => {
+                const opponent = context.player.opponent;
+                if(!opponent) {
+                    return;
+                }
+                const options: HandlerMenuOption[] = [];
+                const prompt = () => this.game.promptWithHandlerMenu(opponent, {
+                    activePromptTitle: 'Choose an action',
+                    source: this,
+                    options
+                });
+                // each option except Done can be picked once
+                const once = (text: string, resolve: () => void): HandlerMenuOption => {
+                    const option: HandlerMenuOption = {
+                        text,
+                        handler: () => {
+                            options.splice(options.indexOf(option), 1);
+                            resolve();
+                            prompt();
+                        }
+                    };
+                    return option;
                 };
-                let readyChoice = 'Choose and ready a character';
-                let readyHandler = () => {
-                    choices.splice(choices.indexOf(readyChoice), 1);
-                    handlers.splice(handlers.indexOf(readyHandler), 1);
-                    this.getReadyChoice(context);
-                    this.getHandlerMenu(context, choices, handlers);
-                };
-                let fateChoice = 'Gain 1 fate';
-                let fateHandler = () => {
-                    choices.splice(choices.indexOf(fateChoice), 1);
-                    handlers.splice(handlers.indexOf(fateHandler), 1);
-                    this.getFateChoice(context);
-                    this.getHandlerMenu(context, choices, handlers);
-                };
-                let doneChoice = 'Done';
-                let doneHandler = () => {
-                    this.getDoneChoice(context);
-                };
+                options.push(
+                    once('Draw 1 card', () => this.eachPlayerDraws(context, opponent)),
+                    once('Choose and ready a character', () => this.eachPlayerReadies(context, opponent)),
+                    once('Gain 1 fate', () => this.eachPlayerGainsFate(context, opponent)),
+                    { text: 'Done', handler: () => {
+                        if(options.length === 4) {
+                            this.game.addMessage(msg`${opponent} chooses not to do an action`);
+                        }
+                    } }
+                );
+                prompt();
+            });
+    }
 
-                choices.push(drawChoice);
-                choices.push(readyChoice);
-                choices.push(fateChoice);
-                choices.push(doneChoice);
+    private eachPlayerDraws(context: AbilityContext, opponent: Player) {
+        this.game.addMessage(msg`${opponent} chooses to have each player draw a card`);
+        this.opponentThenYou(context, draw({ target: opponent }), draw({ target: context.player }));
+    }
 
-                handlers.push(drawHandler);
-                handlers.push(readyHandler);
-                handlers.push(fateHandler);
-                handlers.push(doneHandler);
+    private eachPlayerReadies(context: AbilityContext, opponent: Player) {
+        this.game.addMessage(msg`${opponent} chooses to have each player ready a character`);
+        this.opponentThenYou(
+            context,
+            selectCard((ctx) => ({
+                player: Players.Opponent,
+                cardType: CardType.Character,
+                targets: true,
+                message: (_context, card) => msg`${ctx.player.opponent} chooses to ready ${card}`,
+                gameAction: ready()
+            })),
+            selectCard((ctx) => ({
+                player: Players.Self,
+                cardType: CardType.Character,
+                targets: true,
+                message: (_context, card) => msg`${ctx.player} chooses to ready ${card}`,
+                gameAction: ready()
+            }))
+        );
+    }
 
-                this.getHandlerMenu(context, choices, handlers);
+    private eachPlayerGainsFate(context: AbilityContext, opponent: Player) {
+        this.game.addMessage(msg`${opponent} chooses to have each player gain a fate`);
+        this.opponentThenYou(context, gainFate({ target: opponent }), gainFate({ target: context.player }));
+    }
+
+    /** You do the option only if the opponent's same option resolved. */
+    private opponentThenYou(context: AbilityContext, theirs: GameAction, yours: GameAction) {
+        if(!theirs.hasLegalTarget(context)) {
+            return;
+        }
+        const events: Event[] = [];
+        theirs.addEventsToArray(events, context);
+        this.game.queueSimpleStep(() => this.game.openEventWindow(events));
+        this.game.queueSimpleStep(() => {
+            if(events.length > 0 && events.every((event) => event.isFullyResolved()) && yours.hasLegalTarget(context)) {
+                yours.resolve(undefined, context);
             }
         });
-    }
-
-    getHandlerMenu(context: AbilityContext, choices: string[], handlers: (() => void)[]) {
-        if(!context.player.opponent) {
-            return;
-        }
-        this.game.promptWithHandlerMenu(context.player.opponent, {
-            activePromptTite: 'Choose an action',
-            source: this,
-            choices: choices,
-            handlers: handlers
-        });
-    }
-
-    getDrawChoice(context: AbilityContext) {
-        if(!context.player.opponent) {
-            return;
-        }
-        this.game.addMessage('{0} chooses to have each player draw a card', context.player.opponent);
-
-        const opponent = context.player.opponent;
-        AbilityDsl.actions
-            .draw((ctx: AbilityContext) => ({
-                target: ctx.player.opponent,
-                amount: 1
-            }))
-            .resolve(opponent, context);
-        AbilityDsl.actions
-            .draw((ctx: AbilityContext) => ({
-                target: ctx.player,
-                amount: 1
-            }))
-            .resolve(context.player, context);
-    }
-
-    getReadyChoice(context: AbilityContext) {
-        if(!context.player.opponent) {
-            return;
-        }
-        const opponent = context.player.opponent;
-        this.game.addMessage('{0} chooses to have each player ready a character', opponent);
-        let bowedCharacters =
-            context.player.cardsInPlay.filter((a: DrawCard) => a.type === CardType.Character && a.bowed).length +
-            opponent.cardsInPlay.filter((a: DrawCard) => a.type === CardType.Character && a.bowed).length;
-
-        if(bowedCharacters > 0) {
-            AbilityDsl.actions
-                .selectCard((ctx: AbilityContext) => ({
-                    player: Players.Opponent,
-                    cardType: CardType.Character,
-                    targets: true,
-                    message: '{0} chooses to ready {1}',
-                    messageArgs: card => [ctx.player.opponent, card],
-                    gameAction: AbilityDsl.actions.ready()
-                }))
-                .resolve(opponent, context);
-        }
-
-        //This is ugly, but it's needed to not deadlock the game
-        if(bowedCharacters > 1) {
-            AbilityDsl.actions
-                .selectCard((ctx: AbilityContext) => ({
-                    player: Players.Self,
-                    cardType: CardType.Character,
-                    targets: true,
-                    message: '{0} chooses to ready {1}',
-                    messageArgs: card => [ctx.player, card],
-                    gameAction: AbilityDsl.actions.ready()
-                }))
-                .resolve(context.player, context);
-        }
-    }
-
-    getFateChoice(context: AbilityContext) {
-        if(!context.player.opponent) {
-            return;
-        }
-        const opponent = context.player.opponent;
-        this.game.addMessage('{0} chooses to have each player gain a fate', opponent);
-
-        AbilityDsl.actions
-            .gainFate((ctx: AbilityContext) => ({
-                target: ctx.player.opponent,
-                amount: 1
-            }))
-            .resolve(opponent, context);
-        AbilityDsl.actions
-            .gainFate((ctx: AbilityContext) => ({
-                target: ctx.player,
-                amount: 1
-            }))
-            .resolve(context.player, context);
-    }
-
-    getDoneChoice(context: AbilityContext) {
-        this.game.addMessage('{0} chooses not to do an action', context.player.opponent);
-        return true;
     }
 }

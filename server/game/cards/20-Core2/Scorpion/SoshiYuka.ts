@@ -1,29 +1,27 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { bow } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class SoshiYuka extends DrawCard {
     static id = 'soshi-yuka';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Bow a character',
-            target: {
+    override setupCardAbilities() {
+        this.action('Bow a character')
+            .targetCards({
                 mode: TargetMode.Exactly,
                 numCards: 2,
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 player: Players.Opponent,
-                cardCondition: (card: DrawCard) => !card.bowed
-            },
-            gameAction: AbilityDsl.actions.selectCard({
+                cardCondition: (card, context) => bow().canAffect(card, context)
+            })
+            .selectCard((context) => ({
                 cardType: CardType.Character,
-                cardCondition: (card, context) => (context.targets.target as DrawCard[]).includes(card),
-                gameAction: AbilityDsl.actions.bow(),
-                message: '{0} is bowed, as they are dragged into a web of intrigue',
-                messageArgs: (card, _player) => [card]
-            }),
-            effect: 'sow discord between {0}'
-        });
+                cardCondition: (card) => card.isCharacter() && context.targets.target.includes(card),
+                gameAction: bow(),
+                message: (_context, card, _player) => msg`${card} is bowed, as they are dragged into a web of intrigue`
+            }))
+            .chatText('sow discord between {0}');
     }
 }

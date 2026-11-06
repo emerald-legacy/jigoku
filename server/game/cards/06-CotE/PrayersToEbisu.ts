@@ -1,28 +1,29 @@
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { DeckType } from '../../Constants.js';
 
 class PrayersToEbisu extends DrawCard {
     static id = 'prayers-to-ebisu';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Re-balance honor and draw a card',
-            gameAction: AbilityDsl.actions.multiple([
-                AbilityDsl.actions.loseHonor((context: AbilityContext) => ({
-                    target: context.game.getPlayers().filter((player) => player.honor >= 19),
-                    amount: 4
-                })),
-                AbilityDsl.actions.gainHonor((context: AbilityContext) => ({
-                    target: context.game.getPlayers().filter((player) => player.honor <= 6),
-                    amount: 4
-                })),
-                AbilityDsl.actions.draw((context: AbilityContext) => ({
-                    target: context.player
-                }))
-            ]),
-            effect: 'draw a card, make each player with 19 or more honor lose 4 honor, and make each player with 6 or fewer honor gain 4 honor'
-        });
+    override setupCardAbilities() {
+        this.action('Re-balance honor and draw a card')
+            // the effects resolve together, so an empty deck is reshuffled for the draw, losing honor, before any of them
+            .onResolve((context) => {
+                if(context.player.conflictDeck.length === 0 && context.player.conflictDiscardPile.length > 0) {
+                    context.player.deckRanOutOfCards(DeckType.Conflict);
+                }
+            })
+            .loseHonor((context) => ({
+                target: context.game.getPlayers().filter((player) => player.honor >= 19),
+                amount: 4
+            }))
+            .gainHonor((context) => ({
+                target: context.game.getPlayers().filter((player) => player.honor <= 6),
+                amount: 4
+            }))
+            .draw((context) => ({
+                target: context.player
+            }))
+            .chatText('draw a card, make each player with 19 or more honor lose 4 honor, and make each player with 6 or fewer honor gain 4 honor');
     }
 }
 

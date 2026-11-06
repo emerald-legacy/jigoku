@@ -59,6 +59,8 @@ describe('Master Of Many Lifetimes', function() {
             this.player2.clickCard(this.assassination);
             this.player2.clickCard(this.keeper);
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.keeper.location).toBe('dynasty discard pile');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
         });
 
         it('should not trigger on attachments', function() {

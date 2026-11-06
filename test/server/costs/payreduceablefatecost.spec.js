@@ -2,7 +2,7 @@ import * as Costs from '../../../build/server/game/costs/fateAndHonorCosts.js';
 
 describe('Costs.payReduceableFateCost', function () {
     beforeEach(function () {
-        this.gameSpy = jasmine.createSpyObj('game', ['addMessage']);
+        this.gameSpy = jasmine.createSpyObj('game', ['addMessage', 'getEvent']);
         this.playerSpy = jasmine.createSpyObj('player', [
             'getDuplicateInPlay',
             'getMinimumCost',
@@ -11,13 +11,16 @@ describe('Costs.payReduceableFateCost', function () {
             'checkRestrictions'
         ]);
         this.playerSpy.checkRestrictions.and.returnValue(true);
+        this.playerSpy.getSpendableFate = () => this.playerSpy.fate;
+        this.playerSpy.canSpendFate = (amount) => amount <= 0 || this.playerSpy.fate >= amount;
         this.cardSpy = { card: 1, allowGameAction: () => true, isTemptationsMaho: () => false };
         this.context = {
             costs: {},
             game: this.gameSpy,
             player: this.playerSpy,
             source: this.cardSpy,
-            playType: 'playing-type'
+            playType: 'playing-type',
+            ability: { cost: [] }
         };
         this.cost = Costs.payReduceableFateCost();
     });

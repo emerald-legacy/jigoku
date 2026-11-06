@@ -25,7 +25,7 @@ describe('Ward of Earthen Thorns', function () {
                 this.noMoreActions();
             });
 
-            it('gives gives no strength without affinity', function () {
+            it('gives no strength without affinity', function () {
                 this.player1.moveCard(this.juurou, 'dynasty discard pile');
 
                 this.initiateConflict({
@@ -59,7 +59,7 @@ describe('Ward of Earthen Thorns', function () {
                 );
             });
 
-            it('gives gives +1 strength with affinity', function () {
+            it('gives +1 strength with affinity', function () {
                 this.initiateConflict({
                     type: 'military',
                     attackers: [this.yunako],
@@ -67,8 +67,11 @@ describe('Ward of Earthen Thorns', function () {
                     province: this.manicured
                 });
 
+                expect(this.manicured.getStrength()).toBe(5);
                 this.noMoreActions();
+                expect(this.getChatLogs(5)).toContain('player1 won a military conflict 4 vs 0');
                 expect(this.getChatLogs(5)).not.toContain('player1 has broken Manicured Garden!');
+                expect(this.manicured.isBroken).toBe(false);
             });
         });
 
@@ -132,7 +135,7 @@ describe('Ward of Earthen Thorns', function () {
                 this.noMoreActions();
             });
 
-            it('gives gives no strength without affinity', function () {
+            it('gives no strength without affinity', function () {
                 this.initiateConflict({
                     attackers: [this.yunako],
                     defenders: [],
@@ -148,6 +151,30 @@ describe('Ward of Earthen Thorns', function () {
                 expect(this.getChatLogs(5)).toContain(
                     'player2 uses Ward of Earthen Thorns to remove 1 fate from Bayushi Yunako'
                 );
+            });
+        });
+
+        describe('without a shugenja', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['bayushi-yunako']
+                    },
+                    player2: {
+                        inPlay: ['hida-guardian'],
+                        hand: ['ward-of-earthen-thorns'],
+                        provinces: ['manicured-garden']
+                    }
+                });
+
+                this.wardOfEarthenThorns = this.player2.findCardByName('ward-of-earthen-thorns');
+            });
+
+            it('should not be playable', function () {
+                this.player1.pass();
+                this.player2.clickCard(this.wardOfEarthenThorns);
+                expect(this.player2).toHavePrompt('Action Window');
             });
         });
     });

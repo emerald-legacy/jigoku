@@ -113,8 +113,8 @@ describe('Awakened Tsukumogami', function() {
             });
 
             it('should not allow the player to choose whether to take fate from the ring or their fate pool', function() {
-                let waterFate = this.game.rings.water.fate;
-                let playerFate = this.player2.fate;
+                const waterFate = this.game.rings.water.fate;
+                const playerFate = this.player2.fate;
 
                 this.player2.clickCard('against-the-waves');
                 expect(this.player2).toHavePrompt('Against the Waves');
@@ -130,6 +130,58 @@ describe('Awakened Tsukumogami', function() {
                 this.player2.fate = 3;
                 this.player2.clickCard('consumed-by-five-fires');
                 expect(this.player2).toHavePrompt('Action Window');
+            });
+        });
+
+        describe('Awakened Tsukumogami and a Mahō card', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 3,
+                        inPlay: ['awakened-tsukumogami', { card: 'doji-whisperer', fate: 3 }],
+                        hand: ['shape-the-flesh']
+                    }
+                });
+                this.whisperer = this.player1.findCardByName('doji-whisperer');
+                this.shapeFlesh = this.player1.findCardByName('shape-the-flesh');
+                this.game.rings.water.fate = 2;
+            });
+
+            it('does not let ring fate pay for it (ruling #944)', function() {
+                this.player1.clickCard(this.shapeFlesh);
+                this.player1.clickCard(this.whisperer);
+                expect(this.player1).not.toHavePrompt('Choose amount of fate to spend from Water ring');
+                this.player1.clickCard(this.whisperer);
+                this.player1.clickPrompt('1');
+                expect(this.shapeFlesh.parent).toBe(this.whisperer);
+                expect(this.whisperer.fate).toBe(2);
+                expect(this.game.rings.water.fate).toBe(2);
+                expect(this.player1.fate).toBe(3);
+            });
+        });
+
+        describe('Awakened Tsukumogami and a Mahō card without fate on characters', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 3,
+                        inPlay: ['awakened-tsukumogami', 'doji-whisperer'],
+                        hand: ['shape-the-flesh']
+                    }
+                });
+                this.whisperer = this.player1.findCardByName('doji-whisperer');
+                this.shapeFlesh = this.player1.findCardByName('shape-the-flesh');
+                this.game.rings.water.fate = 2;
+            });
+
+            it('cannot be played with only ring fate available (ruling #944)', function() {
+                expect(this.whisperer.fate).toBe(0);
+                this.player1.clickCard(this.shapeFlesh);
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.shapeFlesh.location).toBe('hand');
+                expect(this.game.rings.water.fate).toBe(2);
             });
         });
     });

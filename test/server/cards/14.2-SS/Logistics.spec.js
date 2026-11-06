@@ -177,7 +177,7 @@ describe('Logistics', function () {
             it('should not draw a card if a battlefield is not in play', function () {
                 this.player1.moveCard(this.totalWarfare, 'conflict discard pile');
                 this.player2.moveCard(this.ambush, 'conflict discard pile');
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.clickCard(this.logistics);
                 expect(this.player1).toHavePrompt('Choose a card');
                 this.player1.clickCard(this.toshimoko);
@@ -190,7 +190,7 @@ describe('Logistics', function () {
             });
 
             it('should draw a card if a battlefield is in play', function () {
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.clickCard(this.logistics);
                 expect(this.player1).toHavePrompt('Choose a card');
                 this.player1.clickCard(this.toshimoko);
@@ -282,7 +282,7 @@ describe('Logistics', function () {
             it('should not draw a card if a battlefield is not in play', function () {
                 this.player1.moveCard(this.totalWarfare, 'conflict discard pile');
                 this.player2.moveCard(this.ambush, 'conflict discard pile');
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.clickCard(this.logistics);
                 this.player1.clickCard(this.heimin);
                 this.player1.clickCard(this.p2_2);
@@ -290,7 +290,7 @@ describe('Logistics', function () {
             });
 
             it('should draw a card if a battlefield is in play', function () {
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.clickCard(this.logistics);
                 this.player1.clickCard(this.heimin);
                 this.player1.clickCard(this.p2_2);

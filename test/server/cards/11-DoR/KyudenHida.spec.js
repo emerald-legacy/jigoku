@@ -1,11 +1,11 @@
-import { GameModes } from '../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../build/server/GameMode.js';
 
 describe('Kyuden Hida', function () {
     integration(function () {
         describe('Emerald Dynasty rules', function () {
             beforeEach(function () {
                 this.setupTest({
-                    gameMode: GameModes.Emerald,
+                    gameMode: GameMode.Emerald,
                     phase: 'dynasty',
                     player1: {
                         stronghold: 'kyuden-hida',
@@ -55,6 +55,13 @@ describe('Kyuden Hida', function () {
                 expect(this.hidaGuardian.location).toBe('dynasty deck');
                 expect(this.getChatLogs(2)).toContain('player1 plays Hida Kisada with 2 additional fate');
                 expect(this.getChatLogs(2)).toContain('player1 discards Favorable Ground and Imperial Storehouse');
+            });
+
+            it('says how many cards it looks at when fewer than 3 are left', function () {
+                this.player1.reduceDeckToNumber('dynasty deck', 2);
+                this.player1.clickCard(this.kyudenHida);
+                expect(this.player1).toHavePromptButton('Hida Kisada');
+                expect(this.getChatLogs(3)).toContain('player1 uses Kyūden Hida, bowing Kyūden Hida to look at the top two cards of their dynasty deck');
             });
         });
 
@@ -219,9 +226,9 @@ describe('Kyuden Hida', function () {
             });
 
             it('should work if you have less than 3 cards', function () {
-                this.player1.moveCard(this.favorableGround, 'conflict discard');
-                this.player1.moveCard(this.storehouse, 'conflict discard');
-                this.player1.moveCard(this.borderlands, 'conflict discard');
+                this.player1.moveCard(this.favorableGround, 'dynasty discard pile');
+                this.player1.moveCard(this.storehouse, 'dynasty discard pile');
+                this.player1.moveCard(this.borderlands, 'dynasty discard pile');
 
                 this.player1.clickCard(this.kyudenHida);
                 expect(this.player1).toHavePromptButton('Hida Kisada');

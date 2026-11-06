@@ -1,19 +1,18 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { modifyMilitarySkill } from '../../effects.js';
+import { msg } from '../../GameChat.js';
 
 class StoicGunso extends DrawCard {
     static id = 'stoic-gunso';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Sacrifice a character for +3/+0',
-            condition: () => this.game.isDuringConflict(),
-            cost: ability.costs.sacrifice({ cardType: CardType.Character }),
-            effect: 'give himself +3{1}/+0{2}',
-            effectArgs: () => ['military', 'political'],
-            gameAction: ability.actions.cardLastingEffect({ effect: ability.effects.modifyMilitarySkill(3) })
-        });
+    override setupCardAbilities() {
+        this.action('Sacrifice a character for +3/+0')
+            .condition(() => this.game.isDuringConflict())
+            .cost(costs.sacrifice({ cardType: CardType.Character }))
+            .cardLastingEffect({ effect: modifyMilitarySkill(3) })
+            .chatText(() => msg`give himself +3${'military'}/+0${'political'}`);
     }
 }
 

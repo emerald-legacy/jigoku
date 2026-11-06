@@ -19,7 +19,7 @@ describe('One of the Forgotten', function() {
             });
 
             it('should prompt you to put a fate on the character if opponent passes with a ready character', function() {
-                let fate = this.forgotten.fate;
+                const fate = this.forgotten.fate;
                 this.noMoreActions();
                 this.player1.passConflict();
                 expect(this.player2).toHavePrompt('Triggered abilities');
@@ -29,7 +29,7 @@ describe('One of the Forgotten', function() {
             });
 
             it('should not prompt you if opponent passes with no ready characters', function() {
-                let fate = this.forgotten.fate;
+                const fate = this.forgotten.fate;
                 this.player1.clickCard(this.atw);
                 this.player1.clickCard(this.asakoTsuki);
                 this.noMoreActions();
@@ -41,7 +41,7 @@ describe('One of the Forgotten', function() {
             });
 
             it('should not prompt you to gain two fate if you pass with ready characters', function() {
-                let fate = this.forgotten.fate;
+                const fate = this.forgotten.fate;
                 this.player1.clickCard(this.atw);
                 this.player1.clickCard(this.asakoTsuki);
                 this.noMoreActions();

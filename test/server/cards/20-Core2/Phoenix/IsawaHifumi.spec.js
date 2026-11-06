@@ -51,7 +51,7 @@ describe('Isawa Hifumi', function () {
             expect(this.isawaHifumi.fate).toBe(2);
             expect(this.soshisMemory.location).toBe('removed from game');
             expect(this.getChatLogs(6)).toContain(
-                'player1 uses Isawa Hifumi to play an event from their discard pile (the next time it is used this round will cost 1 fate from player1 characters)'
+                'player1 uses Isawa Hifumi to play an event from their discard pile (the next time it is used this round will cost 1 fate from their characters)'
             );
             expect(this.getChatLogs(6)).toContain('player1 plays Soshi\'s Memory from their conflict discard pile');
             expect(this.getChatLogs(6)).toContain('Soshi\'s Memory is removed from the game by Isawa Hifumi\'s ability');
@@ -76,7 +76,7 @@ describe('Isawa Hifumi', function () {
             expect(this.isawaHifumi.fate).toBe(2);
             expect(this.soshisMemory.location).toBe('removed from game');
             expect(this.getChatLogs(6)).toContain(
-                'player1 uses Isawa Hifumi to play an event from their discard pile (the next time it is used this round will cost 1 fate from player1 characters)'
+                'player1 uses Isawa Hifumi to play an event from their discard pile (the next time it is used this round will cost 1 fate from their characters)'
             );
             expect(this.getChatLogs(6)).toContain('player1 plays Soshi\'s Memory from their conflict discard pile');
             expect(this.getChatLogs(6)).toContain('Soshi\'s Memory is removed from the game by Isawa Hifumi\'s ability');
@@ -90,12 +90,17 @@ describe('Isawa Hifumi', function () {
             expect(this.player1).toBeAbleToSelect(this.isawaHifumi);
             expect(this.player1).toBeAbleToSelect(this.adeptOfTheWaves);
             expect(this.player1).not.toBeAbleToSelect(this.matsuBerserker);
+            // the fate comes from characters, never from the fate pool
+            expect(this.player1).not.toHavePromptButton('Done');
+            const poolFate = this.player1.fate;
 
             this.player1.clickCard(this.adeptOfTheWaves);
             expect(this.player1).toHavePrompt('Choose amount of fate to spend from Adept of the Waves');
+            expect(this.player1).not.toHavePromptButton('0');
 
             this.player1.clickPrompt('1');
             expect(this.adeptOfTheWaves.fate).toBe(0);
+            expect(this.player1.fate).toBe(poolFate);
             expect(this.player1).toHavePrompt('Choose an event');
 
             this.player1.clickCard(this.againstTheWaves);
@@ -105,7 +110,7 @@ describe('Isawa Hifumi', function () {
             expect(this.isawaHifumi.fate).toBe(2);
             expect(this.againstTheWaves.location).toBe('removed from game');
             expect(this.getChatLogs(6)).toContain(
-                'player1 uses Isawa Hifumi to play an event from their discard pile (the next time it is used this round will cost 2 fate from player1 characters)'
+                'player1 uses Isawa Hifumi to play an event from their discard pile (the next time it is used this round will cost 2 fate from their characters)'
             );
             expect(this.getChatLogs(6)).toContain('player1 plays Against the Waves from their conflict discard pile');
             expect(this.getChatLogs(6)).toContain(
@@ -135,10 +140,53 @@ describe('Isawa Hifumi', function () {
             this.player1.clickCard(this.fineKatana);
             expect(this.letGo.location).toBe('removed from game');
             expect(this.getChatLogs(6)).toContain(
-                'player1 uses Isawa Hifumi to play an event from their discard pile (the next time it is used this round will cost 3 fate from player1 characters)'
+                'player1 uses Isawa Hifumi to play an event from their discard pile (the next time it is used this round will cost 3 fate from their characters)'
             );
             expect(this.getChatLogs(6)).toContain('player1 plays Let Go from their conflict discard pile');
             expect(this.getChatLogs(6)).toContain('Let Go is removed from the game by Isawa Hifumi\'s ability');
+        });
+    });
+});
+
+describe('Isawa Hifumi and cost reducers', function () {
+    integration(function () {
+        describe('with a "next card costs 1 less" reducer', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['isawa-hifumi', 'adept-of-the-waves'],
+                        hand: ['adorned-barcha'],
+                        conflictDiscard: ['against-the-waves']
+                    },
+                    player2: {
+                        inPlay: ['sake-house-smuggler']
+                    }
+                });
+                this.isawaHifumi = this.player1.findCardByName('isawa-hifumi');
+                this.adeptOfTheWaves = this.player1.findCardByName('adept-of-the-waves');
+                this.adeptOfTheWaves.bow();
+                this.barcha = this.player1.findCardByName('adorned-barcha');
+                this.againstTheWaves = this.player1.findCardByName('against-the-waves');
+                this.smuggler = this.player2.findCardByName('sake-house-smuggler');
+
+                this.player1.pass();
+                this.player2.clickCard(this.smuggler);
+            });
+
+            it('does not use up the reducer, as it plays no card itself', function () {
+                this.player1.clickCard(this.isawaHifumi);
+                this.player1.clickCard(this.againstTheWaves);
+                this.player1.clickCard(this.adeptOfTheWaves);
+                expect(this.againstTheWaves.location).toBe('removed from game');
+
+                this.player2.pass();
+                const fate = this.player1.fate;
+                this.player1.clickCard(this.barcha);
+                this.player1.clickCard(this.isawaHifumi);
+                expect(this.barcha.location).toBe('play area');
+                expect(this.player1.fate).toBe(fate - 1);
+            });
         });
     });
 });

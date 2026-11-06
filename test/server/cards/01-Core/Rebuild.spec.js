@@ -46,6 +46,15 @@ describe('Rebuild', function() {
                 this.player1.clickCard(this.imperialStorehouse);
                 expect(this.imperialStorehouse.location).toBe('province 2');
             });
+
+            it('cannot shuffle a card in a broken province', function() {
+                this.player1.player.getProvinceCardInProvince('province 3').isBroken = true;
+                this.player1.clickCard('rebuild');
+                expect(this.player1).toHavePrompt('Select card to shuffle into deck');
+                expect(this.player1).toBeAbleToSelect(this.seppunGuardsman);
+                expect(this.player1).not.toBeAbleToSelect(this.otomoCourtier);
+                expect(this.otomoCourtier.location).toBe('province 3');
+            });
         });
     });
 });

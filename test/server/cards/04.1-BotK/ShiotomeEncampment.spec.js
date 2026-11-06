@@ -53,3 +53,50 @@ describe('Shiotome Encampment', function() {
         });
     });
 });
+
+describe('Shiotome Encampment - Secluded Shrine ring', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    dynastyDeck: ['secluded-shrine', 'shiotome-encampment'],
+                    inPlay: ['doji-whisperer', 'aggressive-moto']
+                },
+                player2: {
+                    inPlay: ['doji-challenger']
+                }
+            });
+            this.secludedShrine = this.player1.placeCardInProvince('secluded-shrine', 'province 1');
+            this.shiotomeEncampment = this.player1.placeCardInProvince('shiotome-encampment', 'province 2');
+            this.dojiWhisperer = this.player1.findCardByName('doji-whisperer');
+            this.aggressiveMoto = this.player1.findCardByName('aggressive-moto');
+
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.noMoreActions();
+            this.player1.clickCard(this.secludedShrine);
+            this.player1.clickRing('fire');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                ring: 'fire',
+                attackers: [this.dojiWhisperer],
+                defenders: []
+            });
+            this.aggressiveMoto.bow();
+            this.player2.pass();
+        });
+
+        // the Shrine's ring has no type until a player claims it (ruling #666)
+        it('should not count the contested ring considered claimed as a military ring', function() {
+            expect(this.game.rings.fire.isConsideredClaimed(this.player1.player)).toBe(true);
+            expect(this.game.rings.fire.isClaimed()).toBe(false);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+
+            this.player1.clickCard(this.shiotomeEncampment);
+            expect(this.player1).not.toHavePrompt('Choose a character');
+            expect(this.aggressiveMoto.bowed).toBe(true);
+        });
+    });
+});

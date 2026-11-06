@@ -1,30 +1,17 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
+import { msg } from '../../../GameChat.js';
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { multiple, putIntoProvince, returnToHand } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
-import type { Cost } from '../../../costs/Cost.js';
-
-function captureLocationCost(): Cost {
-    return {
-        canPay() {
-            return true;
-        },
-        resolve(context: AbilityContext) {
-            context.costs.captureLocationCost = context.source.location;
-        },
-        pay() { }
-    };
-}
+import { captureCost } from '../../captureCost.js';
 
 export default class RoadToShakyakuMura extends DrawCard {
     static id = 'road-to-shakyaku-mura';
 
 
-    setupCardAbilities() {
-        this.wouldInterrupt({
-            title: 'Return a character and attachments',
-            cost: [captureLocationCost(), AbilityDsl.costs.sacrificeSelf()],
-            when: {
+    override setupCardAbilities() {
+        this.wouldInterrupt('Return a character and attachments')
+            .when({
                 onCardLeavesPlay: (event, context) => {
                     return (
                         event.card.controller === context.player &&
@@ -33,21 +20,20 @@ export default class RoadToShakyakuMura extends DrawCard {
                         event.card.location === Location.PlayArea
                     );
                 }
-            },
-            gameAction: AbilityDsl.actions.cancel((context) => ({
-                replacementGameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.returnToHand(() => ({
-                        target: context.event.card.attachments
+            })
+            .cost(captureCost('captureLocationCost', (context) => context.source.location))
+            .cost(costs.sacrificeSelf())
+            .cancel((context) => ({
+                replacementGameAction: multiple([
+                    returnToHand(() => ({
+                        target: context.event.card?.attachments ?? []
                     })),
-                    AbilityDsl.actions.putIntoProvince({
+                    putIntoProvince({
                         target: context.event.card,
-                        canBeStronghold: true,
                         destination: context.costs.captureLocationCost
                     })
                 ])
-            })),
-            effect: 'prevent {1} from leaving play, putting it into {2} instead',
-            effectArgs: (context) => [context.event.card ?? '', (context.costs.captureLocationCost as string) ?? '']
-        });
+            }))
+            .chatText((context) => msg`prevent ${context.event.card ?? ''} from leaving play, putting it into ${context.costs.captureLocationCost ?? ''} instead`);
     }
 }

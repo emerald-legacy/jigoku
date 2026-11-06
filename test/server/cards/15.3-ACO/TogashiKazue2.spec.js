@@ -241,7 +241,7 @@ describe('Togashi Kazue 2', function() {
                 province: this.garden
             });
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.garden);
             this.player2.pass();
             this.player1.clickCard(this.garden);
@@ -259,7 +259,7 @@ describe('Togashi Kazue 2', function() {
                 province: this.garden
             });
 
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.garden);
             this.player2.pass();
             this.player1.clickCard(this.garden);

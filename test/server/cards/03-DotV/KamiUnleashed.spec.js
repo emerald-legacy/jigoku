@@ -58,3 +58,39 @@ describe('Kami Unleashed', function() {
         });
     });
 });
+
+describe('Kami Unleashed when not attacking', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kami-unleashed', 'kami-unleashed']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            [this.defendingKami, this.homeKami] = this.player1.filterCardsByName('kami-unleashed');
+            this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.dojiWhisperer],
+                defenders: [this.defendingKami],
+                ring: 'fire'
+            });
+        });
+
+        it('cannot be used while defending or at home', function() {
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            this.player1.clickCard(this.defendingKami);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            this.player1.clickCard(this.homeKami);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.defendingKami.location).toBe('play area');
+            expect(this.homeKami.location).toBe('play area');
+        });
+    });
+});

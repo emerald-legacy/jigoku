@@ -30,7 +30,7 @@ describe('Seppun Hidden Guard', function() {
             });
 
             it('it should be able to cancel Raitsugu\'s duel', function() {
-                let handSize = this.player2.player.hand.length;
+                const handSize = this.player2.player.hand.length;
                 this.player2.clickCard(this.mirumotoRaitsugu);
                 this.player2.clickCard(this.kudaka);
                 this.player1.clickCard(this.seppunHiddenGuard);
@@ -55,7 +55,7 @@ describe('Seppun Hidden Guard', function() {
             });
 
             it('it should be able to cancel your own character\'s abilities', function() {
-                let handSize = this.player1.player.hand.length;
+                const handSize = this.player1.player.hand.length;
                 this.player2.pass();
                 this.player1.clickCard(this.adeptOfTheWaves);
                 this.player1.clickCard(this.kudaka);

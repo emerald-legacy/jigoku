@@ -172,8 +172,8 @@ describe('Twin Soul Temple', function() {
             });
 
             this.player2.pass();
-            let fireFate = this.game.rings.fire.fate;
-            let voidFate = this.game.rings.void.fate;
+            const fireFate = this.game.rings.fire.fate;
+            const voidFate = this.game.rings.void.fate;
             this.player1.clickCard(this.alchemist);
             this.player1.clickPrompt('Pay costs first');
             expect(this.player1).not.toBeAbleToSelectRing('fire');
@@ -201,8 +201,8 @@ describe('Twin Soul Temple', function() {
 
             this.player2.clickCard(this.yokuni);
             this.player2.clickCard(this.alchemist);
-            let fireFate = this.game.rings.fire.fate;
-            let voidFate = this.game.rings.void.fate;
+            const fireFate = this.game.rings.fire.fate;
+            const voidFate = this.game.rings.void.fate;
             this.player1.clickCard(this.alchemist);
             this.player1.clickPrompt('Pay costs first');
             expect(this.player1).not.toBeAbleToSelectRing('fire');
@@ -294,28 +294,61 @@ describe('Twin Soul Temple', function() {
 
         it('Constant Abilities', function() {
             this.player2.claimRing('void');
-            expect(this.student.getPoliticalSkill()).toBe(2);
+            expect(this.student.politicalSkill).toBe(2);
             this.player1.clickCard(this.twinSoul1);
             this.player1.clickCard(this.student);
             this.player1.clickPrompt('Claimed Ring (air)');
             this.player1.clickPrompt('Void');
-            expect(this.student.getPoliticalSkill()).toBe(4);
+            expect(this.student.politicalSkill).toBe(4);
         });
 
         it('Two Twin Soul Temples', function() {
             this.player2.claimRing('void');
-            expect(this.student.getPoliticalSkill()).toBe(2);
+            expect(this.student.politicalSkill).toBe(2);
             this.player1.clickCard(this.twinSoul1);
             this.player1.clickCard(this.student);
             this.player1.clickPrompt('Claimed Ring (air)');
             this.player1.clickPrompt('Void');
             expect(this.twinSoul1.bowed).toBe(true);
-            expect(this.student.getPoliticalSkill()).toBe(4);
+            expect(this.student.politicalSkill).toBe(4);
             this.player2.clickCard(this.twinSoul2);
             this.player2.clickCard(this.student);
             this.player2.clickPrompt('Claimed Ring (void)');
             this.player2.clickPrompt('Earth');
-            expect(this.student.getPoliticalSkill()).toBe(2);
+            expect(this.student.politicalSkill).toBe(2);
+        });
+    });
+});
+
+describe('Twin Soul Temple and a broken province', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    stronghold: ['twin-soul-temple']
+                },
+                player2: {
+                    inPlay: ['prodigy-of-the-waves'],
+                    provinces: ['pilgrimage', 'fertile-fields']
+                }
+            });
+            this.twinSoul = this.player1.findCardByName('twin-soul-temple');
+            this.prodigy = this.player2.findCardByName('prodigy-of-the-waves');
+            this.pilgrimage = this.player2.findCardByName('pilgrimage', 'province 1');
+            this.fertileFields = this.player2.findCardByName('fertile-fields', 'province 2');
+            this.pilgrimage.facedown = false;
+            this.pilgrimage.isBroken = true;
+            this.fertileFields.facedown = false;
+            this.game.checkGameState(true);
+        });
+
+        it('cannot choose the element symbol of a broken province', function() {
+            this.player1.clickCard(this.twinSoul);
+            expect(this.player1).toHavePrompt('Choose an element to replace');
+            expect(this.player1).toBeAbleToSelect(this.prodigy);
+            expect(this.player1).toBeAbleToSelect(this.fertileFields);
+            expect(this.player1).not.toBeAbleToSelect(this.pilgrimage);
         });
     });
 });

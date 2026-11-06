@@ -34,7 +34,7 @@ describe('Loyal Oathbreaker', function() {
         });
 
         it('should let you use less honorable triggers even if more honorable', function() {
-            let honor = this.player1.honor;
+            const honor = this.player1.honor;
             this.player1.clickCard(this.city);
             expect(this.player1).toHavePrompt('Action Window');
             this.player1.moveCard(this.oathbreaker, 'play area');
@@ -82,8 +82,8 @@ describe('Loyal Oathbreaker', function() {
         });
 
         it('two oathbreakers - should let you use less honorable triggers no matter what', function() {
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player1.moveCard(this.oathbreaker, 'play area');
             this.player2.moveCard(this.oathbreaker2, 'play area');

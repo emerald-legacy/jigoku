@@ -94,3 +94,49 @@ describe('Artisan Academy', function () {
         });
     });
 });
+
+describe('Artisan Academy after the deck is reordered', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    dynastyDeck: ['artisan-academy'],
+                    inPlay: ['doji-whisperer'],
+                    hand: ['assassination', 'fine-katana', 'ornate-fan']
+                },
+                player2: {
+                    dynastyDiscard: ['truthseeker'],
+                    hand: ['charge']
+                }
+            });
+            this.artisanAcademy = this.player1.placeCardInProvince('artisan-academy', 'province 1');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.ornateFan = this.player1.moveCard('ornate-fan', 'conflict deck');
+            this.fineKatana = this.player1.moveCard('fine-katana', 'conflict deck');
+            this.assassination = this.player1.moveCard('assassination', 'conflict deck');
+            this.truthseeker = this.player2.placeCardInProvince('truthseeker', 'province 1');
+            this.truthseeker.facedown = false;
+
+            this.player1.clickCard(this.artisanAcademy);
+            expect(this.player1.player.conflictDeck[0]).toBe(this.assassination);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.whisperer],
+                defenders: []
+            });
+            this.player2.clickCard('charge');
+            this.player2.clickCard(this.truthseeker);
+            this.player2.clickCard(this.truthseeker);
+            this.player2.clickPrompt('player1\'s Conflict Deck');
+            this.player2.clickPrompt('Fine Katana');
+            this.player2.clickPrompt('Ornate Fan');
+        });
+
+        it('stops showing the top card once the revealed card is no longer on top', function () {
+            expect(this.player1.player.conflictDeck[0]).toBe(this.fineKatana);
+            expect(this.player1.player.isTopConflictCardShown(this.player2.player)).toBe(false);
+        });
+    });
+});

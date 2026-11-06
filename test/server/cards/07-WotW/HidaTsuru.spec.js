@@ -93,6 +93,9 @@ describe('Hida Tsuru', function() {
                 this.player2.clickPrompt('0');
                 this.player2.clickPrompt('Home');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.stoicGunso.location).toBe('play area');
+                expect(this.stoicGunso.inConflict).toBe(false);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
             });
 
             it('should not trigger if he is not participating in the conflict', function() {
@@ -104,9 +107,14 @@ describe('Hida Tsuru', function() {
                 this.player2.clickPrompt('0');
                 this.player2.clickPrompt('Home');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.stoicGunso.location).toBe('play area');
+                expect(this.stoicGunso.inConflict).toBe(false);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
                 this.player1.pass();
                 this.player2.clickCard(this.shinjoOutrider);
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.shinjoOutrider.inConflict).toBe(true);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
             });
 
             it('should give him +1/+1', function() {
@@ -118,8 +126,8 @@ describe('Hida Tsuru', function() {
                 this.player2.clickPrompt('0');
                 this.player2.clickPrompt('Conflict');
                 this.player1.clickCard(this.hidaTsuru);
-                expect(this.hidaTsuru.getMilitarySkill()).toBe(5);
-                expect(this.hidaTsuru.getPoliticalSkill()).toBe(4);
+                expect(this.hidaTsuru.militarySkill).toBe(5);
+                expect(this.hidaTsuru.politicalSkill).toBe(4);
             });
 
             it('should trigger multiple times in a conflict', function() {
@@ -131,24 +139,66 @@ describe('Hida Tsuru', function() {
                 this.player2.clickPrompt('0');
                 this.player2.clickPrompt('Conflict');
                 this.player1.clickCard(this.hidaTsuru);
-                expect(this.hidaTsuru.getMilitarySkill()).toBe(5);
-                expect(this.hidaTsuru.getPoliticalSkill()).toBe(4);
+                expect(this.hidaTsuru.militarySkill).toBe(5);
+                expect(this.hidaTsuru.politicalSkill).toBe(4);
                 this.player1.clickCard(this.fg);
                 this.player1.clickCard(this.scout);
                 this.player1.clickCard(this.hidaTsuru);
-                expect(this.hidaTsuru.getMilitarySkill()).toBe(6);
-                expect(this.hidaTsuru.getPoliticalSkill()).toBe(5);
+                expect(this.hidaTsuru.militarySkill).toBe(6);
+                expect(this.hidaTsuru.politicalSkill).toBe(5);
                 this.player2.clickCard(this.shinjoOutrider);
                 this.player1.clickCard(this.hidaTsuru);
-                expect(this.hidaTsuru.getMilitarySkill()).toBe(7);
-                expect(this.hidaTsuru.getPoliticalSkill()).toBe(6);
+                expect(this.hidaTsuru.militarySkill).toBe(7);
+                expect(this.hidaTsuru.politicalSkill).toBe(6);
                 this.player1.clickCard(this.stewardOfLaw);
                 this.player1.clickPrompt('0');
                 this.player1.clickPrompt('Conflict');
                 this.player1.clickCard(this.hidaTsuru);
-                expect(this.hidaTsuru.getMilitarySkill()).toBe(8);
-                expect(this.hidaTsuru.getPoliticalSkill()).toBe(7);
+                expect(this.hidaTsuru.militarySkill).toBe(8);
+                expect(this.hidaTsuru.politicalSkill).toBe(7);
             });
+        });
+    });
+});
+
+describe('Hida Tsuru and several characters moved by one ability', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['hida-tsuru', 'wild-stallion', 'eager-scout']
+                }
+            });
+            this.hidaTsuru = this.player1.findCardByName('hida-tsuru');
+            this.stallion = this.player1.findCardByName('wild-stallion');
+            this.scout = this.player1.findCardByName('eager-scout');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.hidaTsuru],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('reacts once for each character that moves (#605)', function() {
+            this.player1.clickCard(this.stallion);
+            this.player1.clickCard(this.scout);
+            expect(this.stallion.isParticipating()).toBe(true);
+            expect(this.scout.isParticipating()).toBe(true);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.hidaTsuru);
+            this.player1.clickCard(this.hidaTsuru);
+            expect(this.player1).toHavePrompt('Select a card to affect');
+            expect(this.player1).toBeAbleToSelect(this.stallion);
+            expect(this.player1).toBeAbleToSelect(this.scout);
+            this.player1.clickCard(this.stallion);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.hidaTsuru);
+            this.player1.clickCard(this.hidaTsuru);
+            expect(this.hidaTsuru.getMilitarySkill()).toBe(6);
+            expect(this.hidaTsuru.getPoliticalSkill()).toBe(5);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
         });
     });
 });

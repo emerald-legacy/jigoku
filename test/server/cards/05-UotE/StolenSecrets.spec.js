@@ -83,6 +83,14 @@ describe('Stolen Secrets', function () {
                     expect(this.player1).toHavePrompt('Conflict Action Window');
                 });
 
+                it('says it looks at the top card when only one is left', function () {
+                    this.player2.reduceDeckToNumber('conflict deck', 1);
+                    this.player1.clickCard(this.stolenSecrets);
+                    this.player1.clickCard(this.favoredNiece);
+                    expect(this.player1).toHavePromptButton(this.kamiUnleashed.name);
+                    expect(this.getChatLogs(5)).toContain('player1 plays Stolen Secrets, removing 1 fate from Favored Niece to look at the top card of player2\'s conflict deck and remove it from the game');
+                });
+
                 describe('if costs are paid', function () {
                     beforeEach(function () {
                         this.player1.clickCard(this.stolenSecrets);
@@ -93,12 +101,27 @@ describe('Stolen Secrets', function () {
                         expect(this.favoredNiece.fate).toBe(1);
                     });
 
+                    it('says it looks at the top 4 cards', function () {
+                        expect(this.getChatLogs(5)).toContain('player1 plays Stolen Secrets, removing 1 fate from Favored Niece to look at the top 4 cards of player2\'s conflict deck and remove one from the game');
+                    });
+
                     it('should prompt to choose from (up to) the top 4 cards of your opponent', function () {
                         expect(this.player1).toHavePrompt('Choose a card to remove from the game');
                         expect(this.player1).toHavePromptButton(this.assassination.name);
                         expect(this.player1).toHavePromptButton(this.fingerOfJade.name);
                         expect(this.player1).toHavePromptButton(this.tattooedWanderer.name);
                         expect(this.player1).toHavePromptButton(this.kamiUnleashed.name);
+                    });
+
+                    // RRG Search: a player is not obliged to find the object of a search effect
+                    it('should let you take nothing', function () {
+                        this.player1.clickPrompt('Take nothing');
+                        this.player1.clickPrompt(this.tattooedWanderer.name);
+                        this.player1.clickPrompt(this.kamiUnleashed.name);
+                        this.player1.clickPrompt(this.assassination.name);
+                        expect(this.player2.conflictDeck.slice(0, 4)).toEqual([this.tattooedWanderer, this.kamiUnleashed, this.assassination, this.fingerOfJade]);
+                        expect(this.player1.player.removedFromGame.length).toBe(0);
+                        expect(this.player2.player.removedFromGame.length).toBe(0);
                     });
                 });
 
@@ -354,6 +377,48 @@ describe('Stolen Secrets', function () {
                         expect(this.player1).toHavePrompt('Waiting for opponent to take an action or pass');
                     });
                 });
+            });
+        });
+
+        describe('Stolen Secrets and abilities that put the card into play from hand', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['favored-niece'],
+                        hand: ['stolen-secrets']
+                    },
+                    player2: {
+                        hand: ['feral-ningyo']
+                    }
+                });
+
+                this.favoredNiece = this.player1.findCardByName('favored-niece');
+                this.favoredNiece.fate = 2;
+                this.stolenSecrets = this.player1.findCardByName('stolen-secrets');
+                this.feralNingyo = this.player2.findCardByName('feral-ningyo', 'hand');
+                this.player2.moveCard(this.feralNingyo, 'conflict deck');
+                this.player2.reduceDeckToNumber('conflict deck', 1);
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.favoredNiece],
+                    defenders: [],
+                    ring: 'water'
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.stolenSecrets);
+                this.player1.clickCard(this.favoredNiece);
+                this.player1.clickPrompt(this.feralNingyo.name);
+            });
+
+            it('cannot use Feral Ningyo\'s put-into-play ability from the removed zone (ruling #482)', function () {
+                expect(this.feralNingyo.location).toBe('removed from game');
+                this.player2.pass();
+                this.player1.clickCard(this.feralNingyo);
+                expect(this.player1).toHavePrompt('Choose additional fate');
+                expect(this.player1).not.toHavePromptButton('Put into play');
             });
         });
     });

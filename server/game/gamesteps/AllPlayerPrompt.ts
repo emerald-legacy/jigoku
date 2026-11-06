@@ -2,7 +2,7 @@ import type Player from '../Player.js';
 import { UiPrompt } from './UiPrompt.js';
 
 export class AllPlayerPrompt extends UiPrompt {
-    activeCondition(player: Player) {
+    override activeCondition(player: Player) {
         return !this.completionCondition(player);
     }
 
@@ -10,7 +10,7 @@ export class AllPlayerPrompt extends UiPrompt {
         return false;
     }
 
-    isComplete() {
-        return this.game.getPlayers().every(player => this.completionCondition(player));
+    override isComplete() {
+        return this.game.getPlayers().every((player) => this.completionCondition(player));
     }
 }

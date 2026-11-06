@@ -1,23 +1,24 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Trait } from '../../Constants.js';
+import { moveToConflict, sendHome } from '../../GameActions/GameActions.js';
 
 class AkodoReserveCompany extends DrawCard {
     static id = 'akodo-reserve-company';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Bow an attacking character',
-            condition: context => context.game.isTraitInPlay('battlefield'),
-            target: {
+    override setupCardAbilities() {
+        this.action('Swap with a participating character')
+            .ifCondition((context) => context.game.isTraitInPlay(Trait.Battlefield))
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card.isParticipating() && card.controller === context.player,
-                gameAction: AbilityDsl.actions.joint([
-                    AbilityDsl.actions.moveToConflict(context => ({ target: context.source })),
-                    AbilityDsl.actions.sendHome()
-                ])
-            }
-        });
+                cardCondition: (card, context) =>
+                    card.isParticipating() && card.controller === context.player && sendHome().canAffect(card, context) &&
+                    moveToConflict().canAffect(context.source, context)
+            })
+            .moveToConflict((context) => ({ target: context.source }))
+            .chatText((context) => msg`move ${context.source} into the conflict and send ${context.target} home`)
+            .then()
+            .sendHome((context) => ({ target: context.target }));
     }
 }
 

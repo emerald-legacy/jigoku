@@ -64,6 +64,33 @@ describe('Golden Plains', function() {
                 expect(this.game.currentConflict.conflictProvince).toBe(this.endless);
                 expect(this.getChatLogs(5)).toContain('player2 uses Golden Plains to move the conflict to Endless Plains');
             });
+
+            it('cannot move the conflict to a province the attacker controls', function() {
+                this.p1Province = this.player1.findCardByName('shameful-display', 'province 1');
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.rider],
+                    province: this.plains
+                });
+                this.player2.clickCard(this.plains);
+                expect(this.player2).toBeAbleToSelect(this.endless);
+                expect(this.player2).not.toBeAbleToSelect(this.p1Province);
+            });
+
+            it('cannot move the conflict to a broken province', function() {
+                this.rally.isBroken = true;
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.rider],
+                    province: this.plains
+                });
+                this.player2.clickCard(this.plains);
+                expect(this.player2).toBeAbleToSelect(this.endless);
+                expect(this.player2).toBeAbleToSelect(this.cache);
+                expect(this.player2).not.toBeAbleToSelect(this.rally);
+            });
         });
 
         describe('Golden Plains Passive - Different Stronghold', function() {

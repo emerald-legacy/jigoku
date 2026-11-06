@@ -1,6 +1,6 @@
 export enum Stage {
     Cost = 'cost',
     Effect = 'effect',
-    PreTarget = 'pretarget',
+    PreTarget = 'preTarget',
     Target = 'target'
 }

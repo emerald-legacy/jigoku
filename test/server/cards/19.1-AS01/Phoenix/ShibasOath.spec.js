@@ -106,6 +106,10 @@ describe('Shiba\'s Oath', function () {
                 this.player2.clickCard(this.assassination);
                 this.player2.clickCard(this.sailor);
                 expect(this.player1).not.toHavePrompt('Any interrupts to the effects of Assassination?');
+                expect(this.sailor.location).toBe('dynasty discard pile');
+                expect(this.assassination.location).toBe('conflict discard pile');
+                expect(this.valiantOathkeeper.location).toBe('play area');
+                expect(this.shibasOath.location).toBe('play area');
 
                 this.player1.clickCard(this.valiantOathkeeper);
                 expect(this.getChatLogs(5)).not.toContain(
@@ -141,6 +145,9 @@ describe('Shiba\'s Oath', function () {
                 this.player2.clickCard(this.kuwanan);
                 this.player2.clickCard(this.sailor);
                 expect(this.player1).not.toHavePrompt('Any interrupts to the effects of Doji Kuwanan?');
+                expect(this.sailor.bowed).toBe(true);
+                expect(this.valiantOathkeeper.location).toBe('play area');
+                expect(this.shibasOath.location).toBe('play area');
 
                 this.player1.clickCard(this.valiantOathkeeper);
                 expect(this.getChatLogs(5)).not.toContain(
@@ -192,6 +199,46 @@ describe('Shiba\'s Oath', function () {
                     'player1 uses Valiant Oathkeeper\'s gained ability from Shiba\'s Oath, sacrificing Valiant Oathkeeper to cancel the effects of Political Rival'
                 );
             });
+        });
+    });
+});
+
+describe('Shiba\'s Oath own abilities', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['valiant-oathkeeper', 'solemn-scholar'],
+                    hand: ['shiba-s-oath', 'banzai']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+            this.valiantOathkeeper = this.player1.findCardByName('valiant-oathkeeper');
+            this.solemnScholar = this.player1.findCardByName('solemn-scholar');
+            this.player1.player.optionSettings.cancelOwnAbilities = true;
+            this.player1.clickCard('shiba-s-oath');
+            this.player1.clickCard(this.valiantOathkeeper);
+            this.player1.clickCard('shiba-s-oath');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.valiantOathkeeper, this.solemnScholar],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('does not cancel your own abilities', function () {
+            this.player1.clickCard('banzai');
+            this.player1.clickCard(this.solemnScholar);
+            expect(this.player1).not.toBeAbleToSelect(this.valiantOathkeeper);
+            expect(this.player1).toHavePromptButton('Lose 1 honor to resolve this ability again');
+            this.player1.clickPrompt('Done');
+            expect(this.solemnScholar.militarySkill).toBe(3);
+            expect(this.valiantOathkeeper.location).toBe('play area');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
         });
     });
 });

@@ -28,7 +28,7 @@ describe('Dragons Claw', function () {
                 this.noMoreActions();
             });
 
-            it('sends home bowed a character with less MIL skill', function () {
+            it('does not give the attached character the ability', function () {
                 this.initiateConflict({
                     attackers: [this.challenger, this.kuwanan],
                     defenders: [this.yoshi]

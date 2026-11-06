@@ -4,6 +4,7 @@ describe('Honored Blade', function() {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
+                    honor: 10,
                     stronghold: 'hisu-mori-toride-unicorn',
                     inPlay: ['aggressive-moto', 'border-rider', 'ide-trader'],
                     hand: ['honored-blade']
@@ -39,6 +40,32 @@ describe('Honored Blade', function() {
             this.player1.clickCard(this.borderRider);
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.player1).not.toBeAbleToSelect(this.blade);
+        });
+
+        it('gains 1 honor after the attached character wins a conflict', function() {
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.borderRider],
+                defenders: []
+            });
+            this.noMoreActions();
+            expect(this.getChatLogs(5)).toContain('player1 won a political conflict 1 vs 0');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.blade);
+            this.player1.clickCard(this.blade);
+            expect(this.player1.honor).toBe(11);
+        });
+
+        it('does not react when its side wins a conflict the attached character is not participating in', function() {
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.ideTrader],
+                defenders: []
+            });
+            this.noMoreActions();
+            expect(this.getChatLogs(5)).toContain('player1 won a political conflict 3 vs 0');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.borderRider.isParticipating()).toBe(false);
         });
     });
 });

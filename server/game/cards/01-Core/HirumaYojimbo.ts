@@ -1,12 +1,12 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotBeDeclaredAsAttacker } from '../../effects.js';
 
 class HirumaYojimbo extends DrawCard {
     static id = 'hiruma-yojimbo';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.persistentEffect({
-            effect: ability.effects.cannotBeDeclaredAsAttacker()
+            effect: cannotBeDeclaredAsAttacker()
         });
     }
 }

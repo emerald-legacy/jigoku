@@ -31,7 +31,7 @@ describe('Brushfires', function() {
                 attackers: [this.challenger],
                 province: this.brush
             });
-            let challengerFate = this.challenger.fate;
+            const challengerFate = this.challenger.fate;
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.brush);
             this.player2.clickCard(this.brush);
@@ -48,7 +48,7 @@ describe('Brushfires', function() {
                 attackers: [this.brash],
                 province: this.brush
             });
-            let brashFate = this.brash.fate;
+            const brashFate = this.brash.fate;
             expect(this.player2).toHavePrompt('Triggered Abilities');
             expect(this.player2).toBeAbleToSelect(this.brush);
             this.player2.clickCard(this.brush);

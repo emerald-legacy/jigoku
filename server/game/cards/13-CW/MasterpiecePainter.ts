@@ -1,51 +1,31 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import type Player from '../../Player.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { TargetMode, Duration, Location, Decks } from '../../Constants.js';
+import { multiple, playerLastingEffect } from '../../GameActions/GameActions.js';
+import { playerChoices } from '../playerChoices.js';
+import { revealedTopCardPlayable } from '../revealedTopCardPlayable.js';
 
 class MasterpiecePainter extends DrawCard {
     static id = 'masterpiece-painter';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Reveal and may play top conflict card',
-            target: {
-                mode: TargetMode.Select,
+    override setupCardAbilities() {
+        this.action('Reveal and may play top conflict card')
+            .selectFrom({
                 targets: true,
-                activePromptTitle: 'Choose any number of players',
-                choices: {
-                    [this.owner.name]: this.revealAndMayPlayAbility(this.owner),
-                    [this.owner.opponent && this.owner.opponent.name || 'NA']: this.revealAndMayPlayAbility(this.owner.opponent),
-                    [this.owner.name + ' and ' + (this.owner.opponent && this.owner.opponent.name || 'NA')]: AbilityDsl.actions.multiple([
-                        this.revealAndMayPlayAbility(this.owner),
-                        this.revealAndMayPlayAbility(this.owner.opponent)
-                    ])
-                }
-            },
-            effect: 'make {1} reveal the top card of their deck. They may play their card until the end of the phase.',
-            effectArgs: context => context.select
-        });
+                activePromptTitle: 'Choose any number of players'
+            }, (context) => playerChoices(
+                context.player,
+                (player) => this.revealAndMayPlayAbility(player),
+                (player, opponent) => multiple([
+                    this.revealAndMayPlayAbility(player),
+                    this.revealAndMayPlayAbility(opponent)
+                ])
+            ))
+            .chatText((context) => msg`make ${context.select} reveal the top card of their deck. They may play their card until the end of the phase`);
     }
 
-    revealAndMayPlayAbility(player: Player | undefined) {
-        return AbilityDsl.actions.playerLastingEffect(() => {
-            let chosenPlayer = player as Player;
-            let topCard = chosenPlayer.conflictDeck[0];
-
-            return {
-                targetController: player as Player,
-                duration: Duration.Custom,
-                until: {
-                    onCardMoved: event => event.card === topCard && event.originalLocation === Location.ConflictDeck,
-                    onPhaseEnded: () => true,
-                    onDeckShuffled: event => event.player === chosenPlayer && event.deck === Decks.ConflictDeck
-                },
-                effect: [
-                    AbilityDsl.effects.showTopConflictCard(),
-                    AbilityDsl.effects.canPlayFromOwn(Location.ConflictDeck, [topCard], this)
-                ]
-            };
-        });
+    revealAndMayPlayAbility(player: Player) {
+        return playerLastingEffect(() => revealedTopCardPlayable(player, this, 'phase'));
     }
 }
 

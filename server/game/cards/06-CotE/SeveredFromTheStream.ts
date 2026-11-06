@@ -1,19 +1,25 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import type Player from '../../Player.js';
+import { msg } from '../../GameChat.js';
+import { chatMessage, noAction, performGloryCount, returnRing, sequential } from '../../GameActions/GameActions.js';
 
 class SeveredFromTheStream extends DrawCard {
     static id = 'severed-from-the-stream';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Return player\'s rings',
-            gameAction: AbilityDsl.actions.performGloryCount({
-                gameAction: (winner: Player | null) => (winner && winner.opponent)
-                    ? AbilityDsl.actions.returnRing({ target: winner.opponent.getClaimedRings() })
-                    : AbilityDsl.actions.noAction()
-            })
-        });
+    override setupCardAbilities() {
+        this.action('Return player\'s rings')
+            .gameAction(performGloryCount({
+                gameAction: (winner) => {
+                    const loser = winner?.opponent;
+                    const rings = loser ? loser.getClaimedRings().filter((ring) => ring.isClaimedBy(loser)) : [];
+                    if(!loser || rings.length === 0) {
+                        return noAction();
+                    }
+                    return sequential([
+                        chatMessage(() => msg`${loser} returns the ${rings} to the unclaimed ring pool`),
+                        returnRing({ target: rings })
+                    ]);
+                }
+            }));
     }
 }
 

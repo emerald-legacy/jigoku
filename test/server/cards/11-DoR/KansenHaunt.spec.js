@@ -52,7 +52,7 @@ describe('Kansen Haunt', function() {
                 this.player2.pass();
                 this.player1.pass();
 
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
                 expect(this.player2).toBeAbleToSelect(this.haunt);
                 this.player2.clickCard(this.haunt);
                 expect(this.player2.honor).toBe(honor - 2);
@@ -73,7 +73,7 @@ describe('Kansen Haunt', function() {
                 this.player2.pass();
                 this.player1.pass();
 
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
                 expect(this.player2).toBeAbleToSelect(this.haunt);
                 this.player2.clickCard(this.haunt);
                 expect(this.player2.honor).toBe(honor - 2);
@@ -102,7 +102,7 @@ describe('Kansen Haunt', function() {
                 this.player1.pass();
                 this.player2.pass();
 
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
                 expect(this.player2).not.toBeAbleToSelect(this.haunt);
                 this.player2.clickCard(this.haunt);
                 expect(this.player2.honor).toBe(honor);
@@ -120,7 +120,7 @@ describe('Kansen Haunt', function() {
                 this.player2.pass();
                 this.player1.pass();
 
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
                 expect(this.player2).not.toBeAbleToSelect(this.haunt);
                 this.player2.clickCard(this.haunt);
                 expect(this.player2.honor).toBe(honor);
@@ -142,7 +142,7 @@ describe('Kansen Haunt', function() {
                 this.player2.pass();
                 this.player1.pass();
 
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
                 expect(this.player2).not.toBeAbleToSelect(this.haunt);
                 this.player2.clickCard(this.haunt);
                 expect(this.player2.honor).toBe(honor);
@@ -164,7 +164,7 @@ describe('Kansen Haunt', function() {
                 this.player2.pass();
                 this.player1.pass();
 
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
                 expect(this.player2).not.toBeAbleToSelect(this.haunt);
                 this.player2.clickCard(this.haunt);
                 expect(this.player2.honor).toBe(honor);
@@ -217,7 +217,7 @@ describe('Kansen Haunt', function() {
                 this.player1.clickCard(this.kuwanan);
                 expect(this.player2).toHavePrompt('Choose a ring to claim');
                 this.player2.clickRing('air');
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
                 expect(this.player2).toBeAbleToSelect(this.haunt);
                 this.player2.clickCard(this.haunt);
                 expect(this.player2.honor).toBe(honor - 2);

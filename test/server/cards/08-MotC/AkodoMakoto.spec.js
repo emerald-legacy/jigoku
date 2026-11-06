@@ -56,6 +56,52 @@ describe('Akodo Makoto', function() {
                 expect(this.player1).not.toBeAbleToSelect(this.naiveStudent);
             });
         });
+
+        describe('Akodo Makoto\'s ability when it does not win', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['akodo-makoto', 'matsu-berserker']
+                    },
+                    player2: {
+                        inPlay: ['meddling-mediator', 'wild-ogre']
+                    }
+                });
+
+                this.makoto = this.player1.findCardByName('akodo-makoto');
+                this.berserker = this.player1.findCardByName('matsu-berserker');
+                this.mediator = this.player2.findCardByName('meddling-mediator');
+                this.ogre = this.player2.findCardByName('wild-ogre');
+
+                this.noMoreActions();
+            });
+
+            it('does not trigger when Akodo Makoto loses the conflict', function() {
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.makoto],
+                    defenders: [this.mediator, this.ogre]
+                });
+                this.noMoreActions();
+                expect(this.getChatLogs(5)).toContain('player2 won a military conflict 6 vs 4');
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.mediator.location).toBe('play area');
+            });
+
+            it('does not trigger when you win a conflict Akodo Makoto is not participating in', function() {
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.berserker],
+                    defenders: [this.mediator]
+                });
+                this.noMoreActions();
+                expect(this.getChatLogs(5)).toContain('player1 won a military conflict 3 vs 0');
+                expect(this.makoto.isParticipating()).toBe(false);
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.mediator.location).toBe('play area');
+            });
+        });
     });
 });
 

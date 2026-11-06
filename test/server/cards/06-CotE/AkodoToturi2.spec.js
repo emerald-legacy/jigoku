@@ -6,12 +6,12 @@ describe('Akodo Toturi 2', function() {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['akodo-toturi-2', 'matsu-berserker'],
-                        hand: ['banzai', 'fine-katana','kami-unleashed','feral-ningyo', 'assassination']
+                        hand: ['banzai', 'fine-katana','kami-unleashed','feral-ningyo']
                     },
                     player2: {
-                        inPlay: ['togashi-mitsu','sinister-soshi'],
+                        inPlay: ['togashi-mitsu'],
                         hand: ['banzai', 'fine-katana', 'kami-unleashed'],
-                        dynastyDiscard: ['hidden-moon-dojo', 'bayushi-liar','back-alley-hideaway','artisan-academy'],
+                        dynastyDiscard: ['hidden-moon-dojo', 'bayushi-liar','artisan-academy'],
                         conflictDiscard: ['hurricane-punch']
                     }
                 });
@@ -21,13 +21,11 @@ describe('Akodo Toturi 2', function() {
                 this.matsuBerserker = this.player1.findCardByName('matsu-berserker');
 
                 this.togashiMitsu = this.player2.findCardByName('togashi-mitsu');
-                this.sinisterSoshi = this.player2.findCardByName('sinister-soshi');
 
                 this.banzai1 = this.player1.findCardByName('banzai');
                 this.fineKatana1 = this.player1.findCardByName('fine-katana');
                 this.kamiUnleashed1 = this.player1.findCardByName('kami-unleashed');
                 this.feralNingyo = this.player1.findCardByName('feral-ningyo');
-                this.assassination = this.player1.findCardByName('assassination');
 
                 this.banzai2 = this.player2.findCardByName('banzai');
                 this.fineKatana2 = this.player2.findCardByName('fine-katana');
@@ -36,7 +34,6 @@ describe('Akodo Toturi 2', function() {
 
                 this.hiddenMoonDojo = this.player2.placeCardInProvince('hidden-moon-dojo', 'province 2');
                 this.bayushiLiar = this.player2.placeCardInProvince('bayushi-liar', 'province 1');
-                this.backAlleyHideaway = this.player2.placeCardInProvince('back-alley-hideaway', 'province 3');
                 this.artisanAcademy = this.player2.placeCardInProvince('artisan-academy', 'province 4');
             });
 
@@ -66,12 +63,6 @@ describe('Akodo Toturi 2', function() {
                         defenders: [this.togashiMitsu],
                         ring: 'water'
                     });
-
-                    //setup back alley hideaway
-                    this.player2.pass();
-                    this.player1.clickCard(this.assassination);
-                    this.player1.clickCard(this.sinisterSoshi);
-                    this.player2.clickCard(this.backAlleyHideaway);
                 });
 
                 it('should not be able to be triggered if you do not have favor', function() {
@@ -138,15 +129,6 @@ describe('Akodo Toturi 2', function() {
                         expect(this.feralNingyo.location).toBe('play area');
                         expect(this.player1).not.toHavePrompt('Conflict Action Window');
                     });
-                    /*
-                    it('should not prevent playing a character from back-alley hideaway', function() {
-                        expect(this.sinisterSoshi.location).toBe('backalley hideaway');
-                        this.player2.clickCard(this.sinisterSoshi);
-                        expect(this.player2).toHavePrompt('Sinister Soshi');
-                        this.player2.clickPrompt('0');
-                        expect(this.sinisterSoshi.location).toBe('play area');
-                    });
-                    */
                     it('should prevent playing a card from Artisan Academy ', function() {
                         this.player2.moveCard(this.fineKatana2, 'conflict deck');
                         this.player2.clickCard(this.artisanAcademy);

@@ -1,7 +1,9 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import BaseCard from '../../../BaseCard.js';
-import { CardType, Duration, Players } from '../../../Constants.js';
+import { cardCannot } from '../../../effects.js';
+import { bow } from '../../../GameActions/GameActions.js';
+import type BaseCard from '../../../BaseCard.js';
+import { CardType, Players, RestrictionType, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 const TARGET_MONK = 'myMonk';
 const TARGET_TO_BOW = 'characterToBow';
@@ -9,56 +11,43 @@ const TARGET_TO_BOW = 'characterToBow';
 export default class PalmStrike extends DrawCard {
     static id = 'palm-strike';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Bow a character',
-            targets: {
-                [TARGET_MONK]: {
-                    activePromptTitle: 'Choose a bare-handed monk',
-                    cardType: CardType.Character,
-                    controller: Players.Self,
-                    cardCondition: (monkCharacter) =>
-                        monkCharacter.isParticipating() &&
-                        monkCharacter.hasTrait('monk') &&
-                        this.#cardHasNoWeapons(monkCharacter)
-                },
-                [TARGET_TO_BOW]: {
-                    dependsOn: TARGET_MONK,
-                    activePromptTitle: 'Choose a character to bow',
-                    cardType: CardType.Character,
-                    controller: Players.Opponent,
-                    cardCondition: (opponentCharacter) =>
-                        opponentCharacter.isParticipating() && this.#cardHasNoWeapons(opponentCharacter),
-                    gameAction: AbilityDsl.actions.multiple([
-                        AbilityDsl.actions.bow(),
-                        AbilityDsl.actions.conditional({
-                            condition: (context) =>
-                                !!(context.targets[TARGET_MONK] as DrawCard)?.hasTrait('tattooed'),
-                            falseGameAction: AbilityDsl.actions.noAction(),
-                            trueGameAction: AbilityDsl.actions.cardLastingEffect({
-                                effect: AbilityDsl.effects.cardCannot({ cannot: 'ready' }),
-                                duration: Duration.UntilEndOfConflict
-                            })
-                        })
-                    ])
+    override setupCardAbilities() {
+        this.conflictAction('Bow a character')
+            .target({
+                name: TARGET_MONK,
+                activePromptTitle: 'Choose a bare-handed monk',
+                cardType: CardType.Character,
+                controller: Players.Self,
+                cardCondition: (monkCharacter) =>
+                    monkCharacter.isParticipating() &&
+                        monkCharacter.hasTrait(Trait.Monk) &&
+                        this.cardHasNoWeapons(monkCharacter)
+            })
+            .target({
+                name: TARGET_TO_BOW,
+                dependsOn: TARGET_MONK,
+                activePromptTitle: 'Choose a character to bow',
+                cardType: CardType.Character,
+                controller: Players.Opponent,
+                cardCondition: (opponentCharacter) =>
+                    opponentCharacter.isParticipating() && this.cardHasNoWeapons(opponentCharacter)
+            }, bow())
+            .if((context) => {
+                const monk = context.targets[TARGET_MONK];
+                return !Array.isArray(monk) && !!monk?.hasTrait(Trait.Tattooed);
+            })
+            .cardLastingEffect({
+                effect: cardCannot({ cannot: RestrictionType.Ready })
+            })
+            .onResolve((context) => {
+                if(context.targets[TARGET_MONK].hasTrait(Trait.Tattooed)) {
+                    context.game.addMessage(msg`${context.targets[TARGET_TO_BOW]} cannot ready until the end of the conflict - they are overwhelmed by the mystical tattoos of ${context.targets[TARGET_MONK].isUnique() ? '' : 'the '}${context.targets[TARGET_MONK]}`);
                 }
-            },
-            effect: 'bow {1}',
-            effectArgs: (context) => [context.targets[TARGET_TO_BOW]],
-            then: (context) => {
-                if((context.targets[TARGET_MONK] as DrawCard).hasTrait('tattooed')) {
-                    context.game.addMessage(
-                        '{0} cannot ready until the end of the conflict - they are overwhelmed by the mystical tattoos of {1}{2}!',
-                        context.targets[TARGET_TO_BOW],
-                        (context.targets[TARGET_MONK] as DrawCard).isUnique() ? '' : 'the ',
-                        context.targets[TARGET_MONK]
-                    );
-                }
-            }
-        });
+            })
+            .chatText((context) => msg`bow ${context.targets[TARGET_TO_BOW]}`);
     }
 
-    #cardHasNoWeapons(card: BaseCard) {
-        return !(card as DrawCard).attachments.some((attachment: BaseCard) => attachment.hasTrait('weapon'));
+    private cardHasNoWeapons(card: BaseCard) {
+        return !card.attachments.some((attachment) => attachment.hasTrait(Trait.Weapon));
     }
 }

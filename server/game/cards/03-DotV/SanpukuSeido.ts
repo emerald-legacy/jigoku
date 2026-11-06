@@ -1,18 +1,17 @@
-import type DrawCard from '../../DrawCard.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { changeConflictSkillFunction } from '../../effects.js';
 
 export default class SanpukuSeido extends ProvinceCard {
     static id = 'sanpuku-seido';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
-            effect: AbilityDsl.effects.changeConflictSkillFunction((card: DrawCard) => card.getGlory())
+            effect: changeConflictSkillFunction((card) => card.glory)
         });
     }
 
-    cannotBeStrongholdProvince() {
+    override cannotBeStrongholdProvince() {
         return true;
     }
 }

@@ -23,8 +23,8 @@ describe('Divine Ancestry', function() {
             });
 
             it ('should prevent losing honor from a bid', function() {
-                let honor = this.player1.honor;
-                let p2honor = this.player2.honor;
+                const honor = this.player1.honor;
+                const p2honor = this.player2.honor;
                 this.player1.clickCard(this.ancestry);
                 this.player1.clickPrompt('5');
                 this.player2.clickPrompt('1');
@@ -33,8 +33,8 @@ describe('Divine Ancestry', function() {
             });
 
             it ('should not prevent gaining honor from a bid', function() {
-                let honor = this.player1.honor;
-                let p2honor = this.player2.honor;
+                const honor = this.player1.honor;
+                const p2honor = this.player2.honor;
                 this.player1.clickCard(this.ancestry);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('5');
@@ -55,7 +55,7 @@ describe('Divine Ancestry - Reactions', function() {
         describe('Divine Ancestry\'s ability - conflict phase', function() {
             beforeEach(function() {
                 this.setupTest({
-                    phase: 'draw',
+                    phase: 'dynasty',
                     player1: {
                         honor: 11,
                         inPlay: ['shiba-tsukune', 'beloved-advisor'],
@@ -64,9 +64,8 @@ describe('Divine Ancestry - Reactions', function() {
                         conflictDiscard: ['divine-ancestry']
                     },
                     player2: {
-                        stronghold: ['city-of-the-open-hand'],
                         honor: 9,
-                        inPlay: ['shrine-maiden'],
+                        inPlay: ['shrine-maiden', 'kakita-asami'],
                         hand: ['noble-sacrifice', 'watch-commander']
                     }
                 });
@@ -74,12 +73,10 @@ describe('Divine Ancestry - Reactions', function() {
                 this.player1.player.promptedActionWindows.draw = true;
                 this.player2.player.promptedActionWindows.draw = true;
 
-                this.city = this.player2.findCardByName('city-of-the-open-hand');
-                this.city.loadOriginalAction();
-
                 this.shrineMaiden = this.player2.findCardByName('shrine-maiden');
                 this.sac = this.player2.findCardByName('noble-sacrifice');
                 this.watchCommander = this.player2.findCardByName('watch-commander');
+                this.asami = this.player2.findCardByName('kakita-asami');
 
                 this.shibaTsukune = this.player1.findCardByName('shiba-tsukune');
 
@@ -92,9 +89,7 @@ describe('Divine Ancestry - Reactions', function() {
 
                 this.ancestry = this.player1.findCardByName('divine-ancestry');
 
-                //HACK: the phase starts before the test finishes setting up, so this sometimes ends up in hand and able to be reacted to...
-                //so we'll click it just in case
-                this.player1.clickCard(this.ancestry);
+                this.noMoreActions();
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 this.player1.moveCard(this.ancestry, 'hand');
@@ -121,7 +116,7 @@ describe('Divine Ancestry - Reactions', function() {
             });
 
             it('shouldn\'t lose honor when dishonored characters leave play', function() {
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.shrineMaiden.honor();
                 this.shibaTsukune.dishonor();
@@ -151,8 +146,8 @@ describe('Divine Ancestry - Reactions', function() {
             });
 
             it('should stop you from losing honor during duels', function() {
-                let honor = this.player1.honor;
-                let honor2 = this.player2.honor;
+                const honor = this.player1.honor;
+                const honor2 = this.player2.honor;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -173,8 +168,8 @@ describe('Divine Ancestry - Reactions', function() {
             });
 
             it('should be able to play cards with losing honor in the effect', function() {
-                let honor = this.player1.honor;
-                let hand = this.player1.hand.length;
+                const honor = this.player1.honor;
+                const hand = this.player1.hand.length;
 
                 this.player1.clickCard(this.backhanded);
                 this.player1.clickPrompt('player1');
@@ -184,17 +179,27 @@ describe('Divine Ancestry - Reactions', function() {
             });
 
             it('opponent should not be able to take honor', function() {
+                const honor = this.player1.honor;
+                this.noMoreActions();
+                this.player1.passConflict();
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.asami],
+                    defenders: []
+                });
+
                 this.player1.pass();
-                expect(this.player2).toHavePrompt('Action Window');
-                this.player2.clickCard(this.city);
-                expect(this.player2).toHavePrompt('Action Window');
+                this.player2.clickCard(this.asami);
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.player1.honor).toBe(honor);
             });
 
             it('unopposed and air ring', function() {
                 this.noMoreActions();
                 this.player1.passConflict();
                 this.noMoreActions();
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.initiateConflict({
                     type: 'military',
@@ -213,24 +218,25 @@ describe('Divine Ancestry - Reactions', function() {
 
             it('reshuffling', function() {
                 this.player1.reduceDeckToNumber('conflict deck', 0);
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.player1.clickCard(this.advisor);
                 expect(this.player1.honor).toBe(honor);
                 expect(this.getChatLogs(5)).toContain('player1 is shuffling their conflict deck');
             });
 
-            // This locks the engine in a loop.
-            // it('infinite reshuffling', function() {
-            //     this.player1.reduceDeckToNumber('conflict deck', 0);
-            //     this.player1.conflictDiscard.forEach(card => this.player1.moveCard(card, 'hand'));
-            //     expect(this.player1.conflictDiscard.length).toBe(0);
+            it('draws from an empty deck with an empty discard pile without looping', function() {
+                this.player1.reduceDeckToNumber('conflict deck', 0);
+                this.player1.conflictDiscard.forEach((card) => this.player1.moveCard(card, 'hand'));
+                expect(this.player1.conflictDiscard.length).toBe(0);
 
-            //     let honor = this.player1.honor;
-            //     this.player1.clickCard(this.advisor);
-            //     expect(this.player1.honor).toBe(honor);
-            //     expect(this.getChatLogs(5)).toContain('player1 is shuffling their conflict deck');
-            //     expect(this.player1.conflictDiscard.length).toBe(0);
-            // });
+                const honor = this.player1.honor;
+                this.player1.clickCard(this.advisor);
+                expect(this.player1.honor).toBe(honor);
+                expect(this.getChatLogs(5)).toContain('player1 is shuffling their conflict deck');
+                expect(this.player1.conflictDiscard.length).toBe(0);
+                expect(this.player1.conflictDeck.length).toBe(0);
+                expect(this.player2).toHavePrompt('Action Window');
+            });
         });
     });
 });

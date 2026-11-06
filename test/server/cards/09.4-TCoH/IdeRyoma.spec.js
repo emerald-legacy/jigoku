@@ -56,6 +56,8 @@ describe('Ide Ryoma', function() {
                 expect(this.kudaka.bowed).toBe(false);
                 expect(this.shono.bowed).toBe(true);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.getChatLogs(5)).toContain('player1 uses Ide Ryōma to bow one of Shinjo Shono and Kudaka and ready the other');
+                expect(this.getChatLogs(5)).toContain('player1 chooses to bow Shinjo Shono');
             });
 
             it('should bow one of two readied characters', function() {

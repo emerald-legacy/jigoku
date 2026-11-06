@@ -1,15 +1,14 @@
-import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Location, CardType, Players } from '../../Constants.js';
-import type BaseCard from '../../BaseCard.js';
-import type Ring from '../../Ring.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
+import { msg } from '../../GameChat.js';
+import { costToDeclareAnyParticipants, modifyProvinceStrength } from '../../effects.js';
+import { loseHonor } from '../../GameActions/GameActions.js';
+import { Location, Players } from '../../Constants.js';
 import type Player from '../../Player.js';
+import { ProvinceAttachment } from '../ProvinceAttachment.js';
 
-class Unhallow extends DrawCard {
+class Unhallow extends ProvinceAttachment {
     static id = 'unhallow';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
@@ -17,41 +16,28 @@ class Unhallow extends DrawCard {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             match: (card, context) => card === context?.source.parent,
-            effect: AbilityDsl.effects.modifyProvinceStrength(3)
+            effect: modifyProvinceStrength(3)
         });
 
         this.persistentEffect({
             condition: (context) => !!context.source.parentProvince?.isConflictProvince(),
             targetLocation: Location.Provinces,
             targetController: Players.Self,
-            effect: AbilityDsl.effects.costToDeclareAnyParticipants({
+            effect: costToDeclareAnyParticipants({
                 type: 'defenders',
-                message: 'loses 1 honor',
-                cost: (player: Player) => AbilityDsl.actions.loseHonor({
-                    target: player,
-                    amount: 1
+                chatText: () => msg`loses 1 honor`,
+                cost: (player: Player) => loseHonor({
+                    target: player
                 })
             })
         });
     }
 
-    canPlayOn(source: BaseCard | Ring) {
-        return source && source.getType() === 'province' && (source as ProvinceCard).controller === this.controller && !(source as ProvinceCard).isBroken && this.getType() === CardType.Attachment;
+    protected override controllerProvinceOnly(): boolean {
+        return true;
     }
 
-    canAttach(parent: BaseCard) {
-        if(parent.type === CardType.Province && (parent as ProvinceCard).isBroken) {
-            return false;
-        }
-
-        if(parent.controller !== this.controller) {
-            return false;
-        }
-
-        return parent && parent.getType() === CardType.Province && this.getType() === CardType.Attachment;
-    }
-
-    isTemptationsMaho() {
+    override isTemptationsMaho() {
         return true;
     }
 }

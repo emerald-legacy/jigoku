@@ -60,8 +60,8 @@ describe('Cast Out the Shadow', function () {
                 defenders: [this.mitsu, this.whisperer, this.hida]
             });
 
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             this.player2.pass();
 
@@ -97,6 +97,63 @@ describe('Cast Out the Shadow', function () {
 
             this.player1.clickCard(this.cast);
             expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+    });
+});
+
+describe('Cast Out the Shadow with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['miya-mystic', 'doji-challenger', 'endless-plains-skirmisher'],
+                    hand: ['cast-out-the-shadow']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer', 'endless-plains-skirmisher']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.cast = this.player1.findCardByName('cast-out-the-shadow');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+            this.skirmisher1.taint();
+            this.skirmisher2.taint();
+            this.whisperer.taint();
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.challenger],
+                defenders: [this.whisperer]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+            this.player2.pass();
+        });
+
+        it('chooses a character on the enemy side, whoever controls it', function () {
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard(this.cast);
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            expect(this.player1).toBeAbleToSelect(this.skirmisher1);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher2);
+        });
+
+        it('lets you, as the controller, select, and you cannot give yourself honor', function () {
+            const honor = this.player1.honor;
+            this.player1.clickCard(this.cast);
+            this.player1.clickCard(this.skirmisher1);
+            expect(this.player1).toHavePromptButton('Sacrifice this character');
+            expect(this.player1).not.toHavePromptButton('Give opponent 2 honor');
+            this.player1.clickPrompt('Sacrifice this character');
+            expect(this.skirmisher1.location).toBe('dynasty discard pile');
+            expect(this.player1.honor).toBe(honor);
         });
     });
 });

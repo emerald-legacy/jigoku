@@ -30,6 +30,21 @@ describe('Tireless Sodan Senzo', function() {
                 });
                 expect(this.senzo.bowed).toBe(false);
             });
+
+            it('should still bow after winning a conflict', function() {
+                this.initiateConflict({
+                    type: 'military',
+                    ring: 'water',
+                    province: this.shamefulDisplay,
+                    attackers: [this.senzo],
+                    defenders: [],
+                    jumpTo: 'afterConflict'
+                });
+                expect(this.getChatLogs(5)).toContain('player1 won a military conflict 1 vs 0');
+                expect(this.player1).toHavePrompt('Water Ring');
+                this.player1.clickPrompt('Don\'t resolve');
+                expect(this.senzo.bowed).toBe(true);
+            });
         });
     });
 });

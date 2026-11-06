@@ -1,45 +1,52 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { Location } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { handler } from '../../../GameActions/GameActions.js';
+import { Location, CardType } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import { parseGameMode } from '../../../GameMode.js';
 
 const ACTIVE_LOCATIONS = [Location.Hand, Location.PlayArea];
 
 export default class LuckyCoin extends DrawCard {
     static id = 'lucky-coin';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Replace all cards in your provinces',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Replace all cards in your provinces')
+            .when({
                 onRevealFacedownDynastyCards: (_, context) => {
                     const totalCost = context.player
                         .getDynastyCardsInProvince(Location.Provinces)
-                        .reduce((totalCost: number, card: DrawCard) => {
-                            const cost = !card.facedown && card.printedCost !== null && !isNaN(card.printedCost) ? card.printedCost : 0;
-                            return totalCost + (cost ?? 0);
+                        .reduce((totalCost, card) => {
+                            const isCharacter = card.type === CardType.Character;
+                            const cost = isCharacter && !card.facedown && card.printedCost !== null && !isNaN(card.printedCost) ? card.printedCost : 0;
+                            return totalCost + cost;
                         }, 0);
                     return totalCost < 6 || totalCost > 12;
                 }
-            },
-            cost: AbilityDsl.costs.removeSelfFromGame({ location: ACTIVE_LOCATIONS }),
-            location: ACTIVE_LOCATIONS,
-            gameAction: AbilityDsl.actions.handler({
+            })
+            .location(ACTIVE_LOCATIONS)
+            .cost(costs.removeSelfFromGame({ location: ACTIVE_LOCATIONS }))
+            .gameAction(handler({
                 handler: ({ player, game }) => {
-                    const cardsToMulligan = player.getDynastyCardsInProvince(Location.Provinces);
-
-                    for(const card of cardsToMulligan) {
-                        player.moveCard(card, 'dynasty deck bottom');
+                    // set aside out of the deck, so the refill can't draw them back
+                    const setAside = player.getDynastyCardsInProvince(Location.Provinces);
+                    for(const card of setAside) {
+                        player.moveCard(card, Location.RemovedFromGame);
                     }
 
-                    for(const location of parseGameMode(game.gameMode).setupNonStrongholdProvinces) {
-                        player.putTopDynastyCardInProvince(location, false);
+                    // one province per step: a deck-out reshuffles before the next one
+                    for(const location of game.getProvinceArray(false)) {
+                        game.queueSimpleStep(() => {
+                            player.putTopDynastyCardInProvince(location, false);
+                        });
                     }
 
-                    player.shuffleDynastyDeck();
+                    game.queueSimpleStep(() => {
+                        for(const card of setAside) {
+                            player.moveCard(card, Location.DynastyDeck);
+                        }
+                        player.shuffleDynastyDeck();
+                    });
                 }
-            }),
-            effect: 'to replace all cards in their provinces'
-        });
+            }))
+            .chatText('replace all cards in their provinces');
     }
 }

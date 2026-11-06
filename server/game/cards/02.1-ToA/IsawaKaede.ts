@@ -1,36 +1,35 @@
 import DrawCard from '../../DrawCard.js';
-import { Element } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Element, RestrictionScope } from '../../Constants.js';
+import { addElementAsAttacker, immunity, modifyConflictElementsToResolve } from '../../effects.js';
 
 const elementKey = 'isawa-kaede-void';
 
 class IsawaKaede extends DrawCard {
     static id = 'isawa-kaede';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.immunity({
-                restricts: 'opponentsRingEffects'
+            effect: immunity({
+                appliesTo: RestrictionScope.OpponentsRingEffects
             })
         });
         this.persistentEffect({
-            effect: AbilityDsl.effects.addElementAsAttacker(() => this.getCurrentElementSymbol(elementKey))
+            effect: addElementAsAttacker(() => this.getCurrentElementSymbol(elementKey))
         });
         this.persistentEffect({
-            condition: context => context.source.isAttacking() && this.game.currentConflict?.winner === context.player,
-            effect: AbilityDsl.effects.modifyConflictElementsToResolve(5)
+            // sent home after the winner was determined (False Loyalties), she still won as an attacker
+            condition: (context) => !!this.game.currentConflict?.wonAsAttacker(context.source),
+            effect: modifyConflictElementsToResolve(5)
         });
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: elementKey,
             prettyName: 'Element to Add',
             element: Element.Void
-        });
-        return symbols;
-    }
+        }
+    ];
 }
 
 

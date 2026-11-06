@@ -1,19 +1,20 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { addKeyword, cardCannot } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
+import { RestrictionType } from '../../Constants.js';
 
 class ShapeTheFlesh extends DrawCard {
     static id = 'shape-the-flesh';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
             effect: [
-                AbilityDsl.effects.cardCannot('honor'),
-                AbilityDsl.effects.addKeyword('covert')
+                cardCannot(RestrictionType.Honor),
+                addKeyword('covert')
             ]
         });
     }
 
-    isTemptationsMaho() {
+    override isTemptationsMaho() {
         return true;
     }
 }

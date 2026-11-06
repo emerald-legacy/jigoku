@@ -1,27 +1,21 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType } from '../../../Constants.js';
+import { Trait } from '../../../Constants.js';
+import { blank, loseGainedAbilities } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import { controlsShugenja } from '../../controlsShugenja.js';
 
 export default class CloudTheMind2 extends DrawCard {
     static id = 'cloud-the-mind-2';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
+        this.playOnlyIf((context) => controlsShugenja(context.player));
+
         this.whileAttached({
-            effect: AbilityDsl.effects.blank()
+            effect: blank()
         });
 
         this.whileAttached({
-            condition: (context) => context.source.controller.hasAffinity('air', context),
-            effect: AbilityDsl.effects.cannotTriggerAbilities()
+            condition: (context) => context.source.controller.hasAffinity(Trait.Air, context),
+            effect: loseGainedAbilities()
         });
-    }
-
-    public canPlay(context: TriggeredAbilityContext, playType: string) {
-        return (
-            context.player.cardsInPlay.some(
-                (card: DrawCard) => card.getType() === CardType.Character && card.hasTrait('shugenja')
-            ) && super.canPlay(context, playType)
-        );
     }
 }

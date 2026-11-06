@@ -1,68 +1,41 @@
+import { msg } from '../../GameChat.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import type BaseCard from '../../BaseCard.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import type { GameAction } from '../../GameActions/GameAction.js';
+import * as costs from '../../costs/index.js';
+import { discardStatusToken, multiple, selectToken } from '../../GameActions/GameActions.js';
 import { TargetMode, CardType } from '../../Constants.js';
+import { countTargetable } from '../countTargetable.js';
 
 class ImbuedWithShadows extends DrawCard {
     static id = 'imbued-with-shadows';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Lose honor to discard status tokens',
-            effect: 'lose {1} honor to discard status tokens from {2}',
-            effectArgs: (context) => [context.costs.variableHonorCost as number, context.targets.target as BaseCard[]],
-            cost: AbilityDsl.costs.variableHonorCost((context) => this.getNumberOfLegalTargets(context)),
-            target: {
+    override setupCardAbilities() {
+        this.action('Lose honor to discard status tokens')
+            .cost(costs.payVariableHonor((context) => this.getNumberOfLegalTargets(context)))
+            .targetCards({
                 mode: TargetMode.ExactlyVariable,
-                numCardsFunc: (context) => {
-                    if(context && context.costs && context.costs.variableHonorCost) {
-                        return context.costs.variableHonorCost as number;
-                    }
-
-                    return this.getNumberOfLegalTargets(context);
-                },
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.multipleContext((context) => {
-                    let targets = Object.values(context.targets).flat();
-                    targets = targets.concat(Object.values(context.selects).flat());
-                    return {
-                        gameActions: this.getStatusTokenPrompts(targets as BaseCard[])
-                    };
-                })
-            },
-            cannotTargetFirst: true
-        });
+                numCardsFunc: (context) => context.costs.honorPaid || this.getNumberOfLegalTargets(context),
+                cardType: CardType.Character
+            }, multiple((context) => {
+                const targets = Object.values(context.targets).flat();
+                return this.getStatusTokenPrompts(targets);
+            }))
+            .chatText((context) => msg`lose ${context.costs.honorPaid} honor to discard status tokens from ${context.targets.target}`)
+            .cannotTargetFirst();
     }
 
-    getStatusTokenPrompts(targets: BaseCard[]) {
-        let actions: GameAction[] = [];
-        targets.forEach((target: BaseCard) => {
-            actions.push(
-                AbilityDsl.actions.selectToken(() => ({
-                    card: target,
-                    activePromptTitle: `Which token do you wish to discard from ${target.name}?`,
-                    message: '{0} discards {1} from {2}',
-                    messageArgs: (token, player) => [player, token, target],
-                    gameAction: AbilityDsl.actions.discardStatusToken()
-                }))
-            );
-        });
-
-        return actions;
+    private getStatusTokenPrompts(targets: BaseCard[]) {
+        return targets.map((target) => selectToken(() => ({
+            card: target,
+            activePromptTitle: `Which token do you wish to discard from ${target.name}?`,
+            message: (_context, token, player) => msg`${player} discards ${token} from ${target}`,
+            gameAction: discardStatusToken()
+        })));
     }
 
-    getNumberOfLegalTargets(context: AbilityContext) {
-        let cards = context.game.findAnyCardsInPlay((card: BaseCard) => card.isHonored || card.isDishonored);
-        let selectedCards: BaseCard[] = [];
-        cards.forEach((card: BaseCard) => {
-            if(card.canBeTargeted(context, selectedCards)) {
-                selectedCards.push(card);
-            }
-        });
-
-        return selectedCards.length;
+    private getNumberOfLegalTargets(context: AbilityContext) {
+        return countTargetable(context.game.findAnyCardsInPlay((card) => card.hasStatusTokens), context);
     }
 }
 

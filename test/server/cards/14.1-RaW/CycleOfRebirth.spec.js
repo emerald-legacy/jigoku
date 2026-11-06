@@ -48,6 +48,24 @@ describe('Cycle of Rebirth', function() {
                 expect(this.player1).toBeAbleToSelect(this.yokuni);
             });
 
+            it('should not name a facedown target in chat', function() {
+                this.matsuBerseker.facedown = true;
+                this.player1.clickCard(this.cycleOfRebirth);
+                this.player1.clickCard(this.matsuBerseker);
+
+                expect(this.getChatLogs(10)).toContain('player1 plays Cycle of Rebirth to shuffle a facedown card and Cycle of Rebirth into player1\'s dynasty deck');
+                expect(this.getChatLogs(10)).toContain('player1 is shuffling their dynasty deck');
+            });
+
+            it('should not name a facedown enemy target in chat', function() {
+                this.yokuni.facedown = true;
+                this.player1.clickCard(this.cycleOfRebirth);
+                this.player1.clickCard(this.yokuni);
+
+                expect(this.getChatLogs(10)).toContain('player1 plays Cycle of Rebirth to shuffle a facedown card into player2\'s dynasty deck. Cycle of Rebirth is shuffled into player1\'s dynasty deck');
+                expect(this.getChatLogs(10)).toContain('player2 is shuffling their dynasty deck');
+            });
+
             it('should shuffle Cycle of Rebirth and targeted card back into the deck', function() {
                 this.player1.clickCard(this.cycleOfRebirth);
 
@@ -86,6 +104,30 @@ describe('Cycle of Rebirth', function() {
                 expect(this.cycleOfRebirth.location).not.toBe('dynasty discard pile');
                 expect(this.yokuni.location).not.toBe('dynasty discard pile');
             });
+        });
+    });
+});
+
+describe('Cycle of Rebirth and itself', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    dynastyDiscard: ['akodo-zentaro', 'cycle-of-rebirth', 'akodo-toturi', 'matsu-tsuko', 'shinjo-shono'],
+                    provinces: ['ancestral-lands', 'shameful-display', 'midnight-revels']
+                }
+            });
+            this.zentaro = this.player1.placeCardInProvince('akodo-zentaro', 'province 2');
+            this.cycleOfRebirth = this.player1.placeCardInProvince('cycle-of-rebirth', 'province 3');
+        });
+
+        // RRG Event Cards: "The event is not in your hand (or province) while paying its cost"; targets are chosen after costs (RRG Initiating Abilities, ruling #313)
+        it('offers other cards in provinces but not Cycle of Rebirth itself', function() {
+            this.player1.clickCard(this.cycleOfRebirth);
+            expect(this.player1).toHavePrompt('Cycle of Rebirth');
+            expect(this.player1).toBeAbleToSelect(this.zentaro);
+            expect(this.player1).not.toBeAbleToSelect(this.cycleOfRebirth);
         });
     });
 });

@@ -73,6 +73,7 @@ describe('Kakitas Final Stance', function() {
                     this.player2.pass();
                     this.player1.clickCard(this.stance);
                     this.player1.clickCard(this.kuwanan);
+                    expect(this.getChatLogs(3)).toContain('player1 plays Kakita\'s Final Stance to prevent opponents\' card effects from bowing Doji Kuwanan and stop it bowing at the end of the conflict if it is involved in a duel');
                     expect(this.player2).toHavePrompt('Conflict Action Window');
                     this.player2.clickCard(this.shame);
                     expect(this.player2).toHavePrompt('Conflict Action Window');

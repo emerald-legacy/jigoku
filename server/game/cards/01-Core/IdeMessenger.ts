@@ -1,20 +1,18 @@
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { moveToConflict } from '../../GameActions/GameActions.js';
 
 class IdeMessenger extends DrawCard {
     static id = 'ide-messenger';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action ({
-            title: 'Move an ally to a conflict',
-            cost: ability.costs.payFate(1),
-            target: {
+    override setupCardAbilities() {
+        this.action('Move an ally to a conflict')
+            .cost(costs.payFate(1))
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: ability.actions.moveToConflict()
-            }
-        });
+                controller: Players.Self
+            }, moveToConflict());
     }
 }
 

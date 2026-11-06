@@ -1,36 +1,33 @@
 import type { AbilityContext } from '../AbilityContext.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, CharacterStatus, EventName, Location } from '../Constants.js';
+import { CardType, CharacterStatus, EventName, Location, RestrictionType } from '../Constants.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export type TaintProperties = CardActionProperties;
 
-export class TaintAction extends CardGameAction {
-    name = 'taint';
-    eventName = EventName.OnCardTainted;
-    targetType = [CardType.Character, CardType.Province];
-    cost = 'tainting {0}';
-    effect = 'taint {0}';
+export class TaintAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<TaintProperties, EventName.OnCardTainted, Context> {
+    override name = 'taint';
+    override eventName = EventName.OnCardTainted;
+    override targetType = [CardType.Character, CardType.Province];
+    override cost = 'tainting {0}';
+    override effect = 'taint {0}';
 
-    canAffect(card: BaseCard, context: AbilityContext): boolean {
+    override canAffect(card: BaseCard, context: Context): boolean {
         if(card.isTainted) {
-            return false;
-        }
-        if(!this.targetType.includes(card.type)) {
             return false;
         }
         if(card.type === CardType.Character && card.location !== Location.PlayArea) {
             return false;
         }
-        if(!card.checkRestrictions('receiveTaintedToken', context)) {
+        if(!card.checkRestrictions(RestrictionType.ReceiveTaintedToken, context)) {
             return false;
         }
         return super.canAffect(card, context);
     }
 
-    eventHandler(event: GameEvent<EventName.OnCardTainted>): void {
-        const card = event.card as BaseCard;
+    override eventHandler(event: ActionEvent<EventName.OnCardTainted, Context>): void {
+        const card = event.card;
         card.taint();
         card.game.raiseEvent(EventName.OnStatusTokenGained, {
             token: card.getStatusToken(CharacterStatus.Tainted),

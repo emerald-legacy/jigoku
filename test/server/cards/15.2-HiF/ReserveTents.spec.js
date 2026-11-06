@@ -72,5 +72,14 @@ describe('Reserve Tents', function() {
             expect(this.player1).not.toBeAbleToSelect(this.orator);
             expect(this.player1).toHavePrompt('Conflict Action Window');
         });
+
+        it('it cannot be used outside a conflict', function () {
+            expect(this.player1).toHavePrompt('Action Window');
+            this.player1.clickCard(this.reserveTents);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.player1).not.toBeAbleToSelect(this.orator);
+            expect(this.orator.isParticipating()).toBe(false);
+            expect(this.game.currentConflict).toBe(null);
+        });
     });
 });

@@ -58,6 +58,9 @@
                 this.player1.honor = 5;
                 this.player1.clickCard(this.kyuden);
                 expect(this.player1).not.toBeAbleToSelect(this.aramoro);
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.kyuden.bowed).toBe(false);
+                expect(this.aramoro.bowed).toBe(true);
             });
         });
     });

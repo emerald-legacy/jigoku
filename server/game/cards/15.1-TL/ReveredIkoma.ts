@@ -1,20 +1,18 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cannotReceiveDishonorToken } from '../../effects.js';
 
 class ReveredIkoma extends DrawCard {
     static id = 'revered-ikoma';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            match: card => card === this,
-            effect: AbilityDsl.effects.cannotReceiveDishonorToken()
+            match: (card, context) => card === context?.source,
+            effect: cannotReceiveDishonorToken()
         });
 
-        this.action({
-            title: 'Gain 1 fate',
-            condition: context => context.player.honorGained(context.game.roundNumber, this.game.currentPhase, true) >= 2,
-            gameAction: AbilityDsl.actions.gainFate()
-        });
+        this.action('Gain 1 fate')
+            .ifCondition((context) => context.player.honorGained(context.game.roundNumber, this.game.currentPhase, true) >= 2)
+            .gainFate();
     }
 }
 

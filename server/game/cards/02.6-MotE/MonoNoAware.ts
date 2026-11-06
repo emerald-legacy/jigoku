@@ -1,21 +1,17 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 
 class MonoNoAware extends DrawCard {
     static id = 'mono-no-aware';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Remove 1 fate from each character. Draw 1 card.',
-            effect: 'remove a fate from each character and draw a card',
-            gameAction: [
-                ability.actions.draw(),
-                ability.actions.removeFate(() => ({
-                    target: this.game.findAnyCardsInPlay(card => card.getFate() > 0)
-                }))
-            ],
-            max: ability.limit.perRound(1)
-        });
+    override setupCardAbilities() {
+        this.action('Remove 1 fate from each character. Draw 1 card')
+            .draw()
+            .removeFate(() => ({
+                target: this.game.findAnyCardsInPlay((card) => card.getFate() > 0)
+            }))
+            .chatText('remove a fate from each character and draw a card')
+            .max(perRound(1));
     }
 }
 

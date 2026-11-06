@@ -45,8 +45,8 @@ describe('Agasha Jianyu', function () {
             expect(this.player1).toBeAbleToSelect(this.bayushiManipulator);
 
             this.player1.clickCard(this.mystic);
-            expect(this.mystic.getMilitarySkill()).toBe(1 + 2 * elementCount);
-            expect(this.mystic.getPoliticalSkill()).toBe(1 + 1 * elementCount);
+            expect(this.mystic.militarySkill).toBe(1 + 2 * elementCount);
+            expect(this.mystic.politicalSkill).toBe(1 + 1 * elementCount);
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Agasha Jianyu to give Miya Mystic +6military/+3political'
             );

@@ -1,19 +1,17 @@
-import { CardType } from '../../Constants.js';
+import { CardType, Trait } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { ready } from '../../GameActions/GameActions.js';
 
 export default class HayakenNoShiro extends StrongholdCard {
     static id = 'hayaken-no-shiro';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Ready a character',
-            cost: AbilityDsl.costs.bowSelf(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Ready a character')
+            .cost(costs.bowSelf())
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.hasTrait('bushi') && card.costLessThan(3),
-                gameAction: AbilityDsl.actions.ready()
-            }
-        });
+                cardCondition: (card) => card.hasTrait(Trait.Bushi) && card.costLessThan(3)
+            }, ready());
     }
 }

@@ -1,19 +1,20 @@
 import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { honor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class RespectedConnoisseur extends DrawCard {
     static id = 'respected-connoisseur';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Honor a character',
-            condition: (context) => context.source.isHonored,
-            target: {
+    override setupCardAbilities() {
+        this.action('Honor a character')
+            .ifCondition((context) => context.source.isHonored)
+            .target({
                 cardType: CardType.Character,
-                cardCondition: (card, context) => card !== context.source && card.isParticipating() === context.source.isParticipating(),
-                gameAction: AbilityDsl.actions.honor()
-            }
-        });
+                cardCondition: (card, context) =>
+                    card !== context.source &&
+                    card.isParticipating() === context.source.isParticipating() &&
+                    // each player has their own home area
+                    (card.isParticipating() || card.controller === context.source.controller)
+            }, honor());
     }
 }

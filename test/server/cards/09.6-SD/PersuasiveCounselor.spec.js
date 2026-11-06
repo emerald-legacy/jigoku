@@ -118,7 +118,7 @@ describe('Persuasive Counselor', function() {
             });
 
             it('character abilities should cancel as normal', function() {
-                let pol = this.tadaka.getPoliticalSkill();
+                const pol = this.tadaka.politicalSkill;
                 this.player2.clickCard(this.counselor);
                 this.player1.pass();
                 this.player2.clickCard(this.shoju);
@@ -127,11 +127,11 @@ describe('Persuasive Counselor', function() {
                 expect(this.player1).toBeAbleToSelect(this.yojimbo);
                 this.player1.clickCard(this.yojimbo);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
-                expect(this.tadaka.getPoliticalSkill()).toBe(pol);
+                expect(this.tadaka.politicalSkill).toBe(pol);
             });
 
             it('character abilities should cancel as normal (Shoju interaction)', function() {
-                let pol = this.whisperer.getPoliticalSkill();
+                const pol = this.whisperer.politicalSkill;
                 this.player2.clickCard(this.counselor);
                 this.player1.pass();
                 this.player2.clickCard(this.shoju);
@@ -140,11 +140,11 @@ describe('Persuasive Counselor', function() {
                 expect(this.player1).toBeAbleToSelect(this.finger);
                 this.player1.clickCard(this.finger);
                 expect(this.player1).toHavePrompt('Conflict Action Window');
-                expect(this.whisperer.getPoliticalSkill()).toBe(pol);
+                expect(this.whisperer.politicalSkill).toBe(pol);
             });
 
             it('attachment abilities should cancel as normal', function() {
-                let fate = this.tadaka.fate;
+                const fate = this.tadaka.fate;
                 this.player2.clickCard(this.counselor);
                 this.player1.pass();
                 this.player2.clickCard(this.tetsubo);
@@ -157,7 +157,7 @@ describe('Persuasive Counselor', function() {
             });
 
             it('attachment abilities should cancel as normal (Tetsubo interaction)', function() {
-                let fate = this.whisperer.fate;
+                const fate = this.whisperer.fate;
                 this.player2.clickCard(this.counselor);
                 this.player1.pass();
                 this.player2.clickCard(this.tetsubo);
@@ -168,6 +168,54 @@ describe('Persuasive Counselor', function() {
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 expect(this.whisperer.fate).toBe(fate);
             });
+        });
+    });
+});
+
+describe('Persuasive Counselor and an event its controller plays from under Strange Mirror', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shinjo-outrider', 'persuasive-counselor'],
+                    hand: ['strange-mirror'],
+                    fate: 10
+                },
+                player2: {
+                    inPlay: ['doji-challenger'],
+                    hand: ['banzai', 'voice-of-honor'],
+                    fate: 10
+                }
+            });
+            this.outrider = this.player1.findCardByName('shinjo-outrider');
+            this.counselor = this.player1.findCardByName('persuasive-counselor');
+            this.mirror = this.player1.findCardByName('strange-mirror');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.banzai = this.player2.findCardByName('banzai');
+            this.voice = this.player2.findCardByName('voice-of-honor');
+            this.challenger.honor();
+            this.player1.playAttachment(this.mirror, this.outrider);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.outrider, this.counselor],
+                defenders: [this.challenger]
+            });
+            this.player2.clickCard(this.banzai);
+            this.player2.clickCard(this.challenger);
+            this.player2.clickPrompt('Done');
+            this.player1.clickCard(this.mirror);
+            this.player1.clickCard(this.counselor);
+            this.player2.pass();
+        });
+
+        it('stops the opponent cancelling it', function() {
+            this.player1.clickCard(this.mirror);
+            this.player1.clickCard(this.banzai);
+            this.player1.clickCard(this.outrider);
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePromptButton('Lose 1 honor to resolve this ability again');
         });
     });
 });

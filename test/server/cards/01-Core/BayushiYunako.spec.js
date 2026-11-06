@@ -26,8 +26,8 @@ describe('Bayushi Yunako', function () {
 
             it('switches the base mil and pol values', function () {
                 this.noMoreActions();
-                let baseMil = this.yogoHiroue.getBaseMilitarySkill();
-                let basePol = this.yogoHiroue.getBasePoliticalSkill();
+                const baseMil = this.yogoHiroue.getBaseMilitarySkill();
+                const basePol = this.yogoHiroue.getBasePoliticalSkill();
                 this.initiateConflict({
                     attackers: [this.bayushiYunako],
                     defenders: [this.yogoHiroue]
@@ -75,27 +75,27 @@ describe('Bayushi Yunako', function () {
                 });
                 expect(this.akodoMakoto.getBaseMilitarySkill()).toBe(4);
                 expect(this.akodoMakoto.getBasePoliticalSkill()).toBe(1);
-                expect(this.akodoMakoto.getMilitarySkill()).toBe(4);
-                expect(this.akodoMakoto.getPoliticalSkill()).toBe(1);
+                expect(this.akodoMakoto.militarySkill).toBe(4);
+                expect(this.akodoMakoto.politicalSkill).toBe(1);
                 this.player2.clickCard(this.wayOfTheLion);
                 this.player2.clickCard(this.akodoMakoto);
                 expect(this.akodoMakoto.getBaseMilitarySkill()).toBe(8);
                 expect(this.akodoMakoto.getBasePoliticalSkill()).toBe(1);
-                expect(this.akodoMakoto.getMilitarySkill()).toBe(8);
-                expect(this.akodoMakoto.getPoliticalSkill()).toBe(1);
+                expect(this.akodoMakoto.militarySkill).toBe(8);
+                expect(this.akodoMakoto.politicalSkill).toBe(1);
                 this.player1.clickCard(this.bayushiYunako);
                 this.player1.clickCard(this.akodoMakoto);
                 expect(this.akodoMakoto.getBaseMilitarySkill()).toBe(1);
                 expect(this.akodoMakoto.getBasePoliticalSkill()).toBe(8);
-                expect(this.akodoMakoto.getMilitarySkill()).toBe(1);
-                expect(this.akodoMakoto.getPoliticalSkill()).toBe(8);
+                expect(this.akodoMakoto.militarySkill).toBe(1);
+                expect(this.akodoMakoto.politicalSkill).toBe(8);
                 this.player2.moveCard(this.wayOfTheLion2, 'hand');
                 this.player2.clickCard(this.wayOfTheLion2);
                 this.player2.clickCard(this.akodoMakoto);
                 expect(this.akodoMakoto.getBaseMilitarySkill()).toBe(2);
                 expect(this.akodoMakoto.getBasePoliticalSkill()).toBe(8);
-                expect(this.akodoMakoto.getMilitarySkill()).toBe(2);
-                expect(this.akodoMakoto.getPoliticalSkill()).toBe(8);
+                expect(this.akodoMakoto.militarySkill).toBe(2);
+                expect(this.akodoMakoto.politicalSkill).toBe(8);
             });
         });
     });

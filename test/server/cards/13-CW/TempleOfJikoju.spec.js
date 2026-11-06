@@ -26,7 +26,7 @@ describe('Temple of Jikoju', function() {
             });
 
             it('should put a fate on the air ring if it is unclaimed', function() {
-                let fate = this.game.rings.air.fate;
+                const fate = this.game.rings.air.fate;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.shugenja],
@@ -40,7 +40,7 @@ describe('Temple of Jikoju', function() {
             });
 
             it('should not put a fate on the air ring if it is contested', function() {
-                let fate = this.game.rings.air.fate;
+                const fate = this.game.rings.air.fate;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.shugenja],

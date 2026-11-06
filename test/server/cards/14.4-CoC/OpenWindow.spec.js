@@ -46,3 +46,29 @@ describe('Open window', function() {
         });
     });
 });
+
+describe('Open window outside a conflict', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shadow-stalker', 'young-harrier'],
+                    dynastyDiscard: ['open-window']
+                }
+            });
+
+            this.stalker1 = this.player1.findCardByName('shadow-stalker');
+            this.window = this.player1.placeCardInProvince('open-window', 'province 1');
+        });
+
+        it('should not be usable outside a conflict', function() {
+            expect(this.player1).toHavePrompt('Action Window');
+            this.player1.clickCard(this.window);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.player1).not.toBeAbleToSelect(this.stalker1);
+            expect(this.window.location).toBe('province 1');
+            expect(this.stalker1.isParticipating()).toBe(false);
+        });
+    });
+});

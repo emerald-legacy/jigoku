@@ -21,8 +21,8 @@ describe('Way with Words', function () {
         it('should take one honor from the opponent when winning a political conflict', function () {
             this.player1.playAttachment(this.wayWithWords, this.manipulator);
             this.noMoreActions();
-            let honorPlayer1 = this.player1.player.honor;
-            let honorPlayer2 = this.player2.player.honor;
+            const honorPlayer1 = this.player1.player.honor;
+            const honorPlayer2 = this.player2.player.honor;
             this.initiateConflict({
                 type: 'political',
                 attackers: [this.liar, this.manipulator],
@@ -48,6 +48,7 @@ describe('Way with Words', function () {
             });
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 won a military conflict 1 vs 0');
         });
 
         it('can\'t trigger at home', function () {
@@ -59,7 +60,8 @@ describe('Way with Words', function () {
                 defenders: []
             });
             this.noMoreActions();
-            expect(this.player1).not.toHavePrompt('Triggered Abilites');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 won a political conflict 3 vs 0');
         });
 
         it('can\'t trigger after losing the conflict', function () {
@@ -71,14 +73,15 @@ describe('Way with Words', function () {
                 defenders: [this.yogoHiroue]
             });
             this.noMoreActions();
-            expect(this.player1).not.toHavePrompt('Triggered Abilites');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 won a political conflict 4 vs 2');
         });
 
         it('attaching to an opponents character', function () {
             this.player1.playAttachment(this.wayWithWords, this.yogoHiroue);
             this.noMoreActions();
-            let honorPlayer1 = this.player1.player.honor;
-            let honorPlayer2 = this.player2.player.honor;
+            const honorPlayer1 = this.player1.player.honor;
+            const honorPlayer2 = this.player2.player.honor;
             this.initiateConflict({
                 type: 'political',
                 attackers: [this.manipulator],

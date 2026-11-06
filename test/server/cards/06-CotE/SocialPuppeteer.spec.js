@@ -39,6 +39,19 @@ describe('Social Puppeteer', function() {
             expect(this.player1.player.hasComposure()).toBe(true);
         });
 
+        it('should not switch honor dials while she is not participating', function() {
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.miyaMystic],
+                defenders: [this.mirumotoRaitsugu]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.socialPuppeteer);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.player1.player.showBid).toBe(5);
+            expect(this.player2.player.showBid).toBe(3);
+        });
+
         it('should not have to be selected when controller does not have composure', function() {
             this.initiateConflict({
                 type: 'political',

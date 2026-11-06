@@ -78,8 +78,8 @@ describe('Sharpen the Mind', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.sharpenTheMind);
                 this.player1.clickCard(this.fineKatana);
-                expect(this.brashSamurai.getMilitarySkill()).toBe(this.brashSamurai.printedMilitarySkill + 3);
-                expect(this.brashSamurai.getPoliticalSkill()).toBe(this.brashSamurai.printedPoliticalSkill + 3);
+                expect(this.brashSamurai.militarySkill).toBe(this.brashSamurai.printedMilitarySkill + 3);
+                expect(this.brashSamurai.politicalSkill).toBe(this.brashSamurai.printedPoliticalSkill + 3);
                 expect(this.getChatLogs(3)).toContain('player1 uses Sharpen the Mind, discarding Fine Katana to give +3military/+3political to Brash Samurai');
             });
         });

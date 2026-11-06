@@ -1,13 +1,13 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
 import type Player from '../../Player.js';
 import DrawCard from '../../DrawCard.js';
 
 class BeastmasterMatriarch extends DrawCard {
     static id = 'beastmaster-matriarch';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.persistentEffect({
-            effect: ability.effects.modifyMilitarySkill((card: DrawCard) => this.getTwiceOpponentsClaimedRings(card.controller))
+            effect: modifyMilitarySkill((card) => this.getTwiceOpponentsClaimedRings(card.controller))
         });
     }
 
@@ -15,7 +15,7 @@ class BeastmasterMatriarch extends DrawCard {
         if(!player.opponent) {
             return 0;
         }
-        return 2 * (player.opponent?.getClaimedRings().length ?? 0);
+        return 2 * player.opponent.getClaimedRings().length;
     }
 }
 

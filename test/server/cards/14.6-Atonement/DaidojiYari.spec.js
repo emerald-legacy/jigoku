@@ -1,6 +1,6 @@
 describe('Daidoji Yari', function() {
     integration(function() {
-        describe('Kuni Wasteland\'s constant ability', function() {
+        describe('Daidoji Yari\'s constant ability', function() {
             beforeEach(function() {
                 this.setupTest({
                     phase: 'conflict',

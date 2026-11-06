@@ -1,22 +1,20 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Duration } from '../../Constants.js';
+import { charactersCannot } from '../../effects.js';
+import { RestrictionScope, RestrictionType } from '../../Constants.js';
 
 class ExemplaryEtiquette extends DrawCard {
     static id = 'exemplary-etiquette';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Stop characters from triggering abilities',
-            condition: () => this.game.isDuringConflict(),
-            gameAction: AbilityDsl.actions.conflictLastingEffect({
-                duration: Duration.UntilEndOfConflict,
-                effect: AbilityDsl.effects.charactersCannot({
-                    cannot: 'triggerAbilities'
+    override setupCardAbilities() {
+        this.action('Stop characters from triggering abilities')
+            .condition((context) => context.game.isDuringConflict())
+            .conflictLastingEffect({
+                effect: charactersCannot({
+                    cannot: RestrictionType.TriggerAbilities,
+                    appliesTo: [RestrictionScope.Characters, RestrictionScope.NonForcedAbilities]
                 })
-            }),
-            effect: 'make it so that characters cannot trigger abilities this conflict'
-        });
+            })
+            .chatText('make it so that characters cannot trigger abilities this conflict');
     }
 }
 

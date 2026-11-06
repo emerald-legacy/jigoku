@@ -76,12 +76,15 @@ describe('Marvelous Beings', function () {
                 this.player1.clickCard(this.guardianKami);
 
                 expect(this.guardianKami.isParticipating()).toBe(true);
-                expect(this.guardianKami.getPoliticalSkill()).toBe(1);
+                expect(this.guardianKami.politicalSkill).toBe(1);
 
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Marvelous Beings, moving Guardian Kami into the conflict to entrance the court, giving their side an extra 2political this conflict'
+                    'player1 plays Marvelous Beings, moving Guardian Kami into the conflict to entrance the court, giving their side an extra 2political during this conflict\'s resolution'
                 );
-                expect(this.getChatLogs(5)).toContain('Political Air conflict - Attacker: 5 Defender: 0'); //2 printed cost + 2 prodigy + 1 kami itself
+                expect(this.getChatLogs(5)).toContain('Political Air conflict - Attacker: 3 (+2 at resolution) Defender: 0'); // 2 prodigy + 1 kami itself
+                this.player2.pass();
+                this.player1.pass();
+                expect(this.getChatLogs(5)).toContain('player1 won a political conflict 5 vs 0'); // + 2 printed cost at resolution
             });
 
             it('gives a max bonus of 3', function () {
@@ -97,13 +100,55 @@ describe('Marvelous Beings', function () {
                 this.player1.clickCard(this.aranat);
 
                 expect(this.aranat.isParticipating()).toBe(true);
-                expect(this.aranat.getPoliticalSkill()).toBe(6);
+                expect(this.aranat.politicalSkill).toBe(6);
 
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Marvelous Beings, moving Aranat into the conflict to entrance the court, giving their side an extra 3political this conflict'
+                    'player1 plays Marvelous Beings, moving Aranat into the conflict to entrance the court, giving their side an extra 3political during this conflict\'s resolution'
                 );
-                expect(this.getChatLogs(5)).toContain('Political Air conflict - Attacker: 11 Defender: 0'); // 2 prodigy + 6 aranat itself + 3 bonus from Marvelous
+                expect(this.getChatLogs(5)).toContain('Political Air conflict - Attacker: 8 (+3 at resolution) Defender: 0'); // 2 prodigy + 6 aranat itself
+                this.player2.pass();
+                this.player1.pass();
+                expect(this.getChatLogs(5)).toContain('player1 won a political conflict 11 vs 0'); // + 3 bonus at resolution
             });
+        });
+    });
+});
+
+describe('Marvelous Beings and a copy', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-actor', 'ikoma-prodigy'],
+                    hand: ['marvelous-beings']
+                },
+                player2: {
+                    inPlay: ['vengeful-kami']
+                }
+            });
+            this.actor = this.player1.findCardByName('shosuro-actor');
+            this.prodigy = this.player1.findCardByName('ikoma-prodigy');
+            this.kami = this.player2.findCardByName('vengeful-kami');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.actor, this.prodigy],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.actor);
+            this.player1.clickCard(this.kami);
+            this.game.currentConflict.removeFromConflict(this.actor);
+            this.player2.pass();
+        });
+
+        it('adds the copied character\'s printed cost', function () {
+            this.player1.clickCard('marvelous-beings');
+            this.player1.clickCard(this.actor);
+            expect(this.getChatLogs(5)).toContain(
+                'player1 plays Marvelous Beings, moving Vengeful Kami into the conflict to entrance the court, giving their side an extra 3political during this conflict\'s resolution'
+            );
         });
     });
 });

@@ -1,20 +1,17 @@
 import { CardType } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { dishonor } from '../../../GameActions/GameActions.js';
 
 export default class FloatingWorld extends ProvinceCard {
     static id = 'floating-world';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Dishonor a character',
-            effect: 'dishonor {0}',
-            target: {
+    public override setupCardAbilities() {
+        this.action('Dishonor a character')
+            .target({
                 activePromptTitle: 'Choose a character to dishonor',
                 cardType: CardType.Character,
-                cardCondition: (card) => card.isParticipating(),
-                gameAction: AbilityDsl.actions.dishonor()
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, dishonor())
+            .chatText('dishonor {0}');
     }
 }

@@ -1,22 +1,20 @@
+import { msg } from '../../GameChat.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { switchConflictElement } from '../../GameActions/GameActions.js';
 
 export default class ElementalFury extends ProvinceCard {
     static id = 'elemental-fury';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Switch the contested ring',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Switch the contested ring')
+            .when({
                 onCardRevealed: (event, context) => event.card === context.source && this.game.isDuringConflict()
-            },
-            gameAction: AbilityDsl.actions.selectRing({
-                message: '{0} switches the contested ring with {1}',
+            })
+            .selectRing({
+                message: (_context, ring, player) => msg`${player} switches the contested ring with ${ring}`,
                 ringCondition: (ring) => ring.isUnclaimed(),
-                messageArgs: (ring, player) => [player, ring],
-                gameAction: AbilityDsl.actions.switchConflictElement()
-            }),
-            effect: 'switch the contested ring with an unclaimed one'
-        });
+                gameAction: switchConflictElement()
+            })
+            .chatText('switch the contested ring with an unclaimed one');
     }
 }

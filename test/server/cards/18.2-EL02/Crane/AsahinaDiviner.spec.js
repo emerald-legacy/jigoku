@@ -38,14 +38,14 @@ describe('Asahina Diviner', function() {
             expect(this.player1).toBeAbleToSelect(this.yoshi);
             expect(this.player1).not.toBeAbleToSelect(this.challenger);
 
-            let glory = this.vice.glory;
+            const glory = this.vice.glory;
             this.player1.clickCard(this.vice);
             expect(this.vice.glory).toBe(glory + 3);
 
             expect(this.getChatLogs(5)).toContain('player1 uses Asahina Diviner to give Vice Proprietor +3 glory until the end of the conflict');
         });
 
-        it('should be max 1 per conflict', function() {
+        it('should be max 1 per conflict across copies', function() {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.vice, this.diviner],
@@ -53,7 +53,7 @@ describe('Asahina Diviner', function() {
                 type: 'political'
             });
 
-            let glory = this.vice.glory;
+            const glory = this.vice.glory;
 
             this.player2.pass();
             this.player1.clickCard(this.diviner);
@@ -62,8 +62,29 @@ describe('Asahina Diviner', function() {
 
             this.player2.pass();
             expect(this.player1).toHavePrompt('Conflict Action Window');
-            this.player1.clickCard(this.diviner);
+            this.player1.clickCard(this.diviner2);
             expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.vice.glory).toBe(glory + 3);
+        });
+
+        it('should last until the end of the conflict', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.vice, this.diviner],
+                defenders: [this.yoshi],
+                type: 'political'
+            });
+
+            const glory = this.vice.glory;
+
+            this.player2.pass();
+            this.player1.clickCard(this.diviner);
+            this.player1.clickCard(this.vice);
+            expect(this.vice.glory).toBe(glory + 3);
+
+            this.noMoreActions();
+            expect(this.game.currentConflict).toBe(null);
+            expect(this.vice.glory).toBe(glory);
         });
 
         it('should work at home', function() {
@@ -81,7 +102,7 @@ describe('Asahina Diviner', function() {
             expect(this.player1).toBeAbleToSelect(this.yoshi);
             expect(this.player1).not.toBeAbleToSelect(this.challenger);
 
-            let glory = this.vice.glory;
+            const glory = this.vice.glory;
             this.player1.clickCard(this.vice);
             expect(this.vice.glory).toBe(glory + 3);
         });

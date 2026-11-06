@@ -91,3 +91,36 @@ describe('Shinjo Oyuun', function () {
         });
     });
 });
+
+describe('Shinjo Oyuun with a dash cost', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shinjo-oyuun']
+                },
+                player2: {
+                    inPlay: ['illusionary-decoy']
+                }
+            });
+            this.decoy = this.player2.findCardByName('illusionary-decoy');
+            this.shinjo = this.player1.findCardByName('shinjo-oyuun');
+            this.player2.findCardByName('shameful-display', 'province 1').facedown = false;
+        });
+
+        it('counts as 0', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.shinjo],
+                defenders: []
+            });
+            this.player2.pass();
+
+            this.player1.clickCard(this.shinjo);
+            expect(this.player1).toBeAbleToSelect(this.decoy);
+            this.player1.clickCard(this.decoy);
+            expect(this.decoy.isParticipating()).toBe(true);
+        });
+    });
+});

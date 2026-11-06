@@ -1,3 +1,4 @@
+import { rulesFor } from '../../../build/server/game/GameRules.js';
 import Player from '../../../build/server/game/Player.js';
 import DrawCard from '../../../build/server/game/DrawCard.js';
 
@@ -11,12 +12,13 @@ describe('Player - getDuplicateInPlay', function () {
                 'addMessage',
                 'on'
             ]);
+            this.game.rules = rulesFor('stronghold');
             this.player = new Player('1', { username: 'Player 1', settings: {} }, true, this.game);
             this.player.initialise();
 
             this.dupeCard = new DrawCard(this.player, { id: '1', name: 'Test' });
 
-            this.player.cardsInPlay.push(this.dupeCard);
+            this.player.charactersInPlay.push(this.dupeCard);
 
             this.cardSpy = jasmine.createSpyObj('card', ['isUnique']);
 

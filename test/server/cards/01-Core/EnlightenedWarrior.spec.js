@@ -39,7 +39,7 @@ describe('Enlightened Warrior', function() {
             });
 
             it('should place 1 fate on Enlightened Warrior', function() {
-                let fate = this.enlightenedWarrior.fate;
+                const fate = this.enlightenedWarrior.fate;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.dojiWhisperer],

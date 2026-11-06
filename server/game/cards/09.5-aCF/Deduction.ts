@@ -1,22 +1,20 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Players } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { bow } from '../../GameActions/GameActions.js';
+import { CardType, ConflictType, Players } from '../../Constants.js';
 
 class Deduction extends DrawCard {
     static id = 'deduction';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Bow a character',
-            condition: () => !!this.game.currentConflict && this.game.currentConflict.conflictType === 'political',
-            cost: AbilityDsl.costs.returnRings(1),
-            target: {
+    override setupCardAbilities() {
+        this.action('Bow a character')
+            .condition(() => this.game.isDuringConflict(ConflictType.Political))
+            .cost(costs.returnRings(1))
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Any,
-                cardCondition: (card) => card.costLessThan(4) && card.isParticipating(),
-                gameAction: AbilityDsl.actions.bow()
-            }
-        });
+                cardCondition: (card) => card.costLessThan(4) && card.isParticipating()
+            }, bow());
     }
 }
 

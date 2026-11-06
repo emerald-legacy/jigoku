@@ -113,18 +113,18 @@ describe('Yua, the Onibaba', function () {
                 this.player2.pass();
                 this.player1.clickCard(this.yuaTheOnibaba);
 
-                expect(this.yuaTheOnibaba.getMilitarySkill()).toBe(6);
-                expect(this.yuaTheOnibaba.getPoliticalSkill()).toBe(3);
-                expect(this.unleashedExperiment.getMilitarySkill()).toBe(3);
-                expect(this.unleashedExperiment.getPoliticalSkill()).toBe(2);
-                expect(this.borderlandsDefender.getMilitarySkill()).toBe(4);
-                expect(this.borderlandsDefender.getPoliticalSkill()).toBe(4);
-                expect(this.lionsPrideBrawler.getMilitarySkill()).toBe(3);
-                expect(this.lionsPrideBrawler.getPoliticalSkill()).toBe(2);
-                expect(this.akodoToturi.getMilitarySkill()).toBe(6);
-                expect(this.akodoToturi.getPoliticalSkill()).toBe(3);
-                expect(this.ardentOmoidasu.getMilitarySkill()).toBe(1);
-                expect(this.ardentOmoidasu.getPoliticalSkill()).toBe(2);
+                expect(this.yuaTheOnibaba.militarySkill).toBe(6);
+                expect(this.yuaTheOnibaba.politicalSkill).toBe(3);
+                expect(this.unleashedExperiment.militarySkill).toBe(3);
+                expect(this.unleashedExperiment.politicalSkill).toBe(2);
+                expect(this.borderlandsDefender.militarySkill).toBe(4);
+                expect(this.borderlandsDefender.politicalSkill).toBe(4);
+                expect(this.lionsPrideBrawler.militarySkill).toBe(3);
+                expect(this.lionsPrideBrawler.politicalSkill).toBe(2);
+                expect(this.akodoToturi.militarySkill).toBe(6);
+                expect(this.akodoToturi.politicalSkill).toBe(3);
+                expect(this.ardentOmoidasu.militarySkill).toBe(1);
+                expect(this.ardentOmoidasu.politicalSkill).toBe(2);
 
                 expect(this.getChatLogs(5)).toContain(
                     'player1 uses Yua, the Onibaba to give all friendly participating bushi characters +1military / +1political and give all participating non-bushi characters -1military / -1political'

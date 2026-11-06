@@ -32,7 +32,7 @@ describe('Jade Prison', function () {
         });
 
         it('corrupt character and costs 1 with no affinity', function () {
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
 
             expect(this.tsukai.bowed).toBe(true);
             this.player1.clickCard(this.atw);
@@ -70,7 +70,7 @@ describe('Jade Prison', function () {
         });
 
         it('affinity', function () {
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.player2.moveCard(this.mystic, 'play area');
 
             expect(this.tsukai.bowed).toBe(true);

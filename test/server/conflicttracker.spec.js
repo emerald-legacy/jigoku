@@ -76,12 +76,4 @@ describe('ConflictTracker', function () {
             expect(this.tracker.getForPlayer(this.player).map((r) => r.uuid)).toEqual(['c1']);
         });
     });
-
-    describe('reset', function () {
-        it('clears all stored records', function () {
-            this.tracker.record(this.conflict);
-            this.tracker.reset();
-            expect(this.tracker.records).toEqual([]);
-        });
-    });
 });

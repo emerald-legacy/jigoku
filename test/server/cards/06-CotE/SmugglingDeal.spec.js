@@ -37,8 +37,8 @@ describe('Smuggling Deal', function () {
             });
 
             it('should give 1 honor to your opponent as a cost', function () {
-                let player1honor = this.player1.player.honor;
-                let player2honor = this.player2.player.honor;
+                const player1honor = this.player1.player.honor;
+                const player2honor = this.player2.player.honor;
                 this.player1.clickCard(this.smugglingDeal);
                 this.player1.clickCard(this.kudaka);
                 expect(this.player1.player.honor).toBe(player1honor - 1);
@@ -138,7 +138,8 @@ describe('Smuggling Deal', function () {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('3');
                 expect(this.player2).toHavePrompt('Conflict Action Window');
-                expect(this.player2.player.honor).toBeLessThan(this.player1.player.honor);
+                expect(this.player2.player.honor).toBe(9);
+                expect(this.player1.player.honor).toBe(11);
                 expect(this.daringChallenger.controller).toBe(this.player1.player);
                 this.player2.clickCard(this.blackmail);
                 this.player2.clickCard(this.daringChallenger);
@@ -153,6 +154,31 @@ describe('Smuggling Deal', function () {
                 this.player1.pass();
                 this.player2.clickCard(this.daringChallenger);
                 expect(this.player2).not.toHavePrompt('Daring Challenger');
+            });
+        });
+
+        describe('Smuggling Deal when you cannot lose honor to pay costs', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['kuni-juurou'],
+                        hand: ['smuggling-deal']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer']
+                    }
+                });
+                this.kuniJuurou = this.player1.findCardByName('kuni-juurou');
+                this.smugglingDeal = this.player1.findCardByName('smuggling-deal');
+            });
+
+            it('cannot be played, as giving honor means losing it', function () {
+                const honor = this.player1.honor;
+                this.player1.clickCard(this.smugglingDeal);
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.smugglingDeal.location).toBe('hand');
+                expect(this.player1.honor).toBe(honor);
             });
         });
 
@@ -227,6 +253,58 @@ describe('Smuggling Deal', function () {
                 expect(this.obstinateRecruit.location).toBe('dynasty discard pile');
                 expect(this.player2).toHavePrompt('Action Window');
             });
+        });
+    });
+});
+
+describe('Smuggling Deal on a once-per-conflict ability', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['hida-sukune'],
+                    hand: ['smuggling-deal', 'fine-katana', 'ornate-fan', 'banzai', 'let-go']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer', 'doji-challenger']
+                }
+            });
+            this.sukune = this.player1.findCardByName('hida-sukune');
+            this.smugglingDeal = this.player1.findCardByName('smuggling-deal');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+        });
+
+        it('gives one additional use in that conflict only', function () {
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({ attackers: [this.whisperer], defenders: [this.sukune] });
+            this.player1.clickCard(this.sukune);
+            this.player1.clickCard('fine-katana');
+            this.player2.pass();
+            this.player1.clickCard(this.smugglingDeal);
+            this.player1.clickCard(this.sukune);
+            this.player2.pass();
+            this.player1.clickCard(this.sukune);
+            this.player1.clickCard('ornate-fan');
+            expect(this.player1.findCardByName('ornate-fan').location).toBe('conflict discard pile');
+            this.player2.pass();
+            this.player1.clickCard(this.sukune);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+
+            this.player1.pass();
+            this.noMoreActions();
+            this.sukune.bowed = false;
+            this.noMoreActions();
+            this.initiateConflict({ attackers: [this.challenger], defenders: [this.sukune], ring: 'fire' });
+            this.player1.clickCard(this.sukune);
+            this.player1.clickCard('banzai');
+            expect(this.player1.findCardByName('banzai').location).toBe('conflict discard pile');
+            this.player2.pass();
+            this.player1.clickCard(this.sukune);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
         });
     });
 });

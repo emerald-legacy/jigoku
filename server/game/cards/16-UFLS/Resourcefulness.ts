@@ -1,20 +1,18 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { honor } from '../../GameActions/GameActions.js';
 
 class Resourcefulness extends DrawCard {
     static id = 'resourcefulness';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Honor a character',
-            cost: AbilityDsl.costs.dishonor(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Honor a character')
+            .cost(costs.dishonor())
+            .target({
                 activePromptTitle: 'Choose a character to honor',
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.honor()
-            }
-        });
+                cardType: CardType.Character
+            }, honor());
     }
 }
 

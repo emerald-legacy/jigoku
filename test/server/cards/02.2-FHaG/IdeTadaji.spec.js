@@ -53,3 +53,53 @@ describe('Ide Tadaji', function() {
         });
     });
 });
+
+describe('Ide Tadaji without an eligible character for each player', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['ide-tadaji', 'miya-mystic']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer', 'adept-of-the-waves'],
+                    hand: ['pacifism']
+                }
+            });
+            this.ideTadaji = this.player1.findCardByName('ide-tadaji');
+            this.miyaMystic = this.player1.findCardByName('miya-mystic');
+            this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
+            this.adeptOfTheWaves = this.player2.findCardByName('adept-of-the-waves');
+        });
+
+        it('cannot move a character that cannot participate (#207)', function() {
+            this.player1.pass();
+            this.player2.playAttachment('pacifism', this.adeptOfTheWaves);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.ideTadaji],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.ideTadaji);
+            this.player1.clickCard(this.miyaMystic);
+            expect(this.player1).toBeAbleToSelect(this.dojiWhisperer);
+            expect(this.player1).not.toBeAbleToSelect(this.adeptOfTheWaves);
+        });
+
+        it('cannot be used when the opponent has no eligible character (#206)', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.ideTadaji],
+                defenders: [this.dojiWhisperer, this.adeptOfTheWaves]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.ideTadaji);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.miyaMystic.isParticipating()).toBe(false);
+        });
+    });
+});

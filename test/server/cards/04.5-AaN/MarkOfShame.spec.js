@@ -39,7 +39,8 @@ describe('Mark of Shame', function() {
                 expect(this.toturi.isDishonored).toBe(true);
             });
 
-            it('should not dishonor a second time if the first dishonor is redirected', function() {
+            // ruling #389
+            it('dishonors the attached character with the second dishonor when the first is redirected', function() {
                 this.toturi.honor();
                 this.player1.clickCard(this.mos);
                 this.player1.clickCard(this.toturi);

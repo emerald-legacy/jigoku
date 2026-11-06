@@ -45,6 +45,8 @@ describe('Doji Diplomat', function() {
             this.player1.clickCard(this.diplomat);
             this.player1.clickPrompt('0');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.diplomat.location).toBe('play area');
+            expect(this.player2).toHavePrompt('Play cards from provinces');
         });
 
         it('should not react if your opponent has no facedown provinces', function() {
@@ -57,6 +59,8 @@ describe('Doji Diplomat', function() {
             this.player1.clickCard(this.diplomat);
             this.player1.clickPrompt('0');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.diplomat.location).toBe('play area');
+            expect(this.player2).toHavePrompt('Play cards from provinces');
         });
 
         it('should let each player choose a facedown province', function() {

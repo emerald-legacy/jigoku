@@ -14,15 +14,15 @@ describe('Chronicles of Valor', function () {
             });
             this.yokuni = this.player1.findCardByName('togashi-yokuni');
             this.ikomaKiyono = this.player1.findCardByName('ikoma-kiyono', 'dynasty discard pile');
-            this.mercs = this.player1.player.cardsInPlay.filter((c) => c.name === 'Mercenary Company');
+            this.mercs = this.player1.player.charactersInPlay.filter((c) => c.name === 'Mercenary Company');
             this.matsuBerserker = this.player2.findCardByName('matsu-berserker');
-            this.p2Mercs = this.player2.player.cardsInPlay.filter((c) => c.name === 'Mercenary Company');
+            this.p2Mercs = this.player2.player.charactersInPlay.filter((c) => c.name === 'Mercenary Company');
             this.chronicles = this.player1.findCardByName('chronicles-of-valor');
         });
 
         it('takes 1 honor when winning a conflict with total skill >= 25', function () {
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
             this.noMoreActions();
             this.initiateConflict({
                 type: 'military',
@@ -38,8 +38,8 @@ describe('Chronicles of Valor', function () {
 
         it('takes 2 honor when controller has a Storyteller character', function () {
             this.player1.player.moveCard(this.ikomaKiyono, 'play area');
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
             this.noMoreActions();
             this.initiateConflict({
                 type: 'military',

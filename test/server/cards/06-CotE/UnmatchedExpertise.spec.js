@@ -37,7 +37,10 @@ describe('Unmatched Expertise', function() {
                     defenders: ['bayushi-shoju']
                 });
                 this.player2.clickCard(this.wots);
-                expect(this.player2).not.toHavePrompt('Choose a target');
+                expect(this.player2).not.toHavePrompt('Way of the Scorpion');
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.wots.location).toBe('hand');
+                expect(this.tsukune.isDishonored).toBe(false);
             });
 
             it('it should force bow if forshamed', function() {

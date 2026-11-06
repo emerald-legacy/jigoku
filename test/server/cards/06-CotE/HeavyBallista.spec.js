@@ -111,7 +111,7 @@ describe('Heavy Ballista', function() {
                         expect(this.player2).toHavePrompt('Conflict Action Window');
                     });
 
-                    it('if \'Remove 1 Fate\' is chosen it should bow the character', function() {
+                    it('if \'Remove 1 Fate\' is chosen it should remove 1 fate from the character', function() {
                         this.player2.clickPrompt('Remove 1 Fate');
                         expect(this.dojiWhisperer.fate).toBe(0);
                         expect(this.player2).toHavePrompt('Conflict Action Window');

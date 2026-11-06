@@ -64,7 +64,7 @@ describe('Bonds of Blood', function() {
             this.player1.clickCard(this.mirumotoRaitsugu);
             expect(this.mirumotoRaitsugu.inConflict).toBe(false);
             expect(this.akodoToturi.inConflict).toBe(false);
-            expect(this.getChatLogs(3)).toContain('player1 plays Bonds of Blood, dishonoring Akodo Toturi to send Mirumoto Raitsugu home and send Akodo Toturi home');
+            expect(this.getChatLogs(3)).toContain('player1 plays Bonds of Blood, dishonoring Akodo Toturi to send Mirumoto Raitsugu and Akodo Toturi home');
         });
 
         it('should allow you to send home the dishonored character', function() {
@@ -82,7 +82,7 @@ describe('Bonds of Blood', function() {
 
             this.player1.clickCard(this.akodoToturi);
             expect(this.akodoToturi.inConflict).toBe(false);
-            expect(this.getChatLogs(3)).toContain('player1 plays Bonds of Blood, dishonoring Akodo Toturi to send Akodo Toturi home and send Akodo Toturi home');
+            expect(this.getChatLogs(3)).toContain('player1 plays Bonds of Blood, dishonoring Akodo Toturi to send Akodo Toturi home');
         });
 
         it('should work on defense', function() {
@@ -102,7 +102,7 @@ describe('Bonds of Blood', function() {
             this.player1.clickCard(this.mirumotoRaitsugu);
             expect(this.mirumotoRaitsugu.inConflict).toBe(false);
             expect(this.matsuTsuko.inConflict).toBe(false);
-            expect(this.getChatLogs(3)).toContain('player1 plays Bonds of Blood, dishonoring Matsu Tsuko to send Mirumoto Raitsugu home and send Matsu Tsuko home');
+            expect(this.getChatLogs(3)).toContain('player1 plays Bonds of Blood, dishonoring Matsu Tsuko to send Mirumoto Raitsugu and Matsu Tsuko home');
         });
     });
 });

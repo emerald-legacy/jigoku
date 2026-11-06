@@ -54,7 +54,7 @@ describe('Relentless Gloryseeker', function () {
                 this.player1.clickCard(this.relentlessGloryseeker);
                 expect(this.relentlessGloryseeker.location).toBe('play area');
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Relentless Gloryseeker to return to play - Relentless Gloryseeker is ready for more!'
+                    'player1 uses Relentless Gloryseeker to return to play - Relentless Gloryseeker is ready for more'
                 );
             });
 
@@ -77,7 +77,7 @@ describe('Relentless Gloryseeker', function () {
                 this.player1.clickCard(this.relentlessGloryseeker);
                 expect(this.relentlessGloryseeker.location).toBe('play area');
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 uses Relentless Gloryseeker to return to play - Relentless Gloryseeker is ready for more!'
+                    'player1 uses Relentless Gloryseeker to return to play - Relentless Gloryseeker is ready for more'
                 );
             });
 
@@ -107,6 +107,28 @@ describe('Relentless Gloryseeker', function () {
                     'Relentless Gloryseeker is removed from the game due to leaving play - may their tales lead them to Yomi'
                 );
             });
+        });
+    });
+});
+
+describe('Relentless Gloryseeker outside the conflict phase', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['relentless-gloryseeker']
+                }
+            });
+            this.relentlessGloryseeker = this.player1.findCardByName('relentless-gloryseeker');
+        });
+
+        it('does not return after the fate phase discards it', function () {
+            this.nextPhase();
+            this.player1.clickPrompt('Done');
+            expect(this.relentlessGloryseeker.location).toBe('dynasty discard pile');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.game.currentPhase).toBe('fate');
         });
     });
 });

@@ -114,6 +114,20 @@ describe('Isawa Eju', function() {
                 expect(this.player1).toHavePrompt('Action Window');
                 expect(this.player1).not.toBeAbleToSelect(this.shamefulDisplayP1);
             });
+
+            it('should not be usable on a stronghold province or a province with no cards', function () {
+                this.game.rings.air.claimRing(this.player1.player);
+                this.strongholdP2 = this.player2.findCardByName('shameful-display', 'stronghold province');
+                this.player2.moveCard(this.uji2, 'stronghold province');
+                this.player2.player.getDynastyCardsInProvince('province 2').forEach((card) => this.player2.moveCard(card, 'dynasty discard pile'));
+                this.provinceP2 = this.player2.findCardByName('shameful-display', 'province 2');
+
+                this.player1.clickCard(this.eju);
+                expect(this.player1).toHavePrompt('Isawa Eju');
+                expect(this.player1).toBeAbleToSelect(this.shamefulDisplayP2);
+                expect(this.player1).not.toBeAbleToSelect(this.strongholdP2);
+                expect(this.player1).not.toBeAbleToSelect(this.provinceP2);
+            });
         });
     });
 });

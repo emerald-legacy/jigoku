@@ -23,9 +23,18 @@ describe('Tactician\'s Camp', function() {
         it('should only give honored characters +1 MIL', function() {
             this.toturi.honor();
             this.game.checkGameState(true);
-            expect(this.toturi.getMilitarySkill()).toBe(10);
-            expect(this.berserker.getMilitarySkill()).toBe(3);
-            expect(this.whisperer.getMilitarySkill()).toBe(0);
+            expect(this.toturi.militarySkill).toBe(10);
+            expect(this.berserker.militarySkill).toBe(3);
+            expect(this.whisperer.militarySkill).toBe(0);
+        });
+
+        it('should not give an honored character controlled by the opponent +1 MIL', function() {
+            this.toturi.honor();
+            this.whisperer.honor();
+            this.game.checkGameState(true);
+            expect(this.toturi.militarySkill).toBe(10);
+            expect(this.whisperer.isHonored).toBe(true);
+            expect(this.whisperer.militarySkill).toBe(1);
         });
     });
 });

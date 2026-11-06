@@ -1,15 +1,15 @@
-import { PlayType, Location, Players, CardType, CharacterStatus } from '../../Constants.js';
+import { PlayType, Location, Players, CardType, EntersPlayStatus } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { entersPlayWithStatus, reduceCost } from '../../effects.js';
 
 export default class ShinseisLastHope extends ProvinceCard {
     static id = 'shinsei-s-last-hope';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.reduceCost({
+            effect: reduceCost({
                 amount: 2,
+                cardType: CardType.Character,
                 match: (card, source) => card.location === source.location,
                 playingTypes: PlayType.PlayFromProvince
             })
@@ -18,8 +18,8 @@ export default class ShinseisLastHope extends ProvinceCard {
         this.persistentEffect({
             targetLocation: Location.Provinces,
             targetController: Players.Self,
-            match: (card: DrawCard, context) => card.type === CardType.Character && card.location === context?.source.location,
-            effect: AbilityDsl.effects.entersPlayWithStatus(CharacterStatus.Dishonored)
+            match: (card, context) => card.type === CardType.Character && card.location === context?.source.location,
+            effect: entersPlayWithStatus(EntersPlayStatus.Dishonored)
         });
     }
 }

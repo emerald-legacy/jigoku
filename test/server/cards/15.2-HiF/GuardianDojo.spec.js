@@ -87,5 +87,40 @@ describe('Guardian Dojo', function () {
                 expect(this.tsukune.location).toBe('play area');
             });
         });
+
+        describe('when playing characters from an adjacent province as if from hand', function() {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 10,
+                        inPlay: ['isawa-skycaller'],
+                        dynastyDiscard: ['kakita-kaezin', 'doji-challenger', 'guardian-dojo']
+                    }
+                });
+
+                this.kaezin = this.player1.placeCardInProvince('kakita-kaezin', 'province 1');
+                this.challenger = this.player1.placeCardInProvince('doji-challenger', 'province 2');
+                this.guardianDojo = this.player1.moveCard('guardian-dojo', 'province 2');
+                this.skycaller = this.player1.findCardByName('isawa-skycaller');
+            });
+
+            it('sees a play from hand: no honor, fate allowed (#644/#922)', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.skycaller],
+                    defenders: [],
+                    ring: 'air'
+                });
+
+                this.player2.pass();
+                this.player1.clickCard(this.kaezin);
+                expect(this.player1).toHavePromptButton('1');
+                this.player1.clickPrompt('1');
+                expect(this.kaezin.location).toBe('play area');
+                expect(this.kaezin.isHonored).toBe(false);
+                expect(this.kaezin.fate).toBe(1);
+            });
+        });
     });
 });

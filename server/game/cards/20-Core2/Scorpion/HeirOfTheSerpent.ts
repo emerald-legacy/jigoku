@@ -1,22 +1,18 @@
 import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { moveToConflict, multiple, sendHome } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class HeirOfTheSerpent extends DrawCard {
     static id = 'heir-of-the-serpent';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Move a character into or out of the conflict',
-            condition: (context) => context.source.isParticipating(),
-            target: {
+    override setupCardAbilities() {
+        this.conflictAction('Move a character into or out of the conflict')
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.sendHome(),
-                    AbilityDsl.actions.moveToConflict()
-                ])
-            }
-        });
+                controller: Players.Self
+            }, multiple([
+                sendHome(),
+                moveToConflict()
+            ]));
     }
 }

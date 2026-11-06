@@ -39,7 +39,7 @@ describe('Kuni Wasteland', function() {
                 expect(this.player1).toHavePrompt('Conflict Action Window');
             });
 
-            it('should stop sincerity and courtesy', function() {
+            it('doesn\'t stop sincerity and courtesy: they resolve after the character left play (EmeraldDB ruling)', function() {
                 this.noMoreActions();
                 this.initiateConflict({
                     type: 'military',
@@ -47,14 +47,14 @@ describe('Kuni Wasteland', function() {
                     defenders: [],
                     province: this.wasteland
                 });
-                let cards = this.player1.hand.length;
-                let fate = this.player1.fate;
+                const cards = this.player1.hand.length;
+                const fate = this.player1.fate;
 
                 this.player2.clickCard(this.assassination);
                 this.player2.clickCard(this.envoy);
                 expect(this.envoy.location).toBe('dynasty discard pile');
-                expect(this.player1.hand.length).toBe(cards);
-                expect(this.player1.fate).toBe(fate);
+                expect(this.player1.hand.length).toBe(cards + 1);
+                expect(this.player1.fate).toBe(fate + 1);
             });
 
             it('should not stop honor token gain/loss', function() {
@@ -66,7 +66,7 @@ describe('Kuni Wasteland', function() {
                     defenders: [],
                     province: this.wasteland
                 });
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.player2.clickCard(this.assassination);
                 this.player2.clickCard(this.envoy);

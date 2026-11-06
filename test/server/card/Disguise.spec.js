@@ -57,7 +57,7 @@ describe('Disguise', function () {
             });
 
             it('should cost fate equal to the difference and discard the character', function () {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.kageyu);
                 this.player1.clickCard(this.whisperer);
                 expect(this.player1.fate).toBe(fate - 2);
@@ -76,7 +76,7 @@ describe('Disguise', function () {
             it('should transfer attachments', function () {
                 this.player1.playAttachment(this.newName, this.brash);
                 this.player2.pass();
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player1.clickCard(this.kageyu);
                 this.player1.clickCard(this.brash);
                 expect(this.player1.fate).toBe(fate - 1);
@@ -138,6 +138,71 @@ describe('Disguise', function () {
                 expect(this.getChatLogs(3)).toContain(
                     'Iaijutsu Master is discarded from Daidoji Kageyu as it is no longer legally attached'
                 );
+            });
+        });
+
+        describe('Facedown in a province', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['akodo-gunso'],
+                        dynastyDiscard: ['akodo-zentaro'],
+                        fate: 10
+                    },
+                    player2: {
+                        inPlay: ['brash-samurai']
+                    }
+                });
+                this.gunso = this.player1.findCardByName('akodo-gunso');
+                this.zentaro = this.player1.placeCardInProvince('akodo-zentaro', 'province 1');
+                this.zentaro.facedown = true;
+                this.game.checkGameState(true);
+                this.noMoreActions();
+                this.initiateConflict({ attackers: [this.gunso], defenders: [] });
+                this.player2.pass();
+            });
+
+            it('cannot be played using disguised', function () {
+                this.player1.clickCard(this.zentaro);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.zentaro.facedown).toBe(true);
+                expect(this.gunso.location).toBe('play area');
+                expect(this.player1.fate).toBe(10);
+            });
+        });
+
+        describe('Facedown in a province with Daidoji Hiroteru', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['daidoji-hiroteru', 'akodo-gunso'],
+                        dynastyDiscard: ['akodo-zentaro'],
+                        fate: 10
+                    },
+                    player2: {
+                        inPlay: ['brash-samurai']
+                    }
+                });
+                this.gunso = this.player1.findCardByName('akodo-gunso');
+                this.zentaro = this.player1.placeCardInProvince('akodo-zentaro', 'province 1');
+                this.zentaro.facedown = true;
+                this.game.checkGameState(true);
+                this.noMoreActions();
+                this.initiateConflict({ attackers: [this.gunso], defenders: [] });
+                this.player2.pass();
+            });
+
+            it('can be played normally, but not using disguised', function () {
+                this.player1.clickCard(this.zentaro);
+                expect(this.player1).not.toHavePromptButton('Play this character with Disguise');
+                expect(this.player1).toHavePromptButton('0');
+                this.player1.clickPrompt('0');
+                this.player1.clickPrompt('Home');
+                expect(this.zentaro.location).toBe('play area');
+                expect(this.zentaro.facedown).toBe(false);
+                expect(this.gunso.location).toBe('play area');
             });
         });
     });

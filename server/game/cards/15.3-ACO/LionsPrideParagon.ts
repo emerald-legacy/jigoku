@@ -1,13 +1,13 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { doesNotBow } from '../../effects.js';
 
 
 class LionsPrideParagon extends DrawCard {
     static id = 'lion-s-pride-paragon';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.dire({
-            effect: AbilityDsl.effects.doesNotBow()
+            effect: doesNotBow()
         });
     }
 }

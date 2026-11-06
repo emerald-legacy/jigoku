@@ -1,12 +1,12 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import { cannotReceiveDishonorToken } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 
 class BlessedByFukurokujin extends DrawCard {
     static id = 'blessed-by-fukurokujin';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.whileAttached({
-            effect: ability.effects.cannotReceiveDishonorToken()
+            effect: cannotReceiveDishonorToken()
         });
     }
 }

@@ -1,3 +1,4 @@
+import { rulesFor } from '../../../build/server/game/GameRules.js';
 import Player from '../../../build/server/game/Player.js';
 import DrawCard from '../../../build/server/game/DrawCard.js';
 
@@ -7,6 +8,9 @@ describe('Player - moveCard', function () {
             this.gameSpy = jasmine.createSpyObj('game', [
                 'emitEvent',
                 'on',
+                'off',
+                'onTriggerWindow',
+                'offTriggerWindow',
                 'raiseEvent',
                 'getOtherPlayer',
                 'playerDecked',
@@ -14,6 +18,7 @@ describe('Player - moveCard', function () {
                 'isDuringConflict',
                 'getProvinceArray'
             ]);
+            this.gameSpy.rules = rulesFor('stronghold');
             this.gameSpy.effectEngine = jasmine.createSpyObj('effectEngine', ['removeLastingEffects']);
             this.gameSpy.getProvinceArray.and.returnValue([
                 'province 1',
@@ -62,7 +67,7 @@ describe('Player - moveCard', function () {
 
             it('should add the card to the player play area', function () {
                 this.player.moveCard(this.card, 'play area');
-                expect(this.player.cardsInPlay).toContain(this.card);
+                expect(this.player.charactersInPlay).toContain(this.card);
                 expect(this.card.location).toBe('play area');
             });
         });
@@ -90,7 +95,7 @@ describe('Player - moveCard', function () {
 
         describe('when the card is in the play area', function () {
             beforeEach(function () {
-                this.player.cardsInPlay.push(this.card);
+                this.player.charactersInPlay.push(this.card);
                 this.card.location = 'play area';
             });
 
@@ -162,21 +167,21 @@ describe('Player - moveCard', function () {
         });
 
         describe('when the card location property and actual location do not match', function () {
-            // Game.takeControl used to push the card directly onto cardsInPlay
+            // Game.takeControl used to push the card directly onto charactersInPlay
             // but did not update the location for the card. This caused weird
             // problems where the strength of the card would be doubled for both
             // challenges and dominance.
             beforeEach(function () {
                 // Put into play with the wrong location.
                 this.card.location = 'conflict discard pile';
-                this.player.cardsInPlay = [this.card];
+                this.player.charactersInPlay = [this.card];
 
                 this.player.moveCard(this.card, 'play area');
             });
 
             it('should not duplicate the card', function () {
-                expect(this.player.cardsInPlay.length).toBe(1);
-                expect(this.player.cardsInPlay.slice()).toEqual([this.card]);
+                expect(this.player.charactersInPlay.length).toBe(1);
+                expect(this.player.charactersInPlay.slice()).toEqual([this.card]);
             });
         });
     });

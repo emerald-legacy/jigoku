@@ -102,3 +102,41 @@ describe('Perfect Guest', function() {
         });
     });
 });
+
+describe('Perfect Guest with a gained ability', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['perfect-guest', 'doji-whisperer'],
+                    hand: ['duelist-training']
+                },
+                player2: {
+                    inPlay: ['brash-samurai']
+                }
+            });
+            this.guest = this.player1.findCardByName('perfect-guest');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.brash = this.player2.findCardByName('brash-samurai');
+            this.training = this.player1.playAttachment('duelist-training', this.guest);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.guest, this.whisperer],
+                defenders: [this.brash]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.guest);
+            this.player1.clickPrompt('Give control of this character');
+        });
+
+        it('only blocks the Guest\'s own ability, not a gained one', function() {
+            expect(this.guest.controller).toBe(this.player2.player);
+            expect(this.training.location).toBe('play area');
+            this.player2.clickCard(this.guest);
+            expect(this.player2).not.toHavePrompt('Conflict Action Window');
+            expect(this.player2).not.toHavePromptButton('Give control of this character');
+        });
+    });
+});

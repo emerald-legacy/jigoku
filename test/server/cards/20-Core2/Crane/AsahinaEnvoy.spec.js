@@ -53,12 +53,15 @@ describe('Asahina Envoy', function() {
                 });
             });
 
-            it('should trigger when the envoy leaves play and let the player pick a non-stronghold province', function() {
+            it('should trigger when the envoy leaves play and let the player pick a non-stronghold province after the search', function() {
                 this.player2.clickCard(this.assassination);
                 this.player2.clickCard(this.envoy);
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.envoy);
                 this.player1.clickCard(this.envoy);
+                expect(this.player1).toHavePromptButton('Kakita Yoshi');
+                this.player1.clickPrompt('Kakita Yoshi');
+                expect(this.player1).toHavePrompt('Choose a province for Kakita Yoshi');
                 expect(this.player1).toBeAbleToSelect(this.province1);
                 expect(this.player1).toBeAbleToSelect(this.province2);
                 expect(this.player1).not.toBeAbleToSelect(this.stronghold);
@@ -68,7 +71,6 @@ describe('Asahina Envoy', function() {
                 this.player2.clickCard(this.assassination);
                 this.player2.clickCard(this.envoy);
                 this.player1.clickCard(this.envoy);
-                this.player1.clickCard(this.province1);
                 expect(this.player1).toHavePromptButton('Kakita Yoshi');
                 expect(this.player1).toHavePromptButton('Kakita Toshimoko');
                 expect(this.player1).toHavePromptButton('Asahina Storyteller');
@@ -77,6 +79,7 @@ describe('Asahina Envoy', function() {
                 expect(this.player1).not.toHavePromptButton('Togashi Initiate');
 
                 this.player1.clickPrompt('Kakita Yoshi');
+                this.player1.clickCard(this.province1);
                 expect(this.yoshi.location).toBe('province 1');
                 expect(this.yoshi.facedown).toBe(false);
             });
@@ -85,7 +88,6 @@ describe('Asahina Envoy', function() {
                 this.player2.clickCard(this.assassination);
                 this.player2.clickCard(this.envoy);
                 this.player1.clickCard(this.envoy);
-                this.player1.clickCard(this.province2);
                 expect(this.player1).toHavePromptButton('Take nothing');
                 this.player1.clickPrompt('Take nothing');
                 expect(this.yoshi.location).toBe('dynasty deck');

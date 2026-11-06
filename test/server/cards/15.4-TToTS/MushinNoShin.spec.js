@@ -35,9 +35,16 @@ describe('Mushin No Shin', function() {
             });
 
             it('shouldn\'t be playable on opponent\'s characters', function() {
-                this.player1.pass();
+                this.noMoreActions();
+                this.initiateConflict({
+                    ring: 'fire',
+                    attackers: [this.monger],
+                    defenders: [this.nitenMaster]
+                });
                 this.player2.clickCard(this.castle);
                 this.player2.clickCard(this.monger);
+                expect(this.getChatLogs(3)).toContain('player2 uses Mountain\'s Anvil Castle, bowing Mountain\'s Anvil Castle to give Young Rumormonger +2military/+2political');
+                expect(this.player2).not.toHavePrompt('Triggered Abilities');
                 expect(this.player2).not.toBeAbleToSelect(this.mushin);
             });
 
@@ -52,6 +59,7 @@ describe('Mushin No Shin', function() {
                 this.player1.clickCard(this.monger);
                 this.player1.clickCard(this.doomedShugenja);
                 expect(this.player2).not.toBeAbleToSelect(this.mushin);
+                expect(this.getChatLogs(3)).toContain('player1 uses Young Rumormonger\'s gained ability from Duelist Training to initiate a military duel : Young Rumormonger vs. Doomed Shugenja');
             });
 
             it('should not prompt the player when targeted with their own abilities', function() {
@@ -65,6 +73,7 @@ describe('Mushin No Shin', function() {
                 this.player2.clickCard(this.nitenMaster);
                 expect(this.player2).not.toHavePrompt('Triggered Abilities');
                 expect(this.player2).not.toBeAbleToSelect(this.mushin);
+                expect(this.getChatLogs(3)).toContain('player2 uses Mountain\'s Anvil Castle, bowing Mountain\'s Anvil Castle to give Niten Master +2military/+2political');
 
             });
 

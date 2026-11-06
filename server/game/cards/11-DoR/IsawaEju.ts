@@ -1,49 +1,34 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { perRound } from '../../AbilityLimit.js';
 import { Location, CardType, Element } from '../../Constants.js';
+import { claimedRingSymbols, hasClaimedRing } from '../claimedRings.js';
 
-const elementKey = 'isawa-eju-air';
+const elementSymbol = { key: 'isawa-eju-air', element: Element.Air };
 
 class IsawaEju extends DrawCard {
     static id = 'isawa-eju';
 
-    setupCardAbilities() {
-        this.action<ProvinceCard>({
-            title: 'Discard all cards in a province and refill it faceup',
-            condition: context => this.game.rings[this.getCurrentElementSymbol(elementKey)].isConsideredClaimed(context.player),
-            target: {
+    override setupCardAbilities() {
+        this.action('Discard all cards in a province and refill it faceup')
+            .ifCondition((context) => hasClaimedRing(this, elementSymbol.key, context.player))
+            .target({
                 location: Location.Provinces,
-                cardType: CardType.Province
-            },
-            gameAction: AbilityDsl.actions.moveCard<ProvinceCard>(context => ({
+                cardType: CardType.Province,
+                // the stronghold province is never refilled
+                cardCondition: (card) => card.location !== Location.StrongholdProvince && card.controller.getDynastyCardsInProvince(card.location).length > 0
+            })
+            .moveCard((context) => ({
                 destination: Location.DynastyDiscardPile,
                 target: context.target?.controller.getDynastyCardsInProvince(context.target.location) ?? []
-            })),
-            effect: 'discard {1} and refill the province faceup',
-            effectArgs: context => [context.target?.controller.getDynastyCardsInProvince(context.target.location) ?? []],
-            then: context => {
-                const target = context.target as ProvinceCard;
-                return {
-                    gameAction: AbilityDsl.actions.refillFaceup(() => ({
-                        target: target.controller,
-                        location: target.location
-                    }))
-                };
-            },
-            limit: AbilityDsl.limit.perRound(3)
-        });
+            }))
+            .chatText((context) => msg`discard ${context.target.controller.getDynastyCardsInProvince(context.target.location)} and refill the province faceup`)
+            .limit(perRound(3))
+            .then()
+            .refillFaceup((context) => ({ target: context.target.controller, location: context.target.location }));
     }
 
-    getPrintedElementSymbols() {
-        let symbols = super.getPrintedElementSymbols();
-        symbols.push({
-            key: elementKey,
-            prettyName: 'Claimed Ring',
-            element: Element.Air
-        });
-        return symbols;
-    }
+    protected override printedElementSymbols = claimedRingSymbols([elementSymbol]);
 }
 
 

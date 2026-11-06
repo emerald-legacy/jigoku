@@ -54,6 +54,22 @@ describe('Ebony Blood Garrison', () => {
             // expect(this.player1.hand.length).toBe(initalHandSize + 1);
         });
 
+        it('lets the opponent of each province\'s controller choose whether to discard its card', function () {
+            const ownCard = this.player1.player.getDynastyCardsInProvince(this.manicuredGarden.location)[0];
+            const opponentsCard = this.player2.player.getDynastyCardsInProvince(this.entrenchedPosition.location)[0];
+            this.player1.clickCard(this.ebonyBloodGarrison);
+            this.player1.clickCard(this.manicuredGarden);
+            this.player1.clickCard(this.entrenchedPosition);
+            expect(this.player2).toHavePrompt('Break Manicured Garden');
+            this.player2.clickPrompt('Yes');
+            expect(this.player1).toHavePrompt('Break Entrenched Position');
+            this.player1.clickPrompt('No');
+            expect(ownCard.location).toBe('dynasty discard pile');
+            expect(opponentsCard.location).toBe(this.entrenchedPosition.location);
+            expect(this.getChatLogs(5)).toContain('player2 has broken Manicured Garden!');
+            expect(this.getChatLogs(5)).toContain('player1 has broken Entrenched Position!');
+        });
+
         it('triggers on-reveal abilities', function () {
             const _initialFate = this.player1.fate;
             const _initalHandSize = this.player1.hand.length;

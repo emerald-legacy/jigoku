@@ -136,7 +136,7 @@ describe('Composite Yumi', function () {
             this.player2.clickPrompt('0');
             this.player2.clickPrompt('Conflict');
             this.player1.clickCard(this.compositeYumi);
-            expect(this.wanderingRonin.getMilitarySkill()).toBe(2 + 1 + 1);
+            expect(this.wanderingRonin.militarySkill).toBe(2 + 1 + 1);
             expect(this.getChatLogs(5)).toContain('player1 uses Composite Yumi to give +1military to Wandering Ronin');
         });
 
@@ -149,19 +149,19 @@ describe('Composite Yumi', function () {
             this.player2.clickPrompt('0');
             this.player2.clickPrompt('Conflict');
             this.player1.clickCard(this.compositeYumi);
-            expect(this.wanderingRonin.getMilitarySkill()).toBe(2 + 1 + 1);
+            expect(this.wanderingRonin.militarySkill).toBe(2 + 1 + 1);
             this.player1.clickCard(this.fg);
             this.player1.clickCard(this.scout);
             this.player1.clickCard(this.compositeYumi);
-            expect(this.wanderingRonin.getMilitarySkill()).toBe(2 + 1 + 2);
+            expect(this.wanderingRonin.militarySkill).toBe(2 + 1 + 2);
             this.player2.clickCard(this.shinjoOutrider);
             this.player1.clickCard(this.compositeYumi);
-            expect(this.wanderingRonin.getMilitarySkill()).toBe(2 + 1 + 3);
+            expect(this.wanderingRonin.militarySkill).toBe(2 + 1 + 3);
             this.player1.clickCard(this.stewardOfLaw);
             this.player1.clickPrompt('0');
             this.player1.clickPrompt('Conflict');
             this.player1.clickCard(this.compositeYumi);
-            expect(this.wanderingRonin.getMilitarySkill()).toBe(2 + 1 + 4);
+            expect(this.wanderingRonin.militarySkill).toBe(2 + 1 + 4);
         });
 
         it('comboes with Shinjo Sora', function () {
@@ -189,10 +189,10 @@ describe('Composite Yumi', function () {
             this.player1.clickCard(this.compositeYumi);
             this.player1.clickCard(hounds[0]);
             expect(this.getChatLogs(3)).toContain('player1 uses Composite Yumi to give +1military to Wandering Ronin');
-            expect(this.wanderingRonin.getMilitarySkill()).toBe(3 + 1);
+            expect(this.wanderingRonin.militarySkill).toBe(3 + 1);
 
             this.player1.clickCard(this.compositeYumi);
-            expect(this.wanderingRonin.getMilitarySkill()).toBe(3 + 2);
+            expect(this.wanderingRonin.militarySkill).toBe(3 + 2);
             expect(this.player1).not.toBeAbleToSelect(this.compositeYumi);
         });
     });

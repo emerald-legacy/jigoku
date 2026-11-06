@@ -52,6 +52,21 @@ describe('Reckless Avenger', function() {
             expect(this.getChatLogs(5)).toContain('player1 uses Reckless Avenger to ready Kakita Toshimoko and honor Kakita Yoshi');
         });
 
+        it('should not announce an honor when the second player chooses no character', function() {
+            this.yoshi.bow();
+            this.toshimoko.bow();
+            this.player1.clickCard(this.avenger1);
+            this.player1.clickCard(this.toshimoko);
+
+            expect(this.player2).toHavePrompt('Choose a character');
+            expect(this.player2).toHavePromptButton('Done');
+            this.player2.clickPrompt('Done');
+
+            expect(this.toshimoko.bowed).toBe(false);
+            expect(this.yoshi.isHonored).toBe(false);
+            expect(this.getChatLogs(5)).toContain('player1 uses Reckless Avenger to ready Kakita Toshimoko');
+        });
+
         it('should ready the 2nd character if the first player chooses not to pick someone', function() {
             this.yoshi.bow();
             this.toshimoko.bow();

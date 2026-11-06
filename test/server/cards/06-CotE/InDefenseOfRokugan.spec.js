@@ -57,7 +57,7 @@ describe('In Defense of Rokugan', function() {
                 expect(this.player2).not.toBeAbleToSelect(this.wanderingRonin);
                 this.player2.clickCard(this.adeptOfTheWaves);
                 this.player2.clickCard(this.borderlandsDefender);
-                expect(this.adeptOfTheWaves.getMilitarySkill()).toBe(0);
+                expect(this.adeptOfTheWaves.militarySkill).toBe(0);
             });
         });
     });

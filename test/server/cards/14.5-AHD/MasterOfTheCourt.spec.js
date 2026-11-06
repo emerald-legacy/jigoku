@@ -33,6 +33,8 @@ describe('Master of the Court', function() {
                 this.player1.clickCard(this.crane);
                 this.player1.clickCard(this.whisperer);
                 expect(this.player2).not.toHavePrompt('Triggered Abilities');
+                expect(this.whisperer.isHonored).toBe(true);
+                expect(this.player2).toHavePrompt('Action Window');
             });
 
             it('should cancel the event and disard the status token', function() {

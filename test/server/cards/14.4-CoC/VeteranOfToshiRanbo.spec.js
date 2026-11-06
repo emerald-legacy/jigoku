@@ -55,3 +55,38 @@ describe('Veteran of Toshi Ranbo', function() {
         });
     });
 });
+
+describe('Veteran of Toshi Ranbo copied by Shosuro Actor', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-actor']
+                },
+                player2: {
+                    inPlay: ['veteran-of-toshi-ranbo']
+                }
+            });
+            this.actor = this.player1.findCardByName('shosuro-actor');
+            this.veteran = this.player2.findCardByName('veteran-of-toshi-ranbo');
+            this.player2.findCardByName('shameful-display', 'province 2').facedown = false;
+            this.player2.findCardByName('shameful-display', 'province 3').facedown = false;
+        });
+
+        it('counts the faceup provinces of the copy\'s controller', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.actor],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.actor);
+            this.player1.clickCard(this.veteran);
+            expect(this.actor.name).toBe('Veteran of Toshi Ranbo');
+            expect(this.player2.player.getNumberOfFaceupProvinces()).not.toBe(this.player1.player.getNumberOfFaceupProvinces());
+            expect(this.actor.glory).toBe(this.veteran.printedGlory + this.player1.player.getNumberOfFaceupProvinces());
+        });
+    });
+});

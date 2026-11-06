@@ -26,8 +26,8 @@ describe('Usogawa Chidori', function () {
                 defenders: [this.henshinDisciple]
             });
 
-            let fate = this.player1.fate;
-            let fate2 = this.player2.fate;
+            const fate = this.player1.fate;
+            const fate2 = this.player2.fate;
 
             this.player2.pass();
             this.player1.clickCard(this.chidori);
@@ -44,8 +44,8 @@ describe('Usogawa Chidori', function () {
         });
 
         it('should work outside of a conflict conflict.', function () {
-            let fate = this.player1.fate;
-            let fate2 = this.player2.fate;
+            const fate = this.player1.fate;
+            const fate2 = this.player2.fate;
 
             this.player1.clickCard(this.chidori);
             expect(this.player1).not.toBeAbleToSelect(this.chidori);
@@ -58,6 +58,41 @@ describe('Usogawa Chidori', function () {
             expect(this.henshinDisciple.isBlank()).toBe(true);
             expect(this.player1.fate).toBe(fate - 1);
             expect(this.player2.fate).toBe(fate2 + 1);
+        });
+    });
+});
+
+describe('Usogawa Chidori against To Show the Path', function () {
+    integration(function () {
+        describe('with exactly 1 fate', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 1,
+                        inPlay: ['usogawa-chidori']
+                    },
+                    player2: {
+                        inPlay: ['henshin-disciple', 'doji-whisperer'],
+                        hand: ['to-show-the-path']
+                    }
+                });
+
+                this.chidori = this.player1.findCardByName('usogawa-chidori');
+                this.henshinDisciple = this.player2.findCardByName('henshin-disciple');
+                this.whisperer = this.player2.findCardByName('doji-whisperer');
+
+                this.player1.pass();
+                this.player2.clickCard('to-show-the-path');
+                this.player2.clickCard(this.whisperer);
+            });
+
+            it('should not target the protected character when the given fate leaves none for the targeting cost', function () {
+                this.player1.clickCard(this.chidori);
+                expect(this.player1).toHavePrompt('Usogawa Chidori');
+                expect(this.player1).toBeAbleToSelect(this.henshinDisciple);
+                expect(this.player1).not.toBeAbleToSelect(this.whisperer);
+            });
         });
     });
 });

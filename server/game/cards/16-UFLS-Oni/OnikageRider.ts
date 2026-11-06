@@ -1,23 +1,20 @@
 import { Location } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
 import { BaseOni } from './_BaseOni.js';
 
 export default class OnikageRider extends BaseOni {
     static id = 'onikage-rider';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
-        this.reaction({
-            title: 'Discard cards in provinces',
-            when: {
+        this.reaction('Discard cards in provinces')
+            .when({
                 afterConflict: (event, context) =>
                     event.conflict.winner === context.source.controller &&
                     context.source.isParticipating() &&
                     context.player.opponent !== undefined
-            },
-            gameAction: AbilityDsl.actions.discardCard((context) => ({
+            })
+            .discardCard((context) => ({
                 target: context.player.opponent?.getDynastyCardsInProvince(Location.Provinces)
-            }))
-        });
+            }));
     }
 }

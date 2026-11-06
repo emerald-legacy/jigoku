@@ -105,3 +105,42 @@ describe('Conflict Between Kin', function() {
         });
     });
 });
+
+describe('Conflict Between Kin and an attachment\'s own ability', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer'],
+                    provinces: ['conflict-between-kin']
+                },
+                player2: {
+                    inPlay: [{ card: 'kitsu-warrior', attachments: ['fan-of-command'] }, 'matsu-berserker']
+                }
+            });
+            this.conflictBetweenKin = this.player1.findCardByName('conflict-between-kin');
+            this.kitsuWarrior = this.player2.findCardByName('kitsu-warrior');
+            this.fan = this.player2.findCardByName('fan-of-command');
+            this.berserker = this.player2.findCardByName('matsu-berserker');
+            this.noMoreActions();
+            this.player1.passConflict();
+        });
+
+        it('only stops playing a same-clan attachment, not the abilities of one in play', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.kitsuWarrior, this.berserker],
+                defenders: [],
+                province: this.conflictBetweenKin
+            });
+            this.berserker.bowed = true;
+            this.player1.pass();
+            this.player2.clickCard(this.fan);
+            expect(this.player2).toBeAbleToSelect(this.berserker);
+            this.player2.clickCard(this.berserker);
+            expect(this.berserker.bowed).toBe(false);
+        });
+    });
+});

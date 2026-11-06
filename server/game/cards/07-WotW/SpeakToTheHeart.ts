@@ -1,25 +1,24 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { Location } from '../../Constants.js';
+import { perConflict } from '../../AbilityLimit.js';
+import { modifyPoliticalSkill } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { CardType, Location } from '../../Constants.js';
 
 class SpeakToTheHeart extends DrawCard {
     static id = 'speak-to-the-heart';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'give +1 political to a character for each faceup province',
-            condition: () => this.game.isDuringConflict(),
-            max: AbilityDsl.limit.perConflict(1),
-            target: {
-                cardCondition: (card) => card.isFaction('unicorn'),
-                gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => ({
-                    effect: AbilityDsl.effects.modifyPoliticalSkill(context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince))
-                }))
-            },
-            effect: 'give {0} +1{1} for each faceup non-stronghold province their opponent controls (+{2}{1})',
-            effectArgs: (context: AbilityContext) => ['political', context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince)]
-        });
+    override setupCardAbilities() {
+        this.action('give +1 political to a character for each faceup province')
+            .condition((context) => context.game.isDuringConflict())
+            .target({
+                cardType: CardType.Character,
+                cardCondition: (card) => card.isFaction('unicorn')
+            }, cardLastingEffect((context) => ({
+                effect: modifyPoliticalSkill(context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince))
+            })))
+            .chatText((context) => msg`give ${context.chatTarget()} +1${'political'} for each faceup non-stronghold province their opponent controls (+${context.player.getNumberOfOpponentsFaceupProvinces((province) => province.location !== Location.StrongholdProvince)}${'political'})`)
+            .max(perConflict(1));
     }
 }
 

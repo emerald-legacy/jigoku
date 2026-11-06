@@ -1,24 +1,21 @@
-import type { ResolvedAbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { honor, multiple, ready } from '../../GameActions/GameActions.js';
 
 class CommonCause extends DrawCard {
     static id = 'common-cause';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Ready character',
-            cost: AbilityDsl.costs.sacrifice({ cardType: CardType.Character }),
-            target: {
+    override setupCardAbilities() {
+        this.action('Ready character')
+            .cost(costs.sacrifice({ cardType: CardType.Character }))
+            .target({
                 activePromptTitle: 'Choose a character to ready',
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.ready(),
-                    AbilityDsl.actions.honor((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({ target: context.target.controller !== context.player ? context.target : [] }))
-                ])
-            }
-        });
+                cardType: CardType.Character
+            }, multiple([
+                ready(),
+                honor((context) => ({ target: context.target.controller !== context.player ? context.target : [] }))
+            ]));
     }
 }
 

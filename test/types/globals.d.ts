@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import type { fillers as deckFillers } from '../helpers/deckbuilder.js';
+
 export {};
 
 declare global {
     var integration: (definitions: () => void) => void;
+    var fillers: typeof deckFillers;
 
     namespace jasmine {
         interface Matchers<T> {

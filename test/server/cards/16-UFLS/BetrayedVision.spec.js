@@ -73,7 +73,7 @@ describe('Betrayed Vision', function() {
             expect(this.ikomaUjiaki.name).toBe(this.kitsuSpiritcaller.name);
             expect(this.ikomaUjiaki.getCost()).toBe(this.kitsuSpiritcaller.getCost());
             expect(this.ikomaUjiaki.getBaseMilitarySkill()).toBe(this.kitsuSpiritcaller.printedMilitarySkill);
-            expect(this.ikomaUjiaki.getPoliticalSkill()).toBe(this.kitsuSpiritcaller.printedPoliticalSkill);
+            expect(this.ikomaUjiaki.politicalSkill).toBe(this.kitsuSpiritcaller.printedPoliticalSkill);
             expect(this.ikomaUjiaki.getTraits()).toContain('shugenja');
             expect(this.ikomaUjiaki.getTraits()).toContain('water');
             expect(this.ikomaUjiaki.isUnique()).toBe(true);
@@ -99,7 +99,7 @@ describe('Betrayed Vision', function() {
             expect(this.ikomaUjiaki.name).toBe(this.ikomaUjiaki.printedName);
             expect(this.ikomaUjiaki.getCost()).toBe(this.ikomaUjiaki.printedCost);
             expect(this.ikomaUjiaki.getBaseMilitarySkill()).toBe(this.ikomaUjiaki.printedMilitarySkill);
-            expect(this.ikomaUjiaki.getPoliticalSkill()).toBe(this.ikomaUjiaki.printedPoliticalSkill);
+            expect(this.ikomaUjiaki.politicalSkill).toBe(this.ikomaUjiaki.printedPoliticalSkill);
             expect(this.ikomaUjiaki.getTraits()).toContain('courtier');
             expect(this.ikomaUjiaki.getTraits()).not.toContain('shugenja');
             expect(this.ikomaUjiaki.isUnique()).toBe(true);
@@ -148,7 +148,7 @@ describe('Betrayed Vision', function() {
             expect(this.player1).toHavePrompt('Conflict Action Window');
         });
 
-        it('should work with dashes and cost (should not copy cost as virtually all abilities refer to printed cost)', function() {
+        it('should work with dashes and copy the printed cost (RRG Copy)', function() {
             this.noMoreActions();
             this.initiateConflict({
                 type: 'political',
@@ -167,7 +167,43 @@ describe('Betrayed Vision', function() {
             expect(this.getChatLogs(5)).toContain('Sinister Soshi cannot participate in the conflict any more and is sent home bowed');
             this.player2.pass();
             this.player1.clickCard(this.assassination);
-            expect(this.player1).not.toBeAbleToSelect(this.ikomaUjiaki);
+            expect(this.player1).toBeAbleToSelect(this.ikomaUjiaki);
+        });
+    });
+});
+
+describe('Betrayed Vision and characters with the same title', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['bayushi-liar', 'sinister-soshi'],
+                    hand: ['betrayed-vision']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer', 'doji-whisperer', 'akodo-gunso']
+                }
+            });
+
+            this.vision = this.player1.findCardByName('betrayed-vision');
+            [this.whisperer, this.otherWhisperer] = this.player2.filterCardsByName('doji-whisperer');
+            this.akodoGunso = this.player2.findCardByName('akodo-gunso');
+        });
+
+        it('should not turn a character into a copy of a character with the same title', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: ['bayushi-liar'],
+                defenders: [this.whisperer, this.otherWhisperer, this.akodoGunso]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.vision);
+            this.player1.clickCard(this.whisperer);
+            expect(this.player1).toHavePrompt('Choose a character to turn into the copy');
+            expect(this.player1).toBeAbleToSelect(this.akodoGunso);
+            expect(this.player1).not.toBeAbleToSelect(this.otherWhisperer);
         });
     });
 });

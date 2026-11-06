@@ -98,6 +98,7 @@ describe('Prudent Challenger', function() {
                 expect(this.player1).toHavePrompt('Choose an attachment to discard');
                 expect(this.player1).not.toBeAbleToSelect(this.fineKatana);
                 expect(this.player1).toBeAbleToSelect(this.ornateFan);
+                expect(this.getChatLogs(5)).toContain('Duel Effect: player1 chooses one of Prudent Challenger\'s attachments to discard');
             });
 
             it('should discard the chosen attachment', function() {

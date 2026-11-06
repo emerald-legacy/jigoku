@@ -59,6 +59,25 @@ describe('Tengu Sensei', function() {
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.tenguSensei);
             });
+
+            it('cannot have its reaction cancelled by Finger of Jade (#453)', function() {
+                this.fingerOfJade = this.player2.playAttachment('finger-of-jade', this.agashaSwordsmith);
+                this.noMoreActions();
+                this.player1.clickRing('air');
+                this.player1.clickRing('air');
+                this.player1.clickCard(this.shamefulDisplay);
+                this.tenguSensei = this.player1.clickCard('tengu-sensei');
+                this.player1.clickPrompt('Initiate Conflict');
+                this.player1.clickCard(this.agashaSwordsmith);
+                expect(this.player2).toHavePrompt('Triggered Abilities');
+                this.player2.clickPrompt('Pass');
+                expect(this.agashaSwordsmith.covert).toBe(true);
+                this.player1.clickCard(this.tenguSensei);
+                expect(this.player2).not.toHavePrompt('Triggered Abilities');
+                expect(this.player2).toHavePrompt('Choose Defenders');
+                expect(this.fingerOfJade.location).toBe('play area');
+                expect(this.getChatLogs(5)).toContain('player1 uses Tengu Sensei to prevent Agasha Swordsmith from attacking this phase');
+            });
         });
     });
 });

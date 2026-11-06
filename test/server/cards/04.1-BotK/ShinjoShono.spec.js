@@ -29,8 +29,8 @@ describe('Shinjo Shono', function() {
                 });
                 this.player2.pass();
                 this.player1.clickCard(this.shinjoShono);
-                expect(this.shinjoShono.getMilitarySkill()).toBe(4);
-                expect(this.shinjoShono.getPoliticalSkill()).toBe(3);
+                expect(this.shinjoShono.militarySkill).toBe(4);
+                expect(this.shinjoShono.politicalSkill).toBe(3);
             });
 
             it('should only pump friendly cavalry', function() {
@@ -45,17 +45,63 @@ describe('Shinjo Shono', function() {
                 this.player2.pass();
                 this.player1.clickCard(this.shinjoShono);
                 //Shinjo should pump himself, and the mystic (since Seal gives the mystic Cavalry)
-                expect(this.shinjoShono.getMilitarySkill()).toBe(5);
-                expect(this.shinjoShono.getPoliticalSkill()).toBe(4);
-                expect(this.miyaMystic.getMilitarySkill()).toBe(3);
-                expect(this.miyaMystic.getPoliticalSkill()).toBe(2);
+                expect(this.shinjoShono.militarySkill).toBe(5);
+                expect(this.shinjoShono.politicalSkill).toBe(4);
+                expect(this.miyaMystic.militarySkill).toBe(3);
+                expect(this.miyaMystic.politicalSkill).toBe(2);
                 //Shinjo should not pump the guardsman as it is not a cavalry,
                 //nor the border rider as she is not friendly
-                expect(this.seppunGuardsman.getMilitarySkill()).toBe(2);
-                expect(this.borderRider.getMilitarySkill()).toBe(2);
-                expect(this.borderRider.getPoliticalSkill()).toBe(1);
+                expect(this.seppunGuardsman.militarySkill).toBe(2);
+                expect(this.borderRider.militarySkill).toBe(2);
+                expect(this.borderRider.politicalSkill).toBe(1);
 
             });
+        });
+    });
+});
+
+describe('Shinjo Shono\'s lasting effect', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shinjo-shono', 'moto-youth', 'seppun-guardsman'],
+                    hand: ['seal-of-the-unicorn', 'retreat']
+                },
+                player2: {
+                    inPlay: ['border-rider']
+                }
+            });
+            this.shinjoShono = this.player1.findCardByName('shinjo-shono');
+            this.motoYouth = this.player1.findCardByName('moto-youth');
+            this.seppunGuardsman = this.player1.findCardByName('seppun-guardsman');
+            this.borderRider = this.player2.findCardByName('border-rider');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.shinjoShono, this.motoYouth, this.seppunGuardsman],
+                defenders: [this.borderRider]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.shinjoShono);
+            this.player2.pass();
+        });
+
+        it('does not affect a character that gains Cavalry afterwards (#368)', function() {
+            expect(this.shinjoShono.militarySkill).toBe(5);
+            this.player1.playAttachment('seal-of-the-unicorn', this.seppunGuardsman);
+            expect(this.seppunGuardsman.hasTrait('cavalry')).toBe(true);
+            expect(this.seppunGuardsman.militarySkill).toBe(3);
+        });
+
+        it('stays after Shinjo Shono leaves the conflict (#368)', function() {
+            expect(this.motoYouth.militarySkill).toBe(4);
+            this.player1.clickCard('retreat');
+            this.player1.clickCard(this.shinjoShono);
+            expect(this.shinjoShono.isParticipating()).toBe(false);
+            expect(this.motoYouth.militarySkill).toBe(4);
+            expect(this.motoYouth.politicalSkill).toBe(1);
         });
     });
 });

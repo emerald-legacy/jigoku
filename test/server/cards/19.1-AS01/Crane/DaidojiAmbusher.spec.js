@@ -49,7 +49,7 @@ describe('Daidoji Ambusher', function () {
 
             this.player1.clickCard(this.ambusher);
             this.player1.clickCard(this.adept);
-            expect(this.adept.getMilitarySkill()).toBe(0);
+            expect(this.adept.militarySkill).toBe(0);
             expect(this.adept.fate).toBe(1);
 
             expect(this.getChatLogs(10)).toContain('player1 uses Daidōji Ambusher to give Adept of Shadows -2military');
@@ -67,7 +67,7 @@ describe('Daidoji Ambusher', function () {
 
             this.player1.clickCard(this.ambusher);
             this.player1.clickCard(this.adept);
-            expect(this.adept.getMilitarySkill()).toBe(0);
+            expect(this.adept.militarySkill).toBe(0);
             expect(this.adept.fate).toBe(0);
             expect(this.getChatLogs(10)).toContain('player1 uses Daidōji Ambusher to give Adept of Shadows -2military and remove a fate from them');
         });

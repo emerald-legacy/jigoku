@@ -1,24 +1,22 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { removeFate } from '../../GameActions/GameActions.js';
 import { DuelType } from '../../Constants.js';
 
 class Heresy extends DrawCard {
     static id = 'heresy';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Initiate a political duel',
-            initiateDuel: {
+    override setupCardAbilities() {
+        this.action('Initiate a political duel')
+            .initiateDuel(() => ({
                 type: DuelType.Political,
                 opponentChoosesChallenger: true,
-                message: 'remove a fate from {0}',
-                messageArgs: duel => [duel.loser],
-                gameAction: duel => AbilityDsl.actions.removeFate({
-                    target: duel.loser,
-                    amount: 1
+                chatText: (_context, duel) => msg`remove a fate from ${duel.loser}`,
+                gameAction: (duel) => removeFate({
+                    target: duel.loser
                 })
-            }
-        });
+            }))
+            .firstPlayerChoosesFirst();
     }
 }
 

@@ -1,22 +1,19 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { moveCard } from '../../GameActions/GameActions.js';
 import { Location, CardType, Players } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class RecalledDefenses extends DrawCard {
     static id = 'recalled-defenses';
 
-    setupCardAbilities() {
-        this.action<DrawCard>({
-            title: 'Move a card to your stronghold',
-            target: {
+    override setupCardAbilities() {
+        this.action('Move a card to your stronghold')
+            .target({
                 location: Location.Provinces,
                 controller: Players.Self,
-                cardCondition: (card, context) => card.type !== CardType.Province && card !== context.source,
-                gameAction: AbilityDsl.actions.moveCard({ destination: Location.StrongholdProvince })
-            },
-            effect: 'move {1} to their stronghold province',
-            effectArgs: context => [context.target ?? '']
-        });
+                cardCondition: (card, context) => card.type !== CardType.Province && card !== context.source && card.location !== Location.StrongholdProvince
+            }, moveCard({ destination: Location.StrongholdProvince }))
+            .chatText((context) => msg`move ${context.target.isFacedown() ? 'a facedown card' : context.target} to their stronghold province`);
     }
 }
 

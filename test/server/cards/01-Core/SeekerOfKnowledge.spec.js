@@ -52,6 +52,23 @@ describe('Seeker of Knowledge', function() {
                 expect(this.player1).toHavePrompt('Air Ring');
             });
 
+            it('Should report declining the Air Ring added to another ring', function() {
+                this.player1.clickCard('seeker-of-knowledge');
+                this.player1.clickPrompt('0');
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    ring: 'fire',
+                    province: 'defend-the-wall',
+                    attackers: ['shrine-maiden', 'seeker-of-knowledge'],
+                    defenders: ['shinjo-outrider']
+                });
+                this.noMoreActions();
+                this.player1.clickRing('air');
+                this.player1.clickPrompt('Don\'t resolve');
+                expect(this.getChatLogs(3)).toContain('player1 chooses not to resolve the air ring');
+            });
+
             it('Should permit resolution of the Air Ring even when it is claimed', function() {
                 this.player1.clickCard('seeker-of-knowledge');
                 this.player1.clickPrompt('0');

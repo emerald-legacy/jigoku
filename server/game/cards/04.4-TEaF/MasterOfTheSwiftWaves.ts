@@ -1,34 +1,31 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { joint, moveToConflict, sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class MasterOfTheSwiftWaves extends DrawCard {
     static id = 'master-of-the-swift-waves';
 
-    setupCardAbilities() {
-        this.action({
-            title:'Switch 2 characters you control',
-            targets: {
-                characterInConflict: {
-                    activePromptTitle: 'Choose a participating character to send home',
-                    cardType: CardType.Character,
-                    controller: Players.Self,
-                    cardCondition: card => card.isParticipating()
-                },
-                characterAtHome: {
-                    dependsOn: 'characterInConflict',
-                    activePromptTitle: 'Choose a character to move to the conflict',
-                    cardType: CardType.Character,
-                    controller: Players.Self,
-                    gameAction: AbilityDsl.actions.joint([
-                        AbilityDsl.actions.sendHome(context => ({ target: context.targets.characterInConflict })),
-                        AbilityDsl.actions.moveToConflict()
-                    ])
-                }
-            },
-            effect: 'switch {1} and {2}',
-            effectArgs: context => [context.targets.characterInConflict, context.targets.characterAtHome]
-        });
+    override setupCardAbilities() {
+        this.action('Switch 2 characters you control')
+            .target({
+                name: 'characterInConflict',
+                activePromptTitle: 'Choose a participating character to send home',
+                cardType: CardType.Character,
+                controller: Players.Self,
+                cardCondition: (card) => card.isParticipating()
+            })
+            .target({
+                name: 'characterAtHome',
+                dependsOn: 'characterInConflict',
+                activePromptTitle: 'Choose a character to move to the conflict',
+                cardType: CardType.Character,
+                controller: Players.Self
+            }, joint([
+                sendHome((context) => ({ target: context.targets.characterInConflict })),
+                moveToConflict()
+            ]))
+            .chatText((context) => msg`switch ${context.targets.characterInConflict} and ${context.targets.characterAtHome}`);
     }
 }
 

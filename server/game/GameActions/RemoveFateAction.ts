@@ -1,48 +1,46 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import { CardType, EventName, Location } from '../Constants.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
+import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type Player from '../Player.js';
 import type Ring from '../Ring.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent } from './GameAction.js';
+import type { AnyEvent } from '../TriggeredAbilityContext.js';
 
 export interface RemoveFateProperties extends CardActionProperties {
     amount?: number;
     recipient?: DrawCard | Player | Ring;
 }
 
-export class RemoveFateAction extends CardGameAction<RemoveFateProperties> {
-    name = 'removeFate';
-    eventName = EventName.OnMoveFate;
-    targetType = [CardType.Character];
-    defaultProperties: RemoveFateProperties = { amount: 1 };
-    constructor(properties: ((context: AbilityContext) => RemoveFateProperties) | RemoveFateProperties) {
-        super(properties);
-    }
-
-    getCostMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as RemoveFateProperties;
+export class RemoveFateAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<RemoveFateProperties, EventName.OnMoveFate, Context, 'amount'> {
+    override name = 'removeFate';
+    override restriction = RestrictionType.RemoveFate;
+    override eventName = EventName.OnMoveFate;
+    override targetType = [CardType.Character];
+    override defaultProperties = { amount: 1 };
+    override getCostMessage(context: Context): MessageArgs {
+        const properties = this.getProperties(context);
         return ['removing {1} fate from {0}', [properties.amount]];
     }
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context) as RemoveFateProperties;
-        return ['remove {1} fate from {0}', [properties.target, properties.amount]];
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
+        return ['remove {1} fate from {0}', [this.getProperties(context, additionalProperties).amount]];
     }
 
-    canAffect(card: BaseCard, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties) as RemoveFateProperties;
+    override canAffect(card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
         if(properties.amount === 0 || card.location !== Location.PlayArea || card.getFate() === 0) {
             return false;
         }
         return super.canAffect(card, context) && this.checkRecipient(properties.recipient, context);
     }
 
-    checkRecipient(origin: Player | Ring | DrawCard | undefined, context: AbilityContext): boolean {
+    checkRecipient(origin: Player | Ring | DrawCard | undefined, context: Context): boolean {
         if(origin) {
-            if(['player', 'ring'].includes(origin.type)) {
+            if(origin.isPlayer() || origin.isRing()) {
                 return true;
             }
             return origin.allowGameAction('placeFate', context);
@@ -50,30 +48,29 @@ export class RemoveFateAction extends CardGameAction<RemoveFateProperties> {
         return true;
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnMoveFate>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { amount, recipient } = this.getProperties(context, additionalProperties) as RemoveFateProperties;
-        event.fate = amount ?? 0;
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnMoveFate, Context>, card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): void {
+        const { amount, recipient } = this.getProperties(context, additionalProperties);
+        event.fate = amount;
         event.recipient = recipient;
         event.origin = card;
         event.context = context;
     }
 
-    checkEventCondition(event: GameEvent<EventName.OnMoveFate>): boolean {
+    override checkEventCondition(event: ActionEvent<EventName.OnMoveFate, Context>): boolean {
         return this.moveFateEventCondition(event);
     }
 
-    isEventFullyResolved(event: GameEvent<EventName.OnMoveFate>, card: BaseCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): boolean {
-        let { amount, recipient } = this.getProperties(context, additionalProperties) as RemoveFateProperties;
+    override isEventFullyResolved(event: AnyEvent, card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        const { recipient } = this.getProperties(context, additionalProperties);
         return (
             !event.cancelled &&
             event.name === this.eventName &&
-            event.fate === amount &&
             event.origin === card &&
             event.recipient === recipient
         );
     }
 
-    eventHandler(event: GameEvent<EventName.OnMoveFate>): void {
+    override eventHandler(event: ActionEvent<EventName.OnMoveFate, Context>): void {
         this.moveFateEventHandler(event);
     }
 }

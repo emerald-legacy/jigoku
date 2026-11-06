@@ -65,8 +65,8 @@ describe('Blatant Swindler', function() {
                 type: 'military'
             });
 
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
 
             this.player2.pass();
             this.player1.clickCard(this.swindler);

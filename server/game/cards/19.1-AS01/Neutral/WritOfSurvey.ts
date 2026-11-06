@@ -1,38 +1,33 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { addKeyword, gainAbility } from '../../../effects.js';
+import { bow } from '../../../GameActions/GameActions.js';
 import type BaseCard from '../../../BaseCard.js';
-import { AbilityType, CardType, Players, TargetMode } from '../../../Constants.js';
+import { CardType, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
-import type { ActionProps } from '../../../Interfaces.js';
 
 export default class WritOfSurvey extends DrawCard {
     static id = 'writ-of-survey';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.attachmentConditions({
             limitTrait: { title: 1 }
         });
 
         this.persistentEffect({
             condition: (context) => !!context.source.parentCharacter?.isHonored,
-            effect: AbilityDsl.effects.addKeyword('ancestral')
+            effect: addKeyword('ancestral')
         });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Bow a participating dishonored character',
-                condition: (context) => context.source.isParticipating(),
-                target: {
+            effect: gainAbility.conflictAction('Bow a participating dishonored character', (ability) => ability
+                .target({
                     cardType: CardType.Character,
                     controller: Players.Any,
-                    mode: TargetMode.Single,
-                    cardCondition: (card) => card.isParticipating() && card.isDishonored,
-                    gameAction: AbilityDsl.actions.bow()
-                }
-            } as ActionProps<this>)
+                    cardCondition: (card) => card.isParticipating() && card.isDishonored
+                }, bow()))
         });
     }
 
-    public canPlayOn(source: BaseCard): boolean {
+    public override canPlayOn(source: BaseCard): boolean {
         return source.isHonored && super.canPlayOn(source);
     }
 }

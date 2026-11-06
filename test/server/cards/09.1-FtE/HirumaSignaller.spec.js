@@ -18,7 +18,7 @@ describe('Hiruma Signaller', function() {
                 this.hirumaSignaller = this.player2.findCardByName('hiruma-signaller');
                 this.hidaYakamo = this.player2.findCardByName('hida-yakamo');
                 this.reprieve = this.player2.findCardByName('reprieve');
-                this.spy = spyOn(this.flow.game, 'addMessage');
+                this.spy = spyOn(this.flow.game, 'addMessage').and.callThrough();
 
                 this.noMoreActions();
             });
@@ -36,6 +36,7 @@ describe('Hiruma Signaller', function() {
                 expect(this.hidaYakamo.bowed).toBe(false);
                 expect(this.hidaYakamo.inConflict).toBe(true);
                 expect(this.hirumaSignaller.location).toBe('dynasty discard pile');
+                expect(this.getChatLogs(3)).toContain('player2 uses Hiruma Signaller, sacrificing Hiruma Signaller to ready Hida Yakamo and move it into the conflict');
             });
 
             it('should ready a character in the conflict', function() {
@@ -51,6 +52,7 @@ describe('Hiruma Signaller', function() {
                 expect(this.hidaYakamo.bowed).toBe(false);
                 expect(this.hidaYakamo.inConflict).toBe(true);
                 expect(this.hirumaSignaller.location).toBe('dynasty discard pile');
+                expect(this.getChatLogs(3)).toContain('player2 uses Hiruma Signaller, sacrificing Hiruma Signaller to ready Hida Yakamo');
             });
 
             it('should move a ready character to the conflict', function() {
@@ -65,6 +67,7 @@ describe('Hiruma Signaller', function() {
                 expect(this.hidaYakamo.bowed).toBe(false);
                 expect(this.hidaYakamo.inConflict).toBe(true);
                 expect(this.hirumaSignaller.location).toBe('dynasty discard pile');
+                expect(this.getChatLogs(3)).toContain('player2 uses Hiruma Signaller, sacrificing Hiruma Signaller to move Hida Yakamo into the conflict');
             });
 
             it('should not ready a character at home and move to the conflict if the sacrifice is prevented', function() {
@@ -95,7 +98,7 @@ describe('Hiruma Signaller', function() {
                 expect(this.player2).toBeAbleToSelect(this.hirumaSignaller);
                 this.player2.clickCard(this.hirumaSignaller);
                 expect(this.hirumaSignaller.location).toBe('dynasty discard pile');
-                expect(this.spy).toHaveBeenCalledWith('{0} attempted to use {1}, but there are insufficient legal targets', this.player2.player, this.hirumaSignaller);
+                expect(this.spy).toHaveBeenCalledWith(['{0} attempted to use {1}, but there are insufficient legal targets', [this.player2.player, this.hirumaSignaller]]);
             });
 
             it('should not able to choose an opponent\'s character', function() {
@@ -116,6 +119,8 @@ describe('Hiruma Signaller', function() {
                 });
                 this.player2.clickCard(this.hirumaSignaller);
                 expect(this.player2).not.toHavePrompt('Hiruma Signaller');
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.hirumaSignaller.location).toBe('play area');
             });
 
             it('should not be able to trigger while attacking', function() {
@@ -128,6 +133,8 @@ describe('Hiruma Signaller', function() {
                 this.player1.pass();
                 this.player2.clickCard(this.hirumaSignaller);
                 expect(this.player2).not.toHavePrompt('Hiruma Signaller');
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.hirumaSignaller.location).toBe('play area');
             });
         });
     });

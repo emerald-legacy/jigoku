@@ -95,6 +95,7 @@ describe('Kakita Rusumi', function () {
                 this.player2.clickPrompt('Doji Whisperer');
                 expect(this.game.currentConflict.defenders).toContain(this.whisperer);
                 expect(this.whisperer.isHonored).toBe(true);
+                expect(this.getChatLogs(6)).toContain('player2 puts Doji Whisperer into play honored');
             });
 
             it('chat messages', function () {
@@ -104,7 +105,7 @@ describe('Kakita Rusumi', function () {
                 expect(this.getChatLogs(6)).toContain(
                     'player2 uses Kakita Rusumi to search their dynasty deck for a character to put into play'
                 );
-                expect(this.getChatLogs(6)).toContain('player2 puts Doji Whisperer into play ordinary');
+                expect(this.getChatLogs(6)).toContain('player2 puts Doji Whisperer into play');
             });
 
             it('chat messages - taking nothing', function () {

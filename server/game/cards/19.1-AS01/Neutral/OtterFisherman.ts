@@ -1,55 +1,44 @@
-import { Element, EventName, Players, TargetMode } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { Element, Players, Trait } from '../../../Constants.js';
+import { immunity } from '../../../effects.js';
+import { draw, gainFate, gainHonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { claimsRingOf } from '../../claimedRings.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
 const ELEMENT_KEY = 'otter-fisherman-water';
 
 export default class OtterFisherman extends DrawCard {
     static id = 'otter-fisherman';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.persistentEffect({
-            effect: [AbilityDsl.effects.immunity({ restricts: 'creature' })]
+            effect: [immunity({ appliesTo: { trait: Trait.Creature } })]
         });
 
-        this.reaction({
-            title: 'Gain resource after claiming water',
-            when: {
-                onClaimRing: (event: EventPayload<EventName.OnClaimRing>, context) =>
-                    event.player === context.player &&
-                    ((event.conflict && event.conflict.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY) as Element)) ||
-                        event.ring.hasElement(this.getCurrentElementSymbol(ELEMENT_KEY) as Element))
-            },
-            target: {
-                mode: TargetMode.Select,
+        this.reaction('Gain resource after claiming water')
+            .when({
+                onClaimRing: (event, context) => event.player === context.player && claimsRingOf(this, ELEMENT_KEY, event)
+            })
+            .select({
                 player: Players.Opponent,
-                activePromptTitle: 'Choose an option for your opponent',
-                choices: {
-                    'Opponent gains 1 fate': AbilityDsl.actions.gainFate((context) => ({
-                        target: context.source.controller,
-                        amount: 1
-                    })),
-                    'Opponent gains 1 honor': AbilityDsl.actions.gainHonor((context) => ({
-                        target: context.source.controller,
-                        amount: 1
-                    })),
-                    'Opponent draws 1 card': AbilityDsl.actions.draw((context) => ({
-                        target: context.source.controller,
-                        amount: 1
-                    }))
-                }
-            }
-        });
+                activePromptTitle: 'Choose an option for your opponent'
+            }, {
+                'Opponent gains 1 fate': gainFate((context) => ({
+                    target: context.source.controller
+                })),
+                'Opponent gains 1 honor': gainHonor((context) => ({
+                    target: context.source.controller
+                })),
+                'Opponent draws 1 card': draw((context) => ({
+                    target: context.source.controller
+                }))
+            });
     }
 
-    public getPrintedElementSymbols() {
-        const symbols = super.getPrintedElementSymbols();
-        symbols.push({
+    protected override printedElementSymbols = [
+        {
             key: ELEMENT_KEY,
             prettyName: 'Ring',
             element: Element.Water
-        });
-        return symbols;
-    }
+        }
+    ];
 }

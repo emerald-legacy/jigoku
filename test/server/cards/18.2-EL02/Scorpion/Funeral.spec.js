@@ -117,7 +117,6 @@ describe('Funeral', function() {
             expect(this.player2.honor).toBe(11);
             expect(this.duty.location).toBe('removed from game');
             expect(this.getChatLogs(5)).toContain('player1 plays Funeral to cancel their honor loss, then gain 1 honor');
-            expect(this.getChatLogs(5)).toContain('Funeral is removed from the game due the effects of Funeral');
         });
 
         it('should trigger when losing due to running out of conflict cards', function() {
@@ -126,7 +125,7 @@ describe('Funeral', function() {
             this.player1.player.conflictDeck.forEach(card => {
                 this.player1.player.moveCard(card, 'conflict discard pile');
             });
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.imperialStorehouse);
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.duty);

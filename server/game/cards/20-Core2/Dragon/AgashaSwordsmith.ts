@@ -1,22 +1,23 @@
 import { CardType, Location } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { perRound } from '../../../AbilityLimit.js';
+import { moveCard } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
+import { topCards } from '../../topCards.js';
 
 export default class AgashaSwordsmith extends DrawCard {
     static id = 'agasha-swordsmith';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Search top 5 card for attachment',
-            limit: AbilityDsl.limit.perRound(1),
-            effect: 'look at the top five cards of their deck',
-            gameAction: AbilityDsl.actions.deckSearch({
-                amount: 5,
+    override setupCardAbilities() {
+        this.action('Search top 5 cards for attachment')
+            .deckSearch({
+                cardsToLookAt: 5,
                 cardCondition: (card) => card.type === CardType.Attachment,
-                gameAction: AbilityDsl.actions.moveCard({
+                gameAction: moveCard({
                     destination: Location.Hand
                 })
             })
-        });
+            .chatText((context) => msg`look at the ${topCards(5, context.player.conflictDeck.length, true)} of their deck`)
+            .limit(perRound(1));
     }
 }

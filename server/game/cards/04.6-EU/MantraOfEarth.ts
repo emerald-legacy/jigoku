@@ -1,33 +1,18 @@
-import { CardType, EventName, Element } from '../../Constants.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import AbilityDsl from '../../abilitydsl.js';
-import DrawCard from '../../DrawCard.js';
+import { Element, RestrictionType, RestrictionScope } from '../../Constants.js';
+import { cardCannot } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
+import { makeMantra } from '../makeMantra.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
-export default class MantraOfEarth extends DrawCard {
-    static id = 'mantra-of-earth';
-
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Make a monk untargetable by opponents\' card effects and draw a card',
-            when: {
-                onConflictDeclared: (event: EventPayload<EventName.OnConflictDeclared>, context) =>
-                    event.ring?.hasElement('earth' as Element) && event.conflict.attackingPlayer === context.player.opponent
-            },
-            target: {
-                cardType: CardType.Character,
-                cardCondition: (card) =>
-                    card.hasTrait('monk') || card.attachments.some((card: DrawCard) => card.hasTrait('monk')),
-                gameAction: AbilityDsl.actions.cardLastingEffect((context: AbilityContext) => ({
-                    effect: AbilityDsl.effects.cardCannot({
-                        cannot: 'target',
-                        restricts: 'opponentsCardEffects',
-                        applyingPlayer: context.player
-                    })
-                }))
-            },
-            effect: 'make {0} untargetable by opponents\' card effects and draw a card',
-            gameAction: AbilityDsl.actions.draw()
-        });
-    }
-}
+export default makeMantra(
+    'mantra-of-earth',
+    Element.Earth,
+    'Make a monk untargetable by opponents\' card effects and draw a card',
+    cardLastingEffect((context) => ({
+        effect: cardCannot({
+            cannot: RestrictionType.Target,
+            appliesTo: RestrictionScope.OpponentsCardEffects,
+            applyingPlayer: context.player
+        })
+    })),
+    'make {0} untargetable by opponents\' card effects and draw a card'
+);

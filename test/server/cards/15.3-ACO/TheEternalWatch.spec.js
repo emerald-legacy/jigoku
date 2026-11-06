@@ -70,8 +70,8 @@ describe('The Eternal Watch', function() {
                 type: 'political',
                 province: this.watch
             });
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
             this.player2.clickCard(this.watch);
             this.player2.clickCard(this.toshimoko);
             this.player1.clickPrompt('Bow this character');
@@ -89,8 +89,8 @@ describe('The Eternal Watch', function() {
                 type: 'political',
                 province: this.watch
             });
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
             this.player2.clickCard(this.watch);
             this.player2.clickCard(this.toshimoko);
             this.player1.clickPrompt('Give your opponent 1 honor');

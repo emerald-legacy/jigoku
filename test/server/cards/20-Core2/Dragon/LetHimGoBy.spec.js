@@ -109,7 +109,7 @@ describe('Let Him Go By', function () {
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 expect(this.getChatLogs(10)).toContain('Duel Effect: Kakita Taneharu gets +6military skill');
-                expect(this.taneharu.getMilitarySkill()).toBe(12);
+                expect(this.taneharu.militarySkill).toBe(12);
             });
         });
     });

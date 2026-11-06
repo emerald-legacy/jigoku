@@ -1,0 +1,24 @@
+/** What `meetsRequirements` reports: the first thing that stops an ability or action from being initiated, or `None`. Listing one in `ignoredBlockers` skips that check. */
+export enum Blocker {
+    None = '',
+    Blanked = 'blank',
+    CannotEnterConflict = 'cannotEnterConflict',
+    CannotInitiate = 'cannotInitiate',
+    CannotPayCost = 'cost',
+    CannotPlay = 'cannotPlay',
+    CannotPlaceFate = 'cannotPlaceFate',
+    CannotTrigger = 'cannotTrigger',
+    ConditionNotMet = 'condition',
+    DuplicateUnique = 'unique',
+    EnterPlayRestricted = 'enterPlay',
+    Facedown = 'facedown',
+    IfConditionNotMet = 'ifCondition',
+    LimitedAlreadyPlayed = 'limited',
+    LimitReached = 'limit',
+    MaxReached = 'max',
+    NoLegalTarget = 'target',
+    WrongLocation = 'location',
+    WrongPhase = 'phase',
+    WrongPlayer = 'player',
+    WrongProvince = 'province'
+}

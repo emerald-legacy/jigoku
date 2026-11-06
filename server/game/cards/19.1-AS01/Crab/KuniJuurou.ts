@@ -1,49 +1,33 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { CardType, Phases, Players } from '../../../Constants.js';
+import { modifyBothSkills, playerCannot } from '../../../effects.js';
+import { taint } from '../../../GameActions/GameActions.js';
+import { CardType, Phase, Players, RestrictionType, RestrictionScope, Trait } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class KuniJuurou extends DrawCard {
     static id = 'kuni-juurou';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         this.controllerCannotPayHonorCostsEffect();
 
         this.persistentEffect({
             targetController: Players.Any,
-            match: (card: DrawCard) => card.type === CardType.Character && (card.isTainted || card.hasTrait('shadowlands')),
-            effect: AbilityDsl.effects.modifyBothSkills(-2)
+            match: (card) => card.type === CardType.Character && (card.isTainted || card.hasTrait(Trait.Shadowlands)),
+            effect: modifyBothSkills(-2)
         });
 
-        this.action({
-            title: 'Taint a character',
-            effect: 'identify the source of Crab\'s misfortune… it is {0}! {0} is tainted.',
-            phase: Phases.Conflict,
-            condition: (context) =>
-                !!(context.player.opponent && context.player.hand.length <= context.player.opponent.hand.length),
-            target: {
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.taint()
-            }
-        });
+        this.action('Taint a character')
+            .ifCondition((context) =>
+                !!(context.player.opponent && context.player.hand.length <= context.player.opponent.hand.length))
+            .phase(Phase.Conflict)
+            .target({
+                cardType: CardType.Character
+            }, taint())
+            .chatText('identify the source of Crab\'s misfortune… it is {0}! {0} is tainted');
     }
 
     private controllerCannotPayHonorCostsEffect() {
         this.persistentEffect({
-            effect: AbilityDsl.effects.playerCannot({ cannot: 'loseHonor', restricts: 'loseHonorAsCost' })
-        });
-
-        /**
-         * Shortcut to handle tainted characters.
-         * Ideally it would be integrated when generating the conflict matrix etc.
-         * Without this Tainted character get stopped from commiting into the conflict, but the declaration goes through
-         */
-        this.persistentEffect({
-            match: (card: DrawCard) => card.controller === this.controller && card.isTainted,
-            effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker()
-        });
-        this.persistentEffect({
-            match: (card: DrawCard) => card.controller === this.controller && card.isTainted,
-            effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()
+            effect: playerCannot({ cannot: RestrictionType.LoseHonor, appliesTo: RestrictionScope.LoseHonorAsCost })
         });
     }
 }

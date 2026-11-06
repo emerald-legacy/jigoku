@@ -1,19 +1,16 @@
-import { CardType } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, Trait } from '../../../Constants.js';
+import { ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class RejuvenatingVapors extends DrawCard {
     static id = 'rejuvenating-vapors';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Ready a character',
-            target: {
+    override setupCardAbilities() {
+        this.action('Ready a character')
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
-                    context.player.hasAffinity('water', context) || card.hasTrait('shugenja'),
-                gameAction: AbilityDsl.actions.ready()
-            }
-        });
+                    context.player.hasAffinity(Trait.Water, context) || card.hasTrait(Trait.Shugenja)
+            }, ready());
     }
 }

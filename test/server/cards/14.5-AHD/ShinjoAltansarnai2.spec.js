@@ -65,6 +65,20 @@ describe('Shinjo Altansarnai 2', function() {
             expect(this.player1).toHavePromptButton('Don\'t choose a character');
         });
 
+        it('says how many cards it searches when fewer than 8 are left', function () {
+            this.player1.reduceDeckToNumber('dynasty deck', 3);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.alty],
+                defenders: [],
+                type: 'military'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.alty);
+            expect(this.player1).toHavePromptButton('Don\'t choose a character');
+            expect(this.getChatLogs(6)).toContain('player1 uses Shinjo Altansarnai to search the top 3 cards of their dynasty deck for a character that costs 3 or less and put it into the conflict');
+        });
+
         it('should put the chosen character into the conflict', function() {
             this.noMoreActions();
 

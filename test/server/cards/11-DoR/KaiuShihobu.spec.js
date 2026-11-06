@@ -249,6 +249,31 @@ describe('Kaiu Shihobu', function() {
             //     expect(this.player1).not.toBeAbleToSelect(this.forgottenLibrary);
             // });
 
+            it('removes the holdings it put under the stronghold from the game when it leaves play', function() {
+                this.player2.pass();
+                this.player1.clickCard(this.kaiuShihobu);
+                this.player1.clickCard(this.storehouse);
+                this.player1.clickCard(this.shamefulDisplay);
+                expect(this.storehouse.location).toBe('province 1');
+
+                this.player2.clickCard(this.crane);
+                this.player2.clickCard(this.kuwanan);
+                this.player1.pass();
+                this.player2.clickCard(this.scorpion);
+                this.player2.clickCard(this.kaiuShihobu);
+                this.player1.pass();
+                this.player2.clickCard(this.nobleSac);
+                this.player2.clickCard(this.kaiuShihobu);
+                this.player2.clickCard(this.kuwanan);
+
+                expect(this.kaiuShihobu.location).toBe('dynasty discard pile');
+                expect(this.favorableGround.location).toBe('removed from game');
+                expect(this.ancestralArmory.location).toBe('removed from game');
+                expect(this.storehouse.location).toBe('province 1');
+                expect(this.player1.player.stronghold.childCards).toEqual([]);
+                expect(this.getChatLogs(5)).toContain('Favorable Ground and Ancestral Armory are removed from the game due to Kaiu Shihobu leaving play');
+            });
+
             it('should work if a new Shihobu comes into play', function() {
                 this.player1.moveCard(this.artisanAcademy, 'dynasty deck');
                 this.player1.moveCard(this.hallOfVictories, 'dynasty deck');
@@ -272,10 +297,13 @@ describe('Kaiu Shihobu', function() {
 
                 this.player2.pass();
 
+                expect(this.storehouse.location).toBe('removed from game');
+                expect(this.player1.player.stronghold.childCards).toEqual([this.artisanAcademy]);
+
                 this.player1.clickCard(this.kaiuShihobu2);
-                expect(this.player1).toBeAbleToSelect(this.storehouse);
-                expect(this.player1).toBeAbleToSelect(this.favorableGround);
-                expect(this.player1).toBeAbleToSelect(this.ancestralArmory);
+                expect(this.player1).not.toBeAbleToSelect(this.storehouse);
+                expect(this.player1).not.toBeAbleToSelect(this.favorableGround);
+                expect(this.player1).not.toBeAbleToSelect(this.ancestralArmory);
                 expect(this.player1).toBeAbleToSelect(this.artisanAcademy);
             });
         });

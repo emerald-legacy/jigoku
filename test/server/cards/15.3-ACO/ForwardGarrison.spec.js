@@ -94,7 +94,7 @@ describe('Forward Garrison', function() {
                     defenders: [],
                     ring: 'void'
                 });
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player2.clickCard(this.assassination);
                 this.player2.clickCard(this.manipulator);
                 expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -187,7 +187,7 @@ describe('Forward Garrison', function() {
                     defenders: [],
                     ring: 'void'
                 });
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.player2.clickCard(this.assassination);
                 this.player2.clickCard(this.manipulator);
                 expect(this.player1).toHavePrompt('Triggered Abilities');

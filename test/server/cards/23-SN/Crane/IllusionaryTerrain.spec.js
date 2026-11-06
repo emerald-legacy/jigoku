@@ -45,7 +45,7 @@ describe('Illusionary Terrain', function () {
             this.stone.facedown = false;
             this.justice.facedown = false;
 
-            this.abandoning.broken = true;
+            this.abandoning.isBroken = true;
 
             this.game.checkGameState(true);
         });
@@ -90,7 +90,7 @@ describe('Illusionary Terrain', function () {
             expect(this.player2).not.toBeAbleToSelect(this.position);
             expect(this.player2).toBeAbleToSelect(this.manicuredGarden);
             expect(this.player2).toBeAbleToSelect(this.revels);
-            expect(this.player2).toBeAbleToSelect(this.abandoning);
+            expect(this.player2).not.toBeAbleToSelect(this.abandoning);
         });
 
         it('targeting - affinity', function () {
@@ -106,7 +106,7 @@ describe('Illusionary Terrain', function () {
 
             expect(this.player2).toBeAbleToSelect(this.position);
             expect(this.player2).toBeAbleToSelect(this.manicuredGarden);
-            expect(this.player2).toBeAbleToSelect(this.abandoning);
+            expect(this.player2).not.toBeAbleToSelect(this.abandoning);
             expect(this.player2).toBeAbleToSelect(this.revels);
 
             expect(this.player2).not.toBeAbleToSelect(this.fury);
@@ -176,7 +176,7 @@ describe('Illusionary Terrain', function () {
             expect(this.getChatLogs(10)).toContain('player2 plays Illusionary Terrain to transform the attacked province into a copy of Manicured Garden');
             this.player2.clickPrompt('Done'); // defenders
 
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.player2.clickCard(this.fury);
             expect(this.player2.fate).toBe(fate + 1);
 
@@ -230,6 +230,7 @@ describe('Illusionary Terrain', function () {
         });
 
         it('copy - interrupt', function () {
+            this.abandoning.isBroken = false;
             this.fury.facedown = true;
             this.player2.moveCard(this.purifier, 'play area');
             this.scout.dishonor();
@@ -258,7 +259,7 @@ describe('Illusionary Terrain', function () {
         });
 
         it('discount 0', function () {
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.toshimoko],
@@ -277,7 +278,7 @@ describe('Illusionary Terrain', function () {
 
         it('discount 1', function () {
             this.player2.moveCard(this.purifier, 'play area');
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.toshimoko],
@@ -297,7 +298,7 @@ describe('Illusionary Terrain', function () {
         it('discount 2', function () {
             this.player2.moveCard(this.purifier, 'play area');
             this.player2.moveCard(this.doomed, 'play area');
-            let fate = this.player2.fate;
+            const fate = this.player2.fate;
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.toshimoko],
@@ -312,6 +313,132 @@ describe('Illusionary Terrain', function () {
             this.player2.clickCard(this.position);
 
             expect(this.player2.fate).toBe(fate);
+        });
+    });
+});
+
+describe('Illusionary Terrain copying a province that cancels ring effects', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-toshimoko', 'matsu-berserker']
+                },
+                player2: {
+                    provinces: ['rift-to-toshigoku', 'pilgrimage', 'henshin-mysteries', 'fertile-fields'],
+                    hand: ['illusionary-terrain']
+                }
+            });
+
+            this.toshimoko = this.player1.findCardByName('kakita-toshimoko');
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+
+            this.rift = this.player2.findCardByName('rift-to-toshigoku');
+            this.pilgrimage = this.player2.findCardByName('pilgrimage');
+            this.henshin = this.player2.findCardByName('henshin-mysteries');
+            this.fields = this.player2.findCardByName('fertile-fields');
+            this.terrain = this.player2.findCardByName('illusionary-terrain');
+
+            this.rift.facedown = false;
+            this.pilgrimage.facedown = false;
+            this.henshin.facedown = false;
+            this.fields.facedown = false;
+            this.game.checkGameState(true);
+
+            this.noMoreActions();
+        });
+
+        const attackAndCopy = function (spec, attackers, province) {
+            spec.initiateConflict({
+                type: 'military',
+                attackers: attackers,
+                province: spec.fields,
+                ring: 'air'
+            });
+            spec.player2.clickCard(spec.terrain);
+            spec.player2.clickCard(province);
+        };
+
+        it('a copy of Rift to Toshigoku cancels the ring effects after it broke', function () {
+            attackAndCopy(this, [this.toshimoko, this.berserker], this.rift);
+            this.player2.clickCard(this.fields);
+            this.player1.clickPrompt('No');
+            this.player1.clickCard(this.toshimoko);
+            expect(this.fields.isBroken).toBe(true);
+            this.player2.clickPrompt('Done');
+
+            this.noMoreActions();
+            expect(this.player1).not.toHavePrompt('Choose an effect to resolve');
+            expect(this.getChatLogs(5)).toContain('Rift to Toshigoku cancels the ring effect');
+        });
+
+        it('a copy of Pilgrimage cancels the ring effects', function () {
+            attackAndCopy(this, [this.berserker], this.pilgrimage);
+            this.player2.clickPrompt('Done');
+
+            this.noMoreActions();
+            expect(this.fields.isBroken).toBe(false);
+            expect(this.player1).not.toHavePrompt('Choose an effect to resolve');
+            expect(this.getChatLogs(5)).toContain('Pilgrimage cancels the ring effect');
+        });
+
+        it('a copy of Henshin Mysteries returns the ring to the unclaimed pool', function () {
+            attackAndCopy(this, [this.berserker], this.henshin);
+            this.player2.clickPrompt('Done');
+
+            this.noMoreActions();
+            this.player1.clickPrompt('Don\'t resolve');
+            expect(this.fields.isBroken).toBe(false);
+            expect(this.game.rings.air.isUnclaimed()).toBe(true);
+            expect(this.getChatLogs(5)).toContain('Henshin Mysteries cancels the ring being claimed');
+        });
+    });
+});
+
+describe('Illusionary Terrain on the stronghold province', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-toshimoko'],
+                    provinces: ['manicured-garden']
+                },
+                player2: {
+                    inPlay: ['asahina-purifier'],
+                    provinces: ['public-forum', 'elemental-fury', 'fertile-fields', 'avalanche-of-stone'],
+                    hand: ['illusionary-terrain']
+                }
+            });
+            this.toshimoko = this.player1.findCardByName('kakita-toshimoko');
+            this.manicuredGarden = this.player1.findCardByName('manicured-garden');
+            this.forum = this.player2.findCardByName('public-forum');
+            this.fury = this.player2.findCardByName('elemental-fury');
+            this.fields = this.player2.findCardByName('fertile-fields');
+            this.stone = this.player2.findCardByName('avalanche-of-stone');
+            this.stronghold = this.player2.findCardByName('shameful-display', 'stronghold province');
+            this.terrain = this.player2.findCardByName('illusionary-terrain');
+
+            for(const province of [this.manicuredGarden, this.forum, this.fury, this.fields, this.stone]) {
+                province.facedown = false;
+            }
+            this.fury.isBroken = true;
+            this.fields.isBroken = true;
+            this.stone.isBroken = true;
+            this.game.checkGameState(true);
+        });
+
+        it('cannot copy a province that cannot be a stronghold province (EmeraldDB ruling)', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.toshimoko],
+                province: this.stronghold
+            });
+            this.player2.clickCard(this.terrain);
+            expect(this.player2).toBeAbleToSelect(this.manicuredGarden);
+            expect(this.player2).not.toBeAbleToSelect(this.forum);
+            expect(this.player2).not.toBeAbleToSelect(this.fury);
         });
     });
 });

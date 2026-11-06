@@ -40,3 +40,39 @@ describe('Ignoble Enforcers', function() {
         });
     });
 });
+
+describe('Ignoble Enforcers put into play by a card effect', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 10,
+                    inPlay: ['matsu-berserker'],
+                    hand: ['charge'],
+                    dynastyDiscard: ['ignoble-enforcers']
+                }
+            });
+            this.ignobleEnforcers = this.player1.placeCardInProvince('ignoble-enforcers');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: ['matsu-berserker'],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('does not trigger (ruling #472)', function() {
+            this.player1.clickCard('charge', 'hand');
+            expect(this.player1).toHavePrompt('Choose a character');
+            this.player1.clickCard(this.ignobleEnforcers);
+            expect(this.ignobleEnforcers.location).toBe('play area');
+            expect(this.ignobleEnforcers.isParticipating()).toBe(true);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.ignobleEnforcers.fate).toBe(0);
+            expect(this.player1.honor).toBe(10);
+        });
+    });
+});

@@ -88,6 +88,38 @@ describe('My Ancestors Strength', function() {
                 this.player1.clickCard('my-ancestor-s-strength');
                 this.asakoDiplomat = this.player1.findCardByName('asako-diplomat');
                 expect(this.player1).not.toBeAbleToSelect(this.asakoDiplomat);
+                expect(this.player1).toBeAbleToSelect('fearsome-mystic');
+            });
+        });
+
+        describe('My Ancestors Strength on a Shugenja with a printed dash', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['asahina-peacekeeper'],
+                        hand: ['my-ancestor-s-strength'],
+                        dynastyDiscard: ['fushicho']
+                    },
+                    player2: {
+                        inPlay: ['moto-nergui']
+                    }
+                });
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: ['asahina-peacekeeper'],
+                    defenders: ['moto-nergui']
+                });
+                this.player2.pass();
+            });
+
+            it('keeps the dash and copies only the other skill (EmeraldDB ruling)', function() {
+                this.player1.clickCard('my-ancestor-s-strength');
+                this.peacekeeper = this.player1.clickCard('asahina-peacekeeper');
+                this.player1.clickCard('fushicho');
+                expect(this.peacekeeper.hasDash('military')).toBe(true);
+                expect(this.peacekeeper.politicalSkill).toBe(6);
             });
         });
     });

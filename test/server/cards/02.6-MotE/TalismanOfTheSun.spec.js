@@ -44,6 +44,22 @@ describe('Talisman of the Sun', function() {
                 expect(this.getChatLogs(3)).toContain('player2 moves the conflict to Sanpuku Seidō');
             });
 
+            it('should reveal the new province', function() {
+                expect(this.seido.facedown).toBe(true);
+                this.player2.clickCard(this.talismanOfTheSun);
+                this.player2.clickCard(this.seido);
+                expect(this.seido.facedown).toBe(false);
+                expect(this.talismanOfTheSun.bowed).toBe(true);
+            });
+
+            // ruling #244: the stronghold province is not eligible unless three other provinces are broken
+            it('should not be able to move the conflict to the stronghold province', function() {
+                this.player2.clickCard(this.talismanOfTheSun);
+                expect(this.player2).toHavePrompt('Talisman of the Sun');
+                expect(this.player2).toBeAbleToSelect(this.seido);
+                expect(this.player2).not.toBeAbleToSelect(this.player2.findCardByName(fillers.province, 'stronghold province'));
+            });
+
             it('should apply any constant abilities of the new province', function() {
                 this.player2.clickCard(this.talismanOfTheSun);
                 this.sanpukuSeido = this.player2.clickCard('sanpuku-seido');
@@ -61,6 +77,45 @@ describe('Talisman of the Sun', function() {
                 expect(this.game.currentConflict.attackerSkill).toBe(0);
                 expect(this.game.currentConflict.defenderSkill).toBe(4);
             });
+        });
+    });
+});
+
+describe('Talisman of the Sun as the attacking player', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shrine-maiden']
+                },
+                player2: {
+                    provinces: ['public-forum', 'sanpuku-seido'],
+                    inPlay: ['serene-warrior'],
+                    hand: ['talisman-of-the-sun']
+                }
+            });
+            this.shrineMaiden = this.player1.findCardByName('shrine-maiden');
+            this.player1.pass();
+            this.talismanOfTheSun = this.player2.playAttachment('talisman-of-the-sun', 'serene-warrior');
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                ring: 'air',
+                attackers: ['serene-warrior'],
+                defenders: [this.shrineMaiden]
+            });
+            this.player1.pass();
+        });
+
+        it('should not be usable', function() {
+            const province = this.game.currentConflict.conflictProvince;
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            this.player2.clickCard(this.talismanOfTheSun);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.talismanOfTheSun.bowed).toBe(false);
+            expect(this.game.currentConflict.conflictProvince).toBe(province);
         });
     });
 });

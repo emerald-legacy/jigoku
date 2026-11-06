@@ -15,8 +15,8 @@ describe('Contingency Plan', function () {
             });
 
             it('should allow you to increase your honor bid by 1 and draw an additional card', function () {
-                let honor = this.player2.player.honor;
-                let handSizeWithoutContingencyPlan = this.player2.player.hand.length - 1;
+                const honor = this.player2.player.honor;
+                const handSizeWithoutContingencyPlan = this.player2.player.hand.length - 1;
                 this.player1.clickPrompt('5');
                 this.player2.clickPrompt('5');
                 expect(this.player2).toHavePrompt('Triggered Abilities');
@@ -28,8 +28,8 @@ describe('Contingency Plan', function () {
             });
 
             it('should allow you to decrease your honor bid by 1 and draw on card less', function () {
-                let honor = this.player2.player.honor;
-                let handSizeWithoutContingencyPlan = this.player2.player.hand.length - 1;
+                const honor = this.player2.player.honor;
+                const handSizeWithoutContingencyPlan = this.player2.player.hand.length - 1;
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 expect(this.player2).toHavePrompt('Triggered Abilities');
@@ -56,8 +56,8 @@ describe('Contingency Plan', function () {
             });
 
             it('should allow you to increase your honor bid accordingly', function () {
-                let honor = this.player2.player.honor;
-                let handSizeWithoutContingencyPlans = this.player2.player.hand.length - 2;
+                const honor = this.player2.player.honor;
+                const handSizeWithoutContingencyPlans = this.player2.player.hand.length - 2;
                 this.player1.clickPrompt('5');
                 this.player2.clickPrompt('5');
                 expect(this.player2).toHavePrompt('Triggered Abilities');
@@ -74,8 +74,8 @@ describe('Contingency Plan', function () {
             });
 
             it('should not allow you to decrease your honor bid below 0', function () {
-                let honor = this.player2.player.honor;
-                let handSizeWithoutContingencyPlans = this.player2.player.hand.length - 2;
+                const honor = this.player2.player.honor;
+                const handSizeWithoutContingencyPlans = this.player2.player.hand.length - 2;
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('1');
                 expect(this.player2).toHavePrompt('Triggered Abilities');
@@ -88,8 +88,8 @@ describe('Contingency Plan', function () {
                 expect(this.player2).toBeAbleToSelect(this.contingencyPlan2);
                 this.player2.clickCard(this.contingencyPlan2);
                 expect(this.getChatLogs(4)).toContain('player2 chooses to increase their honor bid');
-                expect(this.getChatLogs(6)).toContain('player1 draws 1 cards for the draw phase');
-                expect(this.getChatLogs(6)).toContain('player2 draws 1 cards for the draw phase');
+                expect(this.getChatLogs(6)).toContain('player1 draws 1 card for the draw phase');
+                expect(this.getChatLogs(6)).toContain('player2 draws 1 card for the draw phase');
                 expect(this.player2.player.honor).toBe(honor);
                 expect(this.player2.player.hand.length).toBe(handSizeWithoutContingencyPlans + 1);
             });
@@ -119,7 +119,7 @@ describe('Contingency Plan', function () {
             });
 
             it('should allow you to increase your honor bid by 1', function () {
-                let honor = this.player2.player.honor;
+                const honor = this.player2.player.honor;
                 this.player2.clickCard(this.mirumotoRaitsugu);
                 this.player2.clickCard(this.dojiChallenger);
                 this.player1.clickPrompt('5');
@@ -133,7 +133,7 @@ describe('Contingency Plan', function () {
             });
 
             it('should allow you to decrease your honor bid by 1 and draw on card less', function () {
-                let honor = this.player2.player.honor;
+                const honor = this.player2.player.honor;
                 this.player2.clickCard(this.mirumotoRaitsugu);
                 this.player2.clickCard(this.dojiChallenger);
                 this.player1.clickPrompt('1');
@@ -145,6 +145,33 @@ describe('Contingency Plan', function () {
                 expect(this.player2.player.honor).toBe(honor + 1);
                 expect(this.mirumotoRaitsugu.location).toBe('dynasty discard pile');
             });
+        });
+    });
+});
+
+describe('Contingency Plan on a dial reveal without honor bid', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['mischievous-tanuki'],
+                    hand: ['contingency-plan']
+                },
+                player2: {
+                    inPlay: ['adept-of-the-waves']
+                }
+            });
+            this.tanuki = this.player1.findCardByName('mischievous-tanuki');
+            this.contingencyPlan = this.player1.findCardByName('contingency-plan');
+        });
+
+        it('can be played after the dials are revealed', function () {
+            this.player1.clickCard(this.tanuki);
+            this.player1.clickPrompt('3');
+            this.player2.clickPrompt('2');
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.contingencyPlan);
         });
     });
 });

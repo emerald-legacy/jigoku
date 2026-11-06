@@ -40,6 +40,9 @@ describe('Court of Deception', function() {
                 this.yojiro.dishonor();
                 this.player1.clickCard(this.CoD);
                 expect(this.player1).not.toHavePrompt('Court of Deception');
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.liar.isDishonored).toBe(true);
+                expect(this.yojiro.isDishonored).toBe(true);
             });
 
             it('should only target dishonored characters at home', function() {

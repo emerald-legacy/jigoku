@@ -43,7 +43,7 @@ describe('SoD - Crane', function () {
                     province: this.pilgrimage
                 });
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.player1.clickCard(this.castle);
                 expect(this.pilgrimage.getStrength()).toBe(5);
@@ -55,7 +55,10 @@ describe('SoD - Crane', function () {
                 this.player1.clickCard(this.momoko);
                 expect(this.pilgrimage.getStrength()).toBe(9);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Castle of Air, bowing Asahina Momoko to increase the strength of an attacked province by 4 and prevent unopposed honor loss'
+                    'player1 plays Castle of Air, bowing Asahina Momoko to increase the strength of an attacked province by 4'
+                );
+                expect(this.getChatLogs(5)).toContain(
+                    'player1 channels their air affinity to prevent unopposed honor loss'
                 );
                 expect(this.getChatLogs(5)).toContain(
                     'player1 increases the strength of Pilgrimage'
@@ -75,7 +78,7 @@ describe('SoD - Crane', function () {
                 expect(this.player1.honor).toBe(honor + 1);
 
                 expect(this.getChatLogs(5)).toContain(
-                    'Castle of Air cancels the honor loss'
+                    'Castle of Air prevents player1 from losing honor for not defending the conflict'
                 );
             });
 
@@ -90,7 +93,7 @@ describe('SoD - Crane', function () {
                     province: this.pilgrimage
                 });
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.player1.clickCard(this.castle);
                 expect(this.pilgrimage.getStrength()).toBe(5);
@@ -102,7 +105,10 @@ describe('SoD - Crane', function () {
                 this.player1.clickCard(this.momoko);
                 expect(this.pilgrimage.getStrength()).toBe(9);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Castle of Air, bowing Asahina Momoko to increase the strength of an attacked province by 4 and prevent unopposed honor loss'
+                    'player1 plays Castle of Air, bowing Asahina Momoko to increase the strength of an attacked province by 4'
+                );
+                expect(this.getChatLogs(5)).toContain(
+                    'player1 channels their air affinity to prevent unopposed honor loss'
                 );
                 expect(this.getChatLogs(5)).toContain(
                     'player1 increases the strength of Pilgrimage'
@@ -125,7 +131,7 @@ describe('SoD - Crane', function () {
                 expect(this.player1.honor).toBe(honor + 1);
 
                 expect(this.getChatLogs(5)).toContain(
-                    'Castle of Air cancels the honor loss'
+                    'Castle of Air prevents player1 from losing honor for not defending the conflict'
                 );
             });
 
@@ -140,7 +146,7 @@ describe('SoD - Crane', function () {
                     province: this.pilgrimage
                 });
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 this.player1.pass();
                 this.player2.clickCard(this.assassination);
@@ -181,8 +187,8 @@ describe('SoD - Crane', function () {
                     province: this.pilgrimage
                 });
 
-                let honor = this.player1.honor;
-                let fate = this.player1.fate;
+                const honor = this.player1.honor;
+                const fate = this.player1.fate;
 
                 this.player1.clickCard(this.serpent);
                 expect(this.player1).toHavePrompt('Eyes of the Serpent');
@@ -197,7 +203,7 @@ describe('SoD - Crane', function () {
 
                 expect(this.kuwanan.isTainted).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Eyes of the Serpent, paying 1 fate to taint Doji Kuwanan'
+                    'player1 plays Eyes of the Serpent, spending 1 fate to taint Doji Kuwanan'
                 );
                 expect(this.getChatLogs(5)).toContain(
                     'player1 channels their air affinity to gain 1 honor'
@@ -218,15 +224,15 @@ describe('SoD - Crane', function () {
                     province: this.pilgrimage
                 });
 
-                let honor = this.player1.honor;
-                let fate = this.player1.fate;
+                const honor = this.player1.honor;
+                const fate = this.player1.fate;
 
                 this.player1.clickCard(this.serpent);
                 this.player1.clickCard(this.kuwanan);
                 this.player1.clickPrompt('Spend 1 honor');
                 expect(this.kuwanan.isTainted).toBe(true);
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Eyes of the Serpent, paying 1 honor to taint Doji Kuwanan'
+                    'player1 plays Eyes of the Serpent, losing 1 honor to taint Doji Kuwanan'
                 );
                 expect(this.getChatLogs(5)).toContain(
                     'player1 channels their air affinity to gain 1 honor'
@@ -234,6 +240,43 @@ describe('SoD - Crane', function () {
 
                 expect(this.player1.fate).toBe(fate);
                 expect(this.player1.honor).toBe(honor);
+            });
+
+            it('cannot choose a character it cannot taint, even with air affinity', function () {
+                this.noMoreActions();
+                this.player1.passConflict();
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.challenger],
+                    defenders: [this.kuwanan],
+                    type: 'military',
+                    province: this.pilgrimage
+                });
+                this.kuwanan.taint();
+
+                this.player1.clickCard(this.serpent);
+                expect(this.player1).not.toHavePrompt('Eyes of the Serpent');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+            });
+
+            it('cannot be played without a Shugenja', function () {
+                this.player1.moveCard(this.doomed, 'dynasty discard pile');
+                this.player1.moveCard(this.momoko, 'dynasty discard pile');
+                this.noMoreActions();
+                this.player1.passConflict();
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.challenger],
+                    defenders: [this.kuwanan],
+                    type: 'military',
+                    province: this.pilgrimage
+                });
+
+                this.player1.clickCard(this.serpent);
+                expect(this.player1).not.toHavePrompt('Eyes of the Serpent');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.serpent.location).toBe('hand');
+                expect(this.kuwanan.isTainted).toBe(false);
             });
         });
 
@@ -283,7 +326,7 @@ describe('SoD - Crane', function () {
                 this.player2.pass();
                 this.player1.pass();
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
 
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.kabuto);
@@ -365,11 +408,11 @@ describe('SoD - Crane', function () {
                     province: this.pilgrimage
                 });
 
-                let honor = this.player1.honor;
-                const mil = this.kuwanan.getMilitarySkill();
+                const honor = this.player1.honor;
+                const mil = this.kuwanan.militarySkill;
                 this.player1.clickCard(this.virtue);
                 this.player1.clickCard(this.kuwanan);
-                expect(this.kuwanan.getMilitarySkill()).toBe(mil + 2);
+                expect(this.kuwanan.militarySkill).toBe(mil + 2);
                 expect(this.getChatLogs(5)).toContain('player1 plays Two-Folded Virtue to grant +2military to Doji Kuwanan and, if they lose the current conflict, gain 1 honor');
 
                 this.noMoreActions();
@@ -389,7 +432,7 @@ describe('SoD - Crane', function () {
                     province: this.pilgrimage
                 });
 
-                let honor = this.player1.honor;
+                const honor = this.player1.honor;
                 this.player1.clickCard(this.virtue);
                 this.player1.clickCard(this.daidoji);
                 this.noMoreActions();
@@ -481,6 +524,17 @@ describe('Excellence Attained', function () {
             expect(this.getChatLogs(3)).toContain('player2 takes nothing');
             expect(this.getChatLogs(2)).toContain('player2 is shuffling their conflict deck');
             expect(this.player2).toHavePrompt('Choose defenders');
+        });
+
+        it('says it searches the top card when only one is left', function () {
+            this.player2.reduceDeckToNumber('conflict deck', 1);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.adeptOfTheWaves]
+            });
+            this.player2.clickCard(this.excellence);
+            expect(this.player2).toHavePromptButton('Take nothing');
+            expect(this.getChatLogs(3)).toContain('player2 uses Excellence, Attained to search the top card of their conflict deck for an attachment and put it into play');
         });
 
         it('should prompt to choose a character to attach to', function () {
@@ -585,6 +639,59 @@ describe('SoD - Two-Folded Virtue played from an opponent\'s deck', function () 
 
             expect(this.player2.honor).toBe(honor2 + 1);
             expect(this.player1.honor).toBe(honor1);
+        });
+    });
+});
+
+describe('SoD - Crane - Asahina Momoko', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 5,
+                    honor: 10,
+                    inPlay: ['asahina-momoko', 'doji-whisperer'],
+                    hand: ['cloud-the-mind', 'cloud-the-mind', 'cloud-the-mind']
+                },
+                player2: {
+                    fate: 3,
+                    inPlay: ['adept-of-the-waves', 'doji-challenger'],
+                    hand: ['cloud-the-mind']
+                }
+            });
+            this.momoko = this.player1.findCardByName('asahina-momoko');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            [this.cloud1, this.cloud2, this.cloud3] = this.player1.filterCardsByName('cloud-the-mind');
+            this.adept = this.player2.findCardByName('adept-of-the-waves');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+        });
+
+        it('gains honor for the first two Spells in a round only', function () {
+            this.player1.playAttachment(this.cloud1, this.challenger);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.momoko);
+            expect(this.player1.honor).toBe(11);
+            this.player2.pass();
+            this.player1.playAttachment(this.cloud2, this.adept);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.momoko);
+            expect(this.player1.honor).toBe(12);
+            this.player2.pass();
+            this.player1.playAttachment(this.cloud3, this.whisperer);
+            expect(this.cloud3.parent).toBe(this.whisperer);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Action Window');
+            expect(this.player1.honor).toBe(12);
+        });
+
+        it('does not react to an opponent\'s Spell', function () {
+            this.player1.pass();
+            const cloud = this.player2.playAttachment('cloud-the-mind', this.whisperer);
+            expect(cloud.parent).toBe(this.whisperer);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.player1.honor).toBe(10);
         });
     });
 });

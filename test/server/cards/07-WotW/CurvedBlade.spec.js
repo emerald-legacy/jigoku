@@ -32,7 +32,7 @@ describe('Curved Blade', function() {
             it('should not work on defense', function() {
                 this.player1.clickCard(this.blade);
                 this.player1.clickCard(this.borderRider);
-                this.riderMil = this.borderRider.getMilitarySkill();
+                this.riderMil = this.borderRider.militarySkill;
                 this.noMoreActions();
                 this.player1.clickPrompt('Pass Conflict');
                 this.player1.clickPrompt('Yes');
@@ -41,18 +41,18 @@ describe('Curved Blade', function() {
                     attackers: [this.matsu],
                     defenders: [this.borderRider]
                 });
-                expect(this.borderRider.getMilitarySkill()).toBe(this.riderMil);
+                expect(this.borderRider.militarySkill).toBe(this.riderMil);
             });
 
             it('should work on offense', function() {
                 this.player1.clickCard(this.blade);
                 this.player1.clickCard(this.borderRider);
-                this.riderMil = this.borderRider.getMilitarySkill();
+                this.riderMil = this.borderRider.militarySkill;
                 this.noMoreActions();
                 this.initiateConflict({
                     attackers: [this.borderRider]
                 });
-                expect(this.borderRider.getMilitarySkill()).toBe(this.riderMil + 2);
+                expect(this.borderRider.militarySkill).toBe(this.riderMil + 2);
             });
         });
     });

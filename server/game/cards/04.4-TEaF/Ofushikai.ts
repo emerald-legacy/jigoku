@@ -1,12 +1,12 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { cannotParticipateAsAttacker, gainAbility } from '../../effects.js';
+import { cardLastingEffect, sendHome } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
-import { Duration, CardType, AbilityType } from '../../Constants.js';
+import { Duration, CardType, Trait } from '../../Constants.js';
 
-class Ofushukai extends DrawCard {
+class Ofushikai extends DrawCard {
     static id = 'ofushikai';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true,
             unique: true,
@@ -14,27 +14,20 @@ class Ofushukai extends DrawCard {
         });
 
         this.whileAttached({
-            match: (card: DrawCard) => card.hasTrait('champion'),
-            effect: ability.effects.gainAbility(AbilityType.Action, {
-                title: 'Send a character home',
-                condition: (context: AbilityContext<this>) => context.source.isParticipating(),
-                effect: 'send {0} home and prevent it from attacking this phase',
-                printedAbility: false,
-                target: {
+            match: (card) => card.hasTrait(Trait.Champion),
+            effect: gainAbility.action('Send a character home', (ability) => ability
+                .condition((context) => context.source.isParticipating())
+                .target({
                     cardType: CardType.Character,
-                    cardCondition: (card: DrawCard) => card.isParticipating(),
-                    gameAction: [
-                        ability.actions.sendHome(),
-                        ability.actions.cardLastingEffect({
-                            duration: Duration.UntilEndOfPhase,
-                            effect: ability.effects.cannotParticipateAsAttacker()
-                        })
-                    ]
-                }
-            })
+                    cardCondition: (card) => card.isParticipating()
+                }, sendHome(), cardLastingEffect({
+                    duration: Duration.UntilEndOfPhase,
+                    effect: cannotParticipateAsAttacker()
+                }))
+                .chatText('send {0} home and prevent it from attacking this phase'))
         });
     }
 }
 
 
-export default Ofushukai;
+export default Ofushikai;

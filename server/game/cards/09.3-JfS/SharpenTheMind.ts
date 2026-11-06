@@ -1,22 +1,21 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { modifyBothSkills } from '../../effects.js';
 import { Location } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
 
 class SharpenTheMind extends DrawCard {
     static id = 'sharpen-the-mind';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Give +3/+3 to attached character',
-            cost: AbilityDsl.costs.discardCard({ location: Location.Hand }),
-            condition: context => context.game.isDuringConflict(),
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
-                target: context.source.parentCharacter,
-                effect: AbilityDsl.effects.modifyBothSkills(3)
-            })),
-            effect: 'give +3{1}/+3{2} to {3}',
-            effectArgs: context => ['military', 'political', context.source.parentCharacter]
-        });
+    override setupCardAbilities() {
+        this.action('Give +3/+3 to attached character')
+            .condition((context) => context.game.isDuringConflict())
+            .cost(costs.discardCard({ location: Location.Hand }))
+            .cardLastingEffect((context) => ({
+                target: context.source.parentCharacter ?? [],
+                effect: modifyBothSkills(3)
+            }))
+            .chatText((context) => msg`give +3${'military'}/+3${'political'} to ${context.source.parentCharacter}`);
     }
 }
 

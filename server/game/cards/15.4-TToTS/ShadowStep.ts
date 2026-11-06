@@ -1,37 +1,31 @@
+import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, Players } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Players, Trait, EntersPlayStatus } from '../../Constants.js';
+import { removeFromGame } from '../../GameActions/GameActions.js';
 
 class ShadowStep extends DrawCard {
     static id = 'shadow-step';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Remove a character from the game and put it into play',
-            target: {
+    override setupCardAbilities() {
+        this.action('Remove a character from the game and put it into play')
+            .target({
                 cardType: CardType.Character,
-                cardCondition: card => !card.hasTrait('mythic'),
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.sequential([
-                    AbilityDsl.actions.removeFromGame(context => ({
-                        target: context.target
-                    })),
-                    AbilityDsl.actions.conditional({
-                        condition: context => {
-                            return (context.target as DrawCard).hasTrait('shadow');
-                        },
-                        trueGameAction: AbilityDsl.actions.putIntoPlay(context => ({
-                            target: context.target
-                        })),
-                        falseGameAction: AbilityDsl.actions.putIntoPlay(context => ({
-                            target: context.target,
-                            status: 'dishonored'
-                        }))
-                    })
-                ])
-            },
-            effect: 'remove {0} from the game, then put it back into play'
-        });
+                cardCondition: (card) => !card.hasTrait(Trait.Mythic),
+                controller: Players.Self
+            }, removeFromGame((context) => ({
+                target: context.target
+            })))
+            .chatText('remove {0} from the game, then put it back into play')
+            .then()
+            .if((context) => !!context.target?.hasTrait(Trait.Shadow))
+            .putIntoPlay((context) => ({ target: context.target, controller: this.ownerSide(context) }))
+            .otherwise()
+            .putIntoPlay((context) => ({ target: context.target, status: EntersPlayStatus.Dishonored, controller: this.ownerSide(context) }));
+    }
+
+    /** It enters play under its owner's control, also after you took control of it. */
+    private ownerSide(context: AbilityContext): Players {
+        return context.target?.owner === context.player ? Players.Self : Players.Opponent;
     }
 }
 

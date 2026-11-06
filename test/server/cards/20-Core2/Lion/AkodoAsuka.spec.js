@@ -5,7 +5,7 @@ describe('Akodo Asuka', function () {
                 phase: 'conflict',
                 player1: {
                     inPlay: ['akodo-asuka', 'matsu-berserker'],
-                    hand: ['fine-katana']
+                    hand: ['fine-katana', 'ornate-fan', 'banzai']
                 },
                 player2: {}
             });
@@ -35,12 +35,46 @@ describe('Akodo Asuka', function () {
             this.player1.clickCard(this.akodoAsuka);
 
             expect(this.player1).toHavePrompt('Akodo Asuka');
+            expect(this.player1).not.toHavePromptButton('Take nothing');
             this.player1.clickPrompt('Supernatural Storm (2)');
             expect(this.player1.hand.length).toBe(initialHandSize + 1);
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Akodo Asuka to look at the top 2 cards of their conflict deck'
             );
             expect(this.getChatLogs(5)).toContain('player1 takes 1 card');
+        });
+
+        it('offers only the top X cards and shuffles the deck', function () {
+            this.player1.moveCard('banzai', 'conflict deck');
+            this.player1.moveCard('ornate-fan', 'conflict deck');
+            this.player1.moveCard('fine-katana', 'conflict deck');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.akodoAsuka, this.matsuBerserker],
+                defenders: []
+            });
+            this.noMoreActions();
+            this.player1.clickCard(this.akodoAsuka);
+
+            expect(this.player1).toHavePromptButton('Fine Katana');
+            expect(this.player1).toHavePromptButton('Ornate Fan');
+            expect(this.player1).not.toHavePromptButton('Banzai!');
+            this.player1.clickPrompt('Ornate Fan');
+            expect(this.player1.findCardByName('ornate-fan').location).toBe('hand');
+            expect(this.player1.findCardByName('banzai').location).toBe('conflict deck');
+            expect(this.getChatLogs(5)).toContain('player1 is shuffling their conflict deck');
+        });
+
+        it('says "top card" when only one card is left in the deck', function () {
+            this.player1.reduceDeckToNumber('conflict deck', 1);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.akodoAsuka, this.matsuBerserker],
+                defenders: []
+            });
+            this.noMoreActions();
+            this.player1.clickCard(this.akodoAsuka);
+            expect(this.getChatLogs(5)).toContain('player1 uses Akodo Asuka to look at the top card of their conflict deck');
         });
     });
 });

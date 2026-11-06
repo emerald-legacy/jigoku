@@ -1,3 +1,4 @@
+import { msg } from './GameChat.js';
 import type BaseCard from './BaseCard.js';
 import { StatusToken } from './StatusToken.js';
 import { CharacterStatus } from './Constants.js';
@@ -8,7 +9,7 @@ export class CardStatusManager {
     constructor(private card: BaseCard) {}
 
     addStatusToken(tokenType: CharacterStatus | StatusToken): void {
-        const status = (tokenType as StatusToken).grantedStatus || (tokenType as CharacterStatus);
+        const status = tokenType instanceof StatusToken ? tokenType.grantedStatus : tokenType;
         if(!this.statusTokens.find((a) => a.grantedStatus === status)) {
             if(status === CharacterStatus.Honored && this.isDishonored) {
                 this.removeStatusToken(CharacterStatus.Dishonored);
@@ -16,16 +17,14 @@ export class CardStatusManager {
                 this.removeStatusToken(CharacterStatus.Honored);
             } else {
                 const token = StatusToken.create(this.card.game, this.card, status);
-                if(token) {
-                    token.setCard(this.card);
-                    this.statusTokens.push(token);
-                }
+                token.setCard(this.card);
+                this.statusTokens.push(token);
             }
         }
     }
 
     removeStatusToken(tokenType: CharacterStatus | StatusToken): void {
-        const status = (tokenType as StatusToken).grantedStatus || (tokenType as CharacterStatus);
+        const status = tokenType instanceof StatusToken ? tokenType.grantedStatus : tokenType;
         const index = this.statusTokens.findIndex((a) => a.grantedStatus === status);
         if(index > -1) {
             const realToken = this.statusTokens[index];
@@ -43,10 +42,7 @@ export class CardStatusManager {
             if(this.isHonored && this.isDishonored) {
                 this.removeStatusToken(CharacterStatus.Honored);
                 this.removeStatusToken(CharacterStatus.Dishonored);
-                this.card.game.addMessage(
-                    'Honored and Dishonored status tokens nullify each other and are both discarded from {0}',
-                    this.card
-                );
+                this.card.game.addMessage(msg`Honored and Dishonored status tokens nullify each other and are both discarded from ${this.card}`);
             }
             this.statusTokens.forEach((token) => {
                 token.setCard(this.card);

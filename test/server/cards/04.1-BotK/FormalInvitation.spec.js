@@ -34,10 +34,10 @@ describe('Formal Invitation', function() {
                 });
 
                 it('should give +1 political skill to attached character', function() {
-                    let politicalSkill = this.dojiChallenger.getPoliticalSkill();
+                    const politicalSkill = this.dojiChallenger.politicalSkill;
                     this.player1.clickCard(this.formalInvitation);
                     this.player1.clickCard(this.dojiChallenger);
-                    expect(this.dojiChallenger.getPoliticalSkill()).toBe(politicalSkill + 1);
+                    expect(this.dojiChallenger.politicalSkill).toBe(politicalSkill + 1);
                 });
             });
 
@@ -89,6 +89,37 @@ describe('Formal Invitation', function() {
                     expect(this.dojiChallenger.inConflict).toBe(true);
                 });
             });
+        });
+    });
+});
+
+describe('Formal Invitation and a glory drop', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    stronghold: 'isawa-mori-seido',
+                    inPlay: ['doji-whisperer'],
+                    hand: ['formal-invitation']
+                }
+            });
+            this.dojiWhisperer = this.player1.findCardByName('doji-whisperer');
+            this.seido = this.player1.findCardByName('isawa-mori-seido');
+            this.formalInvitation = this.player1.findCardByName('formal-invitation');
+        });
+
+        it('is discarded when the attached character\'s glory drops below 2 (#403)', function() {
+            this.player1.clickCard(this.seido);
+            this.player1.clickCard(this.dojiWhisperer);
+            expect(this.dojiWhisperer.glory).toBe(3);
+            this.player2.pass();
+            this.player1.playAttachment(this.formalInvitation, this.dojiWhisperer);
+            expect(this.formalInvitation.parent).toBe(this.dojiWhisperer);
+            this.advancePhases('fate');
+            expect(this.dojiWhisperer.glory).toBe(1);
+            expect(this.formalInvitation.location).toBe('conflict discard pile');
+            expect(this.getChatLogs(10)).toContain('Formal Invitation is discarded from Doji Whisperer as it is no longer legally attached');
         });
     });
 });

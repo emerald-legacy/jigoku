@@ -34,6 +34,10 @@ describe('Day of Brother Horse', function () {
             this.noMoreActions();
             this.player1.clickPrompt('Pass');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(10)).toContain(
+                'player1 passes their conflict opportunity as none of their characters can be declared as an attacker'
+            );
+            expect(this.dayofBrotherHorse.location).toBe('hand');
         });
 
         it('if triggered, protects a ring, draw 3 cards and discard 1 card', function () {
@@ -51,7 +55,7 @@ describe('Day of Brother Horse', function () {
 
             expect(this.player1.hand.length).toBe(initialHandSize + 1);
             expect(this.getChatLogs(5)).toContain(
-                'player1 plays Day of Brother Horse to prevent player2 from declaring Fire Ring conflicts, draw 3 cards, and discard 1 card - it\'s a sunny day filled with celebration. The Moto share tales of the desert!'
+                'player1 plays Day of Brother Horse to prevent player2 from declaring Fire Ring conflicts, draw 3 cards, and discard 1 card - it\'s a sunny day filled with celebration. The Moto share tales of the desert'
             );
 
             this.noMoreActions();
@@ -62,6 +66,44 @@ describe('Day of Brother Horse', function () {
 
             this.player2.clickRing('air');
             expect(this.game.rings.air.contested).toBe(true);
+        });
+    });
+});
+
+describe('Day of Brother Horse: Max 1 per round', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    hand: ['day-of-brother-horse', 'day-of-brother-horse'],
+                    inPlay: ['miya-mystic']
+                },
+                player2: {
+                    inPlay: ['miya-mystic']
+                }
+            });
+
+            [this.dayOfBrotherHorse1, this.dayOfBrotherHorse2] = this.player1.filterCardsByName('day-of-brother-horse');
+        });
+
+        it('cannot trigger a second copy in the same round', function () {
+            this.noMoreActions();
+            this.player1.clickPrompt('Pass Conflict');
+            this.player1.clickPrompt('Yes');
+            this.player1.clickCard(this.dayOfBrotherHorse1);
+            this.player1.clickRing('fire');
+            this.player1.clickCard(this.player1.hand.find((card) => card !== this.dayOfBrotherHorse2));
+            expect(this.dayOfBrotherHorse1.location).toBe('conflict discard pile');
+
+            this.noMoreActions();
+            this.player2.passConflict();
+            this.noMoreActions();
+            this.player1.clickPrompt('Pass Conflict');
+            this.player1.clickPrompt('Yes');
+            expect(this.getChatLogs(3)).toContain('player1 has chosen to pass their conflict opportunity');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.dayOfBrotherHorse2.location).toBe('hand');
         });
     });
 });

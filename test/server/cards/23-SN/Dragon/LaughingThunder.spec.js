@@ -1,4 +1,4 @@
-import { GameModes } from '../../../../../build/server/GameModes.js';
+import { GameMode } from '../../../../../build/server/GameMode.js';
 
 describe('Laughing Thunder', function () {
     integration(function () {
@@ -14,7 +14,7 @@ describe('Laughing Thunder', function () {
                     inPlay: ['akodo-toturi', 'political-rival', 'tattooed-wanderer'],
                     hand: ['way-of-the-lion', 'fine-katana', 'voice-of-honor']
                 },
-                gameMode: GameModes.Emerald
+                gameMode: GameMode.Emerald
             });
 
             this.thunder = this.player1.findCardByName('laughing-thunder');
@@ -45,7 +45,7 @@ describe('Laughing Thunder', function () {
             expect(this.breath.getType()).toBe('attachment');
             expect(this.thunder.attachments).toContain(this.breath);
 
-            expect(this.getChatLogs(5)).toContain('player1 uses Laughing Thunder to claim the effects of Centered Breath as its own!');
+            expect(this.getChatLogs(5)).toContain('player1 uses Laughing Thunder to claim the effects of Centered Breath as its own');
 
             this.noMoreActions();
             this.initiateConflict({
@@ -73,7 +73,7 @@ describe('Laughing Thunder', function () {
             expect(this.player1).not.toBeAbleToSelect(this.letgo);
 
             this.player1.clickCard(this.punch);
-            expect(this.getChatLogs(5)).toContain('player1 uses Laughing Thunder to claim the effects of Hurricane Punch as its own!');
+            expect(this.getChatLogs(5)).toContain('player1 uses Laughing Thunder to claim the effects of Hurricane Punch as its own');
 
             this.player2.pass();
 

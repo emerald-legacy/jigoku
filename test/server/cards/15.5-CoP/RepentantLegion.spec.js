@@ -8,7 +8,8 @@ describe('Repentant Legion', function() {
                     dynastyDiscard: ['doji-whisperer', 'matsu-berserker', 'miya-mystic', 'imperial-storehouse']
                 },
                 player2: {
-                    inPlay: ['doji-challenger']
+                    inPlay: ['doji-challenger'],
+                    hand: ['raze-to-the-ground']
                 }
             });
 
@@ -21,6 +22,7 @@ describe('Repentant Legion', function() {
             this.storehouse = this.player1.moveCard('imperial-storehouse', 'dynasty deck');
 
             this.dojiChallenger = this.player2.findCardByName('doji-challenger');
+            this.raze = this.player2.findCardByName('raze-to-the-ground');
         });
 
         it('should trigger on breaking an enemy province', function() {
@@ -73,6 +75,30 @@ describe('Repentant Legion', function() {
             expect(this.player2).toHavePrompt('air ring');
         });
 
+        it('should trigger when the attacker\'s own province breaks while it defends, as its player broke it', function() {
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.dojiChallenger],
+                defenders: [this.repentantLegion],
+                type: 'military'
+            });
+
+            const attackersProvince = this.player2.findCardByName('shameful-display', 'province 1');
+            attackersProvince.facedown = false;
+            this.repentantLegion.bowed = true;
+            this.noMoreActions();
+            expect(this.getChatLogs(3)).toContain('player2 won a military conflict 3 vs 0');
+            this.player2.clickCard(this.raze);
+            this.player2.clickCard(this.dojiChallenger);
+            this.player2.clickCard(attackersProvince);
+            this.player1.clickPrompt('No');
+            expect(attackersProvince.isBroken).toBe(true);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.repentantLegion);
+        });
+
         it('should put a card in each non-stronghold rovince facedown', function() {
             this.noMoreActions();
             this.initiateConflict({
@@ -98,6 +124,30 @@ describe('Repentant Legion', function() {
             expect(this.matsuBerserker.facedown).toBe(true);
             expect(this.miyaMystic.facedown).toBe(true);
             expect(this.storehouse.facedown).toBe(true);
+        });
+
+        it('should keep filling after the dynasty deck runs out', function() {
+            this.player1.reduceDeckToNumber('dynasty deck', 2);
+            const honor = this.player1.honor;
+            const inProvince3 = this.player1.player.getDynastyCardsInProvince('province 3').length;
+            const inProvince4 = this.player1.player.getDynastyCardsInProvince('province 4').length;
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.repentantLegion],
+                defenders: [],
+                type: 'military'
+            });
+
+            this.noMoreActions();
+
+            this.player1.clickPrompt('no');
+            this.player1.clickCard(this.repentantLegion);
+
+            expect(this.storehouse.location).toBe('province 1');
+            expect(this.miyaMystic.location).toBe('province 2');
+            expect(this.player1.honor).toBe(honor - 5);
+            expect(this.player1.player.getDynastyCardsInProvince('province 3').length).toBe(inProvince3 + 1);
+            expect(this.player1.player.getDynastyCardsInProvince('province 4').length).toBe(inProvince4 + 1);
         });
     });
 });

@@ -1,25 +1,24 @@
-import { CardType, Duration, Phases, Players } from '../../../Constants.js';
+import { CardType, Duration, Phase, Players } from '../../../Constants.js';
 import { StrongholdCard } from '../../../StrongholdCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import * as costs from '../../../costs/index.js';
+import { modifyGlory } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 
 export default class HouseOfLeaves extends StrongholdCard {
     static id = 'house-of-leaves';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Bow this stronghold',
-            phase: Phases.Conflict,
-            cost: AbilityDsl.costs.bowSelf(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Bow this stronghold')
+            .phase(Phase.Conflict)
+            .cost(costs.bowSelf())
+            .target({
                 cardType: CardType.Character,
                 cardCondition: (card) => !card.isParticipating(),
-                controller: Players.Self,
-                gameAction: AbilityDsl.actions.cardLastingEffect({
-                    duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.modifyGlory(2)
-                })
-            },
-            effect: 'give +2 glory to {0} for this phase'
-        });
+                controller: Players.Self
+            }, cardLastingEffect({
+                duration: Duration.UntilEndOfPhase,
+                effect: modifyGlory(2)
+            }))
+            .chatText('give +2 glory to {0} for this phase');
     }
 }

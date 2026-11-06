@@ -1,32 +1,29 @@
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-import type BaseCard from '../../BaseCard.js';
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType, EventName, Phases } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { CardType, Phase } from '../../Constants.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class ShadowedVillage extends DrawCard {
     static id = 'shadowed-village';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Draw cards',
-            when: {
-                onMoveFate: (event: EventPayload<EventName.OnMoveFate>, context) =>
-                    context.game.currentPhase !== Phases.Fate &&
+    override setupCardAbilities() {
+        this.reaction('Draw cards')
+            .when({
+                onMoveFate: (event, context) =>
+                    context.game.currentPhase !== Phase.Fate &&
+                    // fate leaving with a character that leaves play isn't removed by an effect
+                    !event.isContingent &&
                     event.origin &&
                     event.origin.type === CardType.Character &&
                     'controller' in event.origin &&
                     event.origin.controller === context.player &&
-                    event.fate > 0
-            },
-            effect: 'draw {1} card{2}',
-            effectArgs: (context) => ((context.event.origin as BaseCard).isDishonored ? ['2', 's'] : ['a', '']),
-            gameAction: AbilityDsl.actions.draw((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
-                target: context.player,
-                amount: (context.event.origin as BaseCard).isDishonored ? 2 : 1
+                    (event.fate ?? 0) > 0
+            })
+            .draw((context) => ({
+                amount: context.event.origin?.isCard() && context.event.origin.isDishonored ? 2 : 1
             }))
-        });
+            .chatText((context) => context.event.origin?.isCard() && context.event.origin.isDishonored
+                ? msg`draw 2 cards`
+                : msg`draw a card`);
     }
 }
 

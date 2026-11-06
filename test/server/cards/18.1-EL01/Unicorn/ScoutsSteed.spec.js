@@ -68,3 +68,69 @@ describe('Scouts Steed', function () {
         });
     });
 });
+
+describe('Scouts Steed outside the conflict phase', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    inPlay: ['shinjo-archer'],
+                    hand: ['scout-s-steed']
+                }
+            });
+            this.shinjoArcher = this.player1.findCardByName('shinjo-archer');
+            this.scoutsSteed = this.player1.findCardByName('scout-s-steed');
+            this.shinjoArcher.bow();
+        });
+
+        it('has no reaction: no province is eligible while no conflict can be declared', function () {
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.player1.clickCard(this.scoutsSteed);
+            this.player1.clickCard(this.shinjoArcher);
+            expect(this.scoutsSteed.parent).toBe(this.shinjoArcher);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.game.currentConflict).toBeNull();
+            expect(this.shinjoArcher.bowed).toBe(true);
+        });
+    });
+});
+
+describe('Scouts Steed province protection', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['moto-conqueror'],
+                    hand: ['scout-s-steed']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    provinces: ['fertile-fields']
+                }
+            });
+
+            this.scoutsSteed = this.player1.findCardByName('scout-s-steed');
+            this.motoConqueror = this.player1.findCardByName('moto-conqueror');
+            this.fertile = this.player2.findCardByName('fertile-fields');
+            this.fertile.facedown = true;
+        });
+
+        it('the chosen province cannot be broken during this conflict', function () {
+            this.player1.clickCard(this.scoutsSteed);
+            this.player1.clickCard(this.motoConqueror);
+            this.player1.clickCard(this.scoutsSteed);
+            this.player1.clickCard(this.fertile);
+            expect(this.player1).toHavePrompt('Military Air Conflict');
+            this.player1.clickPrompt('Initiate Conflict');
+            expect(this.player2).toHavePrompt('Choose defenders');
+            this.player2.clickPrompt('Done');
+            this.noMoreActions();
+
+            expect(this.getChatLogs(10)).toContain('player1 won a military conflict 5 vs 0');
+            expect(this.fertile.isBroken).toBe(false);
+        });
+    });
+});

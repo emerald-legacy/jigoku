@@ -1,76 +1,61 @@
-import type { AbilityContext } from '../../../AbilityContext.js';
-import { CardType, Duration, EventName, Location, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import { CardType, Duration, Location, Players } from '../../../Constants.js';
+import { delayedEffect, modifyProvinceStrength } from '../../../effects.js';
+import { cardLastingEffect, chooseAction, playerLastingEffect, selectAttackedProvince } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
-import type { EventPayload } from '../../../Events/EventPayloads.js';
-import { ProvinceCard } from '../../../ProvinceCard.js';
 export default class MapmakerApprentice extends DrawCard {
     static id = 'mapmaker-apprentice';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Map a province',
-            target: {
+    override setupCardAbilities() {
+        this.action('Map a province')
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                controller: Players.Any,
-                gameAction: AbilityDsl.actions.playerLastingEffect((context) => ({
-                    effect: AbilityDsl.effects.delayedEffect({
-                        when: {
-                            onCardPlayed: (event: EventPayload<EventName.OnCardPlayed>, eventContext: AbilityContext) => {
-                                if(!eventContext.game.currentConflict) {
-                                    return false;
-                                }
-                                if(!(context.target as ProvinceCard).isConflictProvince()) {
-                                    return false;
-                                }
-                                if(event.player !== context.player || event.card.type !== CardType.Event) {
-                                    return false;
-                                }
-                                const eventsPlayed = eventContext.game.currentConflict.getCardsPlayed(context.player, (card) => card.type === CardType.Event).length;
-                                return eventsPlayed <= 1;
+                controller: Players.Any
+            }, playerLastingEffect((context) => ({
+                effect: delayedEffect({
+                    when: {
+                        onCardPlayed: (event, eventContext) => {
+                            if(!eventContext.game.currentConflict) {
+                                return false;
                             }
-                        },
-                        message: '{0} changes the province strength of an attacked province due to the delayed effect of {1}',
-                        messageArgs: () => [context.player, context.source],
-                        multipleTrigger: true,
-                        gameAction: AbilityDsl.actions.selectCard((context) => ({
-                            activePromptTitle: 'Choose an attacked province',
-                            hidePromptIfSingleCard: true,
-                            cardType: CardType.Province,
-                            location: Location.Provinces,
-                            cardCondition: (card) => card.isConflictProvince(),
-                            subActionProperties: (card) => {
-                                context.target = card;
-                                return { target: card };
-                            },
-                            gameAction: AbilityDsl.actions.chooseAction(() => ({
-                                messages: {},
-                                options: {
-                                    'Raise attacked province\'s strength by 2': {
-                                        action: AbilityDsl.actions.cardLastingEffect(() => ({
-                                            targetLocation: Location.Provinces,
-                                            effect: AbilityDsl.effects.modifyProvinceStrength(2)
-                                        })),
-                                        message: '{0} chooses to increase {1}\'s strength by 2'
-                                    },
-                                    'Lower attacked province\'s strength by 2': {
-                                        action: AbilityDsl.actions.cardLastingEffect(() => ({
-                                            targetLocation: Location.Provinces,
-                                            effect: AbilityDsl.effects.modifyProvinceStrength(-2)
-                                        })),
-                                        message: '{0} chooses to reduce {1}\'s strength by 2'
-                                    }
+                            if(!context.target.isConflictProvince()) {
+                                return false;
+                            }
+                            if(event.player !== context.player || event.card.type !== CardType.Event) {
+                                return false;
+                            }
+                            const eventsPlayed = eventContext.game.currentConflict.getCardsPlayed(context.player, (card) => card.type === CardType.Event).length;
+                            return eventsPlayed <= 1;
+                        }
+                    },
+                    message: () => msg`${context.player} changes the province strength of an attacked province due to the delayed effect of ${context.source}`,
+                    multipleTrigger: true,
+                    gameAction: selectAttackedProvince({
+                        cardCondition: (card) => card === context.target,
+                        gameAction: chooseAction({
+                            choices: {
+                                'Raise attacked province\'s strength by 2': {
+                                    action: cardLastingEffect({
+                                        effect: modifyProvinceStrength(2)
+                                    }),
+                                    message: (_context, target, player) => msg`${player} chooses to increase ${target}'s strength by 2`
+                                },
+                                'Lower attacked province\'s strength by 2': {
+                                    action: cardLastingEffect({
+                                        effect: modifyProvinceStrength(-2)
+                                    }),
+                                    message: (_context, target, player) => msg`${player} chooses to reduce ${target}'s strength by 2`
                                 }
-                            }))
-                        }))
-                    }),
-                    duration: Duration.UntilEndOfRound
-                }))
-            },
-            effect: 'map {1}{2}{3} - the first event they play during each conflict at that province will also modify its strength',
-            effectArgs: context => context.target?.facedown ? [context.target.controller, '\'s ', context.target.location] : ['', '', context.target]
-        });
+                            }
+                        })
+                    })
+                }),
+                duration: Duration.UntilEndOfRound
+            })))
+            .chatText((context) => context.target.facedown
+                ? msg`map ${context.target.controller}${'\'s '}${context.target.location} - the first event they play during each conflict at that province will also modify its strength`
+                : msg`map ${context.target} - the first event they play during each conflict at that province will also modify its strength`);
     }
 }

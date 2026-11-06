@@ -131,6 +131,19 @@ describe('Illustrious Forge', function () {
                 expect(this.getChatLogs(2)).toContain('player2 is shuffling their conflict deck');
             });
 
+            it('says how many cards it searches when fewer than 5 are left', function () {
+                this.player2.reduceDeckToNumber('conflict deck', 2);
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.adeptOfTheWaves]
+                });
+                this.player2.clickCard(this.illustriousForge);
+                expect(this.player2).toHavePrompt('Choose an attachment');
+                expect(this.getChatLogs(1)).toContain(
+                    'player2 uses Illustrious Forge to search the top 2 cards of their conflict deck for an attachment and put it into play'
+                );
+            });
+
             it('should interact with Talisman correctly', function () {
                 this.player2.player.moveCard(this.censure, 'hand');
                 this.player2.player.moveCard(this.fineKatana, 'hand');

@@ -30,11 +30,11 @@ describe('Fuchi Mura', function() {
             });
 
             it('should put a fate on each unclaimed ring', function() {
-                let airFate = this.game.rings.air.fate;
-                let earthFate = this.game.rings.earth.fate;
-                let fireFate = this.game.rings.fire.fate;
-                let voidFate = this.game.rings.void.fate;
-                let waterFate = this.game.rings.water.fate;
+                const airFate = this.game.rings.air.fate;
+                const earthFate = this.game.rings.earth.fate;
+                const fireFate = this.game.rings.fire.fate;
+                const voidFate = this.game.rings.void.fate;
+                const waterFate = this.game.rings.water.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({

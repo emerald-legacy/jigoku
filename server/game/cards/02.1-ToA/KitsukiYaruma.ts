@@ -1,29 +1,25 @@
 import DrawCard from '../../DrawCard.js';
-import BaseCard from '../../BaseCard.js';
-import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType, Location } from '../../Constants.js';
+import type BaseCard from '../../BaseCard.js';
+import { turnFacedown } from '../../GameActions/GameActions.js';
+import { CardType, Location, Trait } from '../../Constants.js';
 
 class KitsukiYaruma extends DrawCard {
     static id = 'kitsuki-yaruma';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Flip province facedown',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Flip province facedown')
+            .when({
                 onCharacterEntersPlay: (event, context) => event.card === context.source
-            },
-            target: {
+            })
+            .target({
                 cardType: CardType.Province,
                 location: Location.Provinces,
-                cardCondition: (card: BaseCard) => !(card as ProvinceCard).isBroken,
-                gameAction: AbilityDsl.actions.turnFacedown()
-            }
-        });
+                cardCondition: (card) => !card.isBroken
+            }, turnFacedown());
     }
 
-    allowAttachment(attachment: BaseCard | DrawCard): boolean {
-        if(attachment.hasTrait('poison') && !this.isBlank()) {
+    override allowAttachment(attachment: BaseCard): boolean {
+        if(attachment.hasTrait(Trait.Poison) && !this.isBlank()) {
             return false;
         }
 

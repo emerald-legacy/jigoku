@@ -76,10 +76,10 @@ describe('Daidoji Uji 2', function () {
                 expect(this.player1).toHavePromptButton('Done');
                 this.player1.clickPrompt('Ready for Battle');
 
-                expect(this.katana.location).toBe(this.uji.uuid);
-                expect(this.katana2.location).toBe(this.uji.uuid);
-                expect(this.voice.location).toBe(this.uji.uuid);
-                expect(this.readyForBattle.location).toBe(this.uji.uuid);
+                expect(this.katana.isUnderneath(this.uji)).toBe(true);
+                expect(this.katana2.isUnderneath(this.uji)).toBe(true);
+                expect(this.voice.isUnderneath(this.uji)).toBe(true);
+                expect(this.readyForBattle.isUnderneath(this.uji)).toBe(true);
 
                 expect(this.getChatLogs(5)).toContain('player1 uses Daidoji Uji to search their deck');
                 expect(this.getChatLogs(5)).toContain('player1 selects 4 cards');
@@ -334,6 +334,35 @@ describe('Daidoji Uji 2', function () {
                 );
             });
 
+            it('should remove cards under Uji from the game if he leaves play while blanked (#1020)', function () {
+                this.player2.pass();
+                this.player1.clickCard(this.charge);
+                this.player1.clickCard(this.uji);
+                this.player1.clickCard(this.uji);
+
+                this.player1.clickPrompt('Fine Katana (2)');
+                this.player1.clickPrompt('Fine Katana');
+                this.player1.clickPrompt('Voice of Honor');
+                this.player1.clickPrompt('Ready for Battle');
+
+                this.player2.playAttachment(this.cloud, this.uji);
+                this.player1.pass();
+                this.player2.clickCard(this.mos);
+                this.player2.clickCard(this.uji);
+                this.player2.clickCard(this.mos);
+                expect(this.uji.isDishonored).toBe(true);
+                this.player1.pass();
+
+                this.player2.clickCard(this.swim);
+                this.player2.clickCard(this.uji);
+
+                expect(this.uji.location).toBe('dynasty discard pile');
+                expect(this.katana.location).toBe('removed from game');
+                expect(this.katana2.location).toBe('removed from game');
+                expect(this.voice.location).toBe('removed from game');
+                expect(this.readyForBattle.location).toBe('removed from game');
+            });
+
             it('should not allow opponent to play cards', function () {
                 this.player2.pass();
                 this.player1.clickCard(this.charge);
@@ -353,6 +382,79 @@ describe('Daidoji Uji 2', function () {
                 this.player2.clickCard(this.katana);
                 expect(this.player2).not.toHavePrompt('Fine Katana');
             });
+        });
+    });
+});
+
+describe('Daidoji Uji 2\'s abilities gained through Contemplative Wisdom', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: [{ card: 'daidoji-uji-2', attachments: ['contemplative-wisdom'] }, 'doji-whisperer'],
+                    conflictDiscard: ['fine-katana']
+                },
+                player2: {
+                    inPlay: ['doji-challenger']
+                }
+            });
+            this.uji = this.player1.findCardByName('daidoji-uji-2');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.katana = this.player1.findCardByName('fine-katana');
+            this.player1.player.placeUnderneath(this.katana, this.uji);
+            this.whisperer.honor();
+            this.player1.claimRing('air');
+            this.game.checkGameState(true);
+        });
+
+        it('doesn\'t let you play the cards under a Uji who isn\'t honored', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.whisperer],
+                defenders: [],
+                ring: 'fire'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.uji);
+            this.player1.clickCard(this.whisperer);
+            this.player1.clickRing('air');
+            expect(this.game.rings.air.isUnclaimed()).toBe(true);
+            this.player2.pass();
+            this.player1.clickCard(this.katana);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+    });
+});
+
+describe('Daidoji Uji 2 chat for a single card', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    dynastyDiscard: ['daidoji-uji-2'],
+                    conflictDiscard: ['voice-of-honor', 'let-go', 'a-new-name']
+                }
+            });
+
+            this.uji = this.player1.placeCardInProvince('daidoji-uji-2', 'province 1');
+            this.voice = this.player1.moveCard('voice-of-honor', 'conflict deck');
+            this.player1.moveCard('let-go', 'conflict deck');
+            this.player1.moveCard('a-new-name', 'conflict deck');
+        });
+
+        it('should use the singular for one selected card', function() {
+            this.player1.clickCard(this.uji);
+            this.player1.clickPrompt('0');
+            this.player1.clickCard(this.uji);
+            this.player1.clickPrompt('Voice of Honor');
+            this.player1.clickPrompt('Done');
+
+            expect(this.voice.isUnderneath(this.uji)).toBe(true);
+            expect(this.getChatLogs(5)).toContain('player1 selects 1 card');
+            expect(this.getChatLogs(5)).not.toContain('player1 selects 1 cards');
         });
     });
 });

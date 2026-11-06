@@ -1,33 +1,26 @@
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import type BaseCard from '../../BaseCard.js';
-import type { ProvinceCard } from '../../ProvinceCard.js';
-import { Location, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { unlimited } from '../../AbilityLimit.js';
+import { modifyProvinceStrength } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 
 class JewelOfTheKhamasin extends DrawCard {
     static id = 'jewel-of-the-khamasin';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Reduce province strength',
-            condition: context => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()),
-            cost: AbilityDsl.costs.payHonor(1),
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            gameAction: AbilityDsl.actions.selectCard(context => ({
-                activePromptTitle: 'Choose an attacked province',
-                hidePromptIfSingleCard: true,
-                cardType: CardType.Province,
-                location: Location.Provinces,
-                cardCondition: (card: BaseCard) => card.isConflictProvince() && (card as ProvinceCard).getStrength() > 0,
-                message: '{0} reduces the strength of {1} by 1',
-                messageArgs: cards => [context.player, cards],
-                gameAction: AbilityDsl.actions.cardLastingEffect(() => ({
-                    targetLocation: Location.Provinces,
-                    effect: AbilityDsl.effects.modifyProvinceStrength(-1)
+    override setupCardAbilities() {
+        this.action('Reduce province strength')
+            .condition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.isAttacking()))
+            .cost(costs.payHonor(1))
+            .selectAttackedProvince({
+                cardCondition: (card) => card.getStrength() > 0,
+                message: (context, cards) => msg`${context.player} reduces the strength of ${cards} by 1`,
+                gameAction: cardLastingEffect(() => ({
+                    effect: modifyProvinceStrength(-1)
                 }))
-            })),
-            effect: 'reduce an attacked province strength by 1'
-        });
+            })
+            .chatText('reduce an attacked province strength by 1')
+            .limit(unlimited());
     }
 }
 

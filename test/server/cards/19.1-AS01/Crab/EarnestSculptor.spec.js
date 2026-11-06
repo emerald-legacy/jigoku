@@ -82,7 +82,7 @@ describe('Earnest Sculptor', function () {
                     'player1 uses Earnest Sculptor to reduce the cost of Jade Strike by 1'
                 );
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Jade Strike to remove a fate from and set the base skills of Goblin Sneak to 0military/0political'
+                    'player1 plays Jade Strike to set the base skills of Goblin Sneak to 0military/0political'
                 );
             });
         });
@@ -122,6 +122,13 @@ describe('Earnest Sculptor', function () {
                 expect(this.player1).toHaveDisabledPromptButton('Fine Katana');
                 expect(this.player1).toHaveDisabledPromptButton('Rebuild');
                 expect(this.player1).toHaveDisabledPromptButton('A New Name');
+            });
+
+            it('says how many cards it looks at when fewer than 8 are left', function () {
+                this.player1.reduceDeckToNumber('conflict deck', 3);
+                this.player1.clickCard(this.earnestSculptor);
+                expect(this.player1).toHavePrompt('Select a card to reveal');
+                expect(this.getChatLogs(3)).toContain('player1 uses Earnest Sculptor to look at the top 3 cards of their deck');
             });
 
             it('should reveal the chosen attachment', function () {

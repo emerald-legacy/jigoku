@@ -45,6 +45,8 @@ describe('Bayushi Kotaro', function () {
             this.player1.clickPrompt('Yes');
             this.player1.clickPrompt('Gain 2 Honor');
             expect(this.cursecatcher.location).toBe('dynasty deck');
+            expect(this.player1.dynastyDeck[0]).not.toBe(this.cursecatcher);
+            expect(this.player1.dynastyDeck.at(-1)).toBe(this.cursecatcher);
         });
     });
 });

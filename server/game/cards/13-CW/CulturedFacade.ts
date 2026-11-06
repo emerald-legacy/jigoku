@@ -1,22 +1,21 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { cardCannot } from '../../effects.js';
+import { RestrictionType, RestrictionScope } from '../../Constants.js';
 
 class CulturedFacade extends DrawCard {
     static id = 'cultured-facade';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Prevent targetting',
-            condition: () => this.game.isDuringConflict(),
-            effect: 'prevent characters from being targetted by events played by players with a higher bid value than that of the character\'s controller',
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
+    override setupCardAbilities() {
+        this.action('Prevent targeting')
+            .condition((context) => context.game.isDuringConflict())
+            .cardLastingEffect((context) => ({
                 target: context.game.currentConflict?.getParticipants() ?? [],
-                effect: AbilityDsl.effects.cardCannot({
-                    cannot: 'target',
-                    restricts: 'eventPlayedByHigherBidPlayer'
+                effect: cardCannot({
+                    cannot: RestrictionType.Target,
+                    appliesTo: RestrictionScope.EventPlayedByHigherBidPlayer
                 })
             }))
-        });
+            .chatText('prevent characters from being targeted by events played by players with a higher bid value than that of the character\'s controller');
     }
 }
 

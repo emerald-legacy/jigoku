@@ -18,6 +18,13 @@ describe('Daimyo\'s Favor', function () {
                 this.fate = this.player1.fate;
             });
 
+            it('keeps the reduction for the character after the Favor leaves play', function () {
+                this.player1.moveCard(this.daimyosFavor, 'conflict discard pile');
+                this.ancestralDaisho = this.player1.playAttachment('ancestral-daisho', this.doomedShugenja);
+                expect(this.doomedShugenja.attachments).toContain(this.ancestralDaisho);
+                expect(this.player1.fate).toBe(this.fate);
+            });
+
             it('should reduce the cost of attachments played on the attached character', function () {
                 expect(this.daimyosFavor.bowed).toBe(true);
                 this.ancestralDaisho = this.player1.playAttachment('ancestral-daisho', this.doomedShugenja);
@@ -58,6 +65,39 @@ describe('Daimyo\'s Favor', function () {
                 expect(this.doomedShugenja.attachments).toContain(this.tattooedWanderer);
                 expect(this.player1.fate).toBe(this.fate);
             });
+        });
+    });
+});
+
+describe('Daimyo\'s Favor with a character played as an attachment', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doomed-shugenja'],
+                    hand: ['daimyo-s-favor', 'togashi-acolyte', 'ancestral-daisho']
+                }
+            });
+            this.doomedShugenja = this.player1.findCardByName('doomed-shugenja');
+            this.acolyte = this.player1.findCardByName('togashi-acolyte');
+            this.daimyosFavor = this.player1.playAttachment('daimyo-s-favor', this.doomedShugenja);
+            this.player2.pass();
+            this.player1.clickCard(this.daimyosFavor);
+            this.player2.pass();
+        });
+
+        it('uses up the reduction', function () {
+            const fate = this.player1.fate;
+            this.player1.clickCard(this.acolyte);
+            this.player1.clickPrompt('Play Togashi Acolyte as an attachment');
+            this.player1.clickCard(this.doomedShugenja);
+            expect(this.doomedShugenja.attachments).toContain(this.acolyte);
+            expect(this.player1.fate).toBe(fate - 1);
+            this.player2.pass();
+            this.ancestralDaisho = this.player1.playAttachment('ancestral-daisho', this.doomedShugenja);
+            expect(this.doomedShugenja.attachments).toContain(this.ancestralDaisho);
+            expect(this.player1.fate).toBe(fate - 2);
         });
     });
 });

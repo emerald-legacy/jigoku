@@ -1,28 +1,22 @@
-import { CardType, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { CardType, Players, Trait } from '../../../Constants.js';
+import * as costs from '../../../costs/index.js';
+import { ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class CampfireCounsel extends DrawCard {
     static id = 'campfire-counsel';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Ready a character',
-            cost: AbilityDsl.costs.sacrificeSelf(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Ready a character')
+            .cost(costs.sacrificeSelf())
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => (card.printedCost ?? 0) <= 3,
-                gameAction: AbilityDsl.actions.ready()
-            },
-            then: context => ({
-                thenCondition: () => !!context && !context.player.isCharacterTraitInPlay('storyteller'),
-                gameAction: AbilityDsl.actions.dishonor({
-                    target: context?.target
-                }),
-                message: '{3} is dishonored',
-                messageArgs: () => [context?.target]
-            })
-        });
+                cardCondition: (card) => card.costAtMost(3)
+            }, ready())
+            .thenIf((context) => !context.player.isCharacterTraitInPlay(Trait.Storyteller))
+            .dishonor((context) => ({ target: context.target }))
+            .message((context) => msg`${context.target} is dishonored`);
     }
 }

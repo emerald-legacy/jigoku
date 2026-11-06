@@ -30,8 +30,8 @@ describe('Promising Youth', function () {
                 this.player1.clickPrompt('Play Promising Youth as an attachment');
                 this.player1.clickCard(this.whisperer);
                 expect(this.whisperer.attachments.length).toBe(1);
-                expect(this.whisperer.getMilitarySkill()).toBe(this.whisperer.printedMilitarySkill + 2);
-                expect(this.whisperer.getPoliticalSkill()).toBe(this.whisperer.printedPoliticalSkill + 2);
+                expect(this.whisperer.militarySkill).toBe(this.whisperer.printedMilitarySkill + 2);
+                expect(this.whisperer.politicalSkill).toBe(this.whisperer.printedPoliticalSkill + 2);
             });
 
             it('should be treated as an attachment in play', function () {
@@ -102,6 +102,7 @@ describe('Promising Youth', function () {
                 this.player1.clickCard(this.youth);
                 expect(this.whisperer.location).toBe('dynasty discard pile');
                 expect(this.youth.location).toBe('play area');
+                expect(this.getChatLogs(5)).toContain('player1 uses Promising Youth to detach Promising Youth from Doji Whisperer and turn it into a character');
             });
         });
     });

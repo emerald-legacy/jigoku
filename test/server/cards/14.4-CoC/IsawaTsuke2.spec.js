@@ -187,7 +187,7 @@ describe('Isawa Tsuke 2', function() {
             });
 
             it('Should remove the honor and the fate from the chosen characters', function() {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -196,9 +196,9 @@ describe('Isawa Tsuke 2', function() {
                     defenders: [this.liar, this.tsuke]
                 });
 
-                let fate1 = this.student.fate;
-                let fate2 = this.whisperer.fate;
-                let fate3 = this.tsuke.fate;
+                const fate1 = this.student.fate;
+                const fate2 = this.whisperer.fate;
+                const fate3 = this.tsuke.fate;
 
                 this.player2.clickCard(this.tsuke);
                 this.player2.clickPrompt('3');
@@ -220,11 +220,11 @@ describe('Isawa Tsuke 2', function() {
 
                 expect(this.player2.honor).toBe(honor - 3);
 
-                expect(this.getChatLogs(3)).toContain('player2 uses Isawa Tsuke to lose 3 honor to discard a fate from Student of War, Doji Whisperer and Isawa Tsuke');
+                expect(this.getChatLogs(3)).toContain('player2 uses Isawa Tsuke to lose 3 honor to remove 1 fate from each of Student of War, Doji Whisperer and Isawa Tsuke');
             });
 
             it('Should not let you choose more characters than you chose to lose honor', function() {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -233,9 +233,9 @@ describe('Isawa Tsuke 2', function() {
                     defenders: [this.liar, this.tsuke]
                 });
 
-                let fate1 = this.student.fate;
-                let fate2 = this.whisperer.fate;
-                let fate3 = this.tsuke.fate;
+                const fate1 = this.student.fate;
+                const fate2 = this.whisperer.fate;
+                const fate3 = this.tsuke.fate;
 
                 this.player2.clickCard(this.tsuke);
                 this.player2.clickPrompt('2');
@@ -251,11 +251,28 @@ describe('Isawa Tsuke 2', function() {
 
                 expect(this.player2.honor).toBe(honor - 2);
 
-                expect(this.getChatLogs(3)).toContain('player2 uses Isawa Tsuke to lose 2 honor to discard a fate from Student of War and Doji Whisperer');
+                expect(this.getChatLogs(3)).toContain('player2 uses Isawa Tsuke to lose 2 honor to remove 1 fate from each of Student of War and Doji Whisperer');
+            });
+
+            it('names the single character it removes a fate from', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.student, this.youth, this.whisperer, this.tadaka],
+                    defenders: [this.liar, this.tsuke]
+                });
+
+                const fate = this.student.fate;
+                this.player2.clickCard(this.tsuke);
+                this.player2.clickPrompt('1');
+                this.player2.clickCard(this.student);
+
+                expect(this.student.fate).toBe(fate - 1);
+                expect(this.getChatLogs(3)).toContain('player2 uses Isawa Tsuke to lose 1 honor to remove 1 fate from Student of War');
             });
 
             it('should allow cancelling', function() {
-                let honor = this.player2.honor;
+                const honor = this.player2.honor;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -264,9 +281,9 @@ describe('Isawa Tsuke 2', function() {
                     defenders: [this.liar, this.tsuke]
                 });
 
-                let fate1 = this.student.fate;
-                let fate2 = this.whisperer.fate;
-                let fate3 = this.tsuke.fate;
+                const fate1 = this.student.fate;
+                const fate2 = this.whisperer.fate;
+                const fate3 = this.tsuke.fate;
 
                 this.player2.clickCard(this.tsuke);
                 this.player2.clickPrompt('3');
@@ -286,7 +303,7 @@ describe('Isawa Tsuke 2', function() {
 
                 expect(this.player2.honor).toBe(honor - 3);
 
-                expect(this.getChatLogs(4)).toContain('player2 uses Isawa Tsuke to lose 3 honor to discard a fate from Student of War, Doji Whisperer and Isawa Tadaka');
+                expect(this.getChatLogs(4)).toContain('player2 uses Isawa Tsuke to lose 3 honor to remove 1 fate from each of Student of War, Doji Whisperer and Isawa Tadaka');
                 expect(this.getChatLogs(4)).toContain('player1 uses Shiba Yōjimbō to cancel the effects of Isawa Tsuke');
             });
         });

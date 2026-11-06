@@ -21,6 +21,8 @@ describe('Liar\'s Mask', function () {
                 this.player1.honor = 7;
                 this.player1.clickCard(this.mask);
                 expect(this.player1).not.toBeAbleToSelect(this.liar);
+                expect(this.player1).toHavePrompt('Action Window');
+                expect(this.mask.location).toBe('hand');
             });
 
             it('should be attachable if honor is below or at 6', function () {

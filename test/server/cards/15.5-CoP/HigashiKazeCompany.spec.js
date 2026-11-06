@@ -67,6 +67,7 @@ describe('Higashi Kaze Company', function() {
 
             this.noMoreActions();
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 won a political conflict 6 vs 4');
         });
 
         it('chat message', function() {

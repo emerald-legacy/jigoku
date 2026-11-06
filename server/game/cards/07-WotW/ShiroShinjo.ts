@@ -1,24 +1,20 @@
-import { EventName, Location } from '../../Constants.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { Location } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 export default class ShiroShinjo extends StrongholdCard {
     static id = 'shiro-shinjo';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Collect additional fate',
-            cost: AbilityDsl.costs.bowSelf(),
-            when: {
-                onFateCollected: (event: EventPayload<EventName.OnFateCollected>, context) => event.player === context.player
-            },
-            gameAction: AbilityDsl.actions.gainFate((context: AbilityContext) => ({
+    override setupCardAbilities() {
+        this.reaction('Collect additional fate')
+            .when({
+                onFateCollected: (event, context) => event.player === context.player
+            })
+            .cost(costs.bowSelf())
+            .gainFate((context) => ({
                 amount: context.player.getNumberOfOpponentsFaceupProvinces(
                     (province) => province.location !== Location.StrongholdProvince
                 )
-            }))
-        });
+            }));
     }
 }

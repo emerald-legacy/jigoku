@@ -133,8 +133,8 @@ describe('Study the Natural World', function() {
 
         it('should force you to resolve all elements if you say yes', function() {
             this.noMoreActions();
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
 
 
             this.initiateConflict({
@@ -169,8 +169,8 @@ describe('Study the Natural World', function() {
 
         it('should skip a ring if there are no legal targets', function() {
             this.noMoreActions();
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
 
 
             this.initiateConflict({
@@ -208,8 +208,8 @@ describe('Study the Natural World', function() {
 
         it('should proceed to normal ring resolution after you resolve the extra window (and only let you resolve a single ring)', function() {
             this.noMoreActions();
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
 
             this.initiateConflict({
                 type: 'military',
@@ -266,8 +266,8 @@ describe('Study the Natural World', function() {
             this.player1.clickCard(this.study);
             this.noMoreActions();
             this.player1.clickPrompt('Yes');
-            let p1Honor = this.player1.honor;
-            let p2Honor = this.player2.honor;
+            const p1Honor = this.player1.honor;
+            const p2Honor = this.player2.honor;
 
             expect(this.player1).toHavePrompt('Water Ring');
             this.player1.clickCard(this.challenger);
@@ -365,6 +365,44 @@ describe('Study the Natural World', function() {
             expect(this.player1).toHavePrompt('Conflict Action Window');
             this.player1.clickCard(this.study);
             expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+    });
+});
+
+describe('Study the Natural World played by its owner\'s opponent', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['solemn-scholar'],
+                    hand: ['a-swallow-s-return'],
+                    fate: 10
+                },
+                player2: {
+                    conflictDiscard: ['study-the-natural-world'],
+                    provinces: ['shameful-display']
+                }
+            });
+            this.scholar = this.player1.findCardByName('solemn-scholar');
+            this.study = this.player2.findCardByName('study-the-natural-world');
+            this.player2.moveCard(this.study, 'conflict deck');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.scholar],
+                defenders: [],
+                ring: 'void'
+            });
+            this.player2.pass();
+            this.player1.clickCard('a-swallow-s-return');
+            this.player1.clickPrompt('Study the Natural World');
+        });
+
+        it('lets the player who played it resolve the ring effects', function() {
+            this.noMoreActions();
+            expect(this.player1).toHavePrompt('Resolve Ring Effects?');
+            expect(this.player2).not.toHavePrompt('Resolve Ring Effects?');
         });
     });
 });

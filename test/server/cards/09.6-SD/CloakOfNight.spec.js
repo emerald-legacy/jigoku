@@ -38,6 +38,7 @@ describe('Cloak of Night', function() {
 
             it('should give the chosen character +3 glory', function() {
                 expect(this.adept.glory).toBe(this.glory + 3);
+                expect(this.getChatLogs(3)).toContain('player1 plays Cloak of Night to give Adept of the Waves +3 glory and prevent them from being chosen as the target of player2\'s card abilities until the end of the conflict');
             });
 
             it('should prevent targeting by opponent abilities (event)', function() {

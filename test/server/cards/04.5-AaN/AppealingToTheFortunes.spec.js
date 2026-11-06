@@ -67,6 +67,28 @@ describe('Appealing to the Fortunes', function() {
                     this.player2.clickCard(this.bayushiKachiko);
                     expect(this.bayushiKachiko.location).toBe('play area');
                 });
+
+                // ruling #454: the character in the province being broken can be put into play before the break
+                it('should allow the character in the province being broken to be put into play', function() {
+                    expect(this.fawningDiplomat.location).toBe(this.appealingToTheFortunes.location);
+                    this.initiateConflict({
+                        type: 'military',
+                        attackers: [this.borderlandsDefender],
+                        province: this.appealingToTheFortunes,
+                        defenders: []
+                    });
+                    this.player2.pass();
+                    this.player1.pass();
+                    expect(this.player2).toHavePrompt('Triggered Abilities');
+                    this.player2.clickCard(this.appealingToTheFortunes);
+                    expect(this.player2).toHavePrompt('Choose a character');
+                    expect(this.player2).toBeAbleToSelect(this.fawningDiplomat);
+                    this.player2.clickCard(this.fawningDiplomat);
+                    expect(this.fawningDiplomat.location).toBe('play area');
+                    expect(this.fawningDiplomat.fate).toBe(0);
+                    expect(this.appealingToTheFortunes.isBroken).toBe(true);
+                    expect(this.getChatLogs(5)).toContain('player2 uses Appealing to the Fortunes to put Fawning Diplomat into play');
+                });
             });
 
             describe('when controlling player does not have a void role', function() {

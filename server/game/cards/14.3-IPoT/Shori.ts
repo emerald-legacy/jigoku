@@ -1,21 +1,21 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { AbilityType, Players } from '../../Constants.js';
+import { additionalConflict, gainAbility } from '../../effects.js';
+import { AbilityType, Players, ConflictType, Trait } from '../../Constants.js';
 
 class Shori extends DrawCard {
     static id = 'shori';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.attachmentConditions({
             unique: true,
             faction: 'lion'
         });
 
         this.whileAttached({
-            match: (card: DrawCard) => card.hasTrait('champion'),
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Persistent, {
+            match: (card) => card.hasTrait(Trait.Champion),
+            effect: gainAbility(AbilityType.Persistent, {
                 targetController: Players.Self,
-                effect: AbilityDsl.effects.additionalConflict('military')
+                effect: additionalConflict(ConflictType.Military)
             })
         });
     }

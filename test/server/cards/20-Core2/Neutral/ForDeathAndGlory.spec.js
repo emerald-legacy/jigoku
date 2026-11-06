@@ -31,11 +31,11 @@ describe('For Death and Glory', function () {
 
             expect(this.player1).toHavePrompt('For Death and Glory!');
             expect(this.player1).toHavePromptButton('Gain +2 skill');
-            expect(this.player1).toHavePromptButton('Gain +4 skill, and get discarded when the conflict ends');
+            expect(this.player1).toHavePromptButton('Gain +4 skill, and be sacrificed when the conflict ends');
         });
 
         it('choosing +2', function () {
-            let skill = this.miyaMystic.getMilitarySkill();
+            const skill = this.miyaMystic.militarySkill;
 
             this.initiateConflict({
                 type: 'military',
@@ -49,7 +49,7 @@ describe('For Death and Glory', function () {
             expect(this.player1).toHavePrompt('For Death and Glory!');
             this.player1.clickPrompt('Gain +2 skill');
 
-            expect(this.miyaMystic.getMilitarySkill()).toBe(skill + 2);
+            expect(this.miyaMystic.militarySkill).toBe(skill + 2);
             this.noMoreActions();
             expect(this.miyaMystic.bowed).toBe(true);
             expect(this.miyaMystic.location).toBe('play area');
@@ -59,7 +59,7 @@ describe('For Death and Glory', function () {
         });
 
         it('choosing +4', function () {
-            let skill = this.miyaMystic.getMilitarySkill();
+            const skill = this.miyaMystic.militarySkill;
 
             this.initiateConflict({
                 type: 'military',
@@ -71,16 +71,16 @@ describe('For Death and Glory', function () {
             this.player1.clickCard(this.miyaMystic);
 
             expect(this.player1).toHavePrompt('For Death and Glory!');
-            this.player1.clickPrompt('Gain +4 skill, and get discarded when the conflict ends');
+            this.player1.clickPrompt('Gain +4 skill, and be sacrificed when the conflict ends');
 
-            expect(this.miyaMystic.getMilitarySkill()).toBe(skill + 4);
+            expect(this.miyaMystic.militarySkill).toBe(skill + 4);
             this.noMoreActions();
             expect(this.miyaMystic.location).toBe('dynasty discard pile');
             expect(this.getChatLogs(10)).toContain(
                 'player1 plays For Death and Glory! to grant 4 military skill to Miya Mystic, sacrificing them at the end of the conflict'
             );
             expect(this.getChatLogs(10)).toContain(
-                'Miya Mystic is discarded from play due to the delayed effect of For Death and Glory!'
+                'Miya Mystic is sacrificed due to the delayed effect of For Death and Glory!'
             );
         });
     });

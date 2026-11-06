@@ -40,6 +40,7 @@ describe('Roving Michibiku', function () {
                     defenders: [this.roving]
                 });
                 this.noMoreActions();
+                expect(this.getChatLogs(5)).toContain('player1 won a military conflict 2 vs 0');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
             });
 

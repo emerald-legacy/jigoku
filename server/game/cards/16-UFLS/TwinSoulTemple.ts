@@ -1,64 +1,36 @@
-import { TargetMode, Location, Duration, Element } from '../../Constants.js';
+import { msg } from '../../GameChat.js';
+import { Location, Duration, Element } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { replacePrintedElement } from '../../effects.js';
+import { cardLastingEffect, chooseAction } from '../../GameActions/GameActions.js';
 import type { ElementSymbol } from '../../ElementSymbol.js';
+import { capitalize } from '../../utils/capitalize.js';
 
 export default class TwinSoulTemple extends StrongholdCard {
     static id = 'twin-soul-temple';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Bow this stronghold',
-            cost: AbilityDsl.costs.bowSelf(),
-            target: {
+    override setupCardAbilities() {
+        this.action('Bow this stronghold')
+            .cost(costs.bowSelf())
+            .elementTarget({
                 activePromptTitle: 'Choose an element to replace',
-                mode: TargetMode.ElementSymbol,
-                location: [Location.PlayArea, Location.Provinces],
-                gameAction: AbilityDsl.actions.menuPrompt((context) => ({
-                    activePromptTitle: 'Choose the new element',
-                    choices: this.getChoices(context),
-                    gameAction: AbilityDsl.actions.cardLastingEffect({
+                location: [Location.PlayArea, Location.Provinces]
+            }, chooseAction((context) => ({
+                activePromptTitle: 'Choose the new element',
+                choices: Object.fromEntries(this.otherElements(context.element).map((element) => [capitalize(element), {
+                    action: cardLastingEffect({
                         target: context.elementCard,
-                        duration: Duration.UntilEndOfPhase
+                        duration: Duration.UntilEndOfPhase,
+                        effect: replacePrintedElement({ key: context.element.key, element })
                     }),
-                    choiceHandler: (choice, displayMessage) => {
-                        let newElement = choice.toLowerCase();
-                        if(displayMessage) {
-                            this.game.addMessage(
-                                '{0} replaces {1}\'s {2} ({3}) symbol with {4}',
-                                context.player,
-                                context.elementCard,
-                                context.element?.prettyName,
-                                this.capitalize(context.element?.element),
-                                this.capitalize(newElement)
-                            );
-                        }
-                        return {
-                            effect: AbilityDsl.effects.replacePrintedElement({
-                                key: context.element?.key,
-                                element: newElement
-                            })
-                        };
-                    }
-                }))
-            },
-            effect: 'replace a printed element symbol with a different one'
-        });
+                    message: () => msg`${context.player} replaces ${context.elementCard}'s ${context.element.prettyName} (${capitalize(context.element.element)}) symbol with ${capitalize(element)}`
+                }]))
+            })))
+            .chatText('replace a printed element symbol with a different one');
     }
 
-    getChoices(context: { element: ElementSymbol }) {
-        let els = [Element.Air, Element.Earth, Element.Fire, Element.Void, Element.Water];
-        let currentEl = context.element.element;
-
-        const index = els.indexOf(currentEl);
-        if(index > -1) {
-            els.splice(index, 1);
-        }
-        els.forEach((e, i) => (els[i] = this.capitalize(e) as Element));
-        return els;
-    }
-
-    capitalize(string: string) {
-        return string[0].toUpperCase() + string.substring(1);
+    otherElements(element: ElementSymbol): Element[] {
+        return [Element.Air, Element.Earth, Element.Fire, Element.Void, Element.Water].filter((e) => e !== element.element);
     }
 }

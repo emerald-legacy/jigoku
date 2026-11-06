@@ -7,7 +7,7 @@ describe('Cavalry Reserves', function() {
                 player1: {
                     inPlay: ['Adept of the Waves'],
                     hand: ['Cavalry Reserves'],
-                    dynastyDiscard: ['Border Rider', 'Border Rider', 'Border Rider', 'Moto Horde', 'Moto Juro', 'Bayushi Liar']
+                    dynastyDiscard: ['Border Rider', 'Border Rider', 'Border Rider', 'Moto Horde', 'Moto Juro', 'Doji Whisperer']
                 },
                 player2: {
                     inPlay: []
@@ -39,8 +39,10 @@ describe('Cavalry Reserves', function() {
             });
 
             it('should be able to target only cavalry', function() {
-                expect(this.player1.currentActionTargets.every(card => card.hasTrait('cavalry'))).toBe(true);
-                expect(this.player1.currentActionTargets).not.toContain(this.noncavalry);
+                expect(this.player1).toBeAbleToSelect(this.rider1);
+                expect(this.player1).toBeAbleToSelect(this.horde);
+                expect(this.player1).toBeAbleToSelect(this.juro);
+                expect(this.player1).not.toBeAbleToSelect(this.noncavalry);
             });
 
             it('should let the player select multiple characters', function() {
@@ -66,6 +68,37 @@ describe('Cavalry Reserves', function() {
                 expect(this.rider2.location).toBe('play area');
                 expect(this.rider3.location).toBe('play area');
             });
+        });
+    });
+});
+
+describe('Cavalry Reserves in a political conflict', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['adept-of-the-waves'],
+                    hand: ['cavalry-reserves'],
+                    dynastyDiscard: ['border-rider']
+                }
+            });
+            this.reserves = this.player1.findCardByName('cavalry-reserves');
+            this.rider = this.player1.findCardByName('border-rider');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: ['adept-of-the-waves'],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('cannot be played', function() {
+            this.player1.clickCard(this.reserves);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.reserves.location).toBe('hand');
+            expect(this.rider.location).toBe('dynasty discard pile');
         });
     });
 });

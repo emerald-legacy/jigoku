@@ -57,10 +57,52 @@ describe('Force of the River', function() {
                 expect(this.liar.location).toBe('removed from game');
                 expect(this.liar.facedown).toBe(true);
 
-                let attackersValid = this.game.currentConflict.attackers.length >= 4;
+                const attackersValid = this.game.currentConflict.attackers.length >= 4;
 
                 expect(attackersValid).toBe(true);
             });
+
+            it('should announce the summon', function() {
+                this.player2.pass();
+                this.player1.clickCard(this.river);
+                expect(this.getChatLogs(5)).toContain('player1 uses Force of the River to summon Spirits of the River!');
+            });
+        });
+    });
+});
+
+describe('Force of the River in a political conflict', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 1,
+                    inPlay: ['doomed-shugenja'],
+                    hand: ['force-of-the-river'],
+                    dynastyDiscard: ['hida-kisada'],
+                    provinces: ['manicured-garden']
+                }
+            });
+            this.doomed = this.player1.findCardByName('doomed-shugenja');
+            this.river = this.player1.playAttachment('force-of-the-river', this.doomed);
+            this.garden = this.player1.findCardByName('manicured-garden');
+            this.kisada = this.player1.moveCard('hida-kisada', this.garden.location);
+            this.kisada.facedown = true;
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.doomed],
+                defenders: [],
+                type: 'political'
+            });
+            this.player2.pass();
+        });
+
+        it('cannot be used (#832)', function() {
+            this.player1.clickCard(this.river);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.kisada.location).toBe(this.garden.location);
+            expect(this.kisada.facedown).toBe(true);
         });
     });
 });

@@ -1,128 +1,99 @@
 import { EffectValue } from './EffectValue.js';
-import GainAbility from './GainAbility.js';
+import { GainAbility } from './GainAbility.js';
 import { AbilityType } from '../Constants.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type BaseCard from '../BaseCard.js';
-import type CardAbility from '../CardAbility.js';
+import type { StoredPersistentEffect } from '../BaseCard.js';
+import type { CardAbility } from '../CardAbility.js';
 import type { CardAction } from '../CardAction.js';
-import type TriggeredAbility from '../TriggeredAbility.js';
+import type { TriggeredAbility } from '../TriggeredAbility.js';
 
 export type DynamicMatch = ((target: BaseCard, context: AbilityContext) => BaseCard | BaseCard[]) | BaseCard | BaseCard[];
 
 interface GainedAbilities {
-    actions: unknown[];
+    actions: CardAction[];
     reactions: TriggeredAbility[];
 }
 
-// This ignores persistent effects since it's used by Shosuro Deceiver who only takes triggered abilities
-export default class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch> {
-    match: DynamicMatch;
-    createdAbilities: Record<string, GainAbility>;
-    abilitiesForTargets: Record<string, GainedAbilities>;
-    actions: GainAbility[];
-    reactions: GainAbility[];
-    persistentEffects: unknown[];
-    printedAbilitiesOnly: boolean;
+/**
+ * The triggered abilities of the matched cards (Shosuro Deceiver, Laughing Thunder; persistent effects aren't taken).
+ * The match is recalculated on every read of the target's abilities.
+ */
+export class GainAllAbilitiesDynamic extends EffectValue<DynamicMatch, BaseCard> {
+    /** Per target uuid: the gained abilities, by gained ability id, kept so used limits carry over between reads. */
+    private readonly createdAbilities = new Map<string, Map<string, GainAbility>>();
+    private readonly abilitiesForTargets = new Map<string, GainedAbilities>();
 
-    constructor(match: DynamicMatch, printedAbilitiesOnly = false) {
+    constructor(private readonly match: DynamicMatch, private readonly printedAbilitiesOnly = false) {
         super(match);
-        this.match = match;
-        this.createdAbilities = {};
-        this.abilitiesForTargets = {};
-        this.actions = [];
-        this.reactions = [];
-        this.persistentEffects = [];
-        this.printedAbilitiesOnly = printedAbilitiesOnly;
     }
 
-    _setAbilities(cards: BaseCard | BaseCard[], target: BaseCard) {
-        const cardList: BaseCard[] = Array.isArray(cards) ? cards : [cards];
-
-        this.actions = [];
-        this.reactions = [];
-        this.persistentEffects = [];
-        cardList.forEach((card: BaseCard) => {
-            card._getActions(true)
-                .filter((a: CardAction) => a.isTriggeredAbility() && (!card.isBlank() || (!this.printedAbilitiesOnly && !a.printedAbility)))
-                .forEach((action: CardAction) => this.actions.push(this.getAbility(AbilityType.Action, action, target)));
-            card._getReactions(true)
-                .filter((a: TriggeredAbility) => a.isTriggeredAbility() && (!card.isBlank() || (!this.printedAbilitiesOnly && !a.printedAbility)))
-                .forEach((ability: TriggeredAbility) => {
-                    this.reactions.push(this.getAbility(ability.abilityType, ability, target));
-                });
-        });
-    }
-
-    getAbilityIdentifier(ability: CardAbility): string {
-        return `${ability.abilityIdentifier}-${ability.card.uuid}`;
-    }
-
-    getAbility(abilityType: AbilityType, ability: CardAbility, target: BaseCard): GainAbility {
-        const id = this.getAbilityIdentifier(ability);
-        if(!this.createdAbilities[id]) {
-            const res = new GainAbility(abilityType, ability);
-            this.createdAbilities[id] = res;
-            this.createdAbilities[id].apply(target);
-        }
-        return this.createdAbilities[id];
+    // a new effect is a new instance of the card (it entered play again) or a copy: no memory of used limits
+    override copyForEffect(): GainAllAbilitiesDynamic {
+        return new GainAllAbilitiesDynamic(this.match, this.printedAbilitiesOnly);
     }
 
     calculate(target: BaseCard, context: AbilityContext) {
-        let cards: BaseCard | BaseCard[] = [];
-        if(typeof this.match === 'function') {
-            cards = this.match(target, context);
-        } else {
-            cards = this.match;
-        }
+        const matched = typeof this.match === 'function' ? this.match(target, context) : this.match;
 
         this.unapply(target);
-        this._setAbilities(cards, target);
-        this.abilitiesForTargets[target.uuid] = {
-            actions: this.actions.map((value) => {
-                return value.getValue() as CardAction;
-            }),
-            reactions: this.reactions.map((value) => {
-                return value.getValue() as TriggeredAbility;
-            })
-        };
-        this._applyAbilities(target);
-    }
-
-    _applyAbilities(target: BaseCard) {
-        if(this.abilitiesForTargets[target.uuid]) {
-            for(const value of this.abilitiesForTargets[target.uuid].reactions) {
-                value.registerEvents();
+        const actions: CardAction[] = [];
+        const reactions: TriggeredAbility[] = [];
+        for(const card of Array.isArray(matched) ? matched : [matched]) {
+            for(const action of card.getCardActions(true).filter((ability) => this.isGained(card, ability))) {
+                const granted = this.gainedAbility(AbilityType.Action, action, target).grantedAction;
+                if(granted) {
+                    actions.push(granted);
+                }
+            }
+            for(const reaction of card.getReactions(true).filter((ability) => this.isGained(card, ability))) {
+                const granted = this.gainedAbility(reaction.abilityType, reaction, target).grantedTriggered;
+                if(granted) {
+                    reactions.push(granted);
+                }
             }
         }
-    }
-
-    _unapplyAbilities(target: BaseCard) {
-        this.unapply(target);
-    }
-
-    unapply(target: BaseCard) {
-        if(this.abilitiesForTargets[target.uuid]) {
-            for(const value of this.abilitiesForTargets[target.uuid].reactions) {
-                value.unregisterEvents();
-            }
+        this.abilitiesForTargets.set(target.uuid, { actions, reactions });
+        for(const reaction of reactions) {
+            reaction.registerEvents();
         }
     }
 
-    getActions(target: BaseCard): unknown[] {
-        if(this.abilitiesForTargets[target.uuid]) {
-            return this.abilitiesForTargets[target.uuid].actions;
+    private isGained(card: BaseCard, ability: CardAbility): boolean {
+        return ability.isTriggeredAbility() && (!card.isBlank() || (!this.printedAbilitiesOnly && !ability.printedAbility));
+    }
+
+    private gainedAbility(abilityType: AbilityType, ability: CardAbility, target: BaseCard): GainAbility {
+        let created = this.createdAbilities.get(target.uuid);
+        if(!created) {
+            created = new Map();
+            this.createdAbilities.set(target.uuid, created);
         }
-        return [];
+        const id = `${ability.abilityIdentifier}-${ability.card.uuid}`;
+        let gained = created.get(id);
+        if(!gained) {
+            gained = new GainAbility(abilityType, ability);
+            created.set(id, gained);
+            gained.apply(target);
+        }
+        return gained;
+    }
+
+    override unapply(target: BaseCard) {
+        for(const reaction of this.abilitiesForTargets.get(target.uuid)?.reactions ?? []) {
+            reaction.unregisterEvents();
+        }
+    }
+
+    getActions(target: BaseCard): CardAction[] {
+        return this.abilitiesForTargets.get(target.uuid)?.actions ?? [];
     }
 
     getReactions(target: BaseCard): TriggeredAbility[] {
-        if(this.abilitiesForTargets[target.uuid]) {
-            return this.abilitiesForTargets[target.uuid].reactions;
-        }
-        return [];
+        return this.abilitiesForTargets.get(target.uuid)?.reactions ?? [];
     }
 
-    getPersistentEffects(): unknown[] {
-        return this.persistentEffects;
+    getPersistentEffects(): StoredPersistentEffect[] {
+        return [];
     }
 }

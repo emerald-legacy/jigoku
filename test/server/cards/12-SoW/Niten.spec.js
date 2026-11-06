@@ -5,7 +5,7 @@ describe('Niten', function() {
                 phase: 'conflict',
                 player1: {
                     inPlay: ['niten-master', 'doji-challenger'],
-                    hand: ['niten', 'force-of-the-river', 'mark-of-shame', 'fine-katana', 'greater-understanding']
+                    hand: ['niten', 'force-of-the-river', 'mark-of-shame', 'fine-katana', 'greater-understanding', 'tattooed-wanderer']
                 },
                 player2: {
                     inPlay: ['togashi-yokuni']
@@ -19,6 +19,7 @@ describe('Niten', function() {
             this.shame = this.player1.findCardByName('mark-of-shame');
             this.katana = this.player1.findCardByName('fine-katana');
             this.greater = this.player1.findCardByName('greater-understanding');
+            this.wanderer = this.player1.findCardByName('tattooed-wanderer');
 
             this.yokuni = this.player2.findCardByName('togashi-yokuni');
         });
@@ -141,6 +142,64 @@ describe('Niten', function() {
             expect(this.getChatLogs(3)).toContain('player1 uses Niten, returning Niten to their hand to attach Mark of Shame to Niten Master');
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
             expect(this.player2).toHavePrompt('Conflict Action Window');
+        });
+
+        it('cannot put into play a character that can be played as an attachment (ruling #901)', function() {
+            this.player1.clickCard(this.niten);
+            this.player1.clickCard(this.master);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.master],
+                defenders: [this.yokuni],
+                type: 'military'
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.niten);
+            expect(this.player1).toHavePrompt('Niten');
+            expect(this.player1).toBeAbleToSelect(this.katana);
+            expect(this.player1).not.toBeAbleToSelect(this.wanderer);
+        });
+
+        it('can only be used once per round, even in a later conflict', function() {
+            this.player1.clickCard(this.niten);
+            this.player1.clickCard(this.master);
+
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.yokuni],
+                defenders: [this.master],
+                type: 'military'
+            });
+
+            this.player1.clickCard(this.niten);
+            this.player1.clickCard(this.shame);
+            expect(this.niten.location).toBe('hand');
+            expect(this.shame.location).toBe('play area');
+
+            this.noMoreActions();
+            expect(this.getChatLogs(5)).toContain('player2 won a military conflict 5 vs 3');
+            this.player2.clickPrompt('Gain 2 Honor');
+
+            this.master.bowed = false;
+            this.noMoreActions();
+            this.initiateConflict({
+                ring: 'fire',
+                attackers: [this.master],
+                defenders: [],
+                type: 'military'
+            });
+            this.player2.pass();
+            this.player1.playAttachment(this.niten, this.master);
+            expect(this.niten.parent).toBe(this.master);
+            this.player2.pass();
+            this.player1.clickCard(this.niten);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.niten.location).toBe('play area');
+            expect(this.katana.location).toBe('hand');
         });
     });
 });

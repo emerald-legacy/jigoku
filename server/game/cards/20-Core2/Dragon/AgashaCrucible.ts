@@ -1,22 +1,27 @@
-import { CardType, Duration, Players } from '../../../Constants.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { msg } from '../../../GameChat.js';
+import type { ChooseActionOption } from '../../../GameActions/ChooseGameAction.js';
+import { CardType, Duration, Players, Trait } from '../../../Constants.js';
+import { addTrait, additionalAction } from '../../../effects.js';
+import { cardLastingEffect, chooseAction, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
-const options = Object.fromEntries(
-    ['Air', 'Earth', 'Fire', 'Void', 'Water'].map((option) => [
+const elementTraits: [string, Trait][] = [['Air', Trait.Air], ['Earth', Trait.Earth], ['Fire', Trait.Fire], ['Void', Trait.Void], ['Water', Trait.Water]];
+
+const options: Record<string, ChooseActionOption> = Object.fromEntries(
+    elementTraits.map(([option, trait]) => [
         option,
         {
-            message: `{1} gains the ${option} Trait`,
-            action: AbilityDsl.actions.sequential([
-                AbilityDsl.actions.cardLastingEffect({
+            message: (_context, target) => msg`${target} gains the ${option} Trait`,
+            action: sequential([
+                cardLastingEffect({
                     duration: Duration.UntilEndOfPhase,
-                    effect: AbilityDsl.effects.addTrait(option.toLowerCase())
+                    effect: addTrait(trait)
                 }),
-                AbilityDsl.actions.playerLastingEffect((context) => ({
-                    targetController: context.player,
+                playerLastingEffect({
+                    target: Players.Self,
                     duration: Duration.UntilPassPriority,
-                    effect: AbilityDsl.effects.additionalAction(1)
-                }))
+                    effect: additionalAction(1)
+                })
             ])
         }
     ])
@@ -25,19 +30,16 @@ const options = Object.fromEntries(
 export default class AgashaCrucible extends DrawCard {
     static id = 'agasha-crucible';
 
-    public setupCardAbilities() {
-        this.action({
-            title: 'Give Elemental Trait to a Fire Shugenja',
-            target: {
+    public override setupCardAbilities() {
+        this.action('Give an Elemental Trait to a Shugenja')
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card) => card.hasTrait('shugenja'),
-                gameAction: AbilityDsl.actions.chooseAction({
-                    options,
-                    activePromptTitle: 'Choose Trait to gain'
-                })
-            },
-            effect: 'give {0} another Elemental Trait, and take another action!'
-        });
+                cardCondition: (card) => card.hasTrait(Trait.Shugenja)
+            }, chooseAction({
+                choices: options,
+                activePromptTitle: 'Choose Trait to gain'
+            }))
+            .chatText('give {0} another Elemental Trait, and take another action');
     }
 }

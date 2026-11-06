@@ -1,14 +1,15 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { doesNotBow } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import { CardType } from '../../Constants.js';
+import { Trait } from '../../Constants.js';
+import { controlsParticipating } from '../controlsParticipating.js';
 
 class ChikaiOrderProtector extends DrawCard {
     static id = 'chikai-order-protector';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.persistentEffect({
-            condition: context => context.source.isDefending() && context.player.cardsInPlay.some(card => card.getType() === CardType.Character && card.isParticipating() && (card.hasTrait('courtier') || card.hasTrait('shugenja'))),
-            effect: AbilityDsl.effects.doesNotBow()
+            condition: (context) => context.source.isDefending() && controlsParticipating(context.player, Trait.Courtier, Trait.Shugenja),
+            effect: doesNotBow()
         });
     }
 }

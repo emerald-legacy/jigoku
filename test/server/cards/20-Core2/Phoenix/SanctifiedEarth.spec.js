@@ -43,8 +43,8 @@ describe('Sanctified Earth', function () {
             expect(this.player1).not.toBeAbleToSelect(this.shoju);
 
             this.player1.clickCard(this.garantoGuardian);
-            expect(this.garantoGuardian.getMilitarySkill()).toBe(6);
-            expect(this.garantoGuardian.getPoliticalSkill()).toBe(5);
+            expect(this.garantoGuardian.militarySkill).toBe(6);
+            expect(this.garantoGuardian.politicalSkill).toBe(5);
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Sanctified Earth to give +2military and +2political to Garanto Guardian'
             );
@@ -71,8 +71,8 @@ describe('Sanctified Earth', function () {
             expect(this.player1).not.toBeAbleToSelect(this.shoju);
 
             this.player1.clickCard(this.garantoGuardian);
-            expect(this.garantoGuardian.getMilitarySkill()).toBe(6);
-            expect(this.garantoGuardian.getPoliticalSkill()).toBe(5);
+            expect(this.garantoGuardian.militarySkill).toBe(6);
+            expect(this.garantoGuardian.politicalSkill).toBe(5);
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Sanctified Earth to give +2military and +2political to Garanto Guardian'
             );
@@ -101,8 +101,8 @@ describe('Sanctified Earth', function () {
             expect(this.player1).not.toBeAbleToSelect(this.shoju);
 
             this.player1.clickCard(this.garantoGuardian);
-            expect(this.garantoGuardian.getMilitarySkill()).toBe(6);
-            expect(this.garantoGuardian.getPoliticalSkill()).toBe(5);
+            expect(this.garantoGuardian.militarySkill).toBe(6);
+            expect(this.garantoGuardian.politicalSkill).toBe(5);
             expect(this.getChatLogs(5)).toContain(
                 'player1 uses Sanctified Earth to give +2military and +2political to Garanto Guardian'
             );

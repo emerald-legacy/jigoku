@@ -1,16 +1,19 @@
-import DynastyCardAction from '../../build/server/game/DynastyCardAction.js';
+import { DynastyCardAction } from '../../build/server/game/DynastyCardAction.js';
 
 describe('DynastyCardAction', function () {
     beforeEach(function() {
-        this.gameSpy = jasmine.createSpyObj('game', ['addMessage', 'on', 'removeListener', 'getEvent', 'openEventWindow']);
+        this.gameSpy = jasmine.createSpyObj('game', ['addMessage', 'on', 'off', 'onTriggerWindow', 'offTriggerWindow', 'onAggregateWindow', 'offAggregateWindow', 'getEvent', 'openEventWindow']);
         this.playerSpy = jasmine.createSpyObj('player', ['isCardInPlayableLocation', 'replaceDynastyCard', 'getMinimumCost']);
-        this.cardSpy = jasmine.createSpyObj('card', ['getType', 'canPlay', 'isLimited', 'anotherUniqueInPlay', 'sumEffects', 'getEffects', 'isFacedown', 'isTemptationsMaho', 'checkRestrictions']);
+        this.cardSpy = jasmine.createSpyObj('card', ['getType', 'canPlay', 'isLimited', 'anotherUniqueInPlay', 'sumEffects', 'getEffects', 'isFacedown', 'isTemptationsMaho', 'checkRestrictions', 'isDrawCard', 'entersPlayStatus']);
+        this.cardSpy.isDrawCard.and.returnValue(true);
+        this.cardSpy.entersPlayStatus.and.returnValue('ordinary');
         this.windowSpy = jasmine.createSpyObj('window', ['markActionAsTaken']);
         this.cardSpy.sumEffects.and.returnValue(0);
         this.cardSpy.getEffects.and.returnValue([]);
         this.cardSpy.isFacedown.and.returnValue(false);
         this.cardSpy.isTemptationsMaho.and.returnValue(false);
         this.cardSpy.checkRestrictions.and.returnValue(true);
+        this.cardSpy.isDrawCard.and.returnValue(true);
         this.cardSpy.isDynasty = true;
         this.cardSpy.controller = this.playerSpy;
         this.cardSpy.owner = this.playerSpy;
@@ -82,8 +85,8 @@ describe('DynastyCardAction', function () {
                 this.cardSpy.canPlay.and.returnValue(false);
             });
 
-            it('should return \'cannotTrigger\'', function() {
-                expect(this.action.meetsRequirements(this.context)).toBe('cannotTrigger');
+            it('should return \'cannotPlay\'', function() {
+                expect(this.action.meetsRequirements(this.context)).toBe('cannotPlay');
             });
         });
     });

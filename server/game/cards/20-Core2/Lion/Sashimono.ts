@@ -1,15 +1,16 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { doesNotBow } from '../../../effects.js';
 import DrawCard from '../../../DrawCard.js';
+import { ConflictType, Trait } from '../../../Constants.js';
 
 export default class Sashimono extends DrawCard {
     static id = 'sashimono';
 
-    setupCardAbilities() {
-        this.attachmentConditions({ trait: 'bushi' });
+    override setupCardAbilities() {
+        this.attachmentConditions({ myControl: true, trait: Trait.Bushi });
 
         this.whileAttached({
-            condition: () => this.game.isDuringConflict('military'),
-            effect: AbilityDsl.effects.doesNotBow()
+            condition: () => this.game.isDuringConflict(ConflictType.Military),
+            effect: doesNotBow()
         });
     }
 }

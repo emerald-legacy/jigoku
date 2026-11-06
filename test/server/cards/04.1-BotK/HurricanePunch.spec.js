@@ -41,12 +41,12 @@ describe('Hurricane Punch', function() {
                     defenders: []
                 });
                 this.player2.pass();
-                let currentMilitarySkill = this.itinerantPhilosopher.getMilitarySkill();
-                let currentPoliticalSkill = this.itinerantPhilosopher.getPoliticalSkill();
+                const currentMilitarySkill = this.itinerantPhilosopher.militarySkill;
+                const currentPoliticalSkill = this.itinerantPhilosopher.politicalSkill;
                 this.player1.clickCard(this.hurricanePunch);
                 this.player1.clickCard(this.itinerantPhilosopher);
-                expect(this.itinerantPhilosopher.getMilitarySkill()).toBe(currentMilitarySkill + 2);
-                expect(this.itinerantPhilosopher.getPoliticalSkill()).toBe(currentPoliticalSkill);
+                expect(this.itinerantPhilosopher.militarySkill).toBe(currentMilitarySkill + 2);
+                expect(this.itinerantPhilosopher.politicalSkill).toBe(currentPoliticalSkill);
             });
 
             it('should draw 1 card', function() {
@@ -56,8 +56,8 @@ describe('Hurricane Punch', function() {
                     defenders: []
                 });
                 this.player2.pass();
-                let hand = this.player1.hand.length;
-                let conflictDeck = this.player1.conflictDeck.length;
+                const hand = this.player1.hand.length;
+                const conflictDeck = this.player1.conflictDeck.length;
                 this.player1.clickCard(this.hurricanePunch);
                 this.player1.clickCard(this.itinerantPhilosopher);
                 expect(this.player1.hand.length).toBe(hand);

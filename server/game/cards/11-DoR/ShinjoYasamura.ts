@@ -1,31 +1,25 @@
-import type { TriggeredAbilityContext } from '../../TriggeredAbilityContext.js';
-import type { AbilityContext } from '../../AbilityContext.js';
-import type BaseCard from '../../BaseCard.js';
+import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
-import { Duration, EventName } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { Duration } from '../../Constants.js';
+import { cannotBeDeclaredAsDefender } from '../../effects.js';
 
-import type { EventPayload } from '../../Events/EventPayloads.js';
 class ShinjoYasamura extends DrawCard {
     static id = 'shinjo-yasamura';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Prevent a character from defending this phase',
-            when: {
-                onCovertResolved: (event: EventPayload<EventName.OnCovertResolved>, context) =>
+    override setupCardAbilities() {
+        this.reaction('Prevent a character from defending this phase')
+            .when({
+                onCovertResolved: (event, context) =>
                     (event.card === context.source ||
                         (Array.isArray(event.card) && event.card.includes(context.source))) &&
-                    (event.context?.target as DrawCard)?.covert
-            },
-            effect: 'prevent {1} from defending this phase',
-            effectArgs: (context) => (context.event.context as AbilityContext).target as BaseCard,
-            gameAction: AbilityDsl.actions.cardLastingEffect((context: TriggeredAbilityContext<DrawCard, DrawCard>) => ({
-                target: (context.event.context as AbilityContext).target,
+                    !!event.context?.target?.isDrawCard() && event.context.target.covert
+            })
+            .cardLastingEffect((context) => ({
+                target: context.event.context.target,
                 duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.cannotBeDeclaredAsDefender()
+                effect: cannotBeDeclaredAsDefender()
             }))
-        });
+            .chatText((context) => msg`prevent ${context.event.context.target} from defending this phase`);
     }
 }
 

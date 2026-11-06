@@ -28,6 +28,10 @@ describe('Shosuro Technique', function () {
         });
 
         describe('Duel Challenge', function () {
+            it('is titled for ignoring printed skill', function () {
+                expect(this.technique.abilities.reactions.map((ability) => ability.title)).toEqual(['Ignore printed skill in the duel']);
+            });
+
             it('should make printed skill not count if you are challenged', function () {
                 this.noMoreActions();
                 this.initiateConflict({
@@ -97,10 +101,14 @@ describe('Shosuro Technique', function () {
 
                 this.player2.clickCard(this.aramoro);
 
-                expect(this.sadako.getMilitarySkill()).toBe(this.aramoro.getMilitarySkill());
+                expect(this.sadako.militarySkill).toBe(this.aramoro.militarySkill);
                 expect(this.getChatLogs(5)).toContain(
-                    'player2 plays Shosuro Technique to set the military of Shosuro Sadako to 5military (equal to Bayushi Aramoro). There\'s no blade as keen as surprise.'
+                    'player2 plays Shosuro Technique to set the military of Shosuro Sadako to 5military (equal to Bayushi Aramoro). There\'s no blade as keen as surprise'
                 );
+                const index = this.getChatLogs(5).findIndex((line) => line.includes('no blade as keen'));
+                const linked = cardUuids(this.game.messages.slice(-5)[index].message);
+                expect(linked).toContain(this.sadako.uuid);
+                expect(linked).toContain(this.aramoro.uuid);
             });
 
             it('should not work in pol', function () {
@@ -118,3 +126,65 @@ describe('Shosuro Technique', function () {
         });
     });
 });
+
+describe('Shosuro Technique with characters on the other side than their controller', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-sadako', 'endless-plains-skirmisher'],
+                    hand: ['shosuro-technique']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar', 'endless-plains-skirmisher']
+                }
+            });
+            this.sadako = this.player1.findCardByName('shosuro-sadako');
+            this.skirmisher1 = this.player1.findCardByName('endless-plains-skirmisher');
+            this.technique = this.player1.findCardByName('shosuro-technique');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+            this.skirmisher2 = this.player2.findCardByName('endless-plains-skirmisher');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.sadako],
+                defenders: [this.scholar]
+            });
+            this.player2.clickCard(this.skirmisher2);
+            this.player2.clickPrompt('player1');
+            this.player1.clickCard(this.skirmisher1);
+            this.player1.clickPrompt('player2');
+        });
+
+        it('chooses a character on the enemy side, whoever controls it', function () {
+            this.player2.pass();
+            expect(this.game.currentConflict.attackers).toContain(this.skirmisher2);
+            expect(this.game.currentConflict.defenders).toContain(this.skirmisher1);
+
+            this.player1.clickCard(this.technique);
+            this.player1.clickCard(this.sadako);
+            expect(this.player1).toBeAbleToSelect(this.scholar);
+            expect(this.player1).toBeAbleToSelect(this.skirmisher1);
+            expect(this.player1).not.toBeAbleToSelect(this.skirmisher2);
+            this.player1.clickCard(this.skirmisher1);
+            expect(this.sadako.militarySkill).toBe(3);
+        });
+    });
+});
+
+function cardUuids(item) {
+    if(Array.isArray(item)) {
+        return item.flatMap(cardUuids);
+    }
+    if(item instanceof Object) {
+        if('uuid' in item) {
+            return [item.uuid];
+        }
+        if('message' in item) {
+            return cardUuids(item.message);
+        }
+    }
+    return [];
+}

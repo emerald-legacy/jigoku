@@ -1,28 +1,25 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { placeFateOnRing } from '../../GameActions/GameActions.js';
+import { msg } from '../../GameChat.js';
 
 class KitsukiJusai extends DrawCard {
     static id = 'kitsuki-jusai';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Put a fate from your opponent pool on an unclaimed ring',
-            when: {
-                onHonorDialsRevealed: (event, context) =>
+    override setupCardAbilities() {
+        this.reaction('Put a fate from your opponent pool on an unclaimed ring')
+            .when({
+                onHonorDialsRevealed: (_event, context) =>
                     context.player.opponent &&
-                    context.player.honorBid === context.player.opponent.honorBid &&
+                    context.player.showBid === context.player.opponent.showBid &&
                     context.player.opponent.fate > 0
-            },
-            gameAction: AbilityDsl.actions.selectRing(context => ({
+            })
+            .selectRing((context) => ({
                 activePromptTitle: 'Choose an unclaimed ring to move fate to',
-                ringCondition: ring => ring.isUnclaimed(),
-                message: '{0} moves a fate from {1}\'s fate pool to the {2}',
-                messageArgs: ring => [context.player, context.player.opponent, ring],
-                gameAction: AbilityDsl.actions.placeFateOnRing({ origin: context.player.opponent })
-            })),
-            effect: 'move 1 fate from {1}\'s fate pool to an unclaimed ring',
-            effectArgs: context => [context.player.opponent ?? context.player]
-        });
+                ringCondition: (ring) => ring.isUnclaimed(),
+                message: (context, ring) => msg`${context.player} moves a fate from ${context.player.opponent}'s fate pool to the ${ring}`,
+                gameAction: placeFateOnRing({ origin: context.player.opponent })
+            }))
+            .chatText((context) => msg`move 1 fate from ${context.player.opponent ?? context.player}'s fate pool to an unclaimed ring`);
     }
 }
 

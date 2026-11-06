@@ -44,7 +44,7 @@ describe('Midnight Builder', function() {
         it('dire - should let you trigger provinces twice', function () {
             this.builder.fate = 0;
             this.game.checkGameState(true);
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.pyre);
             this.player1.clickCard(this.kisada);
             this.player2.pass();
@@ -59,7 +59,7 @@ describe('Midnight Builder', function() {
         it('not dire - should not let you trigger provinces twice', function () {
             this.builder.fate = 1;
             this.game.checkGameState(true);
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
             this.player1.clickCard(this.pyre);
             this.player1.clickCard(this.kisada);
             this.player2.pass();

@@ -32,7 +32,7 @@ describe('Akodo Cho', function () {
             expect(this.player1).toHavePrompt('Action Window');
         });
 
-        it('should bow an attachment to let you choose a character', function () {
+        it('should let you choose any participating character', function () {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.cho],
@@ -58,7 +58,6 @@ describe('Akodo Cho', function () {
 
             this.player2.pass();
             this.player1.clickCard(this.cho);
-            this.player1.clickCard(this.pilot);
             this.player1.clickCard(this.challenger);
 
             expect(this.player2).toHavePrompt('Select one');
@@ -76,7 +75,6 @@ describe('Akodo Cho', function () {
 
             this.player2.pass();
             this.player1.clickCard(this.cho);
-            this.player1.clickCard(this.pilot);
             this.player1.clickCard(this.challenger);
 
             this.player2.clickPrompt('Discard an attachment from this character');
@@ -100,7 +98,6 @@ describe('Akodo Cho', function () {
 
             this.player2.pass();
             this.player1.clickCard(this.cho);
-            this.player1.clickCard(this.pilot);
             this.player1.clickCard(this.challenger);
 
             this.player2.clickPrompt('Bow this character');
@@ -118,7 +115,6 @@ describe('Akodo Cho', function () {
 
             this.player2.pass();
             this.player1.clickCard(this.cho);
-            this.player1.clickCard(this.pilot);
             this.player1.clickCard(this.dojiWhisperer);
             expect(this.dojiWhisperer.bowed).toBe(true);
             expect(this.getChatLogs(5)).toContain('player1 uses Akodo Cho to bow Doji Whisperer');
@@ -134,7 +130,6 @@ describe('Akodo Cho', function () {
 
             this.player2.pass();
             this.player1.clickCard(this.cho);
-            this.player1.clickCard(this.pilot);
             this.player1.clickCard(this.cho);
 
             expect(this.player1).toHavePrompt('Select one');
@@ -149,6 +144,58 @@ describe('Akodo Cho', function () {
             expect(this.ann.location).toBe('conflict discard pile');
             expect(this.getChatLogs(5)).toContain('player1 uses Akodo Cho to discard an attachment on Akodo Cho');
             expect(this.getChatLogs(5)).toContain('player1 discards A New Name');
+        });
+
+        it('can choose a bowed character with attachments', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.cho],
+                defenders: [this.dojiWhisperer, this.challenger],
+                type: 'military'
+            });
+            this.challenger.bowed = true;
+            this.player2.pass();
+            this.player1.clickCard(this.cho);
+            expect(this.player1).toBeAbleToSelect(this.challenger);
+        });
+    });
+});
+
+describe('Akodo Cho without a Follower', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['akodo-cho'],
+                    hand: ['a-new-name']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer']
+                }
+            });
+
+            this.cho = this.player1.findCardByName('akodo-cho');
+            this.ann = this.player1.findCardByName('a-new-name');
+            this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
+            this.player1.playAttachment(this.ann, this.cho);
+        });
+
+        it('cannot be used if it has no Follower attachment', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.cho],
+                defenders: [this.dojiWhisperer],
+                type: 'military'
+            });
+
+            this.player2.pass();
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            this.player1.clickCard(this.cho);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.ann.parent).toBe(this.cho);
+            expect(this.dojiWhisperer.bowed).toBe(false);
+            expect(this.cho.bowed).toBe(false);
         });
     });
 });

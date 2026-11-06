@@ -35,14 +35,14 @@ describe('Shukujo', function() {
             });
 
             it('should grant the ability to a character that is a crane champion when attached', function() {
-                let dojiKuwananActionCount = this.dojiKuwananP1.getActions().length;
+                const dojiKuwananActionCount = this.dojiKuwananP1.getActions().length;
                 this.player1.playAttachment(this.shukujo, this.dojiKuwananP1);
                 expect(this.player2).toHavePrompt('Action Window');
                 expect(this.dojiKuwananP1.getActions().length).toBe(dojiKuwananActionCount + 1);
             });
 
             it('should not grant an ability to a character that is not a champion when attached', function() {
-                let toshimokoActionCount = this.kakitaToshimoko.getActions().length;
+                const toshimokoActionCount = this.kakitaToshimoko.getActions().length;
                 this.player1.playAttachment(this.shukujo, this.kakitaToshimoko);
                 expect(this.player2).toHavePrompt('Action Window');
                 expect(this.kakitaToshimoko.getActions().length).toBe(toshimokoActionCount);
@@ -60,7 +60,7 @@ describe('Shukujo', function() {
                 });
 
                 it('should grant the ability if the character is a champion', function() {
-                    let yoritomoActionCount = this.yoritomo.getActions().length;
+                    const yoritomoActionCount = this.yoritomo.getActions().length;
                     this.player1.playAttachment(this.shukujo, this.yoritomo);
                     expect(this.yoritomo.getActions().length).toBe(yoritomoActionCount + 1);
                 });

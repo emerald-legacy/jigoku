@@ -138,3 +138,42 @@ describe('Silent Enforcer', function() {
         });
     });
 });
+
+describe('Silent Enforcer with an event your opponent owns', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'dynasty',
+                player1: {
+                    fate: 10,
+                    inPlay: ['silent-enforcer'],
+                    hand: ['trading-on-the-sand-road']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    conflictDiscard: ['way-of-the-scorpion']
+                }
+            });
+            this.enforcer = this.player1.findCardByName('silent-enforcer');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.scorpion = this.player2.findCardByName('way-of-the-scorpion');
+            this.player2.moveCard(this.scorpion, 'conflict deck');
+            this.noMoreActions();
+            this.player1.clickCard('trading-on-the-sand-road');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.enforcer],
+                defenders: [this.whisperer]
+            });
+            this.player2.pass();
+        });
+
+        it('reacts to the event you played', function() {
+            this.player1.clickCard(this.scorpion);
+            this.player1.clickCard(this.whisperer);
+            expect(this.whisperer.isDishonored).toBe(true);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.enforcer);
+        });
+    });
+});

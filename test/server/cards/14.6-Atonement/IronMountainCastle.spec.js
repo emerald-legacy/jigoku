@@ -30,7 +30,7 @@ describe('Iron Mountain Castle', function () {
         });
 
         it('should reduce the cost to play an attachment on a character you control', function () {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.blade);
             this.player1.clickCard(this.mitsu);
             expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -46,7 +46,7 @@ describe('Iron Mountain Castle', function () {
         });
 
         it('should work with monks played as an attachment', function () {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.wanderer);
             this.player1.clickPrompt('Play Tattooed Wanderer as an attachment');
             this.player1.clickCard(this.mitsu);
@@ -59,7 +59,7 @@ describe('Iron Mountain Castle', function () {
         });
 
         it('should not work with monks played as a character', function () {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.wanderer);
             this.player1.clickPrompt('Play this character');
             this.player1.clickPrompt('0');
@@ -76,7 +76,7 @@ describe('Iron Mountain Castle', function () {
         });
 
         it('should not trigger if attachment is played on opponent', function () {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.blade);
             this.player1.clickCard(this.initiate);
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
@@ -93,7 +93,7 @@ describe('Iron Mountain Castle', function () {
         });
 
         it('should reduce the cost to play an attachment on a character you control regardless of faction', function () {
-            let fate = this.player1.fate;
+            const fate = this.player1.fate;
             this.player1.clickCard(this.blade);
             this.player1.clickCard(this.yoshi);
             expect(this.player1).toHavePrompt('Triggered Abilities');
@@ -136,7 +136,7 @@ describe('Iron Mountain Castle', function () {
         });
 
         it('should allow putting 3 restricted attachments on a dragon character you control', function () {
-            let target = this.mitsu;
+            const target = this.mitsu;
             this.player1.playAttachment(this.blade, target);
             this.player1.clickCard(this.iron);
             expect(target.attachments).toContain(this.blade);
@@ -154,7 +154,7 @@ describe('Iron Mountain Castle', function () {
         });
 
         it('should not allow putting 3 restricted attachments on a non-dragon character you control', function () {
-            let target = this.yoshi;
+            const target = this.yoshi;
             this.player1.playAttachment(this.blade, target);
             this.player1.clickCard(this.iron);
             expect(target.attachments).toContain(this.blade);
@@ -168,7 +168,7 @@ describe('Iron Mountain Castle', function () {
         });
 
         it('should not allow putting 3 restricted attachments on a dragon character you don\'t control', function () {
-            let target = this.initiate;
+            const target = this.initiate;
             this.player1.playAttachment(this.blade, target);
             this.player1.clickCard(this.iron);
             expect(target.attachments).toContain(this.blade);

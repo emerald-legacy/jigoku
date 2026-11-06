@@ -1,39 +1,37 @@
-import { AbilityType, DuelType } from '../../Constants.js';
-import type { Duel } from '../../Duel.js';
+import { DuelType, Trait } from '../../Constants.js';
+
 import type { GameAction } from '../../GameActions/GameAction.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { gainAbility } from '../../effects.js';
+import { bow, discardFromPlay, dishonor, multiple } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 
 export default class JusticarsApproach extends DrawCard {
     static id = 'justicar-s-approach';
 
-    setupCardAbilities() {
-        this.attachmentConditions({ trait: 'courtier' });
+    override setupCardAbilities() {
+        this.attachmentConditions({ trait: Trait.Courtier });
 
         this.whileAttached({
-            effect: AbilityDsl.effects.gainAbility(AbilityType.Action, {
-                title: 'Initiate a duel to dishonor/bow/discard',
-                printedAbility: false,
-                initiateDuel: {
+            effect: gainAbility.action('Initiate a duel to dishonor/bow/discard', (ability) => ability
+                .initiateDuel(() => ({
                     type: DuelType.Military,
-                    gameAction: (duel: Duel) =>
-                        AbilityDsl.actions.multiple(
-                            duel.loser?.map((loserChar) => this.#effectsOnLoser(loserChar)) ?? []
+                    gameAction: (duel) =>
+                        multiple(
+                            duel.loser?.map((loserChar) => this.effectsOnLoser(loserChar)) ?? []
                         )
-                }
-            })
+                })))
         });
     }
 
-    #effectsOnLoser(target: DrawCard): GameAction {
-        const effects: GameAction[] = [AbilityDsl.actions.dishonor({ target })];
+    private effectsOnLoser(target: DrawCard): GameAction {
+        const effects: GameAction[] = [dishonor({ target })];
         if(target.isDishonored) {
-            effects.push(AbilityDsl.actions.bow({ target }));
+            effects.push(bow({ target }));
         }
         if(target.isDishonored && target.bowed) {
-            effects.push(AbilityDsl.actions.discardFromPlay({ target }));
+            effects.push(discardFromPlay({ target }));
         }
 
-        return AbilityDsl.actions.multiple(effects);
+        return multiple(effects);
     }
 }

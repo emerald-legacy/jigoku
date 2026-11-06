@@ -1,24 +1,24 @@
-import AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import * as costs from '../../costs/index.js';
+import { unlimited } from '../../AbilityLimit.js';
+import { modifyProvinceStrength } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
 import { Location } from '../../Constants.js';
 
 class WrathOfTheKami extends DrawCard {
     static id = 'the-wrath-of-the-kami';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Add Province Strength',
-            condition: context => this.game.isDuringConflict() && context.source.isInConflictProvince(),
-            cost: AbilityDsl.costs.payHonor(1),
-            limit: AbilityDsl.limit.unlimitedPerConflict(),
-            effect: 'add 1 to the province strength of {1}',
-            effectArgs: context => [context.source.controller.getProvinceCardInProvince(context.source.location)],
-            gameAction: AbilityDsl.actions.cardLastingEffect(context => ({
+    override setupCardAbilities() {
+        this.action('Add Province Strength')
+            .condition((context) => this.game.isDuringConflict() && context.source.isInConflictProvince())
+            .cost(costs.payHonor(1))
+            .cardLastingEffect((context) => ({
                 target: context.source.controller.getProvinceCardInProvince(context.source.location),
                 targetLocation: Location.Provinces,
-                effect: AbilityDsl.effects.modifyProvinceStrength(1)
+                effect: modifyProvinceStrength(1)
             }))
-        });
+            .chatText((context) => msg`add 1 to the province strength of ${context.source.controller.getProvinceCardInProvince(context.source.location)}`)
+            .limit(unlimited());
     }
 }
 

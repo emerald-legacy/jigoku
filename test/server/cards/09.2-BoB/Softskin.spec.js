@@ -35,14 +35,14 @@ describe('Softskin', function() {
             });
 
             it('should \'trigger\' when a card attempts to ready due to a card effect', function() {
-                let conflictDeckCount = this.player2.conflictDeck.length;
+                const conflictDeckCount = this.player2.conflictDeck.length;
                 this.player2.clickCard(this.againstTheWaves2);
                 this.player2.clickCard(this.adeptOfTheWaves);
                 expect(this.player2.conflictDeck.length).toBe(conflictDeckCount - 3);
             });
 
             it('should \'trigger\' when a card attempts to ready from a framework step', function() {
-                let conflictDeckCount = this.player2.conflictDeck.length;
+                const conflictDeckCount = this.player2.conflictDeck.length;
                 this.player2.pass();
                 this.advancePhases('fate');
                 expect(this.player2.conflictDeck.length).toBe(conflictDeckCount - 3);
@@ -57,7 +57,7 @@ describe('Softskin', function() {
             });
 
             it('should ready the attached character and discard 3 cards from the conflict deck', function() {
-                let conflictDeckCount = this.player2.conflictDeck.length;
+                const conflictDeckCount = this.player2.conflictDeck.length;
                 this.player2.clickCard(this.againstTheWaves2);
                 this.player2.clickCard(this.adeptOfTheWaves);
                 expect(this.adeptOfTheWaves.bowed).toBe(false);
@@ -66,7 +66,7 @@ describe('Softskin', function() {
             });
 
             it('should discard 3 new cards everytime the attached character is readied', function() {
-                let conflictDeckCount = this.player2.conflictDeck.length;
+                const conflictDeckCount = this.player2.conflictDeck.length;
                 this.player2.clickCard(this.againstTheWaves2);
                 this.player2.clickCard(this.adeptOfTheWaves);
                 expect(this.adeptOfTheWaves.bowed).toBe(false);
@@ -97,11 +97,49 @@ describe('Softskin', function() {
                 this.player2.clickRing('water');
                 this.player1.clickCard(this.softskin2);
                 this.player1.clickCard(this.adeptOfTheWaves);
-                let conflictDeckCount = this.player2.conflictDeck.length;
+                const conflictDeckCount = this.player2.conflictDeck.length;
                 this.player2.clickCard(this.againstTheWaves2);
                 this.player2.clickCard(this.adeptOfTheWaves);
                 expect(this.player2.conflictDeck.length).toBe(conflictDeckCount - 6);
             });
+        });
+    });
+});
+
+describe('Softskin on a character that is already ready', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['softskin']
+                },
+                player2: {
+                    inPlay: ['ide-ryoma', 'adept-of-the-waves']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.ryoma = this.player2.findCardByName('ide-ryoma');
+            this.adept = this.player2.findCardByName('adept-of-the-waves');
+            this.softskin = this.player1.playAttachment('softskin', this.adept);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.whisperer],
+                defenders: [this.ryoma, this.adept]
+            });
+        });
+
+        it('does not make its controller discard for a ready that does nothing', function() {
+            const deckSize = this.player2.conflictDeck.length;
+            this.player2.clickCard(this.ryoma);
+            this.player2.clickCard(this.ryoma);
+            this.player2.clickCard(this.adept);
+            this.player2.clickCard(this.ryoma);
+            expect(this.ryoma.bowed).toBe(true);
+            expect(this.adept.bowed).toBe(false);
+            expect(this.player2.conflictDeck.length).toBe(deckSize);
         });
     });
 });

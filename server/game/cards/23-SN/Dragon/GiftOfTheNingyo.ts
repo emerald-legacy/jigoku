@@ -1,24 +1,25 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import { AbilityContext } from '../../../AbilityContext.js';
+import { Trait } from '../../../Constants.js';
+import { modifyPoliticalSkill } from '../../../effects.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class GiftOfTheNingyo extends DrawCard {
     static id = 'gift-of-the-ningyo';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
-            condition: (context: AbilityContext<this>) => (
+            condition: (context) => (
                 Boolean(context.source.parentCharacter && context.source.parentCharacter.isParticipating() &&
-                    this.getCharacters(context).some(card => card.hasSomeTrait('creature', 'spirit') ||
-                        card.attachments.some(attachment => attachment.hasSomeTrait('creature', 'spirit'))
+                    this.getCharacters(context).some((card) => card.hasSomeTrait(Trait.Creature, Trait.Spirit) ||
+                        card.attachments.some((attachment) => attachment.hasSomeTrait(Trait.Creature, Trait.Spirit))
                     )
                 )),
-            effect: AbilityDsl.effects.modifyPoliticalSkill(2)
+            effect: modifyPoliticalSkill(2)
         });
     }
 
 
-    getCharacters(context: AbilityContext<this>): DrawCard[] {
+    private getCharacters(context: AbilityContext<this>): DrawCard[] {
         if(!context.game.currentConflict || !context.source.parentCharacter) {
             return [];
         }

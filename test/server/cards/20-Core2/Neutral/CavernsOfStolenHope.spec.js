@@ -35,3 +35,42 @@ describe('Caverns of Stolen Hope', function () {
         });
     });
 });
+
+describe('Caverns of Stolen Hope revealed while its player attacks', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['aggressive-moto'],
+                    hand: ['i-can-swim', 'way-of-the-scorpion'],
+                    provinces: ['caverns-of-stolen-hope']
+                },
+                player2: {
+                    provinces: ['border-fortress'],
+                    hand: ['fine-katana', 'let-go']
+                }
+            });
+            this.moto = this.player1.findCardByName('aggressive-moto');
+            this.caverns = this.player1.findCardByName('caverns-of-stolen-hope', 'province 1');
+            this.fortress = this.player2.findCardByName('border-fortress', 'province 1');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.moto],
+                defenders: [],
+                province: this.fortress
+            });
+        });
+
+        it('makes the attacking player discard', function () {
+            const p1Hand = this.player1.hand.length;
+            const p2Hand = this.player2.hand.length;
+            this.player2.clickCard(this.fortress);
+            this.player2.clickCard(this.caverns);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            this.player1.clickCard(this.caverns);
+            expect(this.player1.hand.length).toBe(p1Hand - 1);
+            expect(this.player2.hand.length).toBe(p2Hand);
+        });
+    });
+});

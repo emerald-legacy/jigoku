@@ -55,7 +55,7 @@ describe('Bloodthirsty Onryō', function () {
             expect(this.getChatLogs(5)).toContain('Bloodthirsty Onryō is removed from the game due to leaving play');
         });
 
-        it('should remove from game even if blanked', function () {
+        it('goes to the discard pile when blanked', function () {
             this.noMoreActions();
             this.initiateConflict({
                 attackers: [this.diplomat],
@@ -74,8 +74,8 @@ describe('Bloodthirsty Onryō', function () {
             this.player2.pass();
             this.player1.clickCard(this.assassination);
             this.player1.clickCard(this.onryo);
-            expect(this.onryo.location).toBe('removed from game');
-            expect(this.getChatLogs(5)).toContain('Bloodthirsty Onryō is removed from the game due to leaving play');
+            expect(this.onryo.location).toBe('dynasty discard pile');
+            expect(this.getChatLogs(5)).not.toContain('Bloodthirsty Onryō is removed from the game due to leaving play');
         });
     });
 });

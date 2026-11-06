@@ -106,6 +106,7 @@ describe('Fearless Skirmisher', function() {
             this.fumiki.bowed = true;
             this.noMoreActions();
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player2 won a political conflict 2 vs 0');
         });
 
         it('should not react to losing a mil conflict', function() {
@@ -120,6 +121,7 @@ describe('Fearless Skirmisher', function() {
             this.skirmisher.bowed = true;
             this.noMoreActions();
             expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(5)).toContain('player1 won a military conflict 5 vs 0');
         });
 
         it('should work with dishonored provinces', function() {

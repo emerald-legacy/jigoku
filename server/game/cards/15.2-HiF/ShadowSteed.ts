@@ -1,23 +1,23 @@
+import { Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { addTrait } from '../../effects.js';
 
 class ShadowSteed extends DrawCard {
     static id = 'shadow-steed';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.addTrait('cavalry')
+            effect: addTrait(Trait.Cavalry)
         });
 
-        this.action({
-            title: 'Ready attached character',
-            condition: context => !!(context.source.parentCharacter && context.source.parentCharacter.getFate() === 0),
-            cost: AbilityDsl.costs.payHonor(1),
-            gameAction: AbilityDsl.actions.ready(context => ({target: context.source.parentCharacter}))
-        });
+        this.action('Ready attached character')
+            .ifCondition((context) => !!(context.source.parentCharacter && context.source.parentCharacter.getFate() === 0))
+            .cost(costs.payHonor(1))
+            .ready((context) => ({target: context.source.parentCharacter ?? []}));
     }
 
-    isTemptationsMaho() {
+    override isTemptationsMaho() {
         return true;
     }
 }

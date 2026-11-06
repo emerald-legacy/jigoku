@@ -1,17 +1,18 @@
-import Effect, { type EffectProperties } from './Effect.js';
-import type EffectSource from '../EffectSource.js';
+import { ActiveEffect, type EffectProperties } from './ActiveEffect.js';
+import type { EffectName } from '../Constants.js';
+import type { Conflict } from '../Conflict.js';
+import type { EffectSource } from '../EffectSource.js';
 import type Game from '../Game.js';
-import type { GameObject } from '../GameObject.js';
-import type StaticEffect from './StaticEffect.js';
+import type { EffectApplier } from './EffectApplier.js';
 
-export default class ConflictEffect extends Effect {
-    constructor(game: Game, source: EffectSource, properties: EffectProperties, effect: StaticEffect) {
+export class ConflictEffect extends ActiveEffect<Conflict> {
+    constructor(game: Game, source: EffectSource, properties: EffectProperties<Conflict>, effect: EffectApplier<EffectName, Conflict>) {
         super(game, source, properties, effect);
         // Override any erroneous match passed through properties
         this.match = () => true;
     }
 
-    getTargets(): GameObject[] {
+    override getTargets(): Conflict[] {
         return this.game.currentConflict ? [this.game.currentConflict] : [];
     }
 }

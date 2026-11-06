@@ -28,7 +28,9 @@ describe('Bayushi Collector', function () {
                 this.player1.clickCard(this.collector);
                 this.player2.pass();
                 this.player1.clickCard(this.collector);
+                expect(this.katana.parent).toBe(this.collector);
                 expect(this.player1).toBeAbleToSelect(this.fan);
+                expect(this.player1).not.toBeAbleToSelect(this.katana);
                 this.player1.clickCard(this.fan);
                 expect(this.fan.location).toBe('conflict discard pile');
                 expect(this.liar.isDishonored).toBe(false);

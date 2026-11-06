@@ -66,9 +66,9 @@ describe('Mirumoto Hitomi', function() {
                 this.player1.clickPrompt('5');
                 this.player2.clickPrompt('1');
 
-                expect(this.mirumotoHitomi.getMilitarySkill()).toBe(4);
-                expect(this.mirumotoRaitsugu.getMilitarySkill()).toBe(3);
-                expect(this.doomedShugenja.getMilitarySkill()).toBe(3);
+                expect(this.mirumotoHitomi.militarySkill).toBe(4);
+                expect(this.mirumotoRaitsugu.militarySkill).toBe(3);
+                expect(this.doomedShugenja.militarySkill).toBe(3);
 
                 expect(this.getChatLogs(2)).toContain('Mirumoto Hitomi: 9 vs 7: Mirumoto Raitsugu and Doomed Shugenja');
             });
@@ -168,6 +168,42 @@ describe('Mirumoto Hitomi', function() {
                 expect(this.doomedShugenja.bowed).toBe(true);
 
                 expect(this.player2).toHavePrompt('Conflict Action Window');
+            });
+        });
+
+        describe('Mirumoto Hitomi\'s duel and Two Hands', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['mirumoto-hitomi'],
+                        hand: ['two-hands']
+                    },
+                    player2: {
+                        inPlay: ['doji-challenger', 'kakita-toshimoko', 'kakita-yoshi']
+                    }
+                });
+                this.mirumotoHitomi = this.player1.findCardByName('mirumoto-hitomi');
+                this.twoHands = this.player1.findCardByName('two-hands');
+                this.dojiChallenger = this.player2.findCardByName('doji-challenger');
+                this.kakitaToshimoko = this.player2.findCardByName('kakita-toshimoko');
+                this.kakitaYoshi = this.player2.findCardByName('kakita-yoshi');
+            });
+
+            it('can only add a participating character to the duel (RRG D.1)', function() {
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.mirumotoHitomi],
+                    defenders: [this.dojiChallenger, this.kakitaToshimoko],
+                    type: 'military'
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.mirumotoHitomi);
+                this.player1.clickCard(this.dojiChallenger);
+                this.player1.clickPrompt('Done');
+                this.player1.clickCard(this.twoHands);
+                expect(this.player1).toBeAbleToSelect(this.kakitaToshimoko);
+                expect(this.player1).not.toBeAbleToSelect(this.kakitaYoshi);
             });
         });
     });

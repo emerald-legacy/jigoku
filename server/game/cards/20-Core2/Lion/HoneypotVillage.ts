@@ -1,20 +1,16 @@
 import { CardType, Players } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import type DrawCard from '../../../DrawCard.js';
+import { moveToConflict } from '../../../GameActions/GameActions.js';
 
 export default class HoneypotVillage extends ProvinceCard {
     static id = 'honeypot-village';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Move a character in',
-            target: {
+    override setupCardAbilities() {
+        this.action('Move a character in')
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
-                cardCondition: (card: DrawCard) => !card.bowed,
-                gameAction: AbilityDsl.actions.moveToConflict()
-            }
-        });
+                cardCondition: (card) => !card.bowed
+            }, moveToConflict());
     }
 }

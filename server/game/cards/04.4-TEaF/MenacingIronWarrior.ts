@@ -1,26 +1,27 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { msg } from '../../GameChat.js';
+import { cannotTriggerAbilities } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
+import { ConflictType } from '../../Constants.js';
+import type { AbilityContext } from '../../AbilityContext.js';
+
+function weakerOpponents(context: AbilityContext<DrawCard>): DrawCard[] {
+    return context.game.currentConflict?.getCharacters(context.player.opponent).filter((card) => card.militarySkill <= context.source.militarySkill) ?? [];
+}
 
 class MenacingIronWarrior extends DrawCard {
     static id = 'menacing-iron-warrior';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Disable abilities of weaker military characters',
-            condition: context => this.game.isDuringConflict('military') && context.source.isParticipating(),
-            gameAction: ability.actions.cardLastingEffect((context: AbilityContext<this>) => ({
-                target: context.game.currentConflict ? context.game.currentConflict.getCharacters(context.player.opponent).filter((card) => card.getMilitarySkill() <= context.source.getMilitarySkill() && card !== context.source) : [],
-                effect: ability.effects.cannotTriggerAbilities()
-            })),
-            effect: 'prevent {1}\'s participating characters from using any abilities if their military skill is equal to or lower than {2}. This affects: {3}',
-            effectArgs: context => {
-                const conflict = context.game.currentConflict;
+    override setupCardAbilities() {
+        this.action('Disable abilities of weaker military characters')
+            .condition((context) => this.game.isDuringConflict(ConflictType.Military) && context.source.isParticipating())
+            .cardLastingEffect((context) => ({
+                target: weakerOpponents(context),
+                effect: cannotTriggerAbilities()
+            }))
+            .chatText((context) => {
                 const opp = context.player.opponent ?? context.player;
-                const characters = conflict ? conflict.getCharacters(opp).filter((card) => card.getMilitarySkill() <= context.source.getMilitarySkill() && card !== context.source) : [];
-                return [opp, context.source.getMilitarySkill(), characters];
-            }
-        });
+                return msg`prevent ${opp}'s participating characters from using any abilities if their military skill is equal to or lower than ${context.source.militarySkill}. This affects: ${weakerOpponents(context)}`;
+            });
     }
 }
 

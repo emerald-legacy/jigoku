@@ -1,34 +1,35 @@
-import AbilityDsl from '../../../abilitydsl.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
+import { Location, Trait } from '../../../Constants.js';
+import { msg } from '../../../GameChat.js';
+import { addKeyword } from '../../../effects.js';
+import { cardLastingEffect, honor, multiple } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class CaretakerOfTheDeadEyes extends DrawCard {
     static id = 'caretaker-of-the-dead-eyes';
 
-    setupCardAbilities() {
-        this.interrupt({
-            title: 'Honor a character',
-            when: {
-                onCardLeavesPlay: (event, context) => event.card.controller === context.player && event.card.hasTrait('bushi')
-            },
-            gameAction: AbilityDsl.actions.multipleContext(context => {
-                const card = (context as TriggeredAbilityContext).event.card;
+    override setupCardAbilities() {
+        this.interrupt('Honor a character')
+            .when({
+                onCardLeavesPlay: (event, context) =>
+                    event.card.location === Location.PlayArea &&
+                    event.card.controller === context.player &&
+                    event.card.hasTrait(Trait.Bushi)
+            })
+            .gameAction(multiple((context) => {
+                const card = context.event.card;
                 const gameActions = [];
-                if(card) {
-                    if(card.isDishonored) {
-                        gameActions.push(AbilityDsl.actions.honor({ target: card }));
-                    }
-                    if(card.hasTrait('berserker')) {
-                        gameActions.push(AbilityDsl.actions.cardLastingEffect({
-                            target: card,
-                            effect: AbilityDsl.effects.addKeyword('courtesy'),
-                            message: 'give Courtesy to {0}'
-                        }));
-                    }
+                if(card.isDishonored) {
+                    gameActions.push(honor({ target: card }));
+                }
+                if(card.hasTrait(Trait.Berserker)) {
+                    gameActions.push(cardLastingEffect({
+                        target: card,
+                        effect: addKeyword('courtesy'),
+                        chatText: () => msg`give Courtesy to ${card}`
+                    }));
                 }
 
-                return { gameActions };
-            })
-        });
+                return gameActions;
+            }));
     }
 }

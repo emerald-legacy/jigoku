@@ -44,7 +44,7 @@ describe('Yogo Junzo', function() {
             });
 
             it('should let you move as much fate as you want', function() {
-                let fate = this.player2.fate;
+                const fate = this.player2.fate;
                 this.player1.pass();
                 this.player2.clickCard(this.junzo2);
                 expect(this.player2).toBeAbleToSelect(this.dojiChallenger);

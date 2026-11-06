@@ -47,6 +47,32 @@ describe('triggered ability window', function () {
                 expect(this.player1.player.selectedCards).toEqual([]);
             });
         });
+        describe('when a ring is claimed', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['kudaka']
+                    }
+                });
+                this.kudaka = this.player1.findCardByName('kudaka');
+                this.noMoreActions();
+            });
+
+            it('titles the window by the claimed ring', function () {
+                this.initiateConflict({
+                    type: 'military',
+                    ring: 'air',
+                    attackers: [this.kudaka],
+                    defenders: []
+                });
+                this.noMoreActions();
+                this.player1.clickPrompt('Yes');
+                this.player1.clickPrompt('Don\'t Resolve');
+                expect(this.player1).toBeAbleToSelect(this.kudaka);
+                expect(this.player1.currentPrompt().menuTitle).toBe('Any reactions to the air ring being claimed?');
+            });
+        });
         describe('when the cards its events name have left play', function () {
             beforeEach(function () {
                 // Shinjo Sora turns every facedown dynasty card into a hound token, and
@@ -96,7 +122,7 @@ describe('triggered ability window', function () {
                     attackers: [this.challenger],
                     defenders: [this.ronin, this.sora]
                 });
-                const base = this.ronin.getMilitarySkill();
+                const base = this.ronin.militarySkill;
 
                 this.player2.clickCard(this.sora);
                 const hounds = this.game.currentConflict.defenders.filter(
@@ -127,12 +153,12 @@ describe('triggered ability window', function () {
                 expect(this.player2).not.toBeAbleToSelect(this.storehouse);
 
                 this.player2.clickCard(hounds[0]);
-                expect(this.ronin.getMilitarySkill()).toBe(base + 1);
+                expect(this.ronin.militarySkill).toBe(base + 1);
 
                 // The remaining event is still reachable, and resolves without another
                 // prompt because it is the only one left
                 this.player2.clickCard(this.yumi);
-                expect(this.ronin.getMilitarySkill()).toBe(base + 2);
+                expect(this.ronin.militarySkill).toBe(base + 2);
                 expect(this.player2).not.toBeAbleToSelect(this.yumi);
             });
         });

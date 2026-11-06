@@ -1,26 +1,22 @@
-import { TargetMode, Players } from '../../Constants.js';
+import { ConflictType, Players } from '../../Constants.js';
 import { ProvinceCard } from '../../ProvinceCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { claimRing, multiple, resolveRingEffect } from '../../GameActions/GameActions.js';
 
 export default class OfferingsToTheKami extends ProvinceCard {
     static id = 'offerings-to-the-kami';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Resolve the ring as if you were the attacker',
-            when: {
+    override setupCardAbilities() {
+        this.reaction('Resolve the ring as if you were the attacker')
+            .when({
                 onCardRevealed: (event, context) => event.card === context.source
-            },
-            target: {
-                mode: TargetMode.Ring,
+            })
+            .ringTarget({
                 activePromptTitle: 'Choose a ring to claim and resolve',
                 player: Players.Self,
-                ringCondition: (ring) => ring.isUnclaimed(),
-                gameAction: AbilityDsl.actions.multiple([
-                    AbilityDsl.actions.resolveRingEffect((context) => ({ player: context.player })),
-                    AbilityDsl.actions.claimRing({ takeFate: true, type: 'political' })
-                ])
-            }
-        });
+                ringCondition: (ring) => ring.isUnclaimed()
+            }, multiple([
+                resolveRingEffect((context) => ({ player: context.player })),
+                claimRing({ takeFate: true, conflictType: ConflictType.Political })
+            ]));
     }
 }

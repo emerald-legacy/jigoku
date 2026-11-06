@@ -1,17 +1,15 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
 
 class VenerableFortunist extends DrawCard {
     static id = 'venerable-fortunist';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Gain 2 fate',
-            condition: context => !!context.player.role,
-            cost: AbilityDsl.costs.returnRings(1, (ring, context) => (context.player.role?.getElement() ?? []).some(a => ring.hasElement(a))),
-            gameAction: AbilityDsl.actions.gainFate(({ amount: 2})),
-            effect: 'gain 2 fate'
-        });
+    override setupCardAbilities() {
+        this.action('Gain 2 fate')
+            .condition((context) => !!context.player.role)
+            .cost(costs.returnRings(1, (ring, context) => (context.player.role?.getElement() ?? []).some((a) => ring.hasElement(a))))
+            .gainFate(2)
+            .chatText('gain 2 fate');
     }
 }
 

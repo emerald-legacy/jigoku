@@ -6,22 +6,23 @@ describe('Proving Ground', function() {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['doji-challenger'],
-                        hand: ['banzai','game-of-sadane'],
+                        hand: ['banzai', 'game-of-sadane', 'game-of-sadane'],
                         dynastyDiscard: ['proving-ground']
                     },
                     player2: {
-                        inPlay: ['mirumoto-raitsugu']
+                        inPlay: ['mirumoto-raitsugu', 'doji-whisperer']
                     }
                 });
                 this.noMoreActions();
                 this.provingGround = this.player1.placeCardInProvince('proving-ground', 'province 1');
                 this.dojiChallenger = this.player1.findCardByName('doji-challenger');
-                this.sadane = this.player1.findCardByName('game-of-sadane');
+                [this.sadane, this.sadane2] = this.player1.filterCardsByName('game-of-sadane');
                 this.mirumotoRaitsugu = this.player2.findCardByName('mirumoto-raitsugu');
+                this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
 
                 this.initiateConflict({
                     attackers: [this.dojiChallenger],
-                    defenders: [this.mirumotoRaitsugu]
+                    defenders: [this.mirumotoRaitsugu, this.dojiWhisperer]
                 });
             });
 
@@ -41,11 +42,12 @@ describe('Proving Ground', function() {
                 this.player2.clickCard(this.dojiChallenger);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('2');
+                expect(this.getChatLogs(5)).toContain('Mirumoto Raitsugu: 5 vs 4: Doji Challenger');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
             });
 
             it('should draw a card', function() {
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player2.pass();
                 this.player1.clickCard(this.sadane);
                 this.player1.clickCard(this.dojiChallenger);
@@ -59,7 +61,7 @@ describe('Proving Ground', function() {
             });
 
             it('should work twice a round', function() {
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player2.pass();
                 this.player1.clickCard(this.sadane);
                 this.player1.clickCard(this.dojiChallenger);
@@ -79,6 +81,75 @@ describe('Proving Ground', function() {
                 this.player1.clickCard(this.provingGround);
                 expect(this.player1.hand.length).toBe(hand + 1);
             });
+
+            it('should not work a third time in the same round (limit twice per round)', function() {
+                this.player2.pass();
+                this.player1.clickCard(this.sadane);
+                this.player1.clickCard(this.dojiChallenger);
+                this.player1.clickCard(this.mirumotoRaitsugu);
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('1');
+                this.player1.clickCard(this.provingGround);
+                this.player2.clickCard(this.mirumotoRaitsugu);
+                this.player2.clickCard(this.dojiChallenger);
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('1');
+                this.player1.clickCard(this.provingGround);
+                const hand = this.player1.hand.length;
+                this.player1.clickCard(this.sadane2);
+                this.player1.clickCard(this.dojiChallenger);
+                this.player1.clickCard(this.dojiWhisperer);
+                this.player1.clickPrompt('1');
+                this.player2.clickPrompt('1');
+                expect(this.getChatLogs(5)).toContain('Doji Challenger: 6 vs 4: Doji Whisperer');
+                expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.player1.hand.length).toBe(hand - 1);
+            });
         });
     });
 });
+
+describe('Proving Ground with two winners', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['mirumoto-hitomi']
+                },
+                player2: {
+                    inPlay: ['mirumoto-raitsugu', 'doomed-shugenja'],
+                    dynastyDiscard: ['proving-ground']
+                }
+            });
+            this.hitomi = this.player1.findCardByName('mirumoto-hitomi');
+            this.raitsugu = this.player2.findCardByName('mirumoto-raitsugu');
+            this.shugenja = this.player2.findCardByName('doomed-shugenja');
+            this.provingGround = this.player2.placeCardInProvince('proving-ground', 'province 1');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.hitomi],
+                defenders: [this.raitsugu, this.shugenja],
+                type: 'military'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.hitomi);
+            this.player1.clickCard(this.raitsugu);
+            this.player1.clickCard(this.shugenja);
+            this.player1.clickPrompt('Done');
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+        });
+
+        it('triggers once for each winning character you control (EmeraldDB ruling)', function() {
+            const hand = this.player2.hand.length;
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.provingGround);
+            this.player2.clickCard(this.raitsugu);
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.provingGround);
+            expect(this.player2.hand.length).toBe(hand + 2);
+        });
+    });
+});
+

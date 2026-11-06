@@ -86,6 +86,7 @@ describe('Seventh Tower', function() {
                 this.player1.pass();
 
                 expect(this.player2).not.toBeAbleToSelect(this.tower);
+                expect(this.getChatLogs(5)).toContain('player2 won a military conflict 7 vs 5');
             });
 
             it('should not resolve the ring if you win on defense at a non-holding', function () {
@@ -102,6 +103,7 @@ describe('Seventh Tower', function() {
                 this.player1.pass();
 
                 expect(this.player2).not.toBeAbleToSelect(this.tower);
+                expect(this.getChatLogs(5)).toContain('player2 won a military conflict 7 vs 5');
             });
 
             it('should not trigger the ring if you win on attack', function () {
@@ -118,6 +120,7 @@ describe('Seventh Tower', function() {
                 this.player2.pass();
 
                 expect(this.player2).not.toBeAbleToSelect(this.tower);
+                expect(this.getChatLogs(10)).toContain('player2 won a military conflict 7 vs 5');
             });
 
             it('should not trigger the ring if you lose on defense', function () {
@@ -133,6 +136,7 @@ describe('Seventh Tower', function() {
                 this.player1.pass();
 
                 expect(this.player2).not.toBeAbleToSelect(this.tower);
+                expect(this.getChatLogs(5)).toContain('player1 won a political conflict 4 vs 2');
             });
         });
     });

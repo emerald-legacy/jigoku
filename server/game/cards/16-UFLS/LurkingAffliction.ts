@@ -1,20 +1,16 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { taint } from '../../GameActions/GameActions.js';
 import { CardType } from '../../Constants.js';
 
 class LurkingAffliction extends DrawCard {
     static id = 'lurking-affliction';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Taint a participating character',
-
-            target: {
+    override setupCardAbilities() {
+        this.action('Taint a participating character')
+            .target({
                 cardType: CardType.Character,
-                cardCondition: card => card.isParticipating(),
-                gameAction: AbilityDsl.actions.taint()
-            }
-        });
+                cardCondition: (card) => card.isParticipating()
+            }, taint());
     }
 }
 

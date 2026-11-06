@@ -1,35 +1,29 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { TargetMode, CardType, CharacterStatus } from '../../Constants.js';
-import { StatusToken } from '../../StatusToken.js';
+import { CardType, CharacterStatus, ConflictType } from '../../Constants.js';
 
 class AGameOfLetters extends DrawCard {
     static id = 'a-game-of-letters';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Honor or dishonor a character',
-            condition: () => this.game.isDuringConflict('political'),
-            targets: {
-                token: {
-                    activePromptTitle: 'Choose a token',
-                    cardType: CardType.Character,
-                    mode: TargetMode.Token,
-                    tokenCondition: token => token.grantedStatus === CharacterStatus.Honored || token.grantedStatus === CharacterStatus.Dishonored
-                },
-                character: {
-                    activePromptTitle: 'Choose a character',
-                    dependsOn: 'token',
-                    cardType: CardType.Character,
-                    cardCondition: (card, context) => card.controller !== (context.tokens.token as StatusToken[])[0].card?.controller && card.isParticipating(),
-                    gameAction: AbilityDsl.actions.conditional({
-                        condition: context => (context.tokens.token as StatusToken[])[0].grantedStatus === CharacterStatus.Honored,
-                        trueGameAction: AbilityDsl.actions.honor(),
-                        falseGameAction: AbilityDsl.actions.dishonor()
-                    })
-                }
-            }
-        });
+    override setupCardAbilities() {
+        this.action('Honor or dishonor a character')
+            .condition((context) => context.game.isDuringConflict(ConflictType.Political))
+            .tokenTarget({
+                name: 'token',
+                activePromptTitle: 'Choose a token',
+                cardType: CardType.Character,
+                tokenCondition: (token) => token.grantedStatus === CharacterStatus.Honored || token.grantedStatus === CharacterStatus.Dishonored
+            })
+            .target({
+                name: 'character',
+                activePromptTitle: 'Choose a character',
+                dependsOn: 'token',
+                cardType: CardType.Character,
+                cardCondition: (card, context) => card.controller !== context.tokens.token[0].card?.controller && card.isParticipating()
+            })
+            .if((context) => context.tokens.token[0].grantedStatus === CharacterStatus.Honored)
+            .honor()
+            .otherwise()
+            .dishonor();
     }
 }
 

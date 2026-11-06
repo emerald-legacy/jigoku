@@ -1,31 +1,33 @@
-import AbilityDsl from '../../../abilitydsl.js';
+import { modifyGlory } from '../../../effects.js';
+import { cardLastingEffect } from '../../../GameActions/GameActions.js';
 import { Duration } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import { msg } from '../../../GameChat.js';
 
 export default class WolfsProposal extends DrawCard {
     static id = 'wolf-s-proposal';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Adjust glory',
-            gameAction: AbilityDsl.actions.chooseAction({
-                options: {
+    override setupCardAbilities() {
+        this.action('Adjust glory')
+            .chooseAction({
+                choices: {
                     'Increase glory': {
-                        action: AbilityDsl.actions.cardLastingEffect((context) => ({
-                            target: context.source.parentCharacter,
+                        action: cardLastingEffect((context) => ({
+                            target: context.source.parentCharacter ?? [],
                             duration: Duration.UntilEndOfPhase,
-                            effect: AbilityDsl.effects.modifyGlory(2)
-                        }))
+                            effect: modifyGlory(2)
+                        })),
+                        message: (context, _target, chooser) => msg`${chooser} increases ${context.source.parentCharacter}'s glory by 2 for this phase`
                     },
                     'Decrease glory': {
-                        action: AbilityDsl.actions.cardLastingEffect((context) => ({
-                            target: context.source.parentCharacter,
+                        action: cardLastingEffect((context) => ({
+                            target: context.source.parentCharacter ?? [],
                             duration: Duration.UntilEndOfPhase,
-                            effect: AbilityDsl.effects.modifyGlory(-2)
-                        }))
+                            effect: modifyGlory(-2)
+                        })),
+                        message: (context, _target, chooser) => msg`${chooser} decreases ${context.source.parentCharacter}'s glory by 2 for this phase`
                     }
                 }
-            })
-        });
+            });
     }
 }

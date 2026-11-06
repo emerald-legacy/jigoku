@@ -133,3 +133,43 @@ describe('Sinister Peacekeeper', function() {
         });
     });
 });
+
+describe('Sinister Peacekeeper with your own honor gain', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer'],
+                    honor: 10
+                },
+                player2: {
+                    inPlay: ['sinister-peacekeeper'],
+                    honor: 10
+                }
+            });
+
+            this.sinister = this.player2.findCardByName('sinister-peacekeeper');
+        });
+
+        it('should not trigger when you gain honor', function() {
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                ring: 'air',
+                attackers: [this.sinister],
+                defenders: []
+            });
+            this.player1.pass();
+            this.player2.pass();
+            expect(this.getChatLogs(5)).toContain('player2 won a political conflict 2 vs 0');
+            expect(this.player2).toHavePrompt('Air Ring');
+            this.player2.clickPrompt('Gain 2 Honor');
+            expect(this.player2.honor).toBe(12);
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+        });
+    });
+});

@@ -193,3 +193,39 @@ describe('Strategic Weakpoint', function() {
         });
     });
 });
+
+describe('Strategic Weakpoint in Public Forum', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kitsuki-yuikimi', 'kitsuki-investigator']
+                },
+                player2: {
+                    dynastyDeck: ['strategic-weakpoint'],
+                    provinces: ['public-forum']
+                }
+            });
+            this.publicForum = this.player2.findCardByName('public-forum');
+            this.strategicWeakpoint = this.player2.placeCardInProvince('strategic-weakpoint', this.publicForum.location);
+            this.yuikimi = this.player1.findCardByName('kitsuki-yuikimi');
+            this.investigator = this.player1.findCardByName('kitsuki-investigator');
+            this.noMoreActions();
+            this.initiateConflict({
+                province: this.publicForum,
+                attackers: [this.yuikimi, this.investigator],
+                defenders: []
+            });
+        });
+
+        it('should be offered together with Public Forum, as both are would interrupts', function() {
+            this.player2.pass();
+            this.player1.pass();
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.publicForum);
+            expect(this.player2).toBeAbleToSelect(this.strategicWeakpoint);
+        });
+    });
+});
+

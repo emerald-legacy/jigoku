@@ -1,17 +1,17 @@
 import DrawCard from '../../DrawCard.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { increaseLimitOnAbilities } from '../../effects.js';
 
 class WayOfTheDragon extends DrawCard {
     static id = 'way-of-the-dragon';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.attachmentConditions({
             limit: 1,
             myControl: true
         });
 
         this.whileAttached({
-            effect: ability.effects.increaseLimitOnAbilities()
+            effect: increaseLimitOnAbilities()
         });
     }
 }

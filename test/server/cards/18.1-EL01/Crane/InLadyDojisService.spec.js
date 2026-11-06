@@ -77,3 +77,45 @@ describe('In Lady Dojis Service', function() {
         });
     });
 });
+
+describe('In Lady Dojis Service - max 1 per round', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 10,
+                    inPlay: ['doji-whisperer', 'doji-diplomat'],
+                    hand: ['in-lady-doji-s-service', 'in-lady-doji-s-service']
+                },
+                player2: {
+                    inPlay: ['kakita-asami', 'doji-challenger']
+                }
+            });
+
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.diplomat = this.player1.findCardByName('doji-diplomat');
+            this.asami = this.player2.findCardByName('kakita-asami');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.service = this.player1.filterCardsByName('in-lady-doji-s-service')[0];
+            this.service2 = this.player1.filterCardsByName('in-lady-doji-s-service')[1];
+        });
+
+        it('can only be played once per round', function () {
+            this.player1.clickCard(this.service);
+            this.player1.clickCard(this.asami);
+            this.player1.clickPrompt('Prevent Attacking');
+            this.player1.clickCard(this.whisperer);
+            expect(this.whisperer.bowed).toBe(true);
+            expect(this.player1.fate).toBe(9);
+
+            this.player2.pass();
+            expect(this.player1).toHavePrompt('Action Window');
+            this.player1.clickCard(this.service2);
+            expect(this.player1).toHavePrompt('Action Window');
+            expect(this.service2.location).toBe('hand');
+            expect(this.diplomat.bowed).toBe(false);
+            expect(this.player1.fate).toBe(9);
+        });
+    });
+});

@@ -47,7 +47,7 @@ describe('Temptation Maho', function() {
             });
 
             it('should require fate to be paid from characters', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.uji.fate = 3;
                 this.yoshi.fate = 2;
                 this.challenger.fate = 1;
@@ -185,7 +185,7 @@ describe('Temptation Maho', function() {
             });
 
             it('should work with cost reduction', function() {
-                let fate = this.player1.fate;
+                const fate = this.player1.fate;
                 this.uji.fate = 1;
                 this.yoshi.fate = 1;
                 this.challenger.fate = 0;

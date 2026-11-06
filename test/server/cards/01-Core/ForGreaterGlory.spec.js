@@ -124,3 +124,49 @@ describe('For Greater Glory', function() {
         });
     });
 });
+
+describe('For Greater Glory when Raze to the Ground breaks the attacker\'s own province', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-challenger', 'akodo-toturi'],
+                    hand: ['raze-to-the-ground', 'for-greater-glory'],
+                    provinces: ['manicured-garden']
+                },
+                player2: {
+                    inPlay: ['mirumoto-raitsugu'],
+                    hand: ['for-greater-glory'],
+                    provinces: ['entrenched-position']
+                }
+            });
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.garden = this.player1.findCardByName('manicured-garden');
+            this.garden.facedown = false;
+            this.raitsugu = this.player2.findCardByName('mirumoto-raitsugu');
+            this.entrenched = this.player2.findCardByName('entrenched-position');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                province: this.entrenched,
+                attackers: [this.challenger, 'akodo-toturi'],
+                defenders: [this.raitsugu]
+            });
+            this.noMoreActions();
+            this.player1.clickCard('raze-to-the-ground');
+            this.player1.clickCard(this.challenger);
+            this.player1.clickCard(this.garden);
+        });
+
+        it('lets the defender react, as they broke it', function() {
+            this.player2.clickPrompt('No');
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.player2.findCardByName('for-greater-glory'));
+            expect(this.raitsugu.fate).toBe(1);
+            expect(this.player1).toHavePrompt('Break Entrenched Position');
+            this.player1.clickPrompt('No');
+            expect(this.player1).toBeAbleToSelect(this.player1.findCardByName('for-greater-glory'));
+        });
+    });
+});

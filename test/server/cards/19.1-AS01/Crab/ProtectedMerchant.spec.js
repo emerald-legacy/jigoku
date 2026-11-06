@@ -33,3 +33,40 @@ describe('Protected Merchant', function () {
         });
     });
 });
+
+describe('Protected Merchant copied by Shosuro Actor', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shosuro-actor']
+                },
+                player2: {
+                    inPlay: ['protected-merchant'],
+                    dynastyDiscard: ['imperial-storehouse', 'kaiu-forges']
+                }
+            });
+            this.actor = this.player1.findCardByName('shosuro-actor');
+            this.merchant = this.player2.findCardByName('protected-merchant');
+            this.player2.placeCardInProvince('imperial-storehouse', 'province 1').facedown = false;
+            this.player2.placeCardInProvince('kaiu-forges', 'province 2').facedown = false;
+            this.game.checkGameState(true);
+        });
+
+        it('counts the holdings of the copy\'s controller', function() {
+            expect(this.merchant.glory).toBe(this.merchant.printedGlory + 2);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.actor],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.actor);
+            this.player1.clickCard(this.merchant);
+            expect(this.actor.name).toBe('Protected Merchant');
+            expect(this.actor.glory).toBe(this.merchant.printedGlory);
+        });
+    });
+});

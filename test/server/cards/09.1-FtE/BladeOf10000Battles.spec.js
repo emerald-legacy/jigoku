@@ -75,6 +75,7 @@ describe('Blade of 10,000 Battles', function() {
                 });
                 this.player2.pass();
                 this.player1.pass();
+                expect(this.getChatLogs(3)).toContain('player2 won a political conflict 5 vs 4');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
             });
 
@@ -86,18 +87,22 @@ describe('Blade of 10,000 Battles', function() {
                 this.player2.honor = 14;
                 this.player2.pass();
                 this.player1.pass();
+                expect(this.getChatLogs(3)).toContain('player1 won a military conflict 7 vs 0');
+                expect(this.player2.honor).toBe(13);
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
             });
 
             it('should not trigger when conflict discard pile is empty', function() {
                 this.player1.moveCard(this.ornateFan, 'hand');
                 this.player1.moveCard(this.fineKatana, 'hand');
+                expect(this.player1.conflictDiscard.length).toBe(0);
                 this.initiateConflict({
                     attackers: [this.matsuTsuko],
                     defenders: []
                 });
                 this.player2.pass();
                 this.player1.pass();
+                expect(this.getChatLogs(3)).toContain('player1 won a military conflict 7 vs 0');
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
             });
         });

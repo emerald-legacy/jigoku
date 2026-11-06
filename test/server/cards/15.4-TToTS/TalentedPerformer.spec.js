@@ -61,7 +61,7 @@ describe('Talented Performer', function() {
                 attackers: [this.performer, this.challenger],
                 defenders: [this.mirumotoRaitsugu, this.whisperer]
             });
-            let mil = this.performer.militarySkill;
+            const mil = this.performer.militarySkill;
 
             this.player2.clickCard(this.banzai);
             expect(this.player2).toHavePrompt('Banzai!');
@@ -225,6 +225,46 @@ describe('Talented Performer', function() {
             expect(this.player2).toBeAbleToSelect(this.performer);
             expect(this.player2).not.toBeAbleToSelect(this.challenger);
             expect(this.player2).not.toBeAbleToSelect(this.diplomat);
+        });
+    });
+});
+
+describe('Two Talented Performers', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['talented-performer', 'doji-challenger']
+                },
+                player2: {
+                    inPlay: ['talented-performer', 'mirumoto-raitsugu'],
+                    hand: ['banzai']
+                }
+            });
+            this.performer1 = this.player1.findCardByName('talented-performer');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.performer2 = this.player2.findCardByName('talented-performer');
+            this.mirumotoRaitsugu = this.player2.findCardByName('mirumoto-raitsugu');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.performer1, this.challenger],
+                defenders: [this.performer2, this.mirumotoRaitsugu]
+            });
+        });
+
+        it('lets a single-target event choose either Performer (#1003)', function() {
+            const mil = this.performer1.militarySkill;
+            this.player2.clickCard('banzai');
+            expect(this.player2).toHavePrompt('Banzai!');
+            expect(this.player2).toBeAbleToSelect(this.performer1);
+            expect(this.player2).toBeAbleToSelect(this.performer2);
+            expect(this.player2).not.toBeAbleToSelect(this.challenger);
+            expect(this.player2).not.toBeAbleToSelect(this.mirumotoRaitsugu);
+            this.player2.clickCard(this.performer1);
+            this.player2.clickPrompt('Done');
+            expect(this.performer1.militarySkill).toBe(mil + 2);
         });
     });
 });

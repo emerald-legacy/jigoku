@@ -1,20 +1,19 @@
 import DrawCard from '../../DrawCard.js';
 import type BaseCard from '../../BaseCard.js';
 import type Ring from '../../Ring.js';
-import AbilityDsl from '../../abilitydsl.js';
-import { CardType } from '../../Constants.js';
+import { cannotBeDeclaredAsAttacker } from '../../effects.js';
 
 class PeacemakersBlade extends DrawCard {
     static id = 'peacemaker-s-blade';
 
-    setupCardAbilities() {
+    override setupCardAbilities() {
         this.whileAttached({
-            effect: AbilityDsl.effects.cannotBeDeclaredAsAttacker()
+            effect: cannotBeDeclaredAsAttacker()
         });
     }
 
-    canPlayOn(card: BaseCard | Ring) {
-        return ((card as DrawCard).getType() === CardType.Character && !(card as DrawCard).isAttacking()) && super.canPlayOn(card);
+    override canPlayOn(card: BaseCard | Ring) {
+        return card.isCard() && card.isCharacter() && !card.isAttacking() && super.canPlayOn(card);
     }
 }
 

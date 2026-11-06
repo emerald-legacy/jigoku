@@ -12,8 +12,8 @@ describe('Beloved Advisor', function() {
             });
 
             it('should make each player 1 card', function() {
-                let hand = this.player1.hand.length;
-                let hand2 = this.player2.hand.length;
+                const hand = this.player1.hand.length;
+                const hand2 = this.player2.hand.length;
                 this.player1.clickCard(this.belovedAdvisor);
                 expect(this.player1.hand.length).toBe(hand + 1);
                 expect(this.player2.hand.length).toBe(hand2 + 1);

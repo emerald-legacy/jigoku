@@ -96,8 +96,8 @@ describe('Renowned Singer', function() {
             this.player1.pass();
             this.player1.clickPrompt('Gain 2 Honor');
 
-            let hand = this.player1.hand.length;
-            let deck = this.player1.conflictDeck.length;
+            const hand = this.player1.hand.length;
+            const deck = this.player1.conflictDeck.length;
 
             expect(this.player1).toHavePrompt('Action Window');
             this.player1.clickCard(this.singer);

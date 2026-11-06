@@ -91,5 +91,35 @@ describe('Kyofuki\'s Hammer', function() {
             expect(this.player1).toHavePrompt('Action Window');
             expect(this.p1.isBroken).toBe(false);
         });
+
+        it('should trigger again in a later conflict the same round', function() {
+            this.initiateConflict({
+                attackers: [this.whisperer],
+                defenders: [],
+                ring: 'air'
+            });
+            this.noMoreActions();
+            this.player1.clickCard(this.hammer);
+            this.player1.clickCard(this.raitsugu);
+            expect(this.raitsugu.location).toBe('dynasty discard pile');
+            this.player1.clickPrompt('Don\'t Resolve');
+
+            this.whisperer.bowed = false;
+            this.noMoreActions();
+            this.player2.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.whisperer],
+                defenders: [],
+                ring: 'fire',
+                type: 'political'
+            });
+            this.noMoreActions();
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect(this.hammer);
+            this.player1.clickCard(this.hammer);
+            this.player1.clickCard(this.storehouse);
+            expect(this.storehouse.location).toBe('dynasty discard pile');
+        });
     });
 });

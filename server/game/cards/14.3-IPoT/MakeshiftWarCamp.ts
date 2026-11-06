@@ -1,20 +1,19 @@
 import { Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { modifyMilitarySkill } from '../../effects.js';
 import { BattlefieldAttachment } from '../BattlefieldAttachment.js';
-import type DrawCard from '../../DrawCard.js';
 
 export default class MakeshiftWarCamp extends BattlefieldAttachment {
     static id = 'makeshift-war-camp';
 
-    public setupCardAbilities() {
+    public override setupCardAbilities() {
         super.setupCardAbilities();
 
         this.persistentEffect({
             condition: (context) =>
                 !!(context.game.isDuringConflict() && context.source.parentProvince?.isConflictProvince()),
             targetController: Players.Self,
-            match: (card: DrawCard) => card.isParticipating() && card.type === CardType.Character,
-            effect: AbilityDsl.effects.modifyMilitarySkill(2)
+            match: (card) => card.isParticipating() && card.type === CardType.Character,
+            effect: modifyMilitarySkill(2)
         });
     }
 }

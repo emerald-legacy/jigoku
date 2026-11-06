@@ -1,10 +1,11 @@
 import { readdir, stat } from 'node:fs/promises';
-import { join, sep } from 'node:path';
-import path from 'node:path';
+import { dirname, join, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { logger } from '../../logger.js';
+import BaseCard from '../BaseCard.js';
+import type { CardClass } from '../types/CardClass.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 async function allJsFiles(dir: string): Promise<string[]> {
     const files: string[] = [];
@@ -25,8 +26,12 @@ async function allJsFiles(dir: string): Promise<string[]> {
     return files;
 }
 
-async function loadAllCards(): Promise<Map<string, unknown>> {
-    const cardsMap = new Map<string, unknown>();
+function isCardClass(value: unknown): value is CardClass & { id: string } {
+    return typeof value === 'function' && value.prototype instanceof BaseCard && 'id' in value && typeof value.id === 'string' && value.id !== '';
+}
+
+async function loadAllCards(): Promise<Map<string, CardClass>> {
+    const cardsMap = new Map<string, CardClass>();
     const filepaths = await allJsFiles(__dirname);
     let loaded = 0;
     let skipped = 0;
@@ -34,9 +39,9 @@ async function loadAllCards(): Promise<Map<string, unknown>> {
     for(const filepath of filepaths) {
         try {
             const mod = await import(pathToFileURL(filepath).href);
-            const card = 'default' in mod ? mod.default : mod;
-            if(!card?.id) {
-                logger.warn(`Card at ${filepath} has no id, skipping`);
+            const card: unknown = 'default' in mod ? mod.default : mod;
+            if(!isCardClass(card)) {
+                logger.warn(`Card at ${filepath} is not a card class, skipping`);
                 skipped++;
                 continue;
             }

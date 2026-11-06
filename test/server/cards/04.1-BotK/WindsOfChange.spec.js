@@ -19,6 +19,15 @@ describe('Winds of Change', function () {
                 this.game.rings.air.claimRing(this.player1);
                 this.player1.clickCard('winds-of-change');
                 expect(this.game.rings.air.claimed).toBe(false);
+                expect(this.getChatLogs(3)).toContain('player1 plays Winds of Change to return the air ring to the unclaimed pool');
+            });
+
+            it('should return the air ring from the opponent\'s claimed ring pool', function() {
+                this.game.rings.air.claimRing(this.player2.player);
+                this.player1.clickCard('winds-of-change');
+                expect(this.game.rings.air.claimed).toBe(false);
+                expect(this.game.rings.air.claimedBy).toBeFalsy();
+                expect(this.getChatLogs(3)).toContain('player1 plays Winds of Change to return the air ring to the unclaimed pool');
             });
         });
     });

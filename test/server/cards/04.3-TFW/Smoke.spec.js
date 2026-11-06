@@ -10,7 +10,7 @@ describe('Smoke', function () {
                         hand: ['smoke']
                     },
                     player2: {
-                        inPlay: ['shinjo-tatsuo', 'shinjo-scout']
+                        inPlay: ['shinjo-tatsuo', 'shinjo-scout', 'shinjo-outrider']
                     }
                 });
                 this.juro = this.player1.findCardByName('moto-juro');
@@ -72,20 +72,29 @@ describe('Smoke', function () {
                 });
 
                 it('should reduce the military skill of all non-unique participants by 2', function () {
-                    expect(this.rider.getMilitarySkill()).toBe(parseInt(this.rider.cardData.military - 2));
-                    expect(this.scout.getMilitarySkill()).toBe(parseInt(this.scout.cardData.military - 2));
+                    expect(this.rider.militarySkill).toBe(parseInt(this.rider.cardData.military - 2));
+                    expect(this.scout.militarySkill).toBe(parseInt(this.scout.cardData.military - 2));
                 });
 
                 it('should not effect the military skill of all unique participants', function () {
-                    expect(this.juro.getMilitarySkill()).toBe(parseInt(this.juro.cardData.military));
-                    expect(this.tatsuo.getMilitarySkill()).toBe(parseInt(this.tatsuo.cardData.military));
+                    expect(this.juro.militarySkill).toBe(parseInt(this.juro.cardData.military));
+                    expect(this.tatsuo.militarySkill).toBe(parseInt(this.tatsuo.cardData.military));
+                });
+
+                // ruling #397
+                it('should not affect a character that joins the conflict afterwards', function () {
+                    this.outrider = this.player2.findCardByName('shinjo-outrider');
+                    this.player2.clickCard(this.outrider);
+                    expect(this.outrider.inConflict).toBe(true);
+                    expect(this.outrider.militarySkill).toBe(2);
+                    expect(this.scout.militarySkill).toBe(parseInt(this.scout.cardData.military - 2));
                 });
 
                 it('should last until the end of the conflict', function () {
                     this.noMoreActions();
                     this.player1.clickPrompt('Don\'t Resolve');
-                    expect(this.rider.getMilitarySkill()).toBe(parseInt(this.rider.cardData.military));
-                    expect(this.scout.getMilitarySkill()).toBe(parseInt(this.scout.cardData.military));
+                    expect(this.rider.militarySkill).toBe(parseInt(this.rider.cardData.military));
+                    expect(this.scout.militarySkill).toBe(parseInt(this.scout.cardData.military));
                 });
             });
         });

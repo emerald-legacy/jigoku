@@ -57,6 +57,7 @@ describe('Golden Plains Raider', function() {
                 });
                 this.noMoreActions();
                 expect(this.player1).not.toHavePrompt('Triggered Abilities');
+                expect(this.getChatLogs(5)).toContain('player1 won a military conflict 2 vs 0');
             });
 
             it('should prompt you to discard a faceup card in an opponents province', function() {

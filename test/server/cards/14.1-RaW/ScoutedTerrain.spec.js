@@ -149,5 +149,27 @@ describe('Scouted Terrain', function() {
             this.player2.clickCard(this.talisman);
             expect(this.player2).toBeAbleToSelect(this.pStronghold);
         });
+
+    });
+});
+
+describe('Scouted Terrain timing', function () {
+    integration(function () {
+        describe('outside the conflict phase', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'fate',
+                    player1: {
+                        hand: ['scouted-terrain']
+                    }
+                });
+                this.terrain = this.player1.findCardByName('scouted-terrain');
+            });
+
+            it('cannot be played', function() {
+                this.player1.clickCard(this.terrain);
+                expect(this.terrain.location).toBe('hand');
+            });
+        });
     });
 });

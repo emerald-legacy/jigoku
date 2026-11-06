@@ -7,8 +7,8 @@ describe('ChosenReturnToDeckAction', function() {
         this.player.type = 'player';
         this.player.checkRestrictions.and.returnValue(true);
         this.player.game = this.game;
-        this.cardA = { name: 'Way of the Crane', owner: this.player };
-        this.cardB = { name: 'Charge!', owner: this.player };
+        this.cardA = { name: 'Way of the Crane', owner: this.player, controller: this.player, location: 'hand' };
+        this.cardB = { name: 'Charge!', owner: this.player, controller: this.player, location: 'hand' };
         this.player.hand = [this.cardA, this.cardB];
         this.context = { player: this.player, game: this.game, gameActionsResolutionChain: [] };
     });
@@ -137,7 +137,7 @@ describe('ChosenReturnToDeckAction', function() {
             beforeEach(function() {
                 this.otherPlayer = jasmine.createSpyObj('otherPlayer', ['checkRestrictions']);
                 this.context.choosingPlayerOverride = this.otherPlayer;
-                this.player.hand = [this.cardA, this.cardB, { name: 'Charge!', owner: this.player }];
+                this.player.hand = [this.cardA, this.cardB, { name: 'Charge!', owner: this.player, controller: this.player, location: 'hand' }];
                 this.action = new ChosenReturnToDeckAction({ amount: 2, targets: true, target: [this.player] });
             });
 

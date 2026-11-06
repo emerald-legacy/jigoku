@@ -166,3 +166,25 @@ describe('Nezumi Infiltrator', function() {
         });
     });
 });
+
+describe('Nezumi Infiltrator and costs', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['tainted-hero', 'nezumi-infiltrator']
+                }
+            });
+            this.hero = this.player1.findCardByName('tainted-hero');
+            this.nezumi = this.player1.findCardByName('nezumi-infiltrator');
+        });
+
+        it('can be sacrificed to pay a Shadowlands card\'s cost (EmeraldDB ruling)', function() {
+            this.player1.clickCard(this.hero);
+            expect(this.player1).toBeAbleToSelect(this.nezumi);
+            this.player1.clickCard(this.nezumi);
+            expect(this.nezumi.location).toBe('conflict discard pile');
+        });
+    });
+});

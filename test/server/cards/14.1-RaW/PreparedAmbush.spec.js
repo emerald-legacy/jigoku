@@ -184,3 +184,47 @@ describe('Prepared Ambush', function() {
         });
     });
 });
+
+describe('Prepared Ambush with Shinjo Gunsō', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['akodo-zentaro'],
+                    hand: ['prepared-ambush'],
+                    dynastyDiscard: ['shinjo-gunso']
+                },
+                player2: {
+                    inPlay: ['akodo-toturi'],
+                    provinces: ['ancestral-lands']
+                }
+            });
+            this.zentaro = this.player1.findCardByName('akodo-zentaro');
+            this.preparedAmbush = this.player1.findCardByName('prepared-ambush');
+            this.gunso = this.player1.placeCardInProvince('shinjo-gunso', 'province 1');
+            this.gunso.facedown = false;
+            this.akodoToturi = this.player2.findCardByName('akodo-toturi');
+            this.ancestralLands = this.player2.findCardByName('ancestral-lands');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.zentaro],
+                defenders: [this.akodoToturi],
+                province: this.ancestralLands
+            });
+            this.player2.pass();
+            this.player1.playAttachment(this.preparedAmbush, this.ancestralLands);
+            this.player2.pass();
+        });
+
+        // ruling #922: a character played as if from hand isn't played from the province
+        it('does not let reactions to being played from a province trigger', function() {
+            this.player1.clickCard(this.gunso);
+            this.player1.clickPrompt('0');
+            expect(this.gunso.location).toBe('play area');
+            expect(this.game.currentConflict.attackers).toContain(this.gunso);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+        });
+    });
+});

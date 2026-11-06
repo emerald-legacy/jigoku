@@ -13,7 +13,7 @@ describe('EffectEngine', function () {
     beforeEach(function () {
         this.mockGame = {
             on: jasmine.createSpy('on'),
-            removeListener: jasmine.createSpy('removeListener'),
+            off: jasmine.createSpy('off'),
             addMessage: jasmine.createSpy('addMessage')
         };
         this.engine = new EffectEngine(this.mockGame);
@@ -148,9 +148,9 @@ describe('EffectEngine', function () {
         });
 
         it('should register custom duration events when duration is Custom', function () {
-            const effect = makeEffect({ duration: 'lastingEffect', until: { onSomething: () => true } });
+            const effect = makeEffect({ duration: 'custom', until: { onConflictFinished: () => true } });
             this.engine.add(effect);
-            expect(this.mockGame.on).toHaveBeenCalledWith('onSomething', jasmine.any(Function));
+            expect(this.mockGame.on).toHaveBeenCalledWith('onConflictFinished', jasmine.any(Function));
         });
 
         it('should not register custom duration events for non-custom durations', function () {
@@ -204,12 +204,12 @@ describe('EffectEngine', function () {
         });
 
         it('should unregister custom duration events for removed custom-duration effects', function () {
-            const effect = makeEffect({ duration: 'lastingEffect', until: { onSomething: () => true } });
+            const effect = makeEffect({ duration: 'custom', until: { onConflictFinished: () => true } });
             this.engine.add(effect);
 
             this.engine.unapplyAndRemove((e) => e === effect);
 
-            expect(this.mockGame.removeListener).toHaveBeenCalledWith('onSomething', jasmine.any(Function));
+            expect(this.mockGame.off).toHaveBeenCalledWith('onConflictFinished', jasmine.any(Function));
         });
     });
 

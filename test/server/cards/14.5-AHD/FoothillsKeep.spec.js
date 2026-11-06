@@ -54,6 +54,22 @@ describe('Foothills Keep', function() {
                 expect(this.player1).toHavePromptButton('Initiate Conflict');
             });
 
+            it('should not let your opponent attack another province if no other ring is unclaimed', function() {
+                this.player1.fate = 3;
+                for(const element of ['fire', 'earth', 'water', 'void']) {
+                    this.player2.claimRing(element);
+                }
+                this.noMoreActions();
+
+                this.player1.clickCard(this.dazzling);
+                this.player1.clickRing('air');
+                this.player1.clickCard(this.revels);
+                expect(this.player1).not.toHavePromptButton('Initiate Conflict');
+                this.player1.clickCard(this.revels);
+                this.player1.clickCard(this.foothills);
+                expect(this.player1).toHavePromptButton('Initiate Conflict');
+            });
+
             it('should let your opponent attack another province if they have fate', function() {
                 this.player1.fate = 1;
                 this.noMoreActions();

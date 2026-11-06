@@ -41,8 +41,8 @@ describe('Ethereal Dreamer', function() {
                         defenders: []
                     });
 
-                    expect(this.dreamer.getMilitarySkill()).toBe(1);
-                    expect(this.dreamer.getPoliticalSkill()).toBe(1);
+                    expect(this.dreamer.militarySkill).toBe(1);
+                    expect(this.dreamer.politicalSkill).toBe(1);
                 });
 
                 it('should not boost skill if the contested ring gains the targeted ring\'s element', function() {
@@ -55,8 +55,8 @@ describe('Ethereal Dreamer', function() {
                     this.player1.clickCard(this.seeker);
                     this.player1.clickPrompt('1');
 
-                    expect(this.dreamer.getMilitarySkill()).toBe(1);
-                    expect(this.dreamer.getPoliticalSkill()).toBe(1);
+                    expect(this.dreamer.militarySkill).toBe(1);
+                    expect(this.dreamer.politicalSkill).toBe(1);
                 });
 
                 describe('after initiating a conflict with the targeted ring', function() {
@@ -70,23 +70,23 @@ describe('Ethereal Dreamer', function() {
                     });
 
                     it('should boost skill her skill by +2/+2', function() {
-                        expect(this.dreamer.getMilitarySkill()).toBe(3);
-                        expect(this.dreamer.getPoliticalSkill()).toBe(3);
+                        expect(this.dreamer.militarySkill).toBe(3);
+                        expect(this.dreamer.politicalSkill).toBe(3);
                     });
 
                     it('should remove her skill boost if the contested ring changes', function() {
                         this.player2.clickCard('kuroi-mori', 'provinces');
                         this.player2.clickPrompt('Switch the contested ring');
                         this.player2.clickRing('void');
-                        expect(this.dreamer.getMilitarySkill()).toBe(1);
-                        expect(this.dreamer.getPoliticalSkill()).toBe(1);
+                        expect(this.dreamer.militarySkill).toBe(1);
+                        expect(this.dreamer.politicalSkill).toBe(1);
                     });
 
                     it('should remove her skill boost when the ring is no longer contested', function() {
                         this.noMoreActions();
                         this.player1.clickPrompt('Don\'t resolve');
-                        expect(this.dreamer.getMilitarySkill()).toBe(1);
-                        expect(this.dreamer.getPoliticalSkill()).toBe(1);
+                        expect(this.dreamer.militarySkill).toBe(1);
+                        expect(this.dreamer.politicalSkill).toBe(1);
                     });
                 });
             });

@@ -4,7 +4,8 @@ describe('Silent Suburb', function () {
             this.setupTest({
                 phase: 'conflict',
                 player1: {
-                    inPlay: ['aggressive-moto']
+                    inPlay: ['aggressive-moto'],
+                    conflictDiscard: ['fine-katana']
                 },
                 player2: {
                     inPlay: ['togashi-yokuni'],
@@ -31,6 +32,60 @@ describe('Silent Suburb', function () {
 
             this.player2.clickCard(this.tavern);
             expect(this.getChatLogs(3)).toContain('player2 uses Silent Suburb to resolve Earth Ring');
+        });
+
+        it('resolves the Earth ring effect for the defender', function () {
+            const katana = this.player1.moveCard('fine-katana', 'hand');
+            expect(this.player1.hand.length).toBe(1);
+            expect(this.player2.hand.length).toBe(0);
+
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.aggressiveMoto],
+                defenders: [this.yokuni],
+                ring: 'earth',
+                province: this.tavern
+            });
+
+            this.noMoreActions();
+            this.player2.clickCard(this.tavern);
+            expect(this.player2).toHavePrompt('Earth Ring');
+            this.player2.clickPrompt('Draw a card and opponent discards');
+            expect(this.getChatLogs(5)).toContain('player2 resolves the earth ring, drawing a card and forcing player1 to discard a card at random');
+            expect(this.player2.hand.length).toBe(1);
+            expect(this.player1.hand.length).toBe(0);
+            expect(katana.location).toBe('conflict discard pile');
+        });
+
+        it('does not trigger when the attacker wins at this province', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.aggressiveMoto],
+                defenders: [],
+                ring: 'earth',
+                province: this.tavern
+            });
+
+            this.noMoreActions();
+            expect(this.getChatLogs(10)).toContain('player1 won a military conflict 3 vs 0');
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Earth Ring');
+        });
+
+        it('does not trigger when its controller wins a conflict at another province', function () {
+            this.tavern.facedown = false;
+            const otherProvince = this.player2.findCardByName('shameful-display', 'province 2');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.aggressiveMoto],
+                defenders: [this.yokuni],
+                province: otherProvince
+            });
+
+            this.noMoreActions();
+            expect(this.getChatLogs(10)).toContain('player2 won a military conflict 5 vs 3');
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
         });
     });
 });

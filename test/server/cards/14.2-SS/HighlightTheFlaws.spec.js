@@ -5,9 +5,10 @@ describe('Highlight the Flaws', function() {
                 phase: 'conflict',
                 player1: {
                     inPlay: ['doji-kuwanan'],
-                    hand: ['highlight-the-flaws', 'fine-katana', 'fine-katana', 'fine-katana', 'fine-katana']
+                    hand: ['highlight-the-flaws', 'fine-katana', 'fine-katana', 'fine-katana', 'fine-katana', 'fine-katana', 'fine-katana']
                 },
                 player2: {
+                    inPlay: ['asahina-artisan'],
                     provinces: ['midnight-revels', 'restoration-of-balance', 'manicured-garden', 'meditations-on-the-tao']
                 }
             });
@@ -59,6 +60,8 @@ describe('Highlight the Flaws', function() {
             expect(this.player1).toHavePrompt('Triggered Abilities');
             this.player1.clickCard(this.flaws);
             expect(this.getChatLogs(10)).toContain('player1 plays Highlight the Flaws to cancel the effects of Restoration of Balance\'s ability');
+            expect(this.restoration.isBroken).toBe(true);
+            expect(this.player1.hand.length).toBe(6);
         });
 
         it('should work with actions', function() {
@@ -71,10 +74,31 @@ describe('Highlight the Flaws', function() {
                 province: this.manicuredGarden
             });
 
+            const fate = this.player2.fate;
             this.player2.clickCard(this.manicuredGarden);
             expect(this.player1).toHavePrompt('Triggered Abilities');
             this.player1.clickCard(this.flaws);
             expect(this.getChatLogs(10)).toContain('player1 plays Highlight the Flaws to cancel the effects of Manicured Garden\'s ability');
+            expect(this.player2.fate).toBe(fate);
+        });
+
+        it('should not trigger for a character\'s ability', function() {
+            this.noMoreActions();
+
+            this.initiateConflict({
+                attackers: [this.kuwanan],
+                defenders: [],
+                type: 'military',
+                province: this.manicuredGarden
+            });
+
+            const political = this.kuwanan.getPoliticalSkill();
+            this.artisan = this.player2.clickCard('asahina-artisan');
+            this.player2.clickCard(this.kuwanan);
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.kuwanan.getPoliticalSkill()).toBe(political + 3);
+            expect(this.flaws.location).toBe('hand');
         });
     });
 });

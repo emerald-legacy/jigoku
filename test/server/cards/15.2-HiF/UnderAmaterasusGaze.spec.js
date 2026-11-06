@@ -87,8 +87,8 @@ describe('Under Amaterasu\'s Gaze', function() {
             this.player2.honor = 10;
             this.game.checkGameState(true);
 
-            let p1Fate = this.player1.fate;
-            let p2Fate = this.player2.fate;
+            const p1Fate = this.player1.fate;
+            const p2Fate = this.player2.fate;
 
             this.player2.playAttachment(this.fan, this.tsuko);
             expect(this.player1.fate).toBe(p1Fate);
@@ -115,8 +115,8 @@ describe('Under Amaterasu\'s Gaze', function() {
             this.player2.honor = 10;
             this.game.checkGameState(true);
 
-            let p1Fate = this.player1.fate;
-            let p2Fate = this.player2.fate;
+            const p1Fate = this.player1.fate;
+            const p2Fate = this.player2.fate;
 
             this.player2.playAttachment(this.fan, this.tsuko);
             expect(this.player1.fate).toBe(p1Fate);
@@ -143,8 +143,8 @@ describe('Under Amaterasu\'s Gaze', function() {
             this.player2.honor = 15;
             this.game.checkGameState(true);
 
-            let p1Fate = this.player1.fate;
-            let p2Fate = this.player2.fate;
+            const p1Fate = this.player1.fate;
+            const p2Fate = this.player2.fate;
 
             this.player2.playAttachment(this.fan, this.tsuko);
             expect(this.player1.fate).toBe(p1Fate);
@@ -171,8 +171,8 @@ describe('Under Amaterasu\'s Gaze', function() {
             this.player2.honor = 10;
             this.game.checkGameState(true);
 
-            let p1Fate = this.player1.fate;
-            let p2Fate = this.player2.fate;
+            const p1Fate = this.player1.fate;
+            const p2Fate = this.player2.fate;
 
             this.player2.playAttachment(this.fan, this.tsuko);
             expect(this.player1.fate).toBe(p1Fate);

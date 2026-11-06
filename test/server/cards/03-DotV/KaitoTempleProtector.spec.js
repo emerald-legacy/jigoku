@@ -109,8 +109,8 @@ describe('Kaito Temple Protector', function() {
                     this.player1.clickCard(this.masterOfTheSpear);
                     this.player2.clickCard(this.kaitoTempleProtector);
                     this.player2.clickCard(this.masterOfTheSpear);
-                    expect(this.kaitoTempleProtector.getBaseMilitarySkill()).toBe(this.masterOfTheSpear.getMilitarySkill());
-                    expect(this.kaitoTempleProtector.getBasePoliticalSkill()).toBe(this.masterOfTheSpear.getPoliticalSkill());
+                    expect(this.kaitoTempleProtector.getBaseMilitarySkill()).toBe(this.masterOfTheSpear.militarySkill);
+                    expect(this.kaitoTempleProtector.getBasePoliticalSkill()).toBe(this.masterOfTheSpear.politicalSkill);
                 });
 
                 it('should set as political dash if target is political dash', function() {
@@ -132,6 +132,65 @@ describe('Kaito Temple Protector', function() {
                 this.player2.clickCard(this.venerableHistorian);
                 expect(this.kaitoTempleProtector.hasDash('military')).toBe(true);
             });
+        });
+    });
+});
+
+describe('Kaito Temple Protector\'s set skills', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['bayushi-kachiko', 'bayushi-yunako'],
+                    hand: ['fine-katana', 'ornate-fan']
+                },
+                player2: {
+                    inPlay: ['kaito-temple-protector']
+                }
+            });
+            this.kachiko = this.player1.findCardByName('bayushi-kachiko');
+            this.yunako = this.player1.findCardByName('bayushi-yunako');
+            this.fineKatana = this.player1.findCardByName('fine-katana');
+            this.ornateFan = this.player1.findCardByName('ornate-fan');
+            this.kaitoTempleProtector = this.player2.findCardByName('kaito-temple-protector');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.kachiko, this.yunako],
+                defenders: [this.kaitoTempleProtector]
+            });
+            this.player2.clickCard(this.kaitoTempleProtector);
+            this.player2.clickCard(this.kachiko);
+        });
+
+        it('last until the end of the conflict', function() {
+            expect(this.kaitoTempleProtector.militarySkill).toBe(3);
+            expect(this.kaitoTempleProtector.politicalSkill).toBe(6);
+            this.noMoreActions();
+            this.player1.clickPrompt('Don\'t resolve');
+            expect(this.game.currentConflict).toBeNull();
+            expect(this.kaitoTempleProtector.militarySkill).toBe(3);
+            expect(this.kaitoTempleProtector.politicalSkill).toBe(3);
+        });
+
+        // ruling #388: the set values override modifiers applied afterwards
+        it('are not modified by later modifiers', function() {
+            this.player1.playAttachment(this.fineKatana, this.kaitoTempleProtector);
+            this.player2.pass();
+            this.player1.playAttachment(this.ornateFan, this.kaitoTempleProtector);
+            expect(this.fineKatana.parent).toBe(this.kaitoTempleProtector);
+            expect(this.ornateFan.parent).toBe(this.kaitoTempleProtector);
+            expect(this.kaitoTempleProtector.militarySkill).toBe(3);
+            expect(this.kaitoTempleProtector.politicalSkill).toBe(6);
+        });
+
+        // ruling #413: skills that have been set cannot be switched
+        it('cannot be switched', function() {
+            this.player1.clickCard(this.yunako);
+            expect(this.player1).toHavePrompt('Bayushi Yunako');
+            expect(this.player1).toBeAbleToSelect(this.kachiko);
+            expect(this.player1).not.toBeAbleToSelect(this.kaitoTempleProtector);
         });
     });
 });

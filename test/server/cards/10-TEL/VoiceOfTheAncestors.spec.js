@@ -19,6 +19,15 @@ describe('Voice of the Ancestors', function () {
                 this.matsuBerserker = this.player1.findCardByName('matsu-berserker');
             });
 
+            it('only offers a character you can pay for after the reduction (RRG Target)', function () {
+                this.player1.fate = 1;
+                this.player1.clickCard(this.voiceOfTheAncestors);
+                this.player1.clickCard(this.akodoToturi);
+                expect(this.player1).toBeAbleToSelect(this.ashigaruLevy);
+                expect(this.player1).not.toBeAbleToSelect(this.kitsuSpiritcaller);
+                expect(this.kitsuSpiritcaller.type).toBe('character');
+            });
+
             it('should play a character from dynasty discard as an attachment', function () {
                 this.player1.clickCard(this.voiceOfTheAncestors);
                 expect(this.player1).toHavePrompt('Voice of the Ancestors');
@@ -39,6 +48,7 @@ describe('Voice of the Ancestors', function () {
                 expect(this.matsuBerserker.hasTrait('spirit')).toBe(true);
                 expect(this.player1.fate).toBe(4);
                 expect(this.akodoToturi.militarySkill).toBe(9);
+                expect(this.getChatLogs(5)).toContain('player1 uses Voice of the Ancestors to play a Lion character from their dynasty discard pile as a Spirit attachment on Akodo Toturi');
             });
 
             it('should play a character as a spirit, discarding other attached spirits', function () {

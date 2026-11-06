@@ -1,26 +1,26 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { MessageArgs } from '../GameChat.js';
-import type { GameEvent } from '../Events/EventPayloads.js';
 import type { AbilityContext } from '../AbilityContext.js';
-import { CardType, EventName, Location } from '../Constants.js';
+import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
 import type DrawCard from '../DrawCard.js';
 import type { Duel } from '../Duel.js';
 import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import type { ActionEvent } from './GameAction.js';
 
 export interface DuelAddParticipantProperties extends CardActionProperties {
     duel: Duel;
 }
 
-export class DuelAddParticipantAction extends CardGameAction<DuelAddParticipantProperties, EventName.OnAddDuelParticipant> {
-    name = 'onAddDuelParticipant';
-    eventName = EventName.OnAddDuelParticipant;
+export class DuelAddParticipantAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<DuelAddParticipantProperties, EventName.OnAddDuelParticipant, Context> {
+    override name = 'duelAddParticipant';
+    override eventName = EventName.OnAddDuelParticipant;
 
-    getEffectMessage(context: AbilityContext): MessageArgs {
-        let properties = this.getProperties(context);
-        return ['extend the duel challenge to {0}', [properties.target]];
+    protected override effectMessage(): MessageArgs {
+        return ['extend the duel challenge to {0}', []];
     }
 
-    canAffect(card: DrawCard, context: AbilityContext, additionalProperties = {}): boolean {
-        let properties = this.getProperties(context, additionalProperties);
+    override canAffect(card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        const properties = this.getProperties(context, additionalProperties);
 
         if(card.type !== CardType.Character) {
             return false;
@@ -29,20 +29,20 @@ export class DuelAddParticipantAction extends CardGameAction<DuelAddParticipantP
             return false;
         }
 
-        if(!card.allowGameAction('duel', context)) {
+        if(card.hasNoDuels() || card.hasDash(properties.duel.duelType) || !card.checkRestrictions(RestrictionType.Duel, context)) {
             return false;
         }
 
         return properties.duel.canAddToDuel(card, context);
     }
 
-    addPropertiesToEvent(event: GameEvent<EventName.OnAddDuelParticipant>, card: DrawCard, context: AbilityContext, additionalProperties: Record<string, unknown> = {}): void {
-        let { duel } = this.getProperties(context, additionalProperties);
+    override addPropertiesToEvent(event: ActionEvent<EventName.OnAddDuelParticipant, Context>, card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): void {
+        const { duel } = this.getProperties(context, additionalProperties);
         super.addPropertiesToEvent(event, card, context, additionalProperties);
         event.duel = duel;
     }
 
-    eventHandler(event: GameEvent<EventName.OnAddDuelParticipant>): void {
+    override eventHandler(event: ActionEvent<EventName.OnAddDuelParticipant, Context>): void {
         event.duel.addTargetToDuel(event.card);
     }
 }

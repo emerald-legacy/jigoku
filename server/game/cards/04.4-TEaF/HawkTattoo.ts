@@ -1,36 +1,36 @@
-import type AbilityDsl from '../../abilitydsl.js';
-import type { AbilityContext } from '../../AbilityContext.js';
+import { msg } from '../../GameChat.js';
+import { addTrait, additionalAction } from '../../effects.js';
 import DrawCard from '../../DrawCard.js';
-import { Duration } from '../../Constants.js';
+import { Duration, Trait } from '../../Constants.js';
 
 class HawkTattoo extends DrawCard {
     static id = 'hawk-tattoo';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
+    override setupCardAbilities() {
         this.attachmentConditions({
             myControl: true
         });
 
         this.whileAttached({
-            effect: ability.effects.addTrait('tattooed')
+            effect: addTrait(Trait.Tattooed)
         });
 
-        this.reaction({
-            title: 'Move attached character to the conflict',
-            effect: 'move {1} into the conflict{2}',
-            effectArgs: context => [context.source.parentCharacter, context.source.parentCharacter?.hasTrait('monk') ? ' and take an additional action' : ''],
-            when: {
+        this.reaction('Move attached character to the conflict')
+            .when({
                 onCardPlayed: (event, context) => context.source.parentCharacter && event.card === context.source && this.game.isDuringConflict()
-            },
-            gameAction: [
-                ability.actions.moveToConflict((context: AbilityContext<this>) => ({ target: context.source.parentCharacter ?? [] })),
-                ability.actions.playerLastingEffect((context: AbilityContext<this>) => ({
-                    targetController: context.player,
-                    duration: Duration.UntilPassPriority,
-                    effect: context.source.parentCharacter?.hasTrait('monk') ? ability.effects.additionalAction() : []
-                }))
-            ]
-        });
+            })
+            .moveToConflict((context) => ({ target: context.source.parentCharacter ?? [] }))
+            .playerLastingEffect((context) => ({
+                duration: Duration.UntilPassPriority,
+                effect: context.source.parentCharacter?.hasTrait(Trait.Monk) ? additionalAction() : []
+            }))
+            .chatText((context) => {
+                const character = context.source.parentCharacter;
+                if(character?.isParticipating()) {
+                    return msg`take an additional action`;
+                }
+                return msg`move ${character} into the conflict${character?.hasTrait(Trait.Monk) ? ' and take an additional action' : ''}`;
+            });
     }
 }
 

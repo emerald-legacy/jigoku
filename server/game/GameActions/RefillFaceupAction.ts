@@ -1,44 +1,33 @@
+import type { ActionOverrides } from './GameAction.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { Location } from '../Constants.js';
 import type { EventName } from '../Constants.js';
-import type Player from '../Player.js';
-import { PlayerAction, type PlayerActionProperties } from './PlayerAction.js';
+import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
 
-import type { GameEvent } from '../Events/EventPayloads.js';
 export interface RefillFaceupProperties extends PlayerActionProperties {
     location: Location | Location[];
 }
 
-export class RefillFaceupAction extends PlayerAction {
-    declare defaultProperties: RefillFaceupProperties;
+export class RefillFaceupAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<RefillFaceupProperties, EventName.Unnamed, Context> {
+    override name = 'refillFaceup';
+    override effect = 'refill its province faceup';
 
-    name = 'refill';
-    effect = 'refill its province faceup';
-    constructor(propertyFactory: RefillFaceupProperties | ((context: AbilityContext) => RefillFaceupProperties)) {
-        super(propertyFactory);
-    }
 
-    defaultTargets(context: AbilityContext): Player[] {
-        return [context.player];
-    }
-
-    eventHandler(event: GameEvent<EventName.Unnamed>, additionalProperties: Record<string, unknown> = {}): void {
-        const context = event.context as AbilityContext;
-        let { location } = this.getProperties(context, additionalProperties) as RefillFaceupProperties;
+    override eventHandler(event: PlayerEvent<EventName.Unnamed, Context>, additionalProperties: ActionOverrides = {}): void {
+        const context = event.context;
+        let { location } = this.getProperties(context, additionalProperties);
         if(!Array.isArray(location)) {
             location = [location];
         }
 
-        const player = event.player as Player;
+        const player = event.player;
         location.forEach((loc) => {
             context.game.queueSimpleStep(() => {
                 if(player.replaceDynastyCard(loc)) {
                     context.game.queueSimpleStep(() => {
-                        let cards = player.getDynastyCardsInProvince(loc);
+                        const cards = player.getDynastyCardsInProvince(loc);
                         cards.forEach((card) => {
-                            if(card) {
-                                card.facedown = false;
-                            }
+                            card.facedown = false;
                         });
                     });
                 }

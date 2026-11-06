@@ -1,19 +1,17 @@
 import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { placeFate } from '../../GameActions/GameActions.js';
 
 class MasterOfJade extends DrawCard {
     static id = 'master-of-jade';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Lose 2 honor to put a fate on a character',
-            cost: AbilityDsl.costs.payHonor(2),
-            target: {
-                cardType: CardType.Character,
-                gameAction: AbilityDsl.actions.placeFate({amount: 1})
-            }
-        });
+    override setupCardAbilities() {
+        this.action('Lose 2 honor to put a fate on a character')
+            .cost(costs.payHonor(2))
+            .target({
+                cardType: CardType.Character
+            }, placeFate());
     }
 }
 

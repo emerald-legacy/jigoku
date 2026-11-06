@@ -429,3 +429,41 @@ describe('Seven Stings Keep', function() {
         });
     });
 });
+
+describe('Seven Stings Keep and covert', function() {
+    integration(function() {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['tengu-sensei'],
+                    stronghold: ['seven-stings-keep']
+                },
+                player2: {
+                    inPlay: ['agasha-swordsmith', 'kakita-toshimoko']
+                }
+            });
+            this.tengu = this.player1.findCardByName('tengu-sensei');
+            this.keep = this.player1.findCardByName('seven-stings-keep');
+            this.swordsmith = this.player2.findCardByName('agasha-swordsmith');
+            this.toshimoko = this.player2.findCardByName('kakita-toshimoko');
+            this.shamefulDisplay = this.player2.findCardByName('shameful-display', 'province 1');
+        });
+
+        it('doesn\'t let attackers use covert: the defenders were already declared (EmeraldDB ruling)', function() {
+            this.noMoreActions();
+            this.player1.clickCard(this.keep);
+            this.player2.clickCard(this.swordsmith);
+            this.player2.clickPrompt('Done');
+            this.player1.clickRing('air');
+            this.player1.clickCard(this.shamefulDisplay);
+            this.player1.clickCard(this.tengu);
+            this.player1.clickPrompt('Initiate Conflict');
+            expect(this.player1).not.toHavePrompt('Choose covert target for Tengu Sensei');
+            expect(this.player1).not.toHavePrompt('Choose character to evade with covert');
+            expect(this.game.currentConflict.attackers).toContain(this.tengu);
+            expect(this.game.currentConflict.defenders).toContain(this.swordsmith);
+            expect(this.toshimoko.covert).toBe(false);
+        });
+    });
+});

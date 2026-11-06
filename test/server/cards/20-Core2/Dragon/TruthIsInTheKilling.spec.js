@@ -30,8 +30,8 @@ describe('Truth is in the Killing', function () {
 
         describe('when winner is not Duelist', function () {
             it('returns fate from loser to their controller', function () {
-                let fate1 = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const fate1 = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -65,8 +65,8 @@ describe('Truth is in the Killing', function () {
 
         describe('when winner is Duelist', function () {
             it('should discard the loser and return fate to its controller', function () {
-                let fate1 = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const fate1 = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -98,8 +98,8 @@ describe('Truth is in the Killing', function () {
             });
 
             it('should discard the loser and return fate to its controller (self losing)', function () {
-                let fate1 = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const fate1 = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.noMoreActions();
                 this.initiateConflict({
@@ -147,8 +147,8 @@ describe('Truth is in the Killing', function () {
             });
 
             it('multiple targets', function () {
-                let fate1 = this.player1.fate;
-                let fate2 = this.player2.fate;
+                const fate1 = this.player1.fate;
+                const fate2 = this.player2.fate;
 
                 this.player1.moveCard(this.hands, 'hand');
 
@@ -179,6 +179,60 @@ describe('Truth is in the Killing', function () {
                     'Duel Effect: return all fate on Kakita Toshimoko and Doji Diplomat to player2\'s fate pool and discard them'
                 );
             });
+        });
+    });
+});
+
+describe('Truth is in the Killing against a character its owner does not control', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    fate: 20,
+                    inPlay: ['borderlands-defender', 'cunning-negotiator', 'doji-challenger'],
+                    hand: ['truth-is-in-the-killing']
+                },
+                player2: {
+                    inPlay: ['shiba-tsukune', 'bayushi-shinobu']
+                }
+            });
+
+            this.borderlandsDefender = this.player1.findCardByName('borderlands-defender');
+            this.cunningNegotiator = this.player1.findCardByName('cunning-negotiator');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.truth = this.player1.findCardByName('truth-is-in-the-killing');
+            this.tsukune = this.player2.findCardByName('shiba-tsukune');
+            this.shinobu = this.player2.findCardByName('bayushi-shinobu');
+
+            this.challenger.dishonor();
+            this.player1.pass();
+            this.player2.clickCard(this.shinobu);
+            this.player2.clickCard(this.challenger);
+        });
+
+        it('returns the loser\'s fate to its owner', function () {
+            expect(this.challenger.controller).toBe(this.player2.player);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.borderlandsDefender, this.cunningNegotiator],
+                defenders: [this.tsukune, this.challenger]
+            });
+
+            this.challenger.fate = 3;
+            const fate1 = this.player1.fate;
+            const fate2 = this.player2.fate;
+            this.player2.pass();
+
+            this.player1.clickCard(this.truth);
+            this.player1.clickCard(this.borderlandsDefender);
+            this.player1.clickCard(this.challenger);
+            this.player1.clickPrompt('5');
+            this.player2.clickPrompt('1');
+
+            expect(this.player1.fate).toBe(fate1 - 1 + 3);
+            expect(this.player2.fate).toBe(fate2);
+            expect(this.getChatLogs(10)).toContain('Duel Effect: return all fate on Doji Challenger to player1\'s fate pool');
         });
     });
 });

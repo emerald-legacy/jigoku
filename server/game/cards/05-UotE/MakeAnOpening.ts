@@ -1,4 +1,6 @@
-import type AbilityDsl from '../../abilitydsl.js';
+import { msg } from '../../GameChat.js';
+import { modifyBothSkills } from '../../effects.js';
+import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import type { AbilityContext } from '../../AbilityContext.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
@@ -6,41 +8,36 @@ import { Players, CardType } from '../../Constants.js';
 class MakeAnOpening extends DrawCard {
     static id = 'make-an-opening';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.action({
-            title: 'Give -X/-X to opposing character, where X is the difference between current honor dial bid values',
-            condition: context => {
+    override setupCardAbilities() {
+        this.action('Give -X/-X to opposing character, where X is the difference between current honor dial bid values')
+            .condition((context) => {
                 const conflict = this.game.currentConflict;
                 const opponent = context.player.opponent;
-                return this.game.isDuringConflict() &&
-                    !!opponent &&
+                return !!opponent &&
                     !!conflict &&
                     conflict.getNumberOfParticipantsFor(context.player) >= 1 &&
                     conflict.getNumberOfParticipantsFor(opponent) >= 1 &&
                     !!context.player.showBid &&
                     !!opponent.showBid &&
                     context.player.showBid !== opponent.showBid;
-            },
-            target: {
+            })
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Opponent,
                 cardCondition: (card) =>
-                    card.isParticipating(),
-                gameAction: ability.actions.cardLastingEffect((context: AbilityContext) => ({
-                    effect: ability.effects.modifyBothSkills(-(this.getHonorDialDifference(context)))
-                }))
-            },
-            effect: 'give {0} -{1}{2}/-{1}{3}',
-            effectArgs: context => [this.getHonorDialDifference(context), 'military', 'political']
-        });
+                    card.isParticipating()
+            }, cardLastingEffect((context) => ({
+                effect: modifyBothSkills(-this.getHonorDialDifference(context))
+            })))
+            .chatText((context) => msg`give ${context.chatTarget()} -${this.getHonorDialDifference(context)}${'military'}/-${this.getHonorDialDifference(context)}${'political'}`);
     }
 
-    getHonorDialDifference(context: AbilityContext) {
+    private getHonorDialDifference(context: AbilityContext) {
         const opp = context.player.opponent;
         if(!opp) {
             return 0;
         }
-        return Math.abs((context.player.showBid ?? 0) - (opp.showBid ?? 0));
+        return Math.abs(context.player.showBid - opp.showBid);
     }
 }
 

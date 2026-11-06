@@ -47,7 +47,7 @@ describe('Vanguard Warrior', function() {
 
             it('should terminate the ability', function() {
                 expect(this.player1).toHavePrompt('Waiting for opponent to take an action or pass');
-                expect(this.spy).toHaveBeenCalledWith('{0} attempted to use {1}, but did not successfully pay the required costs', this.player1.player, this.vanguardWarrior);
+                expect(this.spy).toHaveBeenCalledWith(['{0} attempted to use {1}, but did not successfully pay the required costs', [this.player1.player, this.vanguardWarrior]]);
             });
         });
 
@@ -70,7 +70,7 @@ describe('Vanguard Warrior', function() {
 
             it('should terminate the ability', function() {
                 expect(this.player1).toHavePrompt('Waiting for opponent to take an action or pass');
-                expect(this.spy).toHaveBeenCalledWith('{0} attempted to use {1}, but did not successfully pay the required costs', this.player1.player, this.vanguardWarrior);
+                expect(this.spy).toHaveBeenCalledWith(['{0} attempted to use {1}, but did not successfully pay the required costs', [this.player1.player, this.vanguardWarrior]]);
             });
         });
     });

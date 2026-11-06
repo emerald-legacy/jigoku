@@ -1,22 +1,21 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players } from '../../../Constants.js';
-import type { TriggeredAbilityContext } from '../../../TriggeredAbilityContext.js';
-import AbilityDsl from '../../../abilitydsl.js';
+import { dishonor } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
 export default class Coward extends DrawCard {
     static id = 'coward-';
 
-    public setupCardAbilities() {
-        this.duelChallenge({
-            title: 'Dishonor a character',
-            gameAction: AbilityDsl.actions.selectCard((context) => ({
+    public override setupCardAbilities() {
+        this.duelChallenge('Dishonor a character')
+            .selectCard((context) => ({
                 activePromptTitle: 'Choose a duel participant',
                 cardType: CardType.Character,
                 controller: Players.Any,
                 hidePromptIfSingleCard: true,
-                cardCondition: (card: DrawCard) => {
-                    const duel = (context as TriggeredAbilityContext).event.duel;
-                    if(!duel) {
+                cardCondition: (card) => {
+                    const duel = context.event.duel;
+                    if(!card.isDrawCard()) {
                         return false;
                     }
                     const isInvolved = duel.isInvolved(card);
@@ -27,23 +26,18 @@ export default class Coward extends DrawCard {
 
                     return isInvolved && isChallenger && higherSkill;
                 },
-                message: '{0} dishonors {1}',
-                messageArgs: (cards) => [context.player, cards],
-                gameAction: AbilityDsl.actions.dishonor()
-            })),
-            effect: 'dishonor a duel challenger'
-        });
+                message: (context, cards) => msg`${context.player} dishonors ${cards}`,
+                gameAction: dishonor()
+            }))
+            .chatText('dishonor a duel challenger');
 
-        this.reaction({
-            title: 'Dishonor a character',
-            when: {
+        this.reaction('Dishonor a character')
+            .when({
                 onConflictPass: (event, context) => event.conflict.attackingPlayer === context.player.opponent
-            },
-            target: {
+            })
+            .target({
                 cardType: CardType.Character,
-                controller: Players.Any,
-                gameAction: AbilityDsl.actions.dishonor()
-            }
-        });
+                controller: Players.Any
+            }, dishonor());
     }
 }

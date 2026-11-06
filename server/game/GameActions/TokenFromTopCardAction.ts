@@ -1,0 +1,51 @@
+import type { AbilityContext } from '../AbilityContext.js';
+import { DeckType, Location, type EventName } from '../Constants.js';
+import type DrawCard from '../DrawCard.js';
+import type { Event } from '../Events/Event.js';
+import type { MessageArgs } from '../GameChat.js';
+import type Player from '../Player.js';
+import type { ActionOverrides, GameAction } from './GameAction.js';
+import { PlayerAction, type PlayerActionProperties, type PlayerEvent } from './PlayerAction.js';
+
+export interface TokenFromTopCardProperties extends PlayerActionProperties {
+    deck: DeckType;
+    token: new (card: DrawCard) => DrawCard;
+    gameAction: (token: DrawCard) => GameAction;
+}
+
+/** The top card of the target player's deck (the ability's player by default) becomes a token, then `gameAction(token)` resolves. */
+export class TokenFromTopCardAction<Context extends AbilityContext = AbilityContext> extends PlayerAction<TokenFromTopCardProperties, EventName.Unnamed, Context> {
+    override name = 'tokenFromTopCard';
+
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const { deck } = this.getProperties(context, additionalProperties);
+        return ['turn the top card of {0}\'s {1} into a token', [deck]];
+    }
+
+
+    /** Only when the token could be used: a token that can't enter play ("characters cannot enter play") leaves the card on the deck. */
+    override canAffect(player: Player, context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        const { token, gameAction } = this.getProperties(context, additionalProperties);
+        const card = this.#deck(player, context, additionalProperties)[0];
+        return !!card && gameAction(new token(card)).hasLegalTarget(context) && super.canAffect(player, context, additionalProperties);
+    }
+
+    override eventHandler(event: PlayerEvent<EventName.Unnamed, Context>, additionalProperties: ActionOverrides = {}): void {
+        const context = event.context;
+        const { token: tokenClass, gameAction } = this.getProperties(context, additionalProperties);
+        const card = this.#deck(event.player, context, additionalProperties)[0];
+        if(!card) {
+            return;
+        }
+        const token = context.game.createToken(card, tokenClass);
+        card.owner.removeCardFromPile(card);
+        card.moveTo(Location.RemovedFromGame);
+        const events: Event[] = [];
+        gameAction(token).addEventsToArray(events, context);
+        context.game.openThenEventWindow(events);
+    }
+
+    #deck(player: Player, context: Context, additionalProperties: ActionOverrides): DrawCard[] {
+        return this.getProperties(context, additionalProperties).deck === DeckType.Dynasty ? player.dynastyDeck : player.conflictDeck;
+    }
+}

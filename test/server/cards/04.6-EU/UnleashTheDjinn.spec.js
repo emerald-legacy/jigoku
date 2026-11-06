@@ -42,23 +42,23 @@ describe('Unleash the Djinn', function() {
             });
 
             it('should set all participating characters military and political skill to 3', function() {
-                expect(this.borderRider.getMilitarySkill()).toBe(3);
-                expect(this.borderRider.getPoliticalSkill()).toBe(3);
+                expect(this.borderRider.militarySkill).toBe(3);
+                expect(this.borderRider.politicalSkill).toBe(3);
 
                 // cannot modify dash skills
-                expect(this.motoHorde.getPoliticalSkill()).toBe(0);
-                expect(this.motoHorde.getMilitarySkill()).toBe(3);
+                expect(this.motoHorde.politicalSkill).toBe(0);
+                expect(this.motoHorde.militarySkill).toBe(3);
 
                 // cannot modify dash skills
-                expect(this.hidaAmoro.getPoliticalSkill()).toBe(0);
-                expect(this.hidaAmoro.getMilitarySkill()).toBe(3);
+                expect(this.hidaAmoro.politicalSkill).toBe(0);
+                expect(this.hidaAmoro.militarySkill).toBe(3);
             });
 
             it('should not effect characters that are moved to the conflict', function() {
                 this.player2.clickCard(this.crisisBreaker);
                 this.player2.clickCard(this.crisisBreaker);
-                expect(this.crisisBreaker.getMilitarySkill()).toBe(this.crisisBreaker.getBaseMilitarySkill());
-                expect(this.crisisBreaker.getPoliticalSkill()).toBe(this.crisisBreaker.getBasePoliticalSkill());
+                expect(this.crisisBreaker.militarySkill).toBe(this.crisisBreaker.getBaseMilitarySkill());
+                expect(this.crisisBreaker.politicalSkill).toBe(this.crisisBreaker.getBasePoliticalSkill());
             });
 
             it('should not effect characters played from hand', function() {
@@ -68,8 +68,8 @@ describe('Unleash the Djinn', function() {
                 this.player2.clickCard(this.hirumaAmbusher);
                 expect(this.player2).toHavePrompt('Hiruma Ambusher');
                 this.player2.clickCard(this.borderRider);
-                expect(this.hirumaAmbusher.getMilitarySkill()).toBe(this.hirumaAmbusher.getBaseMilitarySkill());
-                expect(this.hirumaAmbusher.getPoliticalSkill()).toBe(this.hirumaAmbusher.getBasePoliticalSkill());
+                expect(this.hirumaAmbusher.militarySkill).toBe(this.hirumaAmbusher.getBaseMilitarySkill());
+                expect(this.hirumaAmbusher.politicalSkill).toBe(this.hirumaAmbusher.getBasePoliticalSkill());
 
                 this.iuchiWayfinder = this.player1.playCharacterFromHand('iuchi-wayfinder');
                 this.player1.clickPrompt('Conflict');
@@ -77,9 +77,57 @@ describe('Unleash the Djinn', function() {
                 this.player1.clickCard(this.iuchiWayfinder);
                 expect(this.player1).toHavePrompt('Iuchi Wayfinder');
                 expect(this.player1).toBeAbleToSelect(this.shamefulDisplay2);
-                expect(this.iuchiWayfinder.getMilitarySkill()).toBe(this.iuchiWayfinder.getBaseMilitarySkill());
-                expect(this.iuchiWayfinder.getPoliticalSkill()).toBe(this.iuchiWayfinder.getBasePoliticalSkill());
+                expect(this.iuchiWayfinder.militarySkill).toBe(this.iuchiWayfinder.getBaseMilitarySkill());
+                expect(this.iuchiWayfinder.politicalSkill).toBe(this.iuchiWayfinder.getBasePoliticalSkill());
             });
+        });
+    });
+});
+
+describe('Unleash the Djinn and switching skills', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    honor: 7,
+                    inPlay: ['border-rider'],
+                    hand: ['unleash-the-djinn']
+                },
+                player2: {
+                    inPlay: ['bayushi-yunako', 'doji-whisperer', 'kakita-yoshi'],
+                    hand: ['natural-negotiator']
+                }
+            });
+            this.borderRider = this.player1.findCardByName('border-rider');
+            this.yunako = this.player2.findCardByName('bayushi-yunako');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.yoshi = this.player2.findCardByName('kakita-yoshi');
+            this.player1.pass();
+            this.negotiator = this.player2.playAttachment('natural-negotiator', this.whisperer);
+            expect(this.negotiator.parent).toBe(this.whisperer);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.borderRider],
+                defenders: [this.yunako, this.whisperer]
+            });
+            this.player2.pass();
+            this.player1.clickCard('unleash-the-djinn');
+        });
+
+        it('a character whose skills are set cannot have them switched (EmeraldDB ruling)', function() {
+            expect(this.borderRider.militarySkill).toBe(3);
+            this.player2.clickCard(this.yunako);
+            expect(this.player2).toBeAbleToSelect(this.yoshi);
+            expect(this.player2).not.toBeAbleToSelect(this.whisperer);
+            expect(this.player2).not.toBeAbleToSelect(this.borderRider);
+            expect(this.player2).not.toBeAbleToSelect(this.yunako);
+        });
+
+        it('Natural Negotiator cannot switch the attached character\'s set skills', function() {
+            this.player2.clickCard(this.negotiator);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
         });
     });
 });

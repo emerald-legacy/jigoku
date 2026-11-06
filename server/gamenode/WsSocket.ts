@@ -1,21 +1,36 @@
-import EventEmitter from 'events';
-import WebSocket from 'ws';
 import * as env from '../env.js';
 import { logger } from '../logger.js';
 import {
     InboundMessageSchema,
     PROTOCOL_VERSION,
-    type GameClosedPayload,
-    type GameErrorPayload,
     type GameSummary,
-    type GameWinPayload,
-    type HelloPayload,
-    type PlayerLeftPayload
+    type OutboundMessage,
+    type PendingGameDTO,
+    type UserIdentity
 } from './LobbyProtocol.js';
+
+/** What the lobby asks of the game node, one method per inbound command. */
+export interface LobbyHandlers {
+    onStartGame(pendingGame: PendingGameDTO): void;
+    onSpectator(pendingGame: { id: string }, user: UserIdentity): void;
+    /** Asks for the running games; `reply` sends them to the lobby with HELLO. */
+    onGameSync(reply: (games: GameSummary[]) => void): void;
+    onFailedConnect(gameId: string, username: string): void;
+    onCloseGame(gameId: string): void;
+    onCardData(cardData: { titleCardData: unknown; shortCardData: unknown[] }): void;
+}
+
+/** A command's payload, or nothing for a command without one. */
+type OutboundArg<Command extends OutboundMessage['command']> = Extract<OutboundMessage, { command: Command }> extends { arg: infer Result } ? [arg: Result] : [];
 
 const TEN_SECONDS = 10_000;
 const ONE_SECOND = 1_000;
 const MAX_RECONNECT_DELAY = 5_000;
+const OUTBOX_LIMIT = 200;
+const OUTBOX_MAX_LENGTH = 16 * 1024 * 1024;
+
+/** Game results the lobby must not miss: kept while the link is down and sent after the next HELLO. */
+const OUTBOX_COMMANDS: ReadonlySet<OutboundMessage['command']> = new Set(['GAMEWIN', 'PLAYERLEFT', 'GAMEERROR']);
 
 // Error payloads carry game debug data, which can contain references back to the
 // Game object. Replace cycles instead of throwing so the report still gets sent.
@@ -40,27 +55,37 @@ export function stringifyWithoutCycles(value: unknown): string {
     });
 }
 
-export class WsSocket extends EventEmitter {
+/** An error and its causes on one line, with their codes (e.g. ECONNREFUSED). */
+function describeError(error: unknown): string {
+    const parts: string[] = [];
+    let current: unknown = error;
+    while(current instanceof Error && parts.length < 5) {
+        const code = 'code' in current && current.code !== undefined ? ` [${String(current.code)}]` : '';
+        parts.push(`${current.name}: ${current.message || '(no message)'}${code}`);
+        current = current.cause;
+    }
+    if(current !== undefined && current !== null && !(current instanceof Error)) {
+        parts.push(String(current));
+    }
+    return parts.join(' <- ');
+}
+
+export class WsSocket {
     private ws: WebSocket | null = null;
-    private running = false;
     private registered = false;
-    private heartbeatInterval: ReturnType<typeof setInterval> | null = null;
     private reconnectDelay = ONE_SECOND;
-    private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+    private outbox: { command: OutboundMessage['command']; message: string }[] = [];
 
-    constructor(private listenAddress: string, private protocol: string) {
-        super();
-
-        this.running = true;
+    constructor(private listenAddress: string, private protocol: string, private handlers: LobbyHandlers) {
         process.nextTick(() => this.connect());
 
-        this.heartbeatInterval = setInterval(() => {
+        setInterval(() => {
             if(this.registered) {
                 logger.debug(`${env.gameNodeName} sending HEARTBEAT`);
                 this.send('HEARTBEAT');
             } else {
                 logger.info(`${env.gameNodeName} not registered, re-sending HELLO`);
-                this.emit('onGameSync', this.onGameSync.bind(this));
+                this.handlers.onGameSync((games) => this.onGameSync(games));
             }
         }, TEN_SECONDS);
     }
@@ -72,58 +97,80 @@ export class WsSocket extends EventEmitter {
 
         this.ws = new WebSocket(url);
 
-        this.ws.on('open', () => {
+        this.ws.addEventListener('open', () => {
             logger.info(`${env.gameNodeName} connected to lobby`);
             this.reconnectDelay = ONE_SECOND;
-            this.emit('onGameSync', this.onGameSync.bind(this));
+            this.handlers.onGameSync((games) => this.onGameSync(games));
         });
 
-        this.ws.on('message', (data: WebSocket.RawData) => {
-            this.onMessage(data.toString());
+        this.ws.addEventListener('message', (event) => {
+            this.onMessage(typeof event.data === 'string' ? event.data : String(event.data));
         });
 
-        this.ws.on('close', () => {
-            logger.info(`${env.gameNodeName} disconnected from lobby`);
+        this.ws.addEventListener('close', (event) => {
+            logger.info(`${env.gameNodeName} disconnected from lobby (code ${event.code}${event.reason ? `, reason "${event.reason}"` : ''}, ${event.wasClean ? 'clean' : 'not clean'})`);
             this.registered = false;
             this.scheduleReconnect();
         });
 
-        this.ws.on('error', (err: Error) => {
-            logger.error(`WebSocket error: ${err.message}`);
+        this.ws.addEventListener('error', (event) => {
+            const cause = describeError(event.error);
+            logger.error(`WebSocket error: ${event.message || 'connection failed'}${cause ? ` (${cause})` : ''}`);
         });
     }
 
     private scheduleReconnect() {
-        if(!this.running) {
-            return;
-        }
-
         logger.info(`${env.gameNodeName} reconnecting in ${this.reconnectDelay}ms`);
-        this.reconnectTimer = setTimeout(() => {
-            if(this.running) {
-                this.connect();
-            }
-        }, this.reconnectDelay);
+        setTimeout(() => this.connect(), this.reconnectDelay);
 
         this.reconnectDelay = Math.min(this.reconnectDelay * 2, MAX_RECONNECT_DELAY);
     }
 
-    public send(command: 'HEARTBEAT' | 'PONG'): void;
-    public send(command: 'HELLO', arg: HelloPayload): void;
-    public send(command: 'GAMEERROR', arg: GameErrorPayload): void;
-    public send(command: 'GAMECLOSED', arg: GameClosedPayload): void;
-    public send(command: 'GAMEWIN', arg: GameWinPayload): void;
-    public send(command: 'PLAYERLEFT', arg: PlayerLeftPayload): void;
-    public send(command: string, arg?: unknown): void {
-        if(!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+    public send<Command extends OutboundMessage['command']>(command: Command, ...[arg]: OutboundArg<Command>): void {
+        const open = this.ws?.readyState === WebSocket.OPEN;
+        if(!open && !OUTBOX_COMMANDS.has(command)) {
             logger.debug(`Cannot send ${command}, WebSocket not open`);
             return;
         }
 
         try {
-            this.ws.send(stringifyWithoutCycles({ command, arg }));
+            const message = stringifyWithoutCycles({ command, arg });
+            if(this.ws && open) {
+                this.ws.send(message);
+            } else {
+                this.queue(command, message);
+            }
         } catch(err) {
             logger.error(`Error sending message: ${err}`);
+        }
+    }
+
+    /** Bounded by count and total length; the oldest GAMEERROR (its debug data can be megabytes) goes first, then the oldest message. */
+    private queue(command: OutboundMessage['command'], message: string) {
+        this.outbox.push({ command, message });
+        let length = this.outbox.reduce((sum, queued) => sum + queued.message.length, 0);
+        while(this.outbox.length > OUTBOX_LIMIT || length > OUTBOX_MAX_LENGTH) {
+            const errorIndex = this.outbox.findIndex((queued) => queued.command === 'GAMEERROR');
+            const [dropped] = this.outbox.splice(Math.max(errorIndex, 0), 1);
+            length -= dropped.message.length;
+            logger.warn(`${env.gameNodeName} outbox full, dropped a queued ${dropped.command}`);
+        }
+        logger.info(`${env.gameNodeName} WebSocket not open, queued ${command} (${this.outbox.length} queued)`);
+    }
+
+    private flushOutbox() {
+        if(!this.ws || this.ws.readyState !== WebSocket.OPEN || this.outbox.length === 0) {
+            return;
+        }
+        const messages = this.outbox;
+        this.outbox = [];
+        logger.info(`${env.gameNodeName} sending ${messages.length} queued messages`);
+        for(const { message } of messages) {
+            try {
+                this.ws.send(message);
+            } catch(err) {
+                logger.error(`Error sending queued message: ${err}`);
+            }
         }
     }
 
@@ -139,6 +186,7 @@ export class WsSocket extends EventEmitter {
             protocolVersion: PROTOCOL_VERSION,
             games: games
         });
+        this.flushOutbox();
     }
 
     private parseMsg(msg: string) {
@@ -165,43 +213,34 @@ export class WsSocket extends EventEmitter {
 
         this.registered = true;
 
-        switch(message.command) {
-            case 'PING':
-                this.send('PONG');
-                break;
-            case 'REGISTER':
-                logger.info('Lobby requested re-registration');
-                this.registered = false;
-                this.emit('onGameSync', this.onGameSync.bind(this));
-                break;
-            case 'STARTGAME':
-                this.emit('onStartGame', message.arg);
-                break;
-            case 'SPECTATOR':
-                this.emit('onSpectator', message.arg.game, message.arg.user);
-                break;
-            case 'CONNECTFAILED':
-                this.emit('onFailedConnect', message.arg.gameId, message.arg.username);
-                break;
-            case 'CLOSEGAME':
-                this.emit('onCloseGame', message.arg.gameId);
-                break;
-            case 'CARDDATA':
-                this.emit('onCardData', message.arg);
-                break;
-        }
-    }
-
-    public close() {
-        this.running = false;
-        if(this.heartbeatInterval) {
-            clearInterval(this.heartbeatInterval);
-        }
-        if(this.reconnectTimer) {
-            clearTimeout(this.reconnectTimer);
-        }
-        if(this.ws) {
-            this.ws.close();
+        try {
+            switch(message.command) {
+                case 'PING':
+                    this.send('PONG');
+                    break;
+                case 'REGISTER':
+                    logger.info('Lobby requested re-registration');
+                    this.registered = false;
+                    this.handlers.onGameSync((games) => this.onGameSync(games));
+                    break;
+                case 'STARTGAME':
+                    this.handlers.onStartGame(message.arg);
+                    break;
+                case 'SPECTATOR':
+                    this.handlers.onSpectator(message.arg.game, message.arg.user);
+                    break;
+                case 'CONNECTFAILED':
+                    this.handlers.onFailedConnect(message.arg.gameId, message.arg.username);
+                    break;
+                case 'CLOSEGAME':
+                    this.handlers.onCloseGame(message.arg.gameId);
+                    break;
+                case 'CARDDATA':
+                    this.handlers.onCardData(message.arg);
+                    break;
+            }
+        } catch(e) {
+            logger.error(`${env.gameNodeName} failed to handle ${message.command}: ${e instanceof Error ? e.stack : e}`);
         }
     }
 }

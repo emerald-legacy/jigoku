@@ -1,4 +1,4 @@
-describe('Mirumoto\'s Peak', function() {
+describe('Mirumoto Rei', function() {
     integration(function() {
         beforeEach(function() {
             this.setupTest({
@@ -29,8 +29,8 @@ describe('Mirumoto\'s Peak', function() {
         });
 
         it('should let you choose another Bushi you control and give you a skill bonus equal to their attachment bonus', function() {
-            let mil = this.rei.getMilitarySkill();
-            let pol = this.rei.getPoliticalSkill();
+            const mil = this.rei.militarySkill;
+            const pol = this.rei.politicalSkill;
 
             this.player1.playAttachment(this.fan, this.challenger);
             this.player2.pass();
@@ -67,8 +67,8 @@ describe('Mirumoto\'s Peak', function() {
             this.player1.clickCard(this.challenger);
             expect(this.getChatLogs(5)).toContain('player1 uses Mirumoto Rei to give Mirumoto Rei a skill bonus equal to the total attachment skill bonus on Doji Challenger (4military/2political)');
 
-            expect(this.rei.getMilitarySkill()).toBe(mil + 4);
-            expect(this.rei.getPoliticalSkill()).toBe(pol + 2);
+            expect(this.rei.militarySkill).toBe(mil + 4);
+            expect(this.rei.politicalSkill).toBe(pol + 2);
         });
 
         it('cannot trigger from home', function () {
@@ -79,7 +79,50 @@ describe('Mirumoto\'s Peak', function() {
             });
 
             this.player2.pass();
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.rei.isParticipating()).toBe(false);
             expect(this.player1).not.toBeAbleToSelect(this.rei);
+        });
+    });
+});
+
+describe('Mirumoto Rei and a switched attachment', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['mirumoto-rei', 'doji-challenger', 'traveling-tinkerer'],
+                    hand: ['fine-katana']
+                },
+                player2: {
+                    inPlay: ['brash-samurai']
+                }
+            });
+            this.rei = this.player1.findCardByName('mirumoto-rei');
+            this.challenger = this.player1.findCardByName('doji-challenger');
+            this.tinkerer = this.player1.findCardByName('traveling-tinkerer');
+            this.katana = this.player1.findCardByName('fine-katana');
+            this.brash = this.player2.findCardByName('brash-samurai');
+            this.player1.playAttachment(this.katana, this.challenger);
+            this.noMoreActions();
+            this.initiateConflict({ type: 'military', attackers: [this.rei, this.challenger], defenders: [this.brash] });
+            this.player2.pass();
+            this.player1.clickCard(this.tinkerer);
+            this.player1.clickCard(this.katana);
+            this.player2.pass();
+        });
+
+        it('copies the printed modifiers, not the switched ones', function() {
+            const challengerMil = this.challenger.militarySkill;
+            const mil = this.rei.militarySkill;
+            const pol = this.rei.politicalSkill;
+            this.player1.clickCard(this.rei);
+            this.player1.clickCard(this.challenger);
+            expect(this.getChatLogs(5)).toContain('player1 uses Mirumoto Rei to give Mirumoto Rei a skill bonus equal to the total attachment skill bonus on Doji Challenger (2military/0political)');
+            expect(this.rei.militarySkill).toBe(mil + 2);
+            expect(this.rei.politicalSkill).toBe(pol);
+            expect(this.challenger.militarySkill).toBe(challengerMil);
         });
     });
 });

@@ -1,19 +1,18 @@
-import AbilityDsl from '../../abilitydsl.js';
+import * as costs from '../../costs/index.js';
+import { unlimited } from '../../AbilityLimit.js';
 import DrawCard from '../../DrawCard.js';
 
 class MantisSeafarer extends DrawCard {
     static id = 'mantis-seafarer';
 
-    setupCardAbilities() {
-        this.reaction({
-            title: 'Gain a fate',
-            when: {
-                afterConflict: (event, context) => context.source.isParticipating() && event.conflict.winner === context.source.controller
-            },
-            cost: AbilityDsl.costs.payHonor(1),
-            gameAction: AbilityDsl.actions.gainFate(),
-            limit: AbilityDsl.limit.unlimitedPerConflict()
-        });
+    override setupCardAbilities() {
+        this.reaction('Gain a fate')
+            .when({
+                afterConflict: (event, context) => event.conflict.isOnWinningSide(context.source)
+            })
+            .cost(costs.payHonor(1))
+            .gainFate()
+            .limit(unlimited());
     }
 }
 

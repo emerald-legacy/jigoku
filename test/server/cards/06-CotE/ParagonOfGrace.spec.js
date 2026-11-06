@@ -79,12 +79,44 @@ describe('Paragon of Grace', function() {
                 this.player1.clickCard(this.paragonOfGrace);
                 this.player2.pass();
                 expect(this.player1).toHavePrompt('Conflict Action Window');
-                let player2hand = this.player2.player.hand.length;
+                const player2hand = this.player2.player.hand.length;
                 this.player1.clickCard(this.paragonOfGrace);
                 expect(this.player2).not.toHavePrompt('Choose a card to discard');
                 expect(this.player2.player.hand.length).toBe(player2hand - 1);
                 expect(this.getChatLogs(4)).toContain('player1 uses Paragon of Grace to make player2 discard 1 card at random');
             });
+        });
+    });
+});
+
+describe('Paragon of Grace alone on its side', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['paragon-of-grace']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['fine-katana', 'ornate-fan']
+                }
+            });
+            this.paragonOfGrace = this.player1.findCardByName('paragon-of-grace');
+            this.dojiWhisperer = this.player2.findCardByName('doji-whisperer');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.paragonOfGrace],
+                defenders: [this.dojiWhisperer]
+            });
+            this.player2.pass();
+        });
+
+        it('can be used when the opponent also has participants (#546)', function() {
+            this.player1.clickCard(this.paragonOfGrace);
+            expect(this.player2).toHavePrompt('Choose a card to discard');
+            this.player2.clickCard('fine-katana');
+            expect(this.player2.hand.length).toBe(1);
         });
     });
 });

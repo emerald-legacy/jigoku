@@ -1,3 +1,6 @@
+import { Duration, Location } from '../../../build/server/game/Constants.js';
+import { gainExtraFateWhenPlayed } from '../../../build/server/game/effects.js';
+
 describe('dynasty phase', function() {
     integration(function() {
         describe('playing a card from a province', function() {
@@ -59,7 +62,7 @@ describe('dynasty phase', function() {
             });
 
             it('should charge player for playing card and fate and pass priority', function() {
-                let startingFate = this.player1.player.fate;
+                const startingFate = this.player1.player.fate;
                 this.player1.clickCard(this.akodoToturi);
                 this.player1.clickPrompt('1');
 
@@ -77,7 +80,7 @@ describe('dynasty phase', function() {
             });
 
             it('should give the first player who passes 1 fate', function() {
-                let startingFate = this.player2.player.fate;
+                const startingFate = this.player2.player.fate;
                 this.player1.clickCard(this.akodoToturi);
                 this.player1.clickPrompt('1');
                 this.player2.clickPrompt('Pass');
@@ -218,6 +221,68 @@ describe('dynasty phase', function() {
                 expect(this.matsuBerserker.facedown).toBe(false);
                 expect(this.dojiChallenger.facedown).toBe(false);
                 expect(this.kakitaToshimoko.facedown).toBe(false);
+            });
+        });
+
+        describe('a computed extra fate effect', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'dynasty',
+                    player1: {
+                        dynastyDiscard: ['akodo-gunso'],
+                        fate: 10
+                    }
+                });
+                this.akodoGunso = this.player1.placeCardInProvince('akodo-gunso', 'province 1');
+                this.akodoGunso.applyDurationEffect(Duration.UntilEndOfPhase, {
+                    match: this.akodoGunso,
+                    targetLocation: Location.Provinces,
+                    effect: gainExtraFateWhenPlayed(() => 2)
+                });
+                this.game.checkGameState(true);
+            });
+
+            it('names the computed amount in the extra fate message', function() {
+                this.player1.clickCard(this.akodoGunso);
+                this.player1.clickPrompt('0');
+                expect(this.akodoGunso.fate).toBe(2);
+                expect(this.getChatLogs(5)).toContain('Akodo Gunsō enters play with 2 additional fate due to Akodo Gunsō');
+            });
+        });
+
+        describe('stronghold and province actions', function() {
+            beforeEach(function() {
+                this.setupTest({
+                    phase: 'dynasty',
+                    player1: {
+                        stronghold: 'hayaken-no-shiro',
+                        inPlay: ['matsu-berserker', 'doji-hotaru'],
+                        provinces: ['magistrate-station']
+                    }
+                });
+                this.hayaken = this.player1.findCardByName('hayaken-no-shiro');
+                this.berserker = this.player1.findCardByName('matsu-berserker');
+                this.hotaru = this.player1.findCardByName('doji-hotaru');
+                this.station = this.player1.findCardByName('magistrate-station');
+                this.station.facedown = false;
+                this.berserker.bowed = true;
+                this.hotaru.honor();
+                this.hotaru.bowed = true;
+            });
+
+            it('lets the player use a stronghold action', function() {
+                expect(this.player1).toHavePrompt('Play cards from provinces');
+                this.player1.clickCard(this.hayaken);
+                this.player1.clickCard(this.berserker);
+                expect(this.berserker.bowed).toBe(false);
+                expect(this.hayaken.bowed).toBe(true);
+            });
+
+            it('lets the player use a province action that can be used outside a conflict', function() {
+                expect(this.player1).toHavePrompt('Play cards from provinces');
+                this.player1.clickCard(this.station);
+                this.player1.clickCard(this.hotaru);
+                expect(this.hotaru.bowed).toBe(false);
             });
         });
     });

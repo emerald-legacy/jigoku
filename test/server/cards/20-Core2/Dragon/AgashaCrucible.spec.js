@@ -24,6 +24,10 @@ describe('Agasha Crucible', function () {
             this.favorableGround = this.player2.placeCardInProvince('favorable-ground', 'province 1');
         });
 
+        it('is titled for any Shugenja', function () {
+            expect(this.agashaCrucible.abilities.actions.map((action) => action.title)).toEqual(['Give an Elemental Trait to a Shugenja']);
+        });
+
         it('gives elemental Trait to a shugenja and gain an action', function () {
             this.player1.clickCard(this.agashaCrucible);
             expect(this.player1).toHavePrompt('Choose a character');
@@ -39,7 +43,7 @@ describe('Agasha Crucible', function () {
             expect(this.player1).toHavePromptButton('Water');
             this.player1.clickPrompt('Water');
             expect(this.getChatLogs(5)).toContain(
-                'player1 uses Agasha Crucible to give Doomed Shugenja another Elemental Trait, and take another action!'
+                'player1 uses Agasha Crucible to give Doomed Shugenja another Elemental Trait, and take another action'
             );
             expect(this.getChatLogs(5)).toContain('Doomed Shugenja gains the Water Trait');
 

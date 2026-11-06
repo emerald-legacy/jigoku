@@ -1,38 +1,34 @@
-import type { ResolvedAbilityContext } from '../../../AbilityContext.js';
+import { msg } from '../../../GameChat.js';
 import DrawCard from '../../../DrawCard.js';
-import AbilityDsl from '../../../abilitydsl.js';
-import CardSelector from '../../../CardSelector.js';
-import { Location, Players, CardType } from '../../../Constants.js';
+import { attach, selectCard } from '../../../GameActions/GameActions.js';
+import { CardSelector } from '../../../CardSelector.js';
+import { Location, Players, CardType, Trait } from '../../../Constants.js';
 
 export default class TimeForWar2 extends DrawCard {
     static id = 'time-for-war-evolved';
 
-    setupCardAbilities() {
-        const attachAction = AbilityDsl.actions.attach();
-        this.reaction({
-            title: 'Put a weapon into play',
-            when: {
+    override setupCardAbilities() {
+        const attachAction = attach();
+        this.reaction('Put an attachment into play')
+            .when({
                 afterConflict: (event, context) => event.conflict.loser === context.player
-            },
-            target: {
+            })
+            .target({
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: card => card.hasTrait('bushi'),
-                gameAction: AbilityDsl.actions.selectCard((context: ResolvedAbilityContext<DrawCard, DrawCard>) => ({
-                    activePromptTitle: 'Choose an attachment',
-                    selector: CardSelector.for({
-                        cardType: CardType.Attachment,
-                        location: [Location.ConflictDiscardPile, Location.Hand],
-                        controller: Players.Self,
-                        cardCondition: (card: DrawCard) => card.costLessThan(4) && attachAction.canAffect(context.target, context, { attachment: card })
-                    }),
-                    message: '{0} chooses to attach {1} to {2}',
-                    messageArgs: (card, player) => [player, card, context.target],
-                    subActionProperties: card => ({ attachment: card }),
-                    gameAction: attachAction
-                }))
-            },
-            effect: 'attach a weapon to {0}'
-        });
+                cardCondition: (card) => card.hasTrait(Trait.Bushi)
+            }, selectCard((context) => ({
+                activePromptTitle: 'Choose an attachment',
+                selector: CardSelector.for({
+                    cardType: CardType.Attachment,
+                    location: [Location.ConflictDiscardPile, Location.Hand],
+                    controller: Players.Self,
+                    cardCondition: (card) => card.isDrawCard() && card.costLessThan(4) && attachAction.canAffect(context.target, context, { attachment: card })
+                }),
+                message: (context, card, player) => msg`${player} chooses to attach ${card} to ${context.target}`,
+                subActionProperties: (card) => ({ attachment: card }),
+                gameAction: attachAction
+            })))
+            .chatText('attach an attachment to {0}');
     }
 }

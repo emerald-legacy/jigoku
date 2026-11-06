@@ -1,29 +1,27 @@
 import DrawCard from '../../DrawCard.js';
-import { Phases, CardType, ConflictType, Duration } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
-
-const validSacrificeTraits = ['courtier', 'bushi', 'shugenja'];
+import { Phase, CardType, ConflictType, Duration, Trait } from '../../Constants.js';
+import * as costs from '../../costs/index.js';
+import { perPhase } from '../../AbilityLimit.js';
+import { additionalConflict } from '../../effects.js';
+import { msg } from '../../GameChat.js';
+import { extraConflictPossible } from '../extraConflictPossible.js';
 
 class SufferTheConsequences extends DrawCard {
     static id = 'suffer-the-consequences';
 
-    setupCardAbilities() {
-        this.action({
-            title: 'Gain another political conflict',
-            effect: 'allow {1} to declare an additional political conflict this phase',
-            effectArgs: context => [context.player],
-            max: AbilityDsl.limit.perPhase(1),
-            condition: context => context.game.currentPhase === Phases.Conflict,
-            cost: AbilityDsl.costs.sacrifice({
+    override setupCardAbilities() {
+        this.action('Gain another political conflict')
+            .condition((context) => context.game.currentPhase === Phase.Conflict && extraConflictPossible(context.player))
+            .cost(costs.sacrifice({
                 cardType: CardType.Character,
-                cardCondition: (card) => card.traits.some((trait: string) => validSacrificeTraits.includes(trait)) && card.bowed
-            }),
-            gameAction: AbilityDsl.actions.playerLastingEffect(context => ({
-                targetController: context.player,
-                duration: Duration.UntilEndOfPhase,
-                effect: AbilityDsl.effects.additionalConflict(ConflictType.Political)
+                cardCondition: (card) => card.hasSomeTrait(Trait.Courtier, Trait.Bushi, Trait.Shugenja) && card.bowed
             }))
-        });
+            .playerLastingEffect({
+                duration: Duration.UntilEndOfPhase,
+                effect: additionalConflict(ConflictType.Political)
+            })
+            .chatText((context) => msg`allow ${context.player} to declare an additional political conflict this phase`)
+            .max(perPhase(1));
     }
 }
 

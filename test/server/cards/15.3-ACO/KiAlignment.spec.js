@@ -52,7 +52,7 @@ describe('Ki Alignment', function() {
         });
 
         it('should prompt you to pick two kihos with different names and add them to your hand', function() {
-            let hand = this.player1.hand.length;
+            const hand = this.player1.hand.length;
 
             this.initiateConflict({
                 attackers: [this.ancientMaster]
@@ -81,6 +81,16 @@ describe('Ki Alignment', function() {
             expect(this.getChatLogs(5)).toContain('player1 plays Ki Alignment to look at the top eight cards of their deck for up to two kihos');
             expect(this.getChatLogs(5)).toContain('player1 takes Hurricane Punch and Void Fist');
             expect(this.getChatLogs(5)).toContain('player1 is shuffling their conflict deck');
+        });
+
+        it('says how many cards it looks at when fewer than 8 are left', function() {
+            this.player1.reduceDeckToNumber('conflict deck', 5);
+            this.initiateConflict({
+                attackers: [this.ancientMaster]
+            });
+            this.player1.clickCard(this.alignment);
+            expect(this.player1).toHavePromptButton('Take nothing');
+            expect(this.getChatLogs(5)).toContain('player1 plays Ki Alignment to look at the top five cards of their deck for up to two kihos');
         });
 
         it('should be able to trigger a grabbed Ki Alignment', function() {
@@ -112,6 +122,7 @@ describe('Ki Alignment', function() {
                 attackers: [this.nitenMaster]
             });
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 has initiated a military conflict with skill 3');
         });
 
         it('should not trigger its reaction if your opponent defends with a monk', function() {
@@ -120,6 +131,7 @@ describe('Ki Alignment', function() {
                 defenders: [this.wanderer]
             });
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player2 has defended with skill 2');
         });
 
         it('should not trigger its reaction if your opponent attacks with a monk and you defend without one', function() {
@@ -130,6 +142,7 @@ describe('Ki Alignment', function() {
                 defenders: [this.nitenMaster]
             });
             expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.getChatLogs(3)).toContain('player1 has defended with skill 3');
         });
 
         it('should trigger its reaction if you defend with a monk', function() {

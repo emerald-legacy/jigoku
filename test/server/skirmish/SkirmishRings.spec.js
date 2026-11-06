@@ -1,4 +1,4 @@
-import { GameModes } from '../../../build/server/GameModes.js';
+import { GameMode } from '../../../build/server/GameMode.js';
 
 describe('Skirmish Ring Effects', function() {
     integration(function() {
@@ -13,7 +13,7 @@ describe('Skirmish Ring Effects', function() {
                     inPlay: ['matsu-tsuko-2', 'akodo-toturi'],
                     hand: ['let-go']
                 },
-                gameMode: GameModes.Skirmish
+                gameMode: GameMode.Skirmish
             });
 
             this.scout = this.player1.findCardByName('eager-scout');
@@ -65,8 +65,8 @@ describe('Skirmish Ring Effects', function() {
             expect(this.player1).toHavePromptButton('Draw a card');
             expect(this.player1).toHavePromptButton('Opponent discards a card');
 
-            let hand = this.player1.hand.length;
-            let hand2 = this.player2.hand.length;
+            const hand = this.player1.hand.length;
+            const hand2 = this.player2.hand.length;
 
             this.player1.clickPrompt('Opponent discards a card');
             expect(this.player1.hand.length).toBe(hand);
@@ -85,8 +85,8 @@ describe('Skirmish Ring Effects', function() {
             });
             this.noMoreActions();
 
-            let honor = this.player1.honor;
-            let honor2 = this.player2.honor;
+            const honor = this.player1.honor;
+            const honor2 = this.player2.honor;
 
             expect(this.player1).not.toHavePromptButton('Gain 2 Honor');
             expect(this.player1).toHavePromptButton('Take 1 Honor from opponent');

@@ -26,7 +26,7 @@ describe('Exemplary Negotiator', function () {
         it('Discard 2', function () {
             this.diplomat.dishonor();
 
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
 
             this.player1.clickCard(this.negotiator);
             expect(this.player1).toHavePrompt('Choose up to 2 cards to discard');
@@ -45,7 +45,7 @@ describe('Exemplary Negotiator', function () {
         it('Discard 1', function () {
             this.diplomat.dishonor();
 
-            let hand = this.player2.hand.length;
+            const hand = this.player2.hand.length;
 
             this.player1.clickCard(this.negotiator);
             expect(this.player1).toHavePrompt('Choose up to 2 cards to discard');
@@ -54,6 +54,16 @@ describe('Exemplary Negotiator', function () {
 
             expect(this.getChatLogs(10)).toContain('player1 uses Exemplary Negotiator to discard Let Go to make player2 discard 1 card at random');
             expect(this.player2.hand.length).toBe(hand - 1);
+        });
+
+        it('says "up to 1 card" with one card in hand', function () {
+            this.diplomat.dishonor();
+            this.player1.moveCard(this.voice, 'conflict discard pile');
+            this.player1.moveCard(this.assassination, 'conflict discard pile');
+
+            this.player1.clickCard(this.negotiator);
+            expect(this.player1).toHavePrompt('Choose up to 1 card to discard');
+            expect(this.player1).toBeAbleToSelect(this.letgo);
         });
 
         it('Doesnt work with no dishonored characters you control', function () {

@@ -33,8 +33,8 @@ describe('Daidoji Ienori', function() {
             expect(this.player2).toBeAbleToSelect(this.yoshi);
             expect(this.player2).toBeAbleToSelect(this.ienori);
             this.player2.clickCard(this.chagatai);
-            expect(this.chagatai.getMilitarySkill()).toBe(3);
-            expect(this.chagatai.getPoliticalSkill()).toBe(3);
+            expect(this.chagatai.militarySkill).toBe(3);
+            expect(this.chagatai.politicalSkill).toBe(3);
 
             expect(this.getChatLogs(5)).toContain('player2 uses Daidōji Ienori to set the skills of Moto Chagatai to 3military/3political and prevent them from receiving status tokens');
 
@@ -61,8 +61,8 @@ describe('Daidoji Ienori', function() {
             expect(this.player2).toBeAbleToSelect(this.yoshi);
             expect(this.player2).toBeAbleToSelect(this.ienori);
             this.player2.clickCard(this.chagatai);
-            expect(this.chagatai.getMilitarySkill()).toBe(3);
-            expect(this.chagatai.getPoliticalSkill()).toBe(3);
+            expect(this.chagatai.militarySkill).toBe(3);
+            expect(this.chagatai.politicalSkill).toBe(3);
 
             expect(this.getChatLogs(5)).toContain('player2 uses Daidōji Ienori to set the skills of Moto Chagatai to 3military/3political');
 
@@ -70,6 +70,12 @@ describe('Daidoji Ienori', function() {
             expect(this.player1).toBeAbleToSelect(this.chagatai);
             expect(this.player1).toBeAbleToSelect(this.yoshi);
             expect(this.player1).toBeAbleToSelect(this.ienori);
+        });
+
+        it('can choose a character at home', function() {
+            this.player2.clickCard(this.ienori);
+            expect(this.player2).toBeAbleToSelect(this.alchemist);
+            expect(this.player2).toBeAbleToSelect(this.chagatai);
         });
     });
 });

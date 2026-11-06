@@ -1,16 +1,6 @@
-import type { PromptButton } from './PlayerPromptState.js';
+import { SpectatorBase } from './SpectatorBase.js';
 
-export class AnonymousSpectator {
+export class AnonymousSpectator extends SpectatorBase {
     name = 'Anonymous';
     emailHash = '';
-    buttons: PromptButton[] = [];
-    menuTitle = 'Spectator mode';
-
-    getCardSelectionState() {
-        return {};
-    }
-
-    getRingSelectionState() {
-        return {};
-    }
 }

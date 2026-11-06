@@ -136,3 +136,55 @@ describe('Master of Gisei Toshi', function() {
         });
     });
 });
+
+describe('Master of Gisei Toshi after its ring is claimed', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    inPlay: ['master-of-gisei-toshi', 'doji-whisperer'],
+                    hand: ['curry-favor']
+                },
+                player2: {
+                    inPlay: ['adept-of-the-waves']
+                }
+            });
+            this.master = this.player1.findCardByName('master-of-gisei-toshi');
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.noMoreActions();
+            this.player1.clickCard(this.master);
+            this.player1.clickRing('fire');
+            this.noMoreActions();
+            this.initiateConflict({
+                ring: 'earth',
+                type: 'political',
+                attackers: [this.whisperer],
+                defenders: []
+            });
+            this.noMoreActions();
+            this.player1.clickPrompt('No');
+            this.player1.clickPrompt('Don\'t resolve');
+            this.noMoreActions();
+            this.player2.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                ring: 'fire',
+                type: 'military',
+                province: this.player2.findCardByName('shameful-display', 'province 2'),
+                attackers: [this.master],
+                defenders: []
+            });
+            this.noMoreActions();
+        });
+
+        it('lets players play events once the ring is no longer contested', function() {
+            this.player1.clickPrompt('Don\'t resolve');
+            expect(this.game.rings.fire.isContested()).toBe(false);
+            expect(this.player1).toHavePrompt('Triggered Abilities');
+            expect(this.player1).toBeAbleToSelect('curry-favor');
+        });
+    });
+});

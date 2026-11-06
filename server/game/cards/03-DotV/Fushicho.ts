@@ -1,24 +1,21 @@
 import DrawCard from '../../DrawCard.js';
 import { Location, Players, CardType } from '../../Constants.js';
-import AbilityDsl from '../../abilitydsl.js';
+import { putIntoPlay } from '../../GameActions/GameActions.js';
 
 class Fushicho extends DrawCard {
     static id = 'fushicho';
 
-    setupCardAbilities(ability: typeof AbilityDsl) {
-        this.interrupt({
-            title: 'Resurrect a character',
-            when: {
+    override setupCardAbilities() {
+        this.interrupt('Resurrect a character')
+            .when({
                 onCardLeavesPlay: (event, context) => event.card === context.source
-            },
-            target: {
+            })
+            .target({
                 cardType: CardType.Character,
                 location: Location.DynastyDiscardPile,
                 controller: Players.Self,
-                cardCondition: card => card.isFaction('phoenix'),
-                gameAction: ability.actions.putIntoPlay({ fate: 1 })
-            }
-        });
+                cardCondition: (card) => card.isFaction('phoenix')
+            }, putIntoPlay({ fate: 1 }));
     }
 }
 

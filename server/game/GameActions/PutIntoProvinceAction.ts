@@ -1,0 +1,103 @@
+import type { ActionOverrides } from './GameAction.js';
+import { msg, type MessageArgs } from '../GameChat.js';
+import type { AbilityContext } from '../AbilityContext.js';
+import type BaseCard from '../BaseCard.js';
+import { CardType, EventName, Location, RestrictionType } from '../Constants.js';
+import type DrawCard from '../DrawCard.js';
+import { type CardActionProperties, CardGameAction } from './CardGameAction.js';
+import { targetList, type ActionEvent } from './GameAction.js';
+import { leavesPlayContingentEvents } from './LeavesPlayAction.js';
+
+export interface PutInProvinceProperties extends CardActionProperties {
+    destination?: Location;
+    switch?: boolean;
+    switchTarget?: DrawCard;
+    faceup?: boolean;
+    changePlayer?: boolean;
+    discardDestinationCards?: boolean;
+}
+
+export class PutIntoProvinceAction<Context extends AbilityContext = AbilityContext> extends CardGameAction<
+    PutInProvinceProperties,
+    EventName.OnCardLeavesPlay,
+    Context,
+    'switch' | 'faceup' | 'changePlayer' | 'discardDestinationCards'
+> {
+    override name = 'putIntoProvince';
+    override restriction = RestrictionType.PutIntoProvince;
+    override eventName = EventName.OnCardLeavesPlay;
+    override targetType = [CardType.Character, CardType.Attachment];
+    override defaultProperties = {
+        switch: false,
+        faceup: true,
+        changePlayer: false,
+        discardDestinationCards: false
+    };
+
+    override getCostMessage(context: Context): MessageArgs {
+        const properties = this.getProperties(context);
+        return ['putting {0} into {1}', [properties.destination]];
+    }
+
+    protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
+        const properties = this.getProperties(context, additionalProperties);
+        const [target] = targetList(properties.target);
+        const destinationController = properties.changePlayer ? target.controller.opponent : target.controller;
+        return ['move {0} to {1}\'s {2}', [destinationController, properties.destination]];
+    }
+
+    override canAffect(card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {
+        const { changePlayer, destination } = this.getProperties(
+            context,
+            additionalProperties
+        );
+        const canMove =
+            (!changePlayer || card.checkRestrictions(RestrictionType.TakeControl, context)) &&
+            (!destination || context.player.isLegalLocationForCard(card, destination)) &&
+            card.location === Location.PlayArea &&
+            super.canAffect(card, context);
+        return canMove;
+    }
+
+    override updateEvent(event: ActionEvent<EventName.OnCardLeavesPlay, Context>, card: BaseCard, context: Context, additionalProperties: ActionOverrides = {}): void {
+        super.updateEvent(event, card, context, additionalProperties);
+        event.preResolutionEffect = () => {
+            event.cardStateWhenLeftPlay = event.card.createSnapshot();
+        };
+        event.createContingentEvents = () => leavesPlayContingentEvents(event, context);
+    }
+
+    override eventHandler(event: ActionEvent<EventName.OnCardLeavesPlay, Context>, additionalProperties: ActionOverrides = {}): void {
+        const context = event.context;
+        const card = event.card;
+        event.cardStateWhenMoved = card.createSnapshot();
+        const properties = this.getProperties(context, additionalProperties);
+        if(properties.switch && properties.switchTarget) {
+            const otherCard = properties.switchTarget;
+            card.owner.moveCard(otherCard, card.location);
+        }
+
+        const player = card.owner;
+        if(properties.destination && card.isConflict && [...context.game.getProvinceArray()].includes(properties.destination)) {
+            context.game.addMessage(msg`${card} is discarded instead since it can't enter a province legally!`);
+            properties.destination = Location.ConflictDiscardPile;
+        }
+        if(
+            properties.discardDestinationCards &&
+            properties.destination &&
+            context.game.getProvinceArray(false).includes(properties.destination)
+        ) {
+            const cardsToDiscard = player.getSourceList(properties.destination).filter((c) => c.isDynasty);
+            for(const c of cardsToDiscard) {
+                player.moveCard(c, Location.DynastyDiscardPile);
+            }
+        }
+        if(properties.destination) {
+            player.moveCard(card, properties.destination);
+        }
+        if(properties.faceup) {
+            card.facedown = false;
+        }
+        card.checkForIllegalAttachments();
+    }
+}

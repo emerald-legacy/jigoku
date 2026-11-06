@@ -42,7 +42,7 @@ describe('River of the Last Stand', function() {
                     province: this.p1
                 });
 
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 expect(hand).toBe(2);
                 this.player2.clickCard(this.river);
                 expect(this.player1.hand.length).toBe(1);
@@ -59,7 +59,7 @@ describe('River of the Last Stand', function() {
                     province: this.p2
                 });
 
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 expect(hand).toBe(2);
                 this.player2.clickCard(this.river);
                 expect(this.player1.hand.length).toBe(1);
@@ -76,7 +76,7 @@ describe('River of the Last Stand', function() {
                     province: this.p3
                 });
 
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 expect(hand).toBe(2);
                 this.player2.clickCard(this.river);
                 expect(this.player1.hand.length).toBe(2);
@@ -91,7 +91,7 @@ describe('River of the Last Stand', function() {
                     province: this.p4
                 });
 
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 expect(hand).toBe(2);
                 this.player2.clickCard(this.river);
                 expect(this.player1.hand.length).toBe(2);
@@ -108,11 +108,51 @@ describe('River of the Last Stand', function() {
                 });
 
                 this.player1.pass();
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 expect(hand).toBe(2);
                 this.player2.clickCard(this.river);
                 expect(this.player1.hand.length).toBe(2);
             });
+        });
+    });
+});
+
+describe('River of the Last Stand with an empty opponent hand', function() {
+    integration(function() {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-kuwanan'],
+                    hand: []
+                },
+                player2: {
+                    inPlay: ['hida-kisada'],
+                    dynastyDiscard: ['river-of-the-last-stand']
+                }
+            });
+
+            this.kuwanan = this.player1.findCardByName('doji-kuwanan');
+            this.kisada = this.player2.findCardByName('hida-kisada');
+            this.river = this.player2.placeCardInProvince('river-of-the-last-stand', 'province 1');
+            this.p1 = this.player2.findCardByName('shameful-display', 'province 1');
+        });
+
+        it('should not be usable just to make the opponent draw', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.kuwanan],
+                defenders: [this.kisada],
+                province: this.p1
+            });
+
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.player1.hand.length).toBe(0);
+            expect(this.player2).not.toBeAbleToSelect(this.river);
+            this.player2.clickCard(this.river);
+            expect(this.player1.hand.length).toBe(0);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
         });
     });
 });

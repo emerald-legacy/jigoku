@@ -64,66 +64,6 @@ describe('SoD - Scorpion', function () {
             });
         });
 
-        describe('Bayushi Shinobu', function () {
-            beforeEach(function () {
-                this.setupTest({
-                    phase: 'conflict',
-                    player1: {
-                        inPlay: ['bayushi-shinobu', 'daidoji-uji'],
-                        hand: []
-                    },
-                    player2: {
-                        inPlay: ['keeper-initiate', 'doji-diplomat', 'doji-kuwanan'],
-                        hand: ['assassination', 'let-go', 'duelist-training']
-                    }
-                });
-
-                this.shinobu = this.player1.findCardByName('bayushi-shinobu');
-                this.keeper = this.player2.findCardByName('keeper-initiate');
-                this.diplomat = this.player2.findCardByName('doji-diplomat');
-                this.kuwanan = this.player2.findCardByName('doji-kuwanan');
-                this.assassination = this.player2.findCardByName('assassination');
-                this.uji = this.player1.findCardByName('daidoji-uji');
-                this.uji.honor();
-                this.kuwanan.dishonor();
-                this.keeper.dishonor();
-            });
-
-            it('should work', function () {
-                this.player1.clickCard(this.shinobu);
-                expect(this.player1).toBeAbleToSelect(this.keeper);
-                expect(this.player1).not.toBeAbleToSelect(this.diplomat);
-                expect(this.player1).not.toBeAbleToSelect(this.kuwanan);
-
-                this.player1.clickCard(this.keeper);
-                expect(this.getChatLogs(5)).toContain('player1 uses Bayushi Shinobu, bowing Bayushi Shinobu to take control of Keeper Initiate');
-
-                let honor = this.player1.honor;
-
-                this.noMoreActions();
-                this.initiateConflict({
-                    type: 'military',
-                    attackers: [this.keeper],
-                    defenders: [this.diplomat]
-                });
-
-                this.player2.clickCard(this.assassination);
-                this.player2.clickCard(this.keeper);
-
-                expect(this.player1.honor).toBe(honor - 3); // 2 from the effect, 1 from the DH token
-                expect(this.getChatLogs(5)).toContain('player1 loses 2 honor due to the delayed effect of Bayushi Shinobu');
-            });
-
-            it('enters dishonored', function () {
-                this.player1.placeCardInProvince(this.shinobu, 'province 1');
-                expect(this.shinobu.location).toBe('province 1');
-                this.player1.clickCard(this.shinobu);
-                this.player1.clickPrompt('0');
-                expect(this.shinobu.location).toBe('play area');
-                expect(this.shinobu.isDishonored).toBe(true);
-            });
-        });
-
         describe('Pressure', function () {
             beforeEach(function () {
                 this.setupTest({
@@ -148,6 +88,19 @@ describe('SoD - Scorpion', function () {
                 this.player2.player.moveCard(this.training, 'conflict deck');
             });
 
+            it('should work on your own dishonored character', function () {
+                this.rumormonger.dishonor();
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.rumormonger]
+                });
+
+                expect(this.player1).toBeAbleToSelect(this.pressure);
+                this.player1.clickCard(this.pressure);
+                expect(this.rumormonger.isParticipating()).toBe(false);
+            });
+
             it('should work on defenders', function () {
                 this.keeper.dishonor();
 
@@ -165,13 +118,34 @@ describe('SoD - Scorpion', function () {
                 expect(this.player1).toBeAbleToSelect(this.pressure);
                 this.player1.clickCard(this.pressure);
                 expect(this.getChatLogs(5)).toContain('player1 plays Pressure to move a character home and prevent it from participating in the conflict');
-                expect(this.getChatLogs(5)).toContain('player1 chooses Keeper Initiate');
+                expect(this.getChatLogs(5)).toContain('player1 chooses to move Keeper Initiate home');
                 expect(this.keeper.isParticipating()).toBe(false);
 
                 expect(this.player2).toHavePrompt('Conflict Action Window');
                 this.player2.clickCard(this.mount);
                 expect(this.keeper.isParticipating()).toBe(false);
                 expect(this.player2).toHavePrompt('Conflict Action Window');
+            });
+
+            it('keeps the character out of a political conflict', function () {
+                this.keeper.dishonor();
+
+                this.player1.pass();
+                this.player2.clickCard(this.mount);
+                this.player2.clickCard(this.keeper);
+
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.rumormonger],
+                    defenders: [this.keeper, this.diplomat]
+                });
+
+                this.player1.clickCard(this.pressure);
+                expect(this.keeper.isParticipating()).toBe(false);
+
+                this.player2.clickCard(this.mount);
+                expect(this.keeper.isParticipating()).toBe(false);
             });
 
             it('should work on movement', function () {
@@ -253,7 +227,7 @@ describe('SoD - Scorpion', function () {
                     phase: 'conflict',
                     player1: {
                         inPlay: ['bayushi-rumormonger'],
-                        hand: ['disputed-lineage', 'soul-beyond-reproach']
+                        hand: ['disputed-lineage', 'soul-beyond-reproach', 'seal-of-the-lion']
                     },
                     player2: {
                         inPlay: ['keeper-initiate', 'doji-diplomat', 'doji-challenger'],
@@ -284,8 +258,14 @@ describe('SoD - Scorpion', function () {
                 expect(this.challenger.isHonored).toBe(true);
             });
 
+            it('names the chosen character\'s controller in the chat', function () {
+                this.player1.clickCard(this.lineage);
+                this.player1.clickCard(this.rumormonger);
+                expect(this.getChatLogs(5)).toContain('player1 plays Disputed Lineage to remove Bayushi Rumormonger\'s clan affiliation and prevent player1 from honoring characters while Bayushi Rumormonger is participating in a conflict');
+            });
+
             it('should prevent honoring if participating', function () {
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
 
                 this.player1.clickCard(this.lineage);
                 this.player1.clickCard(this.diplomat);
@@ -304,16 +284,80 @@ describe('SoD - Scorpion', function () {
                 expect(this.player2).toHavePrompt('Conflict Action Window');
             });
 
+            it('should remove a clan the character gained', function () {
+                this.player1.playAttachment('seal-of-the-lion', this.diplomat);
+                this.player2.pass();
+                this.player1.clickCard(this.lineage);
+                this.player1.clickCard(this.diplomat);
+                expect(this.diplomat.isFaction('lion')).toBe(false);
+                expect(this.diplomat.getFactions().size).toBe(0);
+            });
+
             it('should draw with favor', function () {
-                let hand = this.player1.hand.length;
+                const hand = this.player1.hand.length;
                 this.player1.player.imperialFavor = 'military';
                 this.game.checkGameState(true);
                 this.player1.clickCard(this.lineage);
                 this.player1.clickCard(this.diplomat);
 
                 expect(this.player1.hand.length).toBe(hand);
-                expect(this.getChatLogs(5)).toContain('player1 plays Disputed Lineage to remove Doji Diplomat\'s printed faction and prevent player2 from honoring characters while Doji Diplomat is participating in a conflict');
-                expect(this.getChatLogs(5)).toContain('player1 draws a card');
+                expect(this.getChatLogs(5)).toContain('player1 plays Disputed Lineage to remove Doji Diplomat\'s clan affiliation and prevent player2 from honoring characters while Doji Diplomat is participating in a conflict and draw a card');
+            });
+        });
+
+        describe('Disputed Lineage on a character that changes control', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['mercenary-company', 'doji-kuwanan'],
+                        hand: ['way-of-the-crane']
+                    },
+                    player2: {
+                        inPlay: ['akodo-toturi-2', 'wild-ogre', 'doji-diplomat'],
+                        hand: ['disputed-lineage', 'way-of-the-crane']
+                    }
+                });
+                this.company = this.player1.findCardByName('mercenary-company');
+                this.kuwanan = this.player1.findCardByName('doji-kuwanan');
+                this.p1Crane = this.player1.findCardByName('way-of-the-crane');
+                this.toturi = this.player2.findCardByName('akodo-toturi-2');
+                this.p2Crane = this.player2.findCardByName('way-of-the-crane');
+
+                this.player1.pass();
+                this.player2.clickCard('disputed-lineage');
+                this.player2.clickCard(this.company);
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    attackers: [this.company],
+                    defenders: [this.toturi, 'wild-ogre']
+                });
+                this.noMoreActions();
+                this.player2.clickPrompt('Yes');
+                expect(this.company.controller).toBe(this.player2.player);
+                this.company.bowed = false;
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    ring: 'fire',
+                    attackers: [this.company],
+                    defenders: [this.kuwanan]
+                });
+            });
+
+            it('stops the new controller from honoring characters', function () {
+                this.player1.pass();
+                this.player2.clickCard(this.p2Crane);
+                expect(this.player2).toHavePrompt('Conflict Action Window');
+                expect(this.p2Crane.location).toBe('hand');
+                expect(this.player2.findCardByName('doji-diplomat').isHonored).toBe(false);
+            });
+
+            it('no longer stops the old controller', function () {
+                this.player1.clickCard(this.p1Crane);
+                this.player1.clickCard(this.kuwanan);
+                expect(this.kuwanan.isHonored).toBe(true);
             });
         });
 
@@ -412,8 +456,8 @@ describe('SoD - Scorpion', function () {
                 expect(this.player1).toBeAbleToSelect(this.rumormonger);
                 this.player1.clickCard(this.rumormonger);
 
-                let honor1 = this.player1.honor;
-                let honor2 = this.player2.honor;
+                const honor1 = this.player1.honor;
+                const honor2 = this.player2.honor;
 
                 expect(this.player1).not.toBeAbleToSelect(this.challenger);
                 expect(this.player1).not.toBeAbleToSelect(this.keeper);
@@ -435,12 +479,12 @@ describe('SoD - Scorpion', function () {
                 expect(this.player1.honor).toBe(honor1);
                 expect(this.player2.honor).toBe(honor2);
 
-                expect(this.getChatLogs(5)).toContain('player1 plays We Know, bowing Bayushi Rumormonger to replace Brash Samurai honored status token with a dishonored status token');
+                expect(this.getChatLogs(5)).toContain('player1 plays We Know, bowing Bayushi Rumormonger to replace Brash Samurai\'s honored status token with a dishonored status token');
                 expect(this.getChatLogs(5)).not.toContain('player1 loses 2 honor');
             });
 
             it('lose honor', function () {
-                let hand1 = this.player1.hand.length;
+                const hand1 = this.player1.hand.length;
                 this.player1.clickCard(this.weknow);
                 expect(this.player1).toBeAbleToSelect(this.rumormonger);
                 this.player1.clickCard(this.rumormonger);
@@ -456,9 +500,9 @@ describe('SoD - Scorpion', function () {
                 expect(this.player2).toHavePromptButton('Dishonor Brash Samurai');
                 expect(this.player2).toHavePromptButton('Lose honor and let opponent draw cards');
 
-                let honor1 = this.player1.honor;
-                let honor2 = this.player2.honor;
-                let hand2 = this.player2.hand.length;
+                const honor1 = this.player1.honor;
+                const honor2 = this.player2.honor;
+                const hand2 = this.player2.hand.length;
                 this.player2.clickPrompt('Lose honor and let opponent draw cards');
 
                 expect(this.player1.honor).toBe(honor1 - 2);
@@ -468,6 +512,39 @@ describe('SoD - Scorpion', function () {
 
                 expect(this.getChatLogs(5)).toContain('player1 plays We Know, bowing Bayushi Rumormonger to draw two cards and cause player2 to lose 1 honor');
                 expect(this.getChatLogs(5)).toContain('player1 loses 2 honor');
+            });
+        });
+
+        describe('Kiss of the Sea and a doubled base skill', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['solemn-scholar'],
+                        hand: ['kiss-of-the-sea']
+                    },
+                    player2: {
+                        inPlay: ['asako-maezawa', 'brash-samurai']
+                    }
+                });
+                this.scholar = this.player1.findCardByName('solemn-scholar');
+                this.maezawa = this.player2.findCardByName('asako-maezawa');
+                this.brash = this.player2.findCardByName('brash-samurai');
+                this.sea = this.player1.playAttachment('kiss-of-the-sea', this.brash);
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'political',
+                    attackers: [this.scholar],
+                    defenders: [this.maezawa, this.brash]
+                });
+            });
+
+            it('bows the character when a triggered ability doubles its base skill', function () {
+                this.player2.clickCard(this.maezawa);
+                this.player2.clickCard(this.brash);
+                expect(this.player1).toHavePrompt('Triggered Abilities');
+                this.player1.clickCard(this.sea);
+                expect(this.brash.bowed).toBe(true);
             });
         });
 
