@@ -25,7 +25,7 @@ export class DuplicateUniqueAction extends PlayCardSourceAction {
         if(!this.card.anotherUniqueInPlayControlledBy(context.player)) {
             return Blocker.DuplicateUnique;
         }
-        if(!this.card.checkRestrictions(RestrictionType.PlaceFate, context)) {
+        if(!context.player.getDuplicateInPlay(this.card)?.checkRestrictions(RestrictionType.PlaceFate, context)) {
             return Blocker.CannotPlaceFate;
         }
         return super.meetsRequirements(context, ignoredBlockers);
