@@ -816,7 +816,7 @@ this.action('Make top card of conflict deck playable')
     </table>
     <ul class="edge">
       <li>Can't be paid when no returned card can be revealed (an empty list, or only faceup cards in provinces or in play).</li>
-      <li>Records <code>reveal</code>: the revealed cards, typed. Chat: <code>revealing {0}</code>.</li>
+      <li>Records <code>reveal</code>: every card <code>cardFunc</code> returned (also one that couldn't be revealed), typed. Chat: <code>revealing {0}</code>.</li>
     </ul>
     <pre><code>// Test of Skill: Action: Name a card type. Reveal the top 3 cards of your conflict deck (top 4 cards instead if you control a Duelist character) – add up to 2 revealed cards of that type to your hand and discard the rest.
 this.action('Reveal cards and take ones matching named type')
@@ -863,7 +863,7 @@ super(card, [chooseFate(PlayType.PlayFromHand), payReduceableFateCost()]);</code
       </tbody>
     </table>
     <ul class="edge">
-      <li>Can't be paid without an opponent (solo game), or when the player has fewer than <code>amount</code> fate.</li>
+      <li>Can't be paid without an opponent (solo game), with an amount of 0, or when the player has fewer than <code>amount</code> fate. Giving fate isn't spending it: a "cannot spend fate" restriction doesn't stop it.</li>
       <li>Its <code>fateSpent</code> (<code>amount</code>) is counted by the ability's reduceable fate cost and the costs of targeting.</li>
       <li>Chat: <code>giving {1} fate to {2}</code> (the amount, the opponent).</li>
     </ul>
@@ -1169,7 +1169,7 @@ this.action('Switch this attachment with another')
     </table>
     <ul class="edge">
       <li>Cost reductions that apply to playing the source from hand are taken off the fate actually spent, so X can go above the player's fate by that much. A player who can't spend fate can still pick X up to the reduction.</li>
-      <li>Always payable when such a reduction applies. Otherwise the player needs to be able to spend at least <code>minAmount</code> fate plus any cost increase (<code>player.canSpendFate</code>); the choices stop at <code>player.getSpendableFate(context)</code>. With <code>context.ignoreFateCost</code> X is 0, so it is payable only when <code>minAmount</code> is 0 or less (EmeraldDB ruling, Kunshu).</li>
+      <li>Always payable when such a reduction applies. Otherwise the player needs to be able to spend at least <code>minAmount</code> fate plus any cost increase (<code>player.canSpendFate</code>); the choices stop at <code>maxAmount</code> and at <code>player.getSpendableFate(context)</code> plus any reduction, minus any increase (this cost spends X minus any reduction; it doesn't spend the increase). With <code>context.ignoreFateCost</code> X is 0 and the player isn't asked, so it is payable only when <code>minAmount</code> is 0 or less (EmeraldDB ruling, Kunshu).</li>
       <li>Records <code>fatePaid</code>: X (0 on Cancel). No cost text.</li>
     </ul>
     <pre><code>// Favorable Alliance: Action: Set aside cards from the top of up to two conflict decks, …, until X cards are set aside. …

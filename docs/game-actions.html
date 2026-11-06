@@ -155,7 +155,7 @@ this.action('Discard each status token')
         target: context.game.findAnyCardsInAnyList((card) =&gt; card.hasStatusTokens).flatMap((card) =&gt; card.statusTokens)
     }))
     .chatText('discard each status token');</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.5-AaN/PerfectLandEthos.ts">Perfect Land Ethos</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/ForcedRetirement.ts">Forced Retirement</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/PurityOfSpirit.ts">Purity of Spirit</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/SoshiIllusionist.ts">Soshi Illusionist</a> (25 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.5-AaN/PerfectLandEthos.ts">Perfect Land Ethos</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/ForcedRetirement.ts">Forced Retirement</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/PurityOfSpirit.ts">Purity of Spirit</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/SoshiIllusionist.ts">Soshi Illusionist</a> and others</p>
   </div>
 <div class="ref" id="ga-dishonor" data-name="dishonor">
     <h3><code>dishonor(properties?)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-dishonor">#</a></h3>
@@ -565,7 +565,7 @@ this.reaction('Put this into play')
     <ul class="edge">
       <li>Only characters in play with fate on them. Illegal with <code>amount</code> 0. A character recipient must allow fate to be placed on it.</li>
       <li>At most the character's fate is removed. Checks <code>RestrictionType.RemoveFate</code>. Raises <code>onMoveFate</code>.</li>
-      <li>Chat: <code>remove {1} fate from {0}</code>.</li>
+      <li>Chat: <code>remove {1} fate from {0}</code>; as a cost: <code>removing {1} fate from {0}</code>.</li>
       <li>Builder shortcut: <code>.removeFate(…)</code>.</li>
     </ul>
     <pre><code>// Fearsome Mystic: Action: While this character is participating in a conflict – remove 1 fate from each participating character your opponent controls with lower glory than this character.
@@ -696,7 +696,7 @@ this.conflictAction('Discard a character')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Meant for characters in play. The card type isn't checked: any draw card in the play area the inner action can affect is legal, so an attachment or holding in an explicit <code>target</code> would lose fate or be discarded. A character is legal if the action it would get can affect it: <code>removeFate({ amount: 1 })</code> with fate, <code>discardFromPlay()</code> without. So "cannot be discarded" protects a character only while it has no fate.</li>
+      <li>Meant for characters in play. The card type isn't checked: any draw card in the play area the inner action can affect is legal, so an attachment in an explicit <code>target</code> would be discarded (<code>removeFate</code> only affects characters). A character is legal if the action it would get can affect it: <code>removeFate({ amount: 1 })</code> with fate, <code>discardFromPlay()</code> without. So "cannot be discarded" protects a character only while it has no fate.</li>
       <li>It has no event of its own: it raises <code>onMoveFate</code> or <code>onCardLeavesPlay</code>.</li>
       <li>Chat: "injure <em>card</em>".</li>
       <li>Builder shortcut: <code>.injure(…)</code>.</li>
@@ -871,6 +871,7 @@ this.reaction('Make opponent discard 2 cards')
     <pre><code>// Keen Warrior: Reaction: After you look at 1 or more cards in an opponent's hand (or those are revealed) - draw 2 cards, then place 1 card from your hand on the bottom of your conflict deck.
 this.reaction('Draw 2 cards and return 1')
     .when({ … })
+    .collectiveTrigger()
     .draw(2)
     .chatText('draw 2 cards, then place a card on the bottom of their deck')
     .then()
@@ -2188,6 +2189,7 @@ this.interrupt('Claim the imperial favor')
     </ul>
     <pre><code>// Soshi Mika: Action: If any player has the Imperial Favor - flip the Imperial Favor.
 this.action('Flip the Imperial Favor')
+    .ifCondition((context) =&gt; context.game.getPlayers().some((player) =&gt; player.imperialFavor !== ''))
     .gameAction(flipImperialFavor((context) =&gt; ({
         target: context.player.imperialFavor ? context.player : context.player.opponent
     })));</code></pre>
@@ -2246,9 +2248,17 @@ this.action('Flip the Imperial Favor')
     <pre><code>// Severed from the Stream: Action: Perform a glory count. The player who loses the glory count returns all rings in his or her claimed ring pool to the unclaimed ring pool.
 this.action('Return player\'s rings')
     .gameAction(performGloryCount({
-        gameAction: (winner) =&gt; (winner &amp;&amp; winner.opponent)
-            ? returnRing({ target: winner.opponent.getClaimedRings().filter((ring) =&gt; ring.isClaimedBy(winner.opponent)) })
-            : noAction()
+        gameAction: (winner) =&gt; {
+            const loser = winner?.opponent;
+            const rings = loser ? loser.getClaimedRings().filter((ring) =&gt; ring.isClaimedBy(loser)) : [];
+            if(!loser || rings.length === 0) {
+                return noAction();
+            }
+            return sequential([
+                chatMessage(() =&gt; msg`${loser} returns the ${rings} to the unclaimed ring pool`),
+                returnRing({ target: rings })
+            ]);
+        }
     }));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/SeveredFromTheStream.ts">Severed from the Stream</a></p>
   </div>
@@ -2267,7 +2277,7 @@ this.action('Return player\'s rings')
         <tr><td><code>challenger</code></td><td><code>DrawCard</code></td><td>the ability's source</td><td>The challenging character.</td></tr>
         <tr><td><code>gameAction</code></td><td><code>GameAction | (duel, context) =&gt; GameAction</code></td><td>required</td><td>The duel's effect, resolved only when the duel has a winner. It gets no target from the duel: name it, e.g. <code>bow({ target: duel.loser })</code>.</td></tr>
         <tr><td><code>onTie</code></td><td><code>GameAction | (duel, context) =&gt; GameAction</code></td><td>none</td><td>Resolved when the duel has no winner.</td></tr>
-        <tr><td><code>chatText</code></td><td><code>(context, duel) =&gt; MessageArgs</code></td><td>the game action's own text</td><td>What the chat says after "Duel Effect: ".</td></tr>
+        <tr><td><code>chatText</code></td><td><code>(context, duel) =&gt; MessageArgs</code></td><td>the game action's own text</td><td>What the chat says after "Duel Effect: " when the duel has a winner; <code>onTie</code> always uses its own text.</td></tr>
         <tr><td><code>statistic</code></td><td><code>DuelStatistic</code>: <code>(card, duelRules) =&gt; number | { printed, bonus }</code></td><td>the duel type's skill</td><td>Replaces the value each participant duels with. Return <code>{ printed, bonus }</code> when part of it is a bonus that <code>duelIgnorePrintedSkill</code> keeps (Challenge on the Fields); a number counts as all printed.</td></tr>
         <tr><td><code>costHandler</code></td><td><code>(context, prompt) =&gt; void</code></td><td>none</td><td>Runs after the honor bid instead of the honor transfer (e.g. pay with cards).</td></tr>
         <tr><td><code>challengerEffect</code></td><td><code>EffectFactory | EffectFactory[]</code></td><td>none</td><td>A lasting effect on the challenger until the duel ends.</td></tr>
@@ -2522,7 +2532,7 @@ this.action('Stop characters from triggering abilities')
         })
     })
     .chatText('make it so that characters cannot trigger abilities this conflict');</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/ExemplaryEtiquette.ts">Exemplary Etiquette</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/SuperiorAuthority.ts">Superior Authority</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Crab/AshenFlamePlateau.ts">Ashen Flame Plateau</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.6-PaaC/AWarOnTwoFronts.ts">A War on Two Fronts</a> (5 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/ExemplaryEtiquette.ts">Exemplary Etiquette</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/SuperiorAuthority.ts">Superior Authority</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Crab/AshenFlamePlateau.ts">Ashen Flame Plateau</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.6-PaaC/AWarOnTwoFronts.ts">A War on Two Fronts</a> and others</p>
   </div>
 <div class="ref" id="ga-duelLastingEffect" data-name="duelLastingEffect">
     <h3><code>duelLastingEffect(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-duelLastingEffect">#</a></h3>
@@ -2735,7 +2745,7 @@ this.wouldInterrupt('Dishonor this character instead')
         ])
     })
 ])</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/CeremonialRobes.ts">Ceremonial Robes</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.3-ACO/DisparagingChallenge.ts">Disparaging Challenge</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MischievousTanuki.ts">Mischievous Tanuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Lion/FieldOfTheFallen.ts">Field of the Fallen</a> (15 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/CeremonialRobes.ts">Ceremonial Robes</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.3-ACO/DisparagingChallenge.ts">Disparaging Challenge</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MischievousTanuki.ts">Mischievous Tanuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Lion/FieldOfTheFallen.ts">Field of the Fallen</a> and others</p>
   </div>
 <div class="ref" id="ga-handler" data-name="handler">
     <h3><code>handler(properties?)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-handler">#</a></h3>
@@ -2893,7 +2903,7 @@ trueGameAction: chooseAction({
         Done: noAction()
     }
 })</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Lion/DeedsNotWords.ts">Deeds, not Words</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/EbbAndFlow.ts">Ebb and Flow</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/KitsukiSeiji.ts">Kitsuki Seiji</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Scorpion/IllusionaryDecoy.ts">Illusionary Decoy</a> (18 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Lion/DeedsNotWords.ts">Deeds, not Words</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/EbbAndFlow.ts">Ebb and Flow</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/KitsukiSeiji.ts">Kitsuki Seiji</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Scorpion/IllusionaryDecoy.ts">Illusionary Decoy</a> and others</p>
 </div>
 <div class="ref" id="ga-optional" data-name="optional">
     <h3><code>optional(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-optional">#</a></h3>
@@ -2924,7 +2934,7 @@ moveCardInProvinceAction(this)
         acceptMessage: (_context, chooser) =&gt; msg`${chooser} chooses to turn ${context.targets.cardInProvince} facedown`,
         declineMessage: (_context, chooser) =&gt; msg`${chooser} chooses not to turn ${context.targets.cardInProvince} facedown`
     }));</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/HirumaHajime.ts">Hiruma Hajime</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/YogoHiroue.ts">Yogo Hiroue</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/CunningNegotiator.ts">Cunning Negotiator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/BayushiKachiko.ts">Bayushi Kachiko</a> (13 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/HirumaHajime.ts">Hiruma Hajime</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/YogoHiroue.ts">Yogo Hiroue</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/CunningNegotiator.ts">Cunning Negotiator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/BayushiKachiko.ts">Bayushi Kachiko</a> and others</p>
   </div>
 <div class="ref" id="ga-sequential" data-name="sequential">
     <h3><code>sequential(gameActions)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-sequential">#</a></h3>
@@ -2956,7 +2966,9 @@ this.action('Move fate on rings')
         })),
         gainHonor((context) =&gt; ({ target: context.player }))
     ]))
-    .chatText((context) =&gt; msg`move 1 fate from the ${context.ring} to an unclaimed ring, then gain 1 honor`);</code></pre>
+    .chatText((context) =&gt; context.ring.fate &gt; 0 &amp;&amp; Object.values(context.game.rings).some((ring) =&gt; ring.isUnclaimed() &amp;&amp; ring !== context.ring)
+        ? msg`move 1 fate from the ${context.ring} to an unclaimed ring, then gain 1 honor`
+        : msg`choose the ${context.ring} and gain 1 honor`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/TranquilPhilosopher.ts">Tranquil Philosopher</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Scorpion/SneakAttack.ts">Sneak Attack</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/YogoHiroue.ts">Yogo Hiroue</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/BayushisWhisperers.ts">Bayushi's Whisperers</a></p>
   </div>
 </section>
@@ -3408,7 +3420,7 @@ this.reaction('Mirror an opponent\'s event')
         ignoredBlockers: [Blocker.CannotPayCost, Blocker.IfConditionNotMet, Blocker.LimitReached],
         event: context.event.context instanceof TriggeredAbilityContext ? context.event.context.event : undefined
     })));</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/TheMirrorsGaze.ts">The Mirror's Gaze</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/CaptivatingStory.ts">Captivating Story</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/BattlefieldOrders.ts">Battlefield Orders</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/CountrysideTrader.ts">Countryside Trader</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/TheMirrorsGaze.ts">The Mirror's Gaze</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/KeeperofSecretNames.ts">Keeper of Secret Names</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.5-CoP/BattlefieldOrders.ts">Battlefield Orders</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/CountrysideTrader.ts">Countryside Trader</a></p>
   </div>
 <div class="ref" id="ga-triggerAbility" data-name="triggerAbility">
     <h3><code>triggerAbility(properties)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-triggerAbility">#</a></h3>
