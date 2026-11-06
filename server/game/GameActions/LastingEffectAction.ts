@@ -17,7 +17,7 @@ export interface LastingEffectFields<Context extends AbilityContext = AbilityCon
     until?: EffectUntil;
     effect?: EffectFactory | EffectFactory[];
     ability?: BaseAbility;
-    /** Whose cards or which players the effect may apply to, relative to the ability's player; `Players.Any` for both. */
+    /** Whose cards or which players the effect may apply to, relative to the current controller of the ability's card (usually the ability's player); `Players.Any` for both. */
     targetController?: Players | Player;
     /** A chat line when an effect with `Duration.Custom` ends. */
     endingMessage?: string;

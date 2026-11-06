@@ -81,6 +81,15 @@ code, pre, kbd { font-family: var(--font-mono); font-variant-ligatures: none; }
     color: var(--gold-pale);
     overflow-wrap: anywhere;
 }
+a > code { color: var(--tertiary); }
+a:hover > code { color: var(--jade-vivid); }
+/* links in the text are underlined, not only coloured */
+main a:not(.anchor, .page-footer a) { text-decoration: underline; text-decoration-color: rgb(var(--tertiary-rgb) / 0.45); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+main a:not(.anchor, .page-footer a):hover { text-decoration-color: currentColor; }
+
+/* the skip link shows when it gets the focus */
+.skip { position: absolute; left: 0.5rem; top: -4rem; z-index: 30; padding: 0.5rem 0.9rem; border-radius: 4px; background: var(--ink); color: var(--jade-vivid); font: 600 var(--text-body) var(--font-ui); }
+.skip:focus { top: 0.5rem; }
 
 /* layout */
 .layout { display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr); min-height: 100vh; }
@@ -104,6 +113,13 @@ nav.toc > ol > li { margin: 0.6rem 0 0.2rem; }
 nav.toc > ol > li > a { font: 600 var(--text-body) var(--font-ui); color: var(--gold-pale); }
 nav.toc ol ol li a { display: block; font: var(--text-body) var(--font-ui); color: var(--sage-pale); padding: 0.12rem 0 0.12rem 0.6rem; border-left: 2px solid transparent; }
 nav.toc ol ol li a:hover, nav.toc a.active { color: var(--jade-vivid); border-left-color: var(--jade-vivid); text-decoration: none; }
+nav.toc a.active { font-weight: 600; }
+
+/* the pages and contents fold into one line on small screens (docs.js builds the details) */
+.nav-panel > summary { cursor: pointer; padding: 0.4rem 0.5rem; border: 1px solid var(--rule-strong); border-radius: 4px; font: 600 var(--text-body) var(--font-ui); color: var(--sage-pale); }
+.nav-panel > summary:focus-visible { outline: 2px solid var(--jade-vivid); outline-offset: 2px; }
+.nav-panel[open] > summary { margin-bottom: 0.5rem; }
+@media (min-width: 861px) { .nav-panel > summary { display: none; } }
 
 main { padding: 2.5rem clamp(1rem, 4vw, 3.5rem) 6rem; max-width: 64rem; }
 header.hero { border-bottom: 1px solid var(--rule); padding-bottom: 1.5rem; margin-bottom: 2rem; }
@@ -136,11 +152,14 @@ pre {
 pre .kw { color: var(--amber); }
 pre .str { color: var(--jade-vivid); }
 pre .num { color: var(--void); }
-pre .com { color: rgb(var(--sage-rgb) / 0.7); font-style: italic; }
+pre .com { color: rgb(var(--sage-rgb) / 0.7); font-style: italic; white-space: pre-wrap; }
 pre .fn { color: var(--info); }
 
 /* tables */
-table { border-collapse: collapse; width: 100%; margin: 0.75rem 0 1rem; font-size: var(--text-body); display: block; overflow-x: auto; }
+/* docs.js wraps each table in .table-scroll */
+.table-scroll { overflow-x: auto; margin: 0.75rem 0 1rem; }
+table { border-collapse: collapse; width: 100%; margin: 0.75rem 0 1rem; font-size: var(--text-body); }
+.table-scroll > table { margin: 0; }
 th, td { border: 1px solid var(--rule); padding: 0.4rem 0.6rem; text-align: left; vertical-align: top; }
 th { background: rgb(var(--moss-rgb) / 0.6); font: 600 var(--text-small) var(--font-ui); color: var(--sage-pale); }
 td:first-child:has(> code) { white-space: nowrap; }
@@ -153,7 +172,11 @@ table.prose td:first-child { white-space: normal; }
 .ref > h3 code { background: none; border: 0; padding: 0; color: var(--bone); font-size: 1rem; }
 .ref > h3 .kind { font: italic var(--text-body) var(--font-body); color: var(--sage); }
 .ref > h3 a.anchor { color: var(--sage); font-size: 0.85em; opacity: 0; }
-.ref:hover > h3 a.anchor { opacity: 1; }
+.ref:hover > h3 a.anchor, .ref > h3 a.anchor:focus-visible { opacity: 1; }
+/* docs.js adds the # links to the section headings */
+main :is(h2, h3)[id] > a.anchor { color: var(--sage); font-size: 0.6em; text-decoration: none; opacity: 0; }
+main :is(h2, h3)[id]:hover > a.anchor, main :is(h2, h3)[id] > a.anchor:focus-visible { opacity: 1; }
+@media (hover: none) { .ref > h3 a.anchor, main :is(h2, h3)[id] > a.anchor { opacity: 1; } }
 .ref .edge { border-left: 3px solid var(--warning); padding-left: 1.9rem; margin: 0.6rem 0; }
 .ref .edge li { margin: 0.15rem 0; }
 .ref .seen { font: var(--text-small) var(--font-ui); color: var(--sage); }
@@ -165,7 +188,6 @@ mark { background: rgb(var(--gold-rgb) / 0.35); color: inherit; border-radius: 2
 @media (max-width: 860px) {
     .layout { grid-template-columns: minmax(0, 1fr); }
     aside.sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--rule); }
-    nav.toc ol ol { display: none; }
     th, td { min-width: 8rem; }
 }
 
@@ -204,3 +226,20 @@ a:focus-visible, input:focus-visible { outline: 2px solid var(--jade-vivid); out
 .jump .where { margin-left: 0.6rem; font: italic var(--text-small) var(--font-body); color: var(--sage); }
 .jump .summary { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 0.15rem; font: var(--text-small)/1.45 var(--font-body); color: var(--sage-pale); }
 .jump .empty { padding: 0.6rem 0.8rem; font: var(--text-small) var(--font-body); color: var(--sage); }
+.jump .name .in { font-weight: 500; color: var(--sage); }
+.jump .empty a { color: var(--tertiary); text-decoration: underline; }
+
+/* the start page's parts get the focus too */
+.card-to-code [data-line] { cursor: pointer; }
+.card-to-code [data-line]:focus-visible { outline: 2px solid var(--jade-vivid); outline-offset: -2px; }
+
+/* previous / next page and back to the top, added by docs.js */
+.page-footer { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.75rem 1.5rem; margin-top: 4rem; padding-top: 1rem; border-top: 1px solid var(--rule); font: 600 var(--text-body) var(--font-ui); }
+.page-footer a { color: var(--sage-pale); }
+.page-footer a:hover { color: var(--jade-vivid); }
+
+@media print {
+    aside.sidebar, .skip, .jump, .page-footer, a.anchor { display: none; }
+    .layout { display: block; }
+    main { max-width: none; padding: 0; }
+}
