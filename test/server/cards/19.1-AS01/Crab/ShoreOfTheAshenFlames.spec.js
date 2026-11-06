@@ -181,3 +181,97 @@ describe('Shore of the Ashen Flames and skill penalties', function () {
         });
     });
 });
+
+describe('Shore of the Ashen Flames counts by side', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['brash-samurai'],
+                    dynastyDeck: ['utaku-rumaru'],
+                    hand: ['join-the-fray', 'fine-katana']
+                },
+                player2: {
+                    provinces: ['shore-of-the-ashen-flames'],
+                    dynastyDeck: ['utaku-rumaru'],
+                    hand: ['join-the-fray', 'fine-katana']
+                }
+            });
+            this.brash = this.player1.findCardByName('brash-samurai');
+            this.rumaru1 = this.player1.placeCardInProvince('utaku-rumaru', 'province 1');
+            this.rumaru1.facedown = false;
+            this.rumaru2 = this.player2.placeCardInProvince('utaku-rumaru', 'province 2');
+            this.rumaru2.facedown = false;
+            this.shore = this.player2.findCardByName('shore-of-the-ashen-flames', 'province 1');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                province: this.shore,
+                attackers: [this.brash],
+                defenders: []
+            });
+        });
+
+        it('blocks attachment bonuses of a defender\'s character on the attacking side', function () {
+            this.player2.clickCard(this.player2.findCardByName('join-the-fray'));
+            this.player2.clickCard(this.rumaru2);
+            this.player2.clickPrompt('player1');
+            expect(this.game.currentConflict.attackers).toContain(this.rumaru2);
+            this.player1.pass();
+            this.player2.playAttachment(this.player2.findCardByName('fine-katana'), this.rumaru2);
+            expect(this.rumaru2.militarySkill).toBe(6);
+
+            this.noMoreActions();
+            expect(this.getChatLogs(5)).toContain('player1 won a military conflict 6 vs 0');
+        });
+
+        it('keeps attachment bonuses of an attacker\'s character on the defending side', function () {
+            this.player2.pass();
+            this.player1.clickCard(this.player1.findCardByName('join-the-fray'));
+            this.player1.clickCard(this.rumaru1);
+            this.player1.clickPrompt('player2');
+            expect(this.game.currentConflict.defenders).toContain(this.rumaru1);
+            this.player2.pass();
+            this.player1.playAttachment(this.player1.findCardByName('fine-katana'), this.rumaru1);
+
+            this.noMoreActions();
+            expect(this.getChatLogs(5)).toContain('player2 won a military conflict 6 vs 2');
+        });
+    });
+});
+
+describe('Shore of the Ashen Flames and a changed skill count', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['shiba-ryuu', 'brash-samurai'],
+                    hand: ['fine-katana']
+                },
+                player2: {
+                    provinces: ['shore-of-the-ashen-flames']
+                }
+            });
+            this.ryuu = this.player1.findCardByName('shiba-ryuu');
+            this.brash = this.player1.findCardByName('brash-samurai');
+            this.shore = this.player2.findCardByName('shore-of-the-ashen-flames', 'province 1');
+        });
+
+        it('counts combined skill (Shiba Ryuu) without the attachment bonus', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                province: this.shore,
+                attackers: [this.ryuu, this.brash],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.playAttachment(this.player1.findCardByName('fine-katana'), this.brash);
+            expect(this.brash.militarySkill).toBe(4);
+            // Shiba Ryuu 2 + 3, Brash Samurai 2 + 1 (the Katana's +2 is blocked)
+            expect(this.game.currentConflict.attackerSkill).toBe(8);
+        });
+    });
+});

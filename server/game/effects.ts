@@ -303,8 +303,6 @@ export const costToDeclareAnyParticipants = (properties: ParticipantCostEffect) 
 export const consideredLessHonorable = () => EffectBuilder.player.static(EffectName.ConsideredLessHonorable, true);
 export const customFatePhaseFateRemoval = (refillFunc: EffectValueMap[EffectName.CustomFatePhaseFateRemoval]) =>
     EffectBuilder.player.static(EffectName.CustomFatePhaseFateRemoval, refillFunc);
-export const changeConflictSkillFunctionPlayer = (func: EffectValueMap[EffectName.ChangeConflictSkillFunction]) =>
-    EffectBuilder.player.static(EffectName.ChangeConflictSkillFunction, func);
 export const limitLegalAttackers = (matchFunc: (card: DrawCard) => boolean) => EffectBuilder.player.static(EffectName.LimitLegalAttackers, matchFunc);
 export const additionalActionAfterWindowCompleted = (amount: number = 1) =>
     EffectBuilder.player.static(EffectName.AdditionalActionAfterWindowCompleted, amount);
@@ -321,6 +319,8 @@ export const charactersCannot = (properties: RestrictionType | PlayType | Restri
 export const cannotContribute = (match: (card: DrawCard, context: AbilityContext) => boolean) =>
     EffectBuilder.conflict.static(EffectName.CannotContribute, new ContextFunction(match));
 export const changeConflictSkillFunction = (func: EffectValueMap[EffectName.ChangeConflictSkillFunction]) => EffectBuilder.conflict.static(EffectName.ChangeConflictSkillFunction, func);
+export const conflictSkillExclusion = (exclusion: EffectValueMap[EffectName.ConflictSkillExclusion]) =>
+    EffectBuilder.conflict.static(EffectName.ConflictSkillExclusion, exclusion);
 export const modifyConflictElementsToResolve = (value: number) =>
     EffectBuilder.conflict.static(EffectName.ModifyConflictElementsToResolve, value);
 export const restrictNumberOfDefenders = (value: number) => EffectBuilder.conflict.static(EffectName.RestrictNumberOfDefenders, value);

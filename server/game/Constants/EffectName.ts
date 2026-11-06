@@ -133,6 +133,7 @@ export enum EffectName {
     CanContributeWhileBowed = 'canContributeWhileBowed',
     CanContributeGloryWhileBowed = 'canContributeGloryWhileBowed',
     ChangeConflictSkillFunction = 'changeConflictSkillFunction',
+    ConflictSkillExclusion = 'conflictSkillExclusion',
     ModifyConflictElementsToResolve = 'modifyConflictElementsToResolve',
     RestrictNumberOfDefenders = 'restrictNumberOfDefenders',
     ResolveConflictEarly = 'resolveConflictEarly',

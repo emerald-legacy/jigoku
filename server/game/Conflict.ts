@@ -1,5 +1,6 @@
 import { msg, type MessageArgs } from './GameChat.js';
-import { CardType, type ConflictType, EffectName, type Element, EventName, favorAppliesTo, Location, RestrictionType } from './Constants.js';
+import { CardType, ConflictType, EffectName, type Element, EventName, favorAppliesTo, Location, RestrictionType, SkillType } from './Constants.js';
+import type { EffectApplier } from './Effects/EffectApplier.js';
 import { GameObject } from './GameObject.js';
 import type { ProvinceCard } from './ProvinceCard.js';
 import type BaseCard from './BaseCard.js';
@@ -12,6 +13,26 @@ import { takeAllFateFromRing } from './GameActions/TakeFateFromRingAction.js';
 
 type Predicate = (card: DrawCard) => boolean;
 
+
+/** A card's military and political skill as a conflict counts them (see `Conflict.calculateSkillFor`). */
+export type ConflictSkills = { readonly military: number; readonly political: number };
+
+/** Removes skill modifiers from the skills the conflict counts for the cards that `match` (Shore of the Ashen Flames). */
+export type ConflictSkillExclusion = {
+    match: (card: DrawCard, conflict: Conflict) => boolean;
+    excludes: (effect: EffectApplier, card: DrawCard) => boolean;
+};
+
+function skillsOf(card: DrawCard): ConflictSkills {
+    return {
+        get military() {
+            return card.getSkill(SkillType.Military);
+        },
+        get political() {
+            return card.getSkill(SkillType.Political);
+        }
+    };
+}
 export class Conflict extends GameObject {
     #attackerCardsPlayed = new Set<DrawCard>();
     #attackers = new Set<DrawCard>();
@@ -423,20 +444,19 @@ export class Conflict extends GameObject {
         );
     }
 
+    /**
+     * The skill `cards` contribute. Each card counts with the conflict's skill function (Sanpuku Seido, Massing at
+     * Twilight, …) or its own contribution, from its skills minus the modifiers a skill exclusion (Shore of the Ashen
+     * Flames) removes for that card. `fixedSkillFunction` replaces all of that (a player's current skill of the other type).
+     */
     calculateSkillFor(cards: DrawCard[], fixedSkillFunction?: (card: DrawCard) => number) {
-        let skillFunction =
-            fixedSkillFunction ??
-            (this.mostRecentEffect(EffectName.ChangeConflictSkillFunction) ||
-                ((card: DrawCard) => card.getContributionToConflict(this.conflictType)));
+        const conflictSkillFunction = this.mostRecentEffect(EffectName.ChangeConflictSkillFunction);
+        const skillExclusions = this.getEffects(EffectName.ConflictSkillExclusion);
         const cannotContributeChecks = this.getEffects(EffectName.CannotContribute);
 
         return cards.reduce((sum, card) => {
             const canContributeWhileBowed = card.anyEffect(EffectName.CanContributeWhileBowed);
             let cannotContribute = card.bowed && !canContributeWhileBowed;
-            const playerSkillFunction = fixedSkillFunction ? undefined : card.controller.mostRecentEffect(EffectName.ChangeConflictSkillFunction);
-            if(playerSkillFunction) {
-                skillFunction = playerSkillFunction;
-            }
             if(!cannotContribute) {
                 cannotContribute = cannotContributeChecks.some((match) => match.call(card));
             }
@@ -449,8 +469,38 @@ export class Conflict extends GameObject {
             if(cannotContribute) {
                 return sum;
             }
-            return sum + skillFunction(card, this);
+            if(fixedSkillFunction) {
+                return sum + fixedSkillFunction(card);
+            }
+            const reducedSkills = this.reducedSkillsOf(card, skillExclusions);
+            if(conflictSkillFunction) {
+                return sum + conflictSkillFunction(card, this, reducedSkills ?? skillsOf(card));
+            }
+            if(!reducedSkills || card.anyEffect(EffectName.ChangeContributionFunction)) {
+                return sum + card.getContributionToConflict(this.conflictType);
+            }
+            if(this.conflictType === ConflictType.Military) {
+                return sum + reducedSkills.military;
+            }
+            return sum + (this.conflictType === ConflictType.Political ? reducedSkills.political : 0);
         }, 0);
+    }
+
+    /** A card's skills without the modifiers that the skill exclusions applying to it remove; undefined when none applies. */
+    private reducedSkillsOf(card: DrawCard, skillExclusions: ConflictSkillExclusion[]): ConflictSkills | undefined {
+        const applying = skillExclusions.filter((exclusion) => exclusion.match(card, this));
+        if(applying.length === 0) {
+            return undefined;
+        }
+        const excluded = (effect: EffectApplier) => applying.some((exclusion) => exclusion.excludes(effect, card));
+        return {
+            get military() {
+                return card.getMilitarySkillExcludingModifiers(excluded);
+            },
+            get political() {
+                return card.getPoliticalSkillExcludingModifiers(excluded);
+            }
+        };
     }
 
     determineWinner() {
