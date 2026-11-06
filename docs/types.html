@@ -312,6 +312,7 @@ return !card.isFaction('neutral') &amp;&amp; !(isFactionName(clan) &amp;&amp; ca
       </table>
   <ul class="edge">
     <li><code>gainAbility</code> accepts <code>AbilityType.Action</code>, <code>AbilityType.Persistent</code>, a triggered type with triggered-ability properties, or any type with an existing <code>CardAbility</code> to copy.</li>
+    <li><code>TRIGGERED_ABILITY_TYPES</code> (also exported from <code>Constants.ts</code>) is the set of card-ability trigger types: <code>WouldInterrupt</code>, <code>ForcedInterrupt</code>, <code>Interrupt</code>, <code>ForcedReaction</code>, <code>DuelReaction</code> and <code>Reaction</code> (not the keyword types or <code>OtherEffects</code>). Engine only.</li>
   </ul>
   <pre><code>// Hida Kisada: While you have not lost a conflict this phase, cancel the effects of the first action ability your opponent triggers from a card during each conflict.
 const registrar = new EventRegistrar(this.game);
@@ -564,6 +565,7 @@ this.wouldInterrupt('Replace a void effect with another ring effect')
       </table>
   <ul class="edge">
     <li>Without a <code>side</code> (or with <code>Both</code>), claiming the favor prompts the player for the side, unless the rules give the favor no sides (then it is <code>both</code>).</li>
+    <li><code>favorAppliesTo(favor, conflictType)</code> (exported from <code>Constants.ts</code>) tells whether a player's favor (<code>player.imperialFavor</code>) counts in a conflict of that type: <code>Both</code> always, a side only in a conflict of the same type. The conflict uses it for the favor's skill bonus.</li>
   </ul>
   <pre><code>// Whispers of the Lords of Death: … Reaction: After a character leaves play during a conflict - put this card into play from your hand. Claim the Imperial Favor on the [conflict-military] side.
 .claimImperialFavor((context) =&gt; ({
@@ -938,7 +940,7 @@ cardCannot({
           <tr><td><code>ReceiveDishonorToken</code></td><td><code>'receiveDishonorToken'</code></td><td>Dishonoring an ordinary character or province (<code>dishonor</code>, <code>dishonorProvince</code>), <code>gainStatusToken</code>, <code>moveStatusToken</code>.</td></tr>
           <tr><td><code>ReceiveHonorToken</code></td><td><code>'receiveHonorToken'</code></td><td>Honoring an ordinary character, <code>gainStatusToken</code>, <code>moveStatusToken</code>.</td></tr>
           <tr><td><code>ReceiveTaintedToken</code></td><td><code>'receiveTaintedToken'</code></td><td><code>taint</code>, <code>gainStatusToken</code>, <code>moveStatusToken</code>.</td></tr>
-          <tr><td><code>RemoveFate</code></td><td><code>'removeFate'</code></td><td><code>removeFate</code></td></tr>
+          <tr><td><code>RemoveFate</code></td><td><code>'removeFate'</code></td><td><code>removeFate</code>. An immunity doesn't match it: fate isn't protected by immunity.</td></tr>
           <tr><td><code>RemoveFromGame</code></td><td><code>'removeFromGame'</code></td><td><code>removeFromGame</code></td></tr>
           <tr><td><code>RestoreProvince</code></td><td><code>'restoreProvince'</code></td><td><code>restoreProvince</code></td></tr>
           <tr><td><code>ReturnToDeck</code></td><td><code>'returnToDeck'</code></td><td><code>returnToDeck</code>, <code>chosenReturnToDeck</code></td></tr>
@@ -957,6 +959,7 @@ cardCannot({
   <ul class="edge">
     <li>A restriction is a negative check: <code>card.checkRestrictions(type, context)</code> returns false when a matching restriction exists.</li>
     <li>A game action with no <code>restriction</code> is only stopped by restrictions that name no <code>cannot</code> at all.</li>
+    <li>A restriction that names no <code>cannot</code> (an immunity) matches every type except <code>Attach</code> and <code>RemoveFate</code>, and never at <code>Stage.Cost</code>.</li>
     <li><code>cannot</code> may also be a <code>PlayType</code>.</li>
   </ul>
   <pre><code>// Long Journey Home: Reaction: After one or more characters controlled by an opponent move home (including as a result of conflict resolution), choose one of those characters - bow it. Until the end of the phase, that character cannot be readied.
@@ -1020,7 +1023,7 @@ cardCannot({
 </ul>
 <p><strong>Fields.</strong> Every event has <code>name</code>, <code>context</code>, <code>cancelled</code>, <code>resolved</code>, <code>cannotBeCancelled</code>, <code>isContingent</code> (raised as a consequence of another event: the fate and attachments leaving with a character), <code>window</code> and <code>is(name)</code>; <code>event.is(EventName.OnCardHonored)</code> narrows the type. Events a game action creates always have a <code>context</code>. Events the game flow raises have <code>context: null</code>, which is why many predicates read <code>event.context?.player</code>. The payload tables list the other fields, typed as in <code>server/game/Events/EventPayloads.ts</code>.</p>
 <p><strong>Who may trigger.</strong> A <code>when</code> predicate is evaluated once per player, with <code>context.player</code> set to that player. The ability is then offered only to a player allowed to trigger it.</p>
-<p><strong>Listening without a trigger.</strong> Event names are also used by <code>until</code> maps of lasting effects (<code>Duration.Custom</code>), <code>when</code> of <code>delayedEffect</code>, <code>EventRegistrar.register()</code> and <code>registerTriggerWindow()</code>. These listen to the event itself. So they also see the two events that open no window: <code>onCardMoved</code> (from moving a card) and <code>onDeckShuffled</code>.</p>
+<p><strong>Listening without a trigger.</strong> Event names are also used by <code>until</code> maps of lasting effects (<code>Duration.Custom</code>), <code>when</code> of <code>delayedEffect</code>, <code>EventRegistrar.register()</code> and <code>registerTriggerWindow()</code>. <code>until</code> maps and <code>EventRegistrar.register()</code> listen to the event itself, so they also see the two events that open no window: <code>onCardMoved</code> (from moving a card) and <code>onDeckShuffled</code>. A <code>delayedEffect</code>'s <code>when</code> is checked against the events a window resolved, and <code>registerTriggerWindow()</code> hooks a trigger window, so neither sees those two.</p>
 
 <section class="group">
   <h3 class="group-title" id="ev-group-rounds">Rounds, phases and priority</h3>
@@ -1495,7 +1498,7 @@ cardLastingEffect({
       </table>
   <ul class="edge">
     <li>For an event card its interrupts come before costs, which is how "reduce the cost" interrupts work (Earnest Sculptor); reactions come after the event resolved.</li>
-    <li>The Ephemeral keyword of events listens to it (and to <code>onCardLeavesPlay</code>): the card is removed from the game and flagged <code>removedByEphemeral</code>, so no other effect moves it out again (<code>isRemovedByEphemeral()</code>; <a href="game-actions.html#ga-moveCard"><code>moveCard</code></a>). A manual move clears the flag.</li>
+    <li>The Ephemeral keyword of an event card listens to it (characters and attachments use <code>onCardLeavesPlay</code>): the card is removed from the game and flagged <code>removedByEphemeral</code>, so no other effect moves it out again (<code>isRemovedByEphemeral()</code>; <a href="game-actions.html#ga-moveCard"><code>moveCard</code></a>). A manual move clears the flag.</li>
   </ul>
   <pre><code>// Shosuro Miyako: Reaction: After you play a character from your hand, your opponent must select one – discard 1 card at random from his or her hand or choose and dishonor a character he or she controls.
 this.reaction('Opponent discards or dishonors')
@@ -1984,7 +1987,7 @@ onStatusTokenDiscarded: (event, context) =&gt;
         <tbody>
           <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The card receiving the token.</td></tr>
           <tr><td><code>token</code></td><td><code>(StatusToken | CharacterStatus)?</code></td><td>A <code>StatusToken</code>, or the <code>CharacterStatus</code> for <code>gainStatusToken</code>.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>The <code>gainStatusToken</code> ability's context; <code>null</code> when raised after <code>honor</code>, <code>dishonor</code>, <code>taint</code> or <code>moveStatusToken</code>.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2028,7 +2031,7 @@ onStatusTokenMoved: (event, context) =&gt;
 
 <section class="group">
   <h3 class="group-title" id="ev-group-conflicts">Conflicts and provinces</h3>
-  <p>In order of a conflict: <code>onConflictInitiated</code>, <code>onConflictDeclared</code> (its handler: <code>onConflictOpportunityAvailable</code>, <code>onConflictDeclaredBeforeProvinceReveal</code>, <code>onTheCrashingWave</code>, <code>onCovertResolved</code>, the province's <code>onCardRevealed</code>), <code>onDefendersDeclared</code>, <code>onConflictStarted</code>, the action window, <code>afterConflict</code>, <code>onBreakProvince</code>, <code>onResolveConflictRing</code>, <code>onClaimRing</code>, <code>onReturnHome</code> / <code>onParticipantsReturnHome</code>, <code>onConflictFinished</code>. A passed opportunity raises <code>onConflictPass</code> instead.</p>
+  <p>In order of a conflict: <code>onConflictInitiated</code>, <code>onConflictDeclared</code> (its handler: <code>onConflictOpportunityAvailable</code>, <code>onConflictDeclaredBeforeProvinceReveal</code>, <code>onCovertResolved</code>, <code>onTheCrashingWave</code>, the province's <code>onCardRevealed</code>), <code>onDefendersDeclared</code>, <code>onConflictStarted</code>, the action window, <code>afterConflict</code>, <code>onBreakProvince</code>, <code>onResolveConflictRing</code>, <code>onClaimRing</code>, <code>onReturnHome</code> / <code>onParticipantsReturnHome</code>, <code>onConflictFinished</code>. A passed opportunity raises <code>onConflictPass</code> instead.</p>
 <div class="ref" id="ev-afterConflict" data-name="afterConflict AfterConflict">
   <h3><code>afterConflict</code> <span class="kind">Event</span> <a class="anchor" href="#ev-afterConflict">#</a></h3>
   <p>Raised by <code>ConflictFlow</code> after the conflict action window, once the winner is determined; its handler posts the result, records the winner and marks the conflict unopposed. Then come unopposed honor loss, breaking the province, the ring effect, claiming the ring and returning home.</p>
@@ -2079,7 +2082,7 @@ this.interrupt('Force opponent to discard to 4 cards')
 </div>
 <div class="ref" id="ev-onConflictDeclared" data-name="onConflictDeclared OnConflictDeclared">
   <h3><code>onConflictDeclared</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onConflictDeclared">#</a></h3>
-  <p>Raised by <code>ConflictFlow</code> at the start of a conflict opportunity. Its handler runs the whole declaration: <code>onConflictOpportunityAvailable</code>, choosing ring, type, attackers and province, paying costs, <code>onConflictDeclaredBeforeProvinceReveal</code>, and revealing the province. Then it fills in <code>type</code>, <code>ring</code>, <code>attackers</code> and <code>ringFate</code>.</p>
+  <p>Raised by <code>ConflictFlow</code> at the start of a conflict opportunity. Its handler runs the whole declaration: <code>onConflictOpportunityAvailable</code>, choosing ring, type, attackers and province, paying costs, <code>onConflictDeclaredBeforeProvinceReveal</code>, and revealing the province. It fills in <code>type</code>, <code>ring</code>, <code>attackers</code> and <code>ringFate</code> once the choices are made, before costs are paid and the ring's fate is taken.</p>
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
@@ -2929,7 +2932,7 @@ this.wouldInterrupt('Lose fate instead of honor')
           <tr><td><code>fate</code></td><td><code>number?</code></td><td>How much fate.</td></tr>
           <tr><td><code>origin</code></td><td><code>(Ring | DrawCard | Player)?</code></td><td>Where it comes from; none for fate from the general supply.</td></tr>
           <tr><td><code>recipient</code></td><td><code>(Player | DrawCard | Ring)?</code></td><td>Where it goes; none for fate returned to the supply.</td></tr>
-          <tr><td><code>spend</code></td><td><code>boolean?</code></td><td>Fate spent from the origin's fate pool (<code>payFate</code>, <code>payFateToRing</code>, texts that "spend" fate): the player must be allowed to spend it.</td></tr>
+          <tr><td><code>spend</code></td><td><code>boolean?</code></td><td>Fate spent from the origin's fate pool (<code>payFateToRing</code>, texts that "spend" fate; <code>payFate</code> raises <code>onModifyFate</code> instead): the player must be allowed to spend it.</td></tr>
           <tr><td><code>amount</code></td><td><code>number?</code></td><td>Only when paying a fate cost to the opponent (then <code>fate</code>, <code>origin</code> and <code>recipient</code> are not set).</td></tr>
           <tr><td><code>context</code></td><td><code>AbilityContext?</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
@@ -3161,7 +3164,7 @@ this.interrupt('Ready for Glory Count')
         </tbody>
       </table>
   <ul class="edge">
-    <li>A context created by <code>game.getFrameworkContext(player)</code> has a plain source named "Framework effect" and <code>stage</code> <code>Effect</code>. Rules use them (bowing at the end of a conflict, fate phase steps), so <code>event.context.source</code> may not be a card.</li>
+    <li>A context created by <code>game.getFrameworkContext(player)</code> has a plain source named "Framework effect" and <code>stage</code> <code>Effect</code>; <code>game.getFrameworkCostContext(player)</code> is the same at <code>Stage.Cost</code>, for rule costs such as the fate and honor to declare attackers. Rules use them (bowing at the end of a conflict, fate phase steps), so <code>event.context.source</code> may not be a card.</li>
     <li><code>copy(props)</code> makes a new context with the same choices; game actions use it to check a candidate.</li>
   </ul>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DisplayOfPower.ts">Display of Power</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DuelistTraining.ts">Duelist Training</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/ShrineMaiden.ts">Shrine Maiden</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Unicorn/IchigoKun.ts">Ichigo-kun</a></p>
@@ -3441,7 +3444,7 @@ onCardAbilityTriggered: (event, context) =&gt;
   <h3><code>context.stage</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-stage">#</a></h3>
   <p>How far the resolution has got (<code>Stage</code>): <code>PreTarget</code> while choosing targets before costs, <code>Cost</code> while paying costs, <code>Target</code> while choosing targets after costs, <code>Effect</code> while the effects resolve.</p>
   <ul class="edge">
-    <li>A context made for an ability starts at <code>PreTarget</code>; a framework context is at <code>Effect</code>.</li>
+    <li>A context made for an ability starts at <code>PreTarget</code>; a framework context is at <code>Effect</code> (<code>Cost</code> from <code>getFrameworkCostContext</code>).</li>
     <li>Read it on an event's context to tell a cost from an effect (<code>event.context?.stage === Stage.Effect</code>).</li>
   </ul>
   <pre><code>// Sententious Poet: Reaction: After your opponent spends fate to play a card during a conflict in which this character is participating - gain 1 fate.

@@ -3,6 +3,12 @@ name: Deploy Game Server
 on:
   push:
     branches: [main]
+    # A push that only changes docs (the docs site has its own workflow, docs.yml) or Markdown files
+    # neither runs the tests nor deploys. Run the workflow by hand to deploy anyway.
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - '.github/workflows/docs.yml'
   workflow_dispatch:
 
 permissions:

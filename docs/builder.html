@@ -93,7 +93,7 @@ this.conflictAction('Force opponent to discard card or dishonor a character', { 
         .discardAtRandom((context) =&gt; ({ target: context.target.controller }))
     .otherwise()
         .dishonor();</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/ShosuroHiroyuki.ts">Shosuro Hiroyuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/Kuro.ts">Kuro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Assassination.ts">Assassination</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Crane/KakitaMio.ts">Kakita Mio</a> (176 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Scorpion/ShosuroHiroyuki.ts">Shosuro Hiroyuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/Kuro.ts">Kuro</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Assassination.ts">Assassination</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Crane/KakitaMio.ts">Kakita Mio</a> and others</p>
   </div>
 </section>
 
@@ -652,7 +652,7 @@ this.action('Move attached character in or out of the conflict')
     <pre><code>// For Shame!: Conflict Action: If you control a participating Courtier character, choose a participating character controlled by your opponent. Your opponent must select one – dishonor the chosen character or bow it.
 this.action('Dishonor or bow a character')
     .ifCondition((context) =&gt; controlsParticipating(context.player, Trait.Courtier))</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ForShame.ts">For Shame!</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/ConsumedByFiveFires.ts">Consumed by Five Fires</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/SubdueTheSpirits.ts">Subdue the Spirits</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/WisdomOfTheWind.ts">Wisdom of the Wind</a> (114 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ForShame.ts">For Shame!</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/ConsumedByFiveFires.ts">Consumed by Five Fires</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/SubdueTheSpirits.ts">Subdue the Spirits</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/WisdomOfTheWind.ts">Wisdom of the Wind</a> and others</p>
   </div>
 
   <div class="ref" id="b-conflictProvinceCondition" data-name="conflictProvinceCondition">
@@ -1138,7 +1138,7 @@ this.action('Move a status token to this character')
     <ul class="edge">
       <li>Can be called several times; the actions add up. A value that isn't a game action throws <code>"not a game action"</code>.</li>
       <li>An action without its own <code>target</code> uses its default (the source card, the ability's player, the conflict ring …), not an earlier target: give it <code>(context) =&gt; ({ target: context.target })</code>, or put it on the target.</li>
-      <li>An ability without targets can only be used when at least one of its own game actions has a legal target. With targets, the targets decide.</li>
+      <li>An ability without targets can only be used when at least one of its own game actions has a legal target, or when all of them are <code>optional</code> and its <a href="#b-then">next step</a> can resolve. With targets, the targets decide.</li>
       <li>Not with <a href="#b-handler"><code>handler()</code></a>.</li>
     </ul>
     <pre><code>// Togashi Mendicant: Reaction: After the fate phase begins – look at the top 3 cards of your dynasty deck. Then, put them back in any order.
@@ -1612,7 +1612,7 @@ this.action('Place a fate on a bushi')
     .target({ name: 'oppCharacter', player: Players.Opponent, cardType: CardType.Character, optional: true, hideIfNoLegalTargets: true,
         cardCondition: (card, context) =&gt; Boolean(card.hasTrait(Trait.Bushi) &amp;&amp; context.costs.honorTakenFromOpponent) }, placeFate())
     .firstPlayerChoosesFirst()</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/CalledToWar.ts">Called to War</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/MerchantOfCuriosities.ts">Merchant of Curiosities</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/Heresy.ts">Heresy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ChancellorsAide.ts">Chancellor's Aide</a> (8 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/CalledToWar.ts">Called to War</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/MerchantOfCuriosities.ts">Merchant of Curiosities</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.1-TL/Heresy.ts">Heresy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/ChancellorsAide.ts">Chancellor's Aide</a> and others</p>
   </div>
 
   <div class="ref" id="b-limit" data-name="limit">
@@ -2509,7 +2509,7 @@ this.action('Steal a fate')
     gameAction: placeFate({ origin: context.player.opponent }),
     declineMessage: (context, chooser) =&gt; msg`${chooser} chooses not to hire ${context.source}`
 }))</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.4-CoC/MercenaryCompany.ts">Mercenary Company</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crane/DojiShigenobu.ts">Dōji Shigenobu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/HirumaHajime.ts">Hiruma Hajime</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/BayushiKachiko.ts">Bayushi Kachiko</a> (5 card files)</p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.4-CoC/MercenaryCompany.ts">Mercenary Company</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crane/DojiShigenobu.ts">Dōji Shigenobu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/HirumaHajime.ts">Hiruma Hajime</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/BayushiKachiko.ts">Bayushi Kachiko</a> and others</p>
   </div>
   <div class="ref" id="b-selectAttackedProvince" data-name="selectAttackedProvince">
     <h3><code>selectAttackedProvince(properties)</code> <span class="kind">Shortcut</span> <a class="anchor" href="#b-selectAttackedProvince">#</a></h3>
