@@ -113,3 +113,40 @@ describe('Arbiter of Authority', function() {
         });
     });
 });
+
+describe('Arbiter of Authority duel type', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['arbiter-of-authority']
+                },
+                player2: {
+                    inPlay: ['brash-samurai']
+                }
+            });
+            this.arbiterOfAuthority = this.player1.findCardByName('arbiter-of-authority');
+            this.brash = this.player2.findCardByName('brash-samurai');
+        });
+
+        it('compares political skill, even in a military conflict', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.arbiterOfAuthority],
+                defenders: [this.brash],
+                type: 'military'
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.arbiterOfAuthority);
+            this.player1.clickCard(this.brash);
+            this.player2.clickPrompt('No');
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            expect(this.brash.bowed).toBe(true);
+            expect(this.brash.isParticipating()).toBe(false);
+            expect(this.arbiterOfAuthority.bowed).toBe(false);
+            expect(this.arbiterOfAuthority.isParticipating()).toBe(true);
+        });
+    });
+});

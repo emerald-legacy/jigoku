@@ -30,6 +30,16 @@ describe('No Breath Wasted', function() {
             expect(this.getChatLogs(1)).toContain('player1 plays No Breath Wasted, sacrificing Borderlands Defender to ready Steadfast Witch Hunter');
         });
 
+        it('should honor a character controlled by another player', function() {
+            this.challenger.bowed = true;
+            this.player1.clickCard(this.commonCause);
+            this.player1.clickCard(this.challenger);
+            this.player1.clickCard(this.defender);
+            expect(this.defender.location).toBe('dynasty discard pile');
+            expect(this.challenger.bowed).toBe(false);
+            expect(this.challenger.isHonored).toBe(true);
+        });
+
         it('should be illegal when there are no legal targets', function() {
             this.challenger.honor();
             this.player1.clickCard(this.commonCause);

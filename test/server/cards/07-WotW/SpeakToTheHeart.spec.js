@@ -39,6 +39,15 @@ describe('Speak to the Heart', function() {
                 expect(this.borderRider.politicalSkill).toBe(politicalSkill + 3);
             });
 
+            it('should not count a faceup stronghold province', function() {
+                this.player2.stronghold.find((card) => card.isProvince).facedown = false;
+                this.player2.pass();
+                const politicalSkill = this.borderRider.politicalSkill;
+                this.player1.clickCard(this.speakToTheHeart);
+                this.player1.clickCard(this.borderRider);
+                expect(this.borderRider.politicalSkill).toBe(politicalSkill + 3);
+            });
+
             it('should last until the end of the conflict', function() {
                 this.player2.pass();
                 const politicalSkill = this.borderRider.politicalSkill;

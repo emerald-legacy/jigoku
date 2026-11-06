@@ -110,3 +110,25 @@ describe('Relentless Gloryseeker', function () {
         });
     });
 });
+
+describe('Relentless Gloryseeker outside the conflict phase', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['relentless-gloryseeker']
+                }
+            });
+            this.relentlessGloryseeker = this.player1.findCardByName('relentless-gloryseeker');
+        });
+
+        it('does not return after the fate phase discards it', function () {
+            this.nextPhase();
+            this.player1.clickPrompt('Done');
+            expect(this.relentlessGloryseeker.location).toBe('dynasty discard pile');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.game.currentPhase).toBe('fate');
+        });
+    });
+});

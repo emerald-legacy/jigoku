@@ -31,6 +31,21 @@ describe('Field of the Fallen', function() {
             this.storehouse = this.player2.findCardByName('imperial-storehouse');
         });
 
+        it('cannot be used in a political conflict', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.scout],
+                defenders: []
+            });
+            this.player2.pass();
+            const hand = this.player1.hand.length;
+            this.player1.clickCard(this.courtyard);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.player1.hand.length).toBe(hand);
+            expect(this.crab.location).toBe('hand');
+        });
+
         it('should discard to draw and nothing else (less honorable)', function() {
             this.player1.honor = 10;
             this.player2.honor = 12;

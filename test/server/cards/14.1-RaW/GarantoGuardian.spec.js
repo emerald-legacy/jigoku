@@ -86,3 +86,40 @@ describe('Garanto Guardian', function() {
         });
     });
 });
+
+describe('Garanto Guardian attacking', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    provinces: ['manicured-garden'],
+                    inPlay: ['tattooed-wanderer']
+                },
+                player2: {
+                    inPlay: ['garanto-guardian']
+                }
+            });
+
+            this.guardian = this.player2.findCardByName('garanto-guardian');
+            this.garden = this.player1.findCardByName('manicured-garden');
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+        });
+
+        it('does not trigger after winning as the attacker', function() {
+            this.initiateConflict({
+                province: this.garden,
+                ring: 'earth',
+                type: 'military',
+                attackers: [this.guardian],
+                defenders: []
+            });
+            this.noMoreActions();
+            expect(this.getChatLogs(10)).toContain('player2 won a military conflict 4 vs 0');
+            expect(this.player2).not.toHavePrompt('Any Reactions?');
+            expect(this.player2).not.toBeAbleToSelect(this.guardian);
+        });
+    });
+});

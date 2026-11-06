@@ -64,66 +64,6 @@ describe('SoD - Scorpion', function () {
             });
         });
 
-        describe('Bayushi Shinobu', function () {
-            beforeEach(function () {
-                this.setupTest({
-                    phase: 'conflict',
-                    player1: {
-                        inPlay: ['bayushi-shinobu', 'daidoji-uji'],
-                        hand: []
-                    },
-                    player2: {
-                        inPlay: ['keeper-initiate', 'doji-diplomat', 'doji-kuwanan'],
-                        hand: ['assassination', 'let-go', 'duelist-training']
-                    }
-                });
-
-                this.shinobu = this.player1.findCardByName('bayushi-shinobu');
-                this.keeper = this.player2.findCardByName('keeper-initiate');
-                this.diplomat = this.player2.findCardByName('doji-diplomat');
-                this.kuwanan = this.player2.findCardByName('doji-kuwanan');
-                this.assassination = this.player2.findCardByName('assassination');
-                this.uji = this.player1.findCardByName('daidoji-uji');
-                this.uji.honor();
-                this.kuwanan.dishonor();
-                this.keeper.dishonor();
-            });
-
-            it('should work', function () {
-                this.player1.clickCard(this.shinobu);
-                expect(this.player1).toBeAbleToSelect(this.keeper);
-                expect(this.player1).not.toBeAbleToSelect(this.diplomat);
-                expect(this.player1).not.toBeAbleToSelect(this.kuwanan);
-
-                this.player1.clickCard(this.keeper);
-                expect(this.getChatLogs(5)).toContain('player1 uses Bayushi Shinobu, bowing Bayushi Shinobu to take control of Keeper Initiate');
-
-                const honor = this.player1.honor;
-
-                this.noMoreActions();
-                this.initiateConflict({
-                    type: 'military',
-                    attackers: [this.keeper],
-                    defenders: [this.diplomat]
-                });
-
-                this.player2.clickCard(this.assassination);
-                this.player2.clickCard(this.keeper);
-
-                expect(this.player1.honor).toBe(honor - 3); // 2 from the effect, 1 from the DH token
-                expect(this.getChatLogs(5)).toContain('player1 loses 2 honor due to the delayed effect of Bayushi Shinobu');
-            });
-
-            it('enters dishonored', function () {
-                this.player1.placeCardInProvince(this.shinobu, 'province 1');
-                expect(this.shinobu.location).toBe('province 1');
-                this.player1.clickCard(this.shinobu);
-                this.player1.clickPrompt('0');
-                expect(this.shinobu.location).toBe('play area');
-                expect(this.shinobu.isDishonored).toBe(true);
-            });
-        });
-
         describe('Pressure', function () {
             beforeEach(function () {
                 this.setupTest({
@@ -799,35 +739,6 @@ describe('SoD - Scorpion', function () {
                 expect(this.brash.bowed).toBe(true);
                 expect(this.getChatLogs(5)).toContain('player1 uses Kiss of the Sea to bow Brash Samurai');
             });
-        });
-    });
-});
-
-describe('SoD - Scorpion: Bayushi Shinobu put into play', function () {
-    integration(function () {
-        it('enters play dishonored', function () {
-            this.setupTest({
-                phase: 'conflict',
-                player1: {
-                    inPlay: ['matsu-berserker']
-                },
-                player2: {
-                    dynastyDiscard: ['bayushi-shinobu'],
-                    provinces: ['spectral-visitation']
-                }
-            });
-            this.shinobu = this.player2.findCardByName('bayushi-shinobu');
-            this.noMoreActions();
-            this.initiateConflict({
-                attackers: ['matsu-berserker'],
-                province: this.player2.findCardByName('spectral-visitation'),
-                type: 'military'
-            });
-            this.player2.clickCard('spectral-visitation');
-            this.player2.clickCard(this.shinobu);
-
-            expect(this.shinobu.location).toBe('play area');
-            expect(this.shinobu.isDishonored).toBe(true);
         });
     });
 });

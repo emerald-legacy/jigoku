@@ -55,7 +55,7 @@ describe('Ashigaru Company', function() {
             expect(this.player1).toHavePromptButton('Take nothing');
         });
 
-        it('should prompt you to attach the chosen card to a character you control and put the rest on the bottom of the deck', function() {
+        it('adds the chosen Follower to your hand and puts the rest on the bottom of the deck', function() {
             this.player1.clickCard(this.company1);
             this.player1.clickCard(this.doomed);
             this.player1.clickCard(this.company1);

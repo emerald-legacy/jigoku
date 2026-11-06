@@ -16,7 +16,7 @@ describe('Iron Crane Legion', function() {
             });
 
             it('should have no effect outside of a conflict', function() {
-                expect(this.ironCraneLegion.printedMilitarySkill).toBe(0);
+                expect(this.ironCraneLegion.militarySkill).toBe(0);
             });
 
             describe('during a conflict', function() {
@@ -32,10 +32,14 @@ describe('Iron Crane Legion', function() {
                     expect(this.ironCraneLegion.getBaseMilitarySkill()).toBe(this.player2.hand.length);
                 });
 
-                it('should set military skill to zero when Unmask is played on Iron Crane Legion', function() {
+                it('should set military skill to zero when Unmask is played on Iron Crane Legion (#925)', function() {
+                    this.player1.player.showBid = 1;
+                    this.player2.player.showBid = 5;
+                    expect(this.ironCraneLegion.militarySkill).toBe(3);
                     this.player2.clickCard(this.unmask);
                     this.player2.clickCard(this.ironCraneLegion);
-                    expect(this.ironCraneLegion.printedMilitarySkill).toBe(0);
+                    expect(this.unmask.location).toBe('conflict discard pile');
+                    expect(this.ironCraneLegion.militarySkill).toBe(0);
                 });
             });
         });

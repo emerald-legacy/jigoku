@@ -69,3 +69,41 @@ describe('Day of Brother Horse', function () {
         });
     });
 });
+
+describe('Day of Brother Horse: Max 1 per round', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    hand: ['day-of-brother-horse', 'day-of-brother-horse'],
+                    inPlay: ['miya-mystic']
+                },
+                player2: {
+                    inPlay: ['miya-mystic']
+                }
+            });
+
+            [this.dayOfBrotherHorse1, this.dayOfBrotherHorse2] = this.player1.filterCardsByName('day-of-brother-horse');
+        });
+
+        it('cannot trigger a second copy in the same round', function () {
+            this.noMoreActions();
+            this.player1.clickPrompt('Pass Conflict');
+            this.player1.clickPrompt('Yes');
+            this.player1.clickCard(this.dayOfBrotherHorse1);
+            this.player1.clickRing('fire');
+            this.player1.clickCard(this.player1.hand.find((card) => card !== this.dayOfBrotherHorse2));
+            expect(this.dayOfBrotherHorse1.location).toBe('conflict discard pile');
+
+            this.noMoreActions();
+            this.player2.passConflict();
+            this.noMoreActions();
+            this.player1.clickPrompt('Pass Conflict');
+            this.player1.clickPrompt('Yes');
+            expect(this.getChatLogs(3)).toContain('player1 has chosen to pass their conflict opportunity');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+            expect(this.dayOfBrotherHorse2.location).toBe('hand');
+        });
+    });
+});

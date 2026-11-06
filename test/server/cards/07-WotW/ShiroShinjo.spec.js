@@ -41,6 +41,15 @@ describe('Shiro Shinjo', function() {
                 this.player1.clickCard(this.shiroShinjo);
                 expect(this.player1.player.fate).toBe(fate + 6 + 3);
             });
+
+            it('should not count a faceup stronghold province', function() {
+                this.player2.stronghold.find((card) => card.isProvince).facedown = false;
+                const fate = this.player1.player.fate;
+                this.flow.keepDynasty();
+                this.flow.keepConflict();
+                this.player1.clickCard(this.shiroShinjo);
+                expect(this.player1.player.fate).toBe(fate + 6 + 3);
+            });
         });
 
         describe('Shiro Shinjo\'s ability with broken provinces and passing first', function() {

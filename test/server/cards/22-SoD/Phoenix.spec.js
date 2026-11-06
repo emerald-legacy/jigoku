@@ -606,6 +606,10 @@ describe('SoD - Phoenix', function () {
 
                 this.player2.clickCard(this.vengeful);
                 expect(this.player2).toBeAbleToSelectRing('void');
+                expect(this.player2).not.toBeAbleToSelectRing('air');
+                expect(this.player2).not.toBeAbleToSelectRing('earth');
+                expect(this.player2).not.toBeAbleToSelectRing('fire');
+                expect(this.player2).not.toBeAbleToSelectRing('water');
                 this.player2.clickRing('void');
                 this.player2.clickCard(this.scholar);
                 expect(this.getChatLogs(5)).toContain('player2 uses Vengeful Kami to resolve the Void Ring effect');
@@ -852,6 +856,115 @@ describe('SoD - Phoenix: Vengeful Kami and covert', function () {
             this.player2.clickCard(this.vengeful);
             this.player2.clickPrompt('Done');
             expect(this.vengeful.isDefending()).toBe(true);
+        });
+    });
+});
+
+describe('SoD - Phoenix: Vengeful Kami, Max 1 per conflict', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['solemn-scholar']
+                },
+                player2: {
+                    inPlay: ['vengeful-kami', 'vengeful-kami', 'doji-challenger']
+                }
+            });
+            this.scholar = this.player1.findCardByName('solemn-scholar');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            [this.vengeful1, this.vengeful2] = this.player2.filterCardsByName('vengeful-kami');
+            this.p3 = this.player2.findCardByName('shameful-display', 'province 3');
+            this.scholar.fate = 2;
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.scholar],
+                defenders: [this.vengeful1],
+                province: this.p3
+            });
+            this.noMoreActions();
+            this.player1.pass();
+            this.scholar.bowed = false;
+            this.vengeful1.bowed = false;
+
+            this.player2.pass();
+            this.player2.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.scholar],
+                defenders: [this.challenger],
+                province: this.p3,
+                ring: 'fire'
+            });
+        });
+
+        it('cannot use a second copy in the same conflict', function () {
+            this.player2.clickCard(this.vengeful1);
+            this.player2.clickRing('void');
+            this.player2.clickCard(this.scholar);
+            expect(this.scholar.fate).toBe(1);
+
+            const ab = this.vengeful1.abilities.actions.concat(this.vengeful1.abilities.reactions || []);
+            console.log('DBG', JSON.stringify(Object.keys(this.player1.player.abilityMaxByIdentifier)), JSON.stringify(Object.keys(this.player2.player.abilityMaxByIdentifier)), ab.map((a) => a.maxIdentifier + '|' + !!a.max).join(','), this.vengeful1 === this.vengeful2);
+            this.player1.pass();
+            this.player2.clickCard(this.vengeful2);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.scholar.fate).toBe(1);
+        });
+    });
+});
+
+describe('SoD - Phoenix: Vengeful Kami while attacking', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['solemn-scholar']
+                },
+                player2: {
+                    inPlay: ['vengeful-kami', 'doji-challenger']
+                }
+            });
+            this.scholar = this.player1.findCardByName('solemn-scholar');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            this.vengeful = this.player2.findCardByName('vengeful-kami');
+            this.p3 = this.player1.findCardByName('shameful-display', 'province 3');
+
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger],
+                defenders: [this.scholar],
+                province: this.p3
+            });
+            this.noMoreActions();
+            this.player2.clickPrompt('Gain 2 Honor');
+            this.challenger.bowed = false;
+            this.scholar.bowed = false;
+            this.noMoreActions();
+            this.player1.passConflict();
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                ring: 'fire',
+                attackers: [this.challenger],
+                defenders: [this.scholar],
+                province: this.p3
+            });
+        });
+
+        it('cannot be used while attacking a province attacked before this round', function () {
+            this.player1.pass();
+            this.player2.clickCard(this.vengeful);
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+            expect(this.getChatLogs(10)).toContain('player2 is initiating a political conflict at Shameful Display, contesting Fire Ring');
         });
     });
 });

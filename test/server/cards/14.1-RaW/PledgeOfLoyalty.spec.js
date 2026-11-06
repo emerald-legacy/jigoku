@@ -35,6 +35,18 @@ describe('Pledge of Loyalty', function() {
             expect(this.player1).toBeAbleToSelect(this.pledge);
         });
 
+        it('should not trigger when an opponent\'s honored character would leave play', function() {
+            this.skirmisher.honor();
+            this.player1.pass();
+            this.player2.clickCard(this.crab);
+            this.player2.clickCard(this.skirmisher);
+            expect(this.skirmisher.location).toBe('conflict discard pile');
+            expect(this.player1).not.toHavePrompt('Triggered Abilities');
+
+            this.player1.clickCard(this.keepsakes);
+            expect(this.keepsakes.location).toBe('dynasty discard pile');
+        });
+
         it('should not trigger when a normal character would leave play', function() {
             this.player1.pass();
             this.player2.clickCard(this.crab);

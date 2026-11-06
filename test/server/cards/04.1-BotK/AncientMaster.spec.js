@@ -125,3 +125,38 @@ describe('Ancient Master', function () {
         });
     });
 });
+
+describe('Ancient Master on a defender', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['kakita-yoshi']
+                },
+                player2: {
+                    inPlay: ['niten-master'],
+                    hand: ['ancient-master'],
+                    conflictDeck: ['hurricane-punch', 'censure', 'ornate-fan']
+                }
+            });
+            this.yoshi = this.player1.findCardByName('kakita-yoshi');
+            this.nitenMaster = this.player2.findCardByName('niten-master');
+            this.ancientMaster = this.player2.findCardByName('ancient-master');
+            this.player1.pass();
+            this.player2.clickCard(this.ancientMaster);
+            this.player2.clickPrompt('Play Ancient Master as an attachment');
+            this.player2.clickCard(this.nitenMaster);
+        });
+
+        it('should trigger after the attached character is declared as a defender', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.yoshi],
+                defenders: [this.nitenMaster]
+            });
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            expect(this.player2).toBeAbleToSelect(this.ancientMaster);
+        });
+    });
+});

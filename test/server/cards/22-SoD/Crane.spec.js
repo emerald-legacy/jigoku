@@ -258,6 +258,26 @@ describe('SoD - Crane', function () {
                 expect(this.player1).not.toHavePrompt('Eyes of the Serpent');
                 expect(this.player1).toHavePrompt('Conflict Action Window');
             });
+
+            it('cannot be played without a Shugenja', function () {
+                this.player1.moveCard(this.doomed, 'dynasty discard pile');
+                this.player1.moveCard(this.momoko, 'dynasty discard pile');
+                this.noMoreActions();
+                this.player1.passConflict();
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.challenger],
+                    defenders: [this.kuwanan],
+                    type: 'military',
+                    province: this.pilgrimage
+                });
+
+                this.player1.clickCard(this.serpent);
+                expect(this.player1).not.toHavePrompt('Eyes of the Serpent');
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.serpent.location).toBe('hand');
+                expect(this.kuwanan.isTainted).toBe(false);
+            });
         });
 
         describe('Ancestral Kabuto', function () {

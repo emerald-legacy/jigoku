@@ -83,3 +83,32 @@ describe('Obstinate Witch Hunter and sacrifices', function () {
         });
     });
 });
+
+describe('Obstinate Witch Hunter and a Corrupt character', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['obstinate-witch-hunter']
+                },
+                player2: {
+                    inPlay: ['goblin-sneak']
+                }
+            });
+
+            this.hunter = this.player1.findCardByName('obstinate-witch-hunter');
+            this.sneak = this.player2.findCardByName('goblin-sneak');
+            this.hunter.fate = 1;
+        });
+
+        it('triggers for an untainted Corrupt character', function () {
+            expect(this.sneak.isTainted).toBe(false);
+            this.advancePhases('fate');
+
+            this.player2.clickPrompt('Done');
+            expect(this.hunter.fate).toBe(1);
+            expect(this.getChatLogs(5)).toContain('player1 uses Obstinate Witch Hunter to stop Obstinate Witch Hunter being discarded or losing fate this phase');
+        });
+    });
+});

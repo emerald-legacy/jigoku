@@ -27,6 +27,20 @@ describe('Wait Until It Sings', function () {
             this.technique2 = this.player2.findCardByName('kakita-technique');
         });
 
+        it('cannot be played without a participating Commander you control', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.yoshi],
+                defenders: [this.tactician]
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.sings);
+            expect(this.sings.location).toBe('hand');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.getChatLogs(10)).not.toContain('player1 plays Wait Until It Sings to take an action before conflict resolution');
+        });
+
         it('should give you an action during resolution - p1', function () {
             this.noMoreActions();
             this.initiateConflict({

@@ -1,4 +1,4 @@
-describe('Daikyu Reprint', function () {
+describe('Naginata', function () {
     integration(function () {
         beforeEach(function () {
             this.setupTest({

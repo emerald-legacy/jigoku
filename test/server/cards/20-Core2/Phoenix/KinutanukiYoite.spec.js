@@ -9,7 +9,7 @@ describe('Kinutanuki Yoite', function () {
                 },
                 player2: {
                     inPlay: ['kinutanuki-yoite'],
-                    hand: ['invocation-of-ash', 'unleash-the-djinn']
+                    hand: ['invocation-of-ash', 'unleash-the-djinn', 'cloud-the-mind']
                 }
             });
 
@@ -19,6 +19,7 @@ describe('Kinutanuki Yoite', function () {
 
             this.kinutanukiYoite = this.player2.findCardByName('kinutanuki-yoite');
             this.invocationOfAsh = this.player2.findCardByName('invocation-of-ash');
+            this.cloudTheMind = this.player2.findCardByName('cloud-the-mind');
             this.unleashTheDjinn = this.player2.findCardByName('unleash-the-djinn');
 
             this.noMoreActions();
@@ -93,6 +94,32 @@ describe('Kinutanuki Yoite', function () {
             expect(this.tactician.location).toBe('dynasty discard pile');
             expect(this.getChatLogs(5)).toContain('player2 uses Kinutanuki Yoite to injure Master Tactician');
         });
+
+        it('does not trigger for a Spell that is not Fire', function () {
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.matsuBerserker],
+                defenders: [this.kinutanukiYoite]
+            });
+
+            this.player2.playAttachment(this.cloudTheMind, this.matsuBerserker);
+            expect(this.cloudTheMind.parent).toBe(this.matsuBerserker);
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
+
+        it('does not trigger while it is not participating', function () {
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.matsuBerserker],
+                defenders: []
+            });
+
+            this.player2.clickCard(this.unleashTheDjinn);
+            expect(this.unleashTheDjinn.location).toBe('conflict discard pile');
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+        });
     });
 });
 
@@ -140,6 +167,41 @@ describe('Kinutanuki Yoite with characters on the other side than their controll
 
             this.player2.clickCard(this.skirmisher2);
             expect(this.getChatLogs(5)).toContain('player2 uses Kinutanuki Yoite to injure Endless Plains Skirmisher');
+        });
+    });
+});
+
+describe('Kinutanuki Yoite and the opponent\'s Fire Spell', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['doji-whisperer'],
+                    hand: ['invocation-of-ash']
+                },
+                player2: {
+                    inPlay: ['kinutanuki-yoite']
+                }
+            });
+            this.whisperer = this.player1.findCardByName('doji-whisperer');
+            this.invocationOfAsh = this.player1.findCardByName('invocation-of-ash');
+            this.yoite = this.player2.findCardByName('kinutanuki-yoite');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.whisperer],
+                defenders: [this.yoite]
+            });
+        });
+
+        it('does not trigger when the opponent plays it', function () {
+            this.player2.pass();
+            this.player1.playAttachment(this.invocationOfAsh, this.whisperer);
+            expect(this.invocationOfAsh.parent).toBe(this.whisperer);
+            expect(this.player2).not.toHavePrompt('Triggered Abilities');
+            expect(this.player2).toHavePrompt('Conflict Action Window');
         });
     });
 });

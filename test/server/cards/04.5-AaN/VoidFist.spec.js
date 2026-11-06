@@ -232,3 +232,46 @@ describe('Void Fist', function() {
         });
     });
 });
+
+describe('Void Fist and the Monk\'s military skill', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['togashi-initiate'],
+                    hand: ['void-fist', 'ornate-fan', 'ornate-fan']
+                },
+                player2: {
+                    inPlay: ['doji-whisperer', 'doji-challenger']
+                }
+            });
+
+            this.initiate = this.player1.findCardByName('togashi-initiate');
+            this.whisperer = this.player2.findCardByName('doji-whisperer');
+            this.challenger = this.player2.findCardByName('doji-challenger');
+            const [fan1, fan2] = this.player1.filterCardsByName('ornate-fan');
+
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.initiate],
+                defenders: [this.whisperer, this.challenger]
+            });
+            this.player2.pass();
+            this.player1.playAttachment(fan1, this.initiate);
+            this.player2.pass();
+            this.player1.playAttachment(fan2, this.initiate);
+            this.player2.pass();
+        });
+
+        it('can only choose a character with equal or lower military skill than the Monk', function() {
+            expect(this.initiate.militarySkill).toBe(1);
+            this.player1.clickCard('void-fist');
+            expect(this.player1).toHavePrompt('Void Fist');
+            expect(this.player1).toBeAbleToSelect(this.whisperer);
+            expect(this.player1).toBeAbleToSelect(this.initiate);
+            expect(this.player1).not.toBeAbleToSelect(this.challenger);
+        });
+    });
+});

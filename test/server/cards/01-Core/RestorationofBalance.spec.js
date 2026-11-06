@@ -37,8 +37,44 @@ describe('Restoration of Balance', function() {
                 this.charge = this.player1.clickCard('charge');
                 this.banzai = this.player1.clickCard('banzai');
                 this.player1.clickPrompt('Done');
-                expect(this.player1.player.conflictDiscardPile.slice()).toContain(this.assassination, this.fineKatana, this.charge, this.banzai);
+                expect(this.assassination.location).toBe('conflict discard pile');
+                expect(this.fineKatana.location).toBe('conflict discard pile');
+                expect(this.charge.location).toBe('conflict discard pile');
+                expect(this.banzai.location).toBe('conflict discard pile');
+                expect(this.player1.hand.length).toBe(4);
             });
+        });
+    });
+});
+
+describe('Restoration of Balance with 4 cards in hand', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['akodo-toturi'],
+                    hand: ['fine-katana', 'ornate-fan', 'assassination', 'banzai']
+                },
+                player2: {
+                    provinces: ['restoration-of-balance']
+                }
+            });
+            this.akodoToturi = this.player1.findCardByName('akodo-toturi');
+            this.restoration = this.player2.findCardByName('restoration-of-balance');
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.akodoToturi],
+                defenders: [],
+                province: this.restoration
+            });
+            this.noMoreActions();
+        });
+
+        it('does not trigger', function() {
+            expect(this.restoration.isBroken).toBe(true);
+            expect(this.player2).not.toBeAbleToSelect(this.restoration);
+            expect(this.player1.hand.length).toBe(4);
         });
     });
 });

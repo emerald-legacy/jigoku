@@ -389,6 +389,47 @@ describe('SoD - Crab', function () {
             });
         });
 
+        describe('Dead Eyes winning by more than double', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        inPlay: ['matsu-berserker'],
+                        hand: ['dead-eyes']
+                    },
+                    player2: {
+                        inPlay: ['doji-whisperer']
+                    }
+                });
+
+                this.berserker = this.player1.findCardByName('matsu-berserker');
+                this.whisperer = this.player2.findCardByName('doji-whisperer');
+                this.deadeyes = this.player1.playAttachment('dead-eyes', this.berserker);
+            });
+
+            it('sets the attached character\'s glory to 0', function () {
+                expect(this.berserker.glory).toBe(0);
+            });
+
+            it('does not sacrifice the character', function () {
+                this.noMoreActions();
+                this.initiateConflict({
+                    type: 'military',
+                    ring: 'air',
+                    attackers: [this.berserker],
+                    defenders: [this.whisperer]
+                });
+                this.player2.pass();
+                this.player1.clickCard(this.deadeyes);
+                this.noMoreActions();
+                expect(this.getChatLogs(10)).toContain('player1 won a military conflict 6 vs 0');
+                this.player1.clickPrompt('No');
+                this.player1.clickPrompt('Gain 2 Honor');
+                expect(this.berserker.location).toBe('play area');
+                expect(this.getChatLogs(5)).not.toContain('Matsu Berserker is sacrificed due to the delayed effect of Dead Eyes');
+            });
+        });
+
         describe('Reckless Assault', function () {
             beforeEach(function () {
                 this.setupTest({
