@@ -9,7 +9,7 @@ class HidaGuardian extends DrawCard {
 
     override setupCardAbilities() {
         this.action('Give a character a bonus for each holding')
-            .condition((context) => context.source.isParticipating())
+            .condition((context) => context.source.isParticipating() && context.player.getNumberOfHoldingsInPlay() > 0)
             .target({
                 cardType: CardType.Character,
                 cardCondition: (card, context) => card.isParticipating() && card !== context.source

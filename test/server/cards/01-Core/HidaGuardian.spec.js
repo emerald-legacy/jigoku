@@ -106,3 +106,36 @@ describe('Hida Guardian', function() {
         });
     });
 });
+
+describe('Hida Guardian without holdings', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['hida-guardian', 'valiant-oathkeeper']
+                },
+                player2: {
+                    inPlay: ['serene-warrior']
+                }
+            });
+            this.guardian = this.player1.findCardByName('hida-guardian');
+            this.oathkeeper = this.player1.findCardByName('valiant-oathkeeper');
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.guardian, this.oathkeeper],
+                defenders: []
+            });
+            this.player2.pass();
+        });
+
+        it('cannot be used while you control no holdings (it would change nothing)', function() {
+            expect(this.player1.player.getNumberOfHoldingsInPlay()).toBe(0);
+            expect(this.guardian.isParticipating()).toBe(true);
+            this.player1.clickCard(this.guardian);
+            expect(this.player1).toHavePrompt('Conflict Action Window');
+            expect(this.oathkeeper.militarySkill).toBe(2);
+        });
+    });
+});
