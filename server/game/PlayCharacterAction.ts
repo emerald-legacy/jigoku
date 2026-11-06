@@ -31,7 +31,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
         ) {
             return Blocker.WrongPhase;
         }
-        const blocker = getPlayBlocker(context.source, context, ignoredBlockers, PlayType.PlayFromHand);
+        const blocker = getPlayBlocker(context.source, context, ignoredBlockers, context.playType ?? PlayType.PlayFromHand);
         if(blocker) {
             return blocker;
         }
@@ -49,7 +49,7 @@ export class PlayCharacterAction extends PlayCardSourceAction {
 
     public override executeHandler(context: AbilityContext<DrawCard>): void {
         const extraFate = getExtraFateWhenPlayed(context.source, context, false);
-        const cardPlayedEvent = createCardPlayedEvent(context, context.source, PlayType.PlayFromHand);
+        const cardPlayedEvent = createCardPlayedEvent(context, context.source, context.playType ?? PlayType.PlayFromHand);
         const atHomeHandler = () => {
             context.game.addMessage(msg`${context.player} plays ${context.source} at home with ${context.chooseFate} additional fate`);
             const effect = context.source.getEffects(EffectName.EntersPlayForOpponent);

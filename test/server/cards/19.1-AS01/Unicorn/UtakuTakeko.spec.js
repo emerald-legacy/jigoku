@@ -112,5 +112,50 @@ describe('Utaku Takeko', function () {
                 expect(this.getChatLogs(5)).toContain('player1 is shuffling their dynasty deck');
             });
         });
+        describe('under Akodo Toturi (CotE)', function () {
+            beforeEach(function () {
+                this.setupTest({
+                    phase: 'conflict',
+                    player1: {
+                        fate: 10,
+                        inPlay: ['utaku-takeko', 'border-rider'],
+                        hand: ['fine-katana']
+                    },
+                    player2: {
+                        inPlay: ['akodo-toturi-2']
+                    }
+                });
+
+                this.utakuTakeko = this.player1.findCardByName('utaku-takeko');
+                this.borderRider = this.player1.moveCard('border-rider', 'dynasty deck');
+                this.fineKatana = this.player1.findCardByName('fine-katana');
+                this.akodoToturi = this.player2.findCardByName('akodo-toturi-2');
+                this.player2.player.imperialFavor = 'military';
+                this.noMoreActions();
+                this.player1.passConflict();
+                this.noMoreActions();
+                this.initiateConflict({
+                    attackers: [this.akodoToturi],
+                    defenders: [],
+                    type: 'military'
+                });
+                this.player1.pass();
+                this.player2.clickCard(this.akodoToturi);
+            });
+
+            it('plays the character from the dynasty deck, which is not a play from hand', function () {
+                expect(this.getChatLogs(3)).toContain('player2 uses Akodo Toturi to prevent each player playing cards from hand');
+                this.player1.clickCard(this.fineKatana);
+                expect(this.player1).toHavePrompt('Conflict Action Window');
+                expect(this.fineKatana.location).toBe('hand');
+
+                this.player1.clickCard(this.utakuTakeko);
+                this.player1.clickPrompt(this.borderRider.name);
+                expect(this.player1).toHavePrompt('Choose additional fate');
+                this.player1.clickPrompt('0');
+                expect(this.borderRider.location).toBe('play area');
+                expect(this.player1.fate).toBe(8);
+            });
+        });
     });
 });

@@ -26,7 +26,7 @@ export default class UtakuTakeko extends DrawCard {
                         target,
                         source: this,
                         resetOnCancel: false,
-                        playType: PlayType.PlayFromHand,
+                        playType: PlayType.Other,
                         playAction: target ? asIfFromHandPlayActions(target, { into: PlayIntoLocation.Home }) : undefined,
                         ignoredBlockers: [Blocker.WrongPhase]
                     };
