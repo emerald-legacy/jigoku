@@ -2,6 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
 import { moveToConflict, multiple, ready } from '../../GameActions/GameActions.js';
 import { Players, CardType } from '../../Constants.js';
+import { readyAndMoveMessage } from '../readyAndMoveMessage.js';
 
 class HirumaSignaller extends DrawCard {
     static id = 'hiruma-signaller';
@@ -17,7 +18,7 @@ class HirumaSignaller extends DrawCard {
                 ready(),
                 moveToConflict()
             ]))
-            .chatText('ready and move {0} to the conflict');
+            .chatText((context) => readyAndMoveMessage(context, context.target));
     }
 }
 

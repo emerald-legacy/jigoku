@@ -1,6 +1,7 @@
 import { CardType, Players, TargetMode, ConflictType, Trait } from '../../../Constants.js';
 import { moveToConflict, multiple, ready } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { readyAndMoveMessage } from '../../readyAndMoveMessage.js';
 
 export default class TwentyFourSteps extends DrawCard {
     static id = 'twenty-four-steps';
@@ -15,7 +16,7 @@ export default class TwentyFourSteps extends DrawCard {
                 ready(),
                 moveToConflict()
             ]))
-            .chatText('ready {0} and move it into the conflict');
+            .chatText((context) => readyAndMoveMessage(context, context.target));
 
         this.conflictAction('Move two monks to the conflict', { conflictType: ConflictType.Military })
             .targetCards({

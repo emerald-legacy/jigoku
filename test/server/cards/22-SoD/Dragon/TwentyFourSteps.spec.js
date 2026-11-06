@@ -59,6 +59,38 @@ describe('Twenty-Four Steps', function() {
             this.player1.clickCard(this.kotoe);
             expect(this.kotoe.bowed).toBe(false);
             expect(this.kotoe.isParticipating()).toBe(true);
+            expect(this.getChatLogs(3)).toContain('player1 plays Twenty-four Steps to ready Hida Kotoe and move it into the conflict');
+        });
+
+        it('only readies a bowed Bushi that is already participating, and the chat says so', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger, this.kotoe],
+                defenders: [this.whisperer]
+            });
+            this.kotoe.bowed = true;
+            this.player2.pass();
+            this.player1.clickCard(this.steps);
+            this.player1.clickPrompt('Ready a character and move it to the conflict');
+            this.player1.clickCard(this.kotoe);
+            expect(this.kotoe.bowed).toBe(false);
+            expect(this.getChatLogs(3)).toContain('player1 plays Twenty-four Steps to ready Hida Kotoe');
+        });
+
+        it('only moves a ready Bushi, and the chat says so', function() {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: [this.challenger],
+                defenders: [this.whisperer]
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.steps);
+            this.player1.clickPrompt('Ready a character and move it to the conflict');
+            this.player1.clickCard(this.kotoe);
+            expect(this.kotoe.isParticipating()).toBe(true);
+            expect(this.getChatLogs(3)).toContain('player1 plays Twenty-four Steps to move Hida Kotoe into the conflict');
         });
 
         it('should not be playable in a political conflict', function() {

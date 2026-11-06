@@ -1,6 +1,7 @@
 import { moveToConflict, ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType, ConflictType, Trait } from '../../Constants.js';
+import { readyAndMoveMessage } from '../readyAndMoveMessage.js';
 
 class CrisisBreaker extends DrawCard {
     static id = 'crisis-breaker';
@@ -21,7 +22,7 @@ class CrisisBreaker extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => card.hasTrait(Trait.Berserker)
             }, ready(), moveToConflict())
-            .chatText('ready {0} and move it into the conflict');
+            .chatText((context) => readyAndMoveMessage(context, context.target));
     }
 }
 

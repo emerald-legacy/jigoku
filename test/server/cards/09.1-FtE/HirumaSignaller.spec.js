@@ -18,7 +18,7 @@ describe('Hiruma Signaller', function() {
                 this.hirumaSignaller = this.player2.findCardByName('hiruma-signaller');
                 this.hidaYakamo = this.player2.findCardByName('hida-yakamo');
                 this.reprieve = this.player2.findCardByName('reprieve');
-                this.spy = spyOn(this.flow.game, 'addMessage');
+                this.spy = spyOn(this.flow.game, 'addMessage').and.callThrough();
 
                 this.noMoreActions();
             });
@@ -36,6 +36,7 @@ describe('Hiruma Signaller', function() {
                 expect(this.hidaYakamo.bowed).toBe(false);
                 expect(this.hidaYakamo.inConflict).toBe(true);
                 expect(this.hirumaSignaller.location).toBe('dynasty discard pile');
+                expect(this.getChatLogs(3)).toContain('player2 uses Hiruma Signaller, sacrificing Hiruma Signaller to ready Hida Yakamo and move it into the conflict');
             });
 
             it('should ready a character in the conflict', function() {
@@ -51,6 +52,7 @@ describe('Hiruma Signaller', function() {
                 expect(this.hidaYakamo.bowed).toBe(false);
                 expect(this.hidaYakamo.inConflict).toBe(true);
                 expect(this.hirumaSignaller.location).toBe('dynasty discard pile');
+                expect(this.getChatLogs(3)).toContain('player2 uses Hiruma Signaller, sacrificing Hiruma Signaller to ready Hida Yakamo');
             });
 
             it('should move a ready character to the conflict', function() {
@@ -65,6 +67,7 @@ describe('Hiruma Signaller', function() {
                 expect(this.hidaYakamo.bowed).toBe(false);
                 expect(this.hidaYakamo.inConflict).toBe(true);
                 expect(this.hirumaSignaller.location).toBe('dynasty discard pile');
+                expect(this.getChatLogs(3)).toContain('player2 uses Hiruma Signaller, sacrificing Hiruma Signaller to move Hida Yakamo into the conflict');
             });
 
             it('should not ready a character at home and move to the conflict if the sacrifice is prevented', function() {

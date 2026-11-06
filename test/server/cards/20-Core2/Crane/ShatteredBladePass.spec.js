@@ -51,6 +51,24 @@ describe('Shattered Blade Pass', function () {
             expect(this.player2).toHavePrompt('Conflict Action Window');
         });
 
+        it('only moves a ready character, and the chat says so', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.aggressiveMoto],
+                defenders: [],
+                province: this.shatteredBladePass
+            });
+
+            this.player2.clickCard(this.shatteredBladePass);
+            this.player2.clickCard(this.initiate);
+            expect(this.game.currentConflict.defenders).toContain(this.initiate);
+            expect(this.getChatLogs(3)).toContain(
+                'player2 uses Shattered Blade Pass to move Togashi Initiate into the conflict, taking an additional action'
+            );
+            expect(this.player2).toHavePrompt('Conflict Action Window');
+        });
+
         it('if defenders, should not trigger', function () {
             this.noMoreActions();
             this.initiateConflict({

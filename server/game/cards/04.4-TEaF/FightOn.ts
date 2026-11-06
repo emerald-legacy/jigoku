@@ -1,6 +1,7 @@
 import { moveToConflict, ready } from '../../GameActions/GameActions.js';
 import DrawCard from '../../DrawCard.js';
 import { Players, CardType } from '../../Constants.js';
+import { readyAndMoveMessage } from '../readyAndMoveMessage.js';
 
 class FightOn extends DrawCard {
     static id = 'fight-on';
@@ -13,7 +14,7 @@ class FightOn extends DrawCard {
                 controller: Players.Self,
                 cardCondition: (card) => card.bowed
             }, ready(), moveToConflict())
-            .chatText('ready {0} and move it into the conflict');
+            .chatText((context) => readyAndMoveMessage(context, context.target));
     }
 }
 

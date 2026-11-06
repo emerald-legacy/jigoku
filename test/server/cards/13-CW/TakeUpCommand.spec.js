@@ -77,6 +77,7 @@ describe('Take up Command', function() {
             this.player2.clickCard(this.harrier);
             expect(this.harrier.bowed).toBe(false);
             expect(this.harrier.inConflict).toBe(true);
+            expect(this.getChatLogs(3)).toContain('player2 uses Borderlands Defender\'s gained ability from Take Up Command to move Young Harrier into the conflict');
         });
 
         it('should ready a participating character', function() {
@@ -86,6 +87,7 @@ describe('Take up Command', function() {
             this.player2.clickCard(this.berserker);
             expect(this.berserker.bowed).toBe(false);
             expect(this.berserker.inConflict).toBe(true);
+            expect(this.getChatLogs(3)).toContain('player2 uses Borderlands Defender\'s gained ability from Take Up Command to ready Matsu Berserker');
         });
 
         it('should not work if not participating', function() {

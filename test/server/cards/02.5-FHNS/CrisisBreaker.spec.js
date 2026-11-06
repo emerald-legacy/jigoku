@@ -55,6 +55,7 @@ describe('Crisis Breaker', function() {
                 expect(this.crisisBreaker.isAttacking()).toBe(true);
                 expect(this.crisisBreaker.bowed).toBe(false);
                 expect(this.game.currentConflict.attackerSkill).toBe(5);
+                expect(this.getChatLogs(5)).toContain('player1 uses Crisis Breaker to move Crisis Breaker into the conflict');
             });
         });
 
@@ -75,6 +76,7 @@ describe('Crisis Breaker', function() {
             expect(this.berserker.bowed).toBe(false);
             expect(this.berserker.isAttacking()).toBe(true);
             expect(this.game.currentConflict.attackerSkill).toBe(5);
+            expect(this.getChatLogs(5)).toContain('player1 uses Crisis Breaker to ready Matsu Berserker');
         });
 
         it('should not be usable when the opponent does not count more military skill', function() {

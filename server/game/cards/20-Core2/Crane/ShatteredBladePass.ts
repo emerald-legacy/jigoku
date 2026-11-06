@@ -1,7 +1,9 @@
+import { msg } from '../../../GameChat.js';
 import { CardType, Players, Duration } from '../../../Constants.js';
 import { ProvinceCard } from '../../../ProvinceCard.js';
 import { additionalAction } from '../../../effects.js';
 import { moveToConflict, multiple, ready } from '../../../GameActions/GameActions.js';
+import { readyAndMoveMessage } from '../../readyAndMoveMessage.js';
 
 export default class ShatteredBladePass extends ProvinceCard {
     static id = 'shattered-blade-pass';
@@ -17,7 +19,7 @@ export default class ShatteredBladePass extends ProvinceCard {
                 ready(),
                 moveToConflict()
             ]))
-            .chatText('ready {0} and move it into the conflict, taking an additional action')
+            .chatText((context) => msg`${context.game.gameChat.nested(readyAndMoveMessage(context, context.target))}, taking an additional action`)
             // readied or moved in (or both)
             .afterwardsIf((context) => context.events.some((event) => event.isFullyResolved()))
             .playerLastingEffect({

@@ -2,6 +2,7 @@ import { Players, CardType, Trait } from '../../Constants.js';
 import DrawCard from '../../DrawCard.js';
 import { addTrait, gainAbility } from '../../effects.js';
 import { moveToConflict, ready } from '../../GameActions/GameActions.js';
+import { readyAndMoveMessage } from '../readyAndMoveMessage.js';
 
 class TakeUpCommand extends DrawCard {
     static id = 'take-up-command';
@@ -17,7 +18,7 @@ class TakeUpCommand extends DrawCard {
                         controller: Players.Self,
                         cardCondition: (card) => card.hasTrait(Trait.Bushi) && card.costLessThan(3)
                     }, ready(), moveToConflict())
-                    .chatText('ready {0} and move it into the conflict'))
+                    .chatText((context) => readyAndMoveMessage(context, context.target)))
             ]
         });
     }

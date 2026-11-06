@@ -31,6 +31,7 @@ describe('Fight On', function() {
                 expect(this.player1).toHavePrompt('Conflict Action Window');
                 expect(this.borderlandsDefender.bowed).toBeFalsy();
                 expect(this.borderlandsDefender.inConflict).toBeTruthy();
+                expect(this.getChatLogs(3)).toContain('player2 plays Fight On to ready Borderlands Defender and move it into the conflict');
             });
 
             it('should not be able to select an opponents character', function() {
@@ -74,6 +75,7 @@ describe('Fight On during a conflict with a bowed defender', function() {
             this.player2.clickCard(this.borderlandsDefender);
             expect(this.borderlandsDefender.bowed).toBe(false);
             expect(this.borderlandsDefender.inConflict).toBe(true);
+            expect(this.getChatLogs(3)).toContain('player2 plays Fight On to ready Borderlands Defender');
         });
 
         it('cannot be played by the attacking player', function() {
