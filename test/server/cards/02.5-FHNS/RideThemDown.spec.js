@@ -76,6 +76,8 @@ describe('Ride Them Down', function() {
                 it('the total province strength should be 1 plus the holding bonus', function() {
                     const holdingStr = parseInt(this.favorableGround.cardData.strength_bonus, 10);
                     expect(this.game.currentConflict.conflictProvince.getStrength()).toBe(1 + holdingStr);
+                    expect(this.getChatLogs(5)).toContain('player1 plays Ride Them Down, discarding the Imperial Favor to set the base strength of an attacked province to 1');
+                    expect(this.getChatLogs(5)).toContain('player1 sets the base strength of Pilgrimage to 1');
                 });
             });
         });

@@ -28,7 +28,7 @@ class IronFoundationsStance extends DrawCard {
             })))
             .if((context) => context.player.isKihoPlayedThisConflict(context, this))
             .draw((context) => ({ target: context.player }))
-            .chatText((context) => msg`prevent opponents' actions from bowing or moving home ${context.chatTarget()}${(context.player.isKihoPlayedThisConflict(context, this) ? ' and draw 1 card' : '')}`);
+            .chatText((context) => msg`prevent opponents' card effects from bowing or moving home ${context.chatTarget()}${(context.player.isKihoPlayedThisConflict(context, this) ? ' and draw 1 card' : '')}`);
     }
 }
 

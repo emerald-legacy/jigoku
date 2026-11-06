@@ -3,8 +3,18 @@ import * as costs from '../../../costs/index.js';
 import { cancel, discardAtRandom } from '../../../GameActions/GameActions.js';
 import { CardType, Location, Players } from '../../../Constants.js';
 import DrawCard from '../../../DrawCard.js';
+import type BaseCard from '../../../BaseCard.js';
+import type Player from '../../../Player.js';
 
 const DOSHIN_TAX = 2;
+
+function protectedAttachments(cardTargets: BaseCard[], player: Player): BaseCard[] {
+    return cardTargets.filter((card) =>
+        card.type === CardType.Attachment &&
+        card.parentCharacter?.controller === player &&
+        card.location === Location.PlayArea
+    );
+}
 
 export default class VillageDoshin extends DrawCard {
     static id = 'village-doshin';
@@ -12,14 +22,7 @@ export default class VillageDoshin extends DrawCard {
     public override setupCardAbilities() {
         this.wouldInterrupt('Protect attachment from leaving play')
             .when({
-                onInitiateAbilityEffects: (event, context) =>
-                    event.cardTargets.some((card) => {
-                        const attachment = card.type === CardType.Attachment;
-                        const onCharacterYouControl =
-                            card.parentCharacter?.controller === context.player;
-                        const inPlay = card.location === Location.PlayArea;
-                        return attachment && onCharacterYouControl && inPlay;
-                    })
+                onInitiateAbilityEffects: (event, context) => protectedAttachments(event.cardTargets, context.player).length > 0
             })
             .location(Location.Hand)
             .cost(costs.discardSelf())
@@ -46,6 +49,6 @@ export default class VillageDoshin extends DrawCard {
                 }))
             .otherwise()
                 .cancel()
-            .chatText((context) => msg`protect ${context.event.cardTargets[0]}`);
+            .chatText((context) => msg`protect ${protectedAttachments(context.event.cardTargets, context.player)}`);
     }
 }

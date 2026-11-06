@@ -169,3 +169,40 @@ describe('Tribute to a New Dawn without attachments of your own', function () {
         });
     });
 });
+
+describe('Tribute to a New Dawn when every attachment is kept', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker'],
+                    hand: ['fine-katana']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar'],
+                    hand: ['magnificent-kimono', 'tribute-to-a-new-dawn']
+                }
+            });
+            this.matsuBerserker = this.player1.findCardByName('matsu-berserker');
+            this.fineKatana = this.player1.findCardByName('fine-katana');
+            this.solemnScholar = this.player2.findCardByName('solemn-scholar');
+            this.kimono = this.player2.findCardByName('magnificent-kimono');
+            this.tributeToANewDawn = this.player2.findCardByName('tribute-to-a-new-dawn');
+            this.player1.playAttachment(this.fineKatana, this.matsuBerserker);
+            this.player2.playAttachment(this.kimono, this.solemnScholar);
+            this.player1.pass();
+        });
+
+        it('says that no attachment is removed', function () {
+            this.player2.clickCard(this.tributeToANewDawn);
+            this.player1.clickCard(this.fineKatana);
+            this.player1.clickPrompt('Done');
+            this.player2.clickCard(this.kimono);
+            this.player2.clickPrompt('Done');
+            expect(this.fineKatana.location).toBe('play area');
+            expect(this.kimono.location).toBe('play area');
+            expect(this.getChatLogs(5)).toContain('player2 plays Tribute to a New Dawn to remove no attachments from the game');
+        });
+    });
+});

@@ -12,12 +12,12 @@ class RideThemDown extends DrawCard {
             .condition(() => this.game.isDuringConflict())
             .cost(costs.discardImperialFavor())
             .selectAttackedProvince({
-                message: (context, cards) => msg`${context.player} reduces the strength of ${cards} to 1`,
+                message: (context, cards) => msg`${context.player} sets the base strength of ${cards} to 1`,
                 gameAction: cardLastingEffect({
                     effect: setBaseProvinceStrength(1)
                 })
             })
-            .chatText('reduce the strength of an attacked province to 1');
+            .chatText('set the base strength of an attacked province to 1');
     }
 }
 

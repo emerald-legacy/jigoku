@@ -53,7 +53,7 @@ describe('Kakita\'s First Kata', function() {
             expect(this.player2).toBeAbleToSelect(this.sotorii);
             expect(this.player2).toBeAbleToSelect(this.raitsugu);
             expect(this.player2).not.toBeAbleToSelect(this.yoshi);
-            expect(this.getChatLogs(5)).toContain('player2 plays Kakita\'s First Kata to prevent opponents\' actions from bowing or moving Kakita Yoshi');
+            expect(this.getChatLogs(5)).toContain('player2 plays Kakita\'s First Kata to prevent opponents\' card effects from bowing or moving Kakita Yoshi');
         });
 
         it('should prevent bowing and moving (AFWTD interaction)', function() {
@@ -90,7 +90,7 @@ describe('Kakita\'s First Kata', function() {
             this.player2.clickCard(this.yoshi);
 
             expect(this.yoshi.bowed).toBe(false);
-            expect(this.getChatLogs(5)).toContain('player2 plays Kakita\'s First Kata to ready and prevent opponents\' actions from bowing or moving Kakita Yoshi');
+            expect(this.getChatLogs(5)).toContain('player2 plays Kakita\'s First Kata to ready and prevent opponents\' card effects from bowing or moving Kakita Yoshi');
         });
 
         it('should not ready if not bowed during conflict', function() {

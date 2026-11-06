@@ -14,9 +14,9 @@ export default class LayOfTheLand extends DrawCard {
                 controller: Players.Any,
                 location: Location.Provinces,
                 cardCondition: (card) => !card.isBroken && card.location !== Location.StrongholdProvince
-            }, reveal(), turnFacedown())
+            }, reveal({ chatMessage: true }), turnFacedown())
             .chatText((context) => context.target.isFaceup()
                 ? msg`flip facedown ${context.target}`
-                : msg`reveal ${context.target.location}`);
+                : msg`reveal ${context.target.controller}'s ${context.target.location}`);
     }
 }

@@ -186,3 +186,41 @@ describe('Village Doshin on its controller\'s own ability', function () {
         });
     });
 });
+
+describe('Village Doshin on an ability that targets several attachments', function () {
+    integration(function () {
+        beforeEach(function () {
+            this.setupTest({
+                phase: 'conflict',
+                player1: {
+                    inPlay: ['matsu-berserker'],
+                    hand: ['fine-katana', 'tribute-to-a-new-dawn']
+                },
+                player2: {
+                    inPlay: ['solemn-scholar'],
+                    hand: ['magnificent-kimono', 'village-doshin', 'banzai', 'let-go']
+                }
+            });
+            this.berserker = this.player1.findCardByName('matsu-berserker');
+            this.katana = this.player1.findCardByName('fine-katana');
+            this.tribute = this.player1.findCardByName('tribute-to-a-new-dawn');
+            this.scholar = this.player2.findCardByName('solemn-scholar');
+            this.kimono = this.player2.findCardByName('magnificent-kimono');
+            this.doshin = this.player2.findCardByName('village-doshin');
+            this.player1.playAttachment(this.katana, this.berserker);
+            this.player2.playAttachment(this.kimono, this.scholar);
+        });
+
+        it('names the attachment on a character its player controls', function () {
+            expect(this.player1.player.firstPlayer).toBe(true);
+            this.player1.clickCard(this.tribute);
+            this.player1.clickCard(this.katana);
+            this.player1.clickPrompt('Done');
+            this.player2.clickCard(this.kimono);
+            this.player2.clickPrompt('Done');
+            expect(this.player2).toHavePrompt('Triggered Abilities');
+            this.player2.clickCard(this.doshin);
+            expect(this.getChatLogs(5)).toContain('player2 uses Village Dōshin, discarding Village Dōshin to protect Magnificent Kimono');
+        });
+    });
+});

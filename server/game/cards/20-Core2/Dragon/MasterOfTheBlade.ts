@@ -18,6 +18,6 @@ export default class MasterOfTheBlade extends DrawCard {
                     })
                 ]
             }))
-            .chatText('prevent opponents\' actions from bowing {0} and stop it bowing at the end of the conflict');
+            .chatText('prevent opponents\' card effects from bowing {0} and stop it bowing at the end of the conflict');
     }
 }

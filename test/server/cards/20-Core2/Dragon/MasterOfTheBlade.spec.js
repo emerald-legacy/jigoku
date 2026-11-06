@@ -37,7 +37,7 @@ describe('Master of the Blade', function() {
             expect(this.player1).toHavePrompt('Triggered Abilities');
             expect(this.player1).toBeAbleToSelect(this.master);
             this.player1.clickCard(this.master);
-            expect(this.getChatLogs(5)).toContain('player1 uses Master of the Blade to prevent opponents\' actions from bowing Master of the Blade and stop it bowing at the end of the conflict');
+            expect(this.getChatLogs(5)).toContain('player1 uses Master of the Blade to prevent opponents\' card effects from bowing Master of the Blade and stop it bowing at the end of the conflict');
             this.player1.clickPrompt('Banzai!');
 
             this.player2.clickCard(this.fury);

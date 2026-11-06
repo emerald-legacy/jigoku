@@ -27,7 +27,7 @@ class TheStrengthOfTheMountain extends DrawCard {
                     })
                 ]
             }))
-            .chatText('prevent opponents\' actions from bowing or moving home defending characters, and stop them bowing at the end of the conflict');
+            .chatText('prevent opponents\' card effects from bowing or moving home defending characters, and stop them bowing at the end of the conflict');
     }
 }
 

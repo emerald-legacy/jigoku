@@ -65,6 +65,7 @@ describe('Sawakiten\'s Blessing effects', function () {
             });
 
             it('stops opponents\' card effects from bowing the character', function () {
+                expect(this.getChatLogs(3)).toContain('player1 plays Sawakiten\'s Blessing to prevent opponents\' card effects from bowing Doji Challenger and stop it bowing at the end of the conflict');
                 this.player2.clickCard(this.scholar);
                 expect(this.player2).toBeAbleToSelect(this.whisperer);
                 expect(this.player2).not.toBeAbleToSelect(this.challenger);

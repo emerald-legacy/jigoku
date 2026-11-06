@@ -345,6 +345,8 @@ describe('Kuro\'s action gained through Contemplative Wisdom', function () {
             expect(this.player1).toBeAbleToSelect(this.grasp);
             this.player1.clickCard(this.grasp);
             expect(this.grasp.parent).toBe(this.adept);
+            expect(this.adept.isParticipating()).toBe(false);
+            expect(this.getChatLogs(5)).toContain('player1 uses Adept of the Waves\'s gained ability from Kuro to seek the lost treasure \'Grasp of Earth\'. Adept of the Waves returns home with their treasure');
         });
     });
 });

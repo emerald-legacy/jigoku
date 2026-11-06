@@ -49,6 +49,7 @@ describe('The Strength of the Mountain', function () {
                     defenders: [this.hidaGuardian2, this.brawler2, this.kuwanan2]
                 });
                 this.player2.clickCard(this.mountain);
+                expect(this.getChatLogs(3)).toContain('player2 plays The Strength of the Mountain to prevent opponents\' card effects from bowing or moving home defending characters, and stop them bowing at the end of the conflict');
                 this.player1.clickCard(this.kuwanan);
                 expect(this.player1).toBeAbleToSelect(this.hidaGuardian);
                 expect(this.player1).toBeAbleToSelect(this.brawler);
