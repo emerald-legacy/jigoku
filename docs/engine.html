@@ -56,7 +56,7 @@
     <li><strong>The ability</strong> (<code>BaseAbility</code>):
         <ol>
             <li><code>CannotPayCost</code>: some cost can't be paid.</li>
-            <li>Without targets: <code>ConditionNotMet</code> when none of its game actions has a legal target. An ability without game actions (only a handler) passes. With targets: <code>NoLegalTarget</code> when a target has no legal choice.</li>
+            <li>Without targets: <code>ConditionNotMet</code> when none of its game actions has a legal target, unless all of them are <code>optional</code> and its <code>then</code> step can resolve (<code>ResolvableAbility.checkGameActionsForPotential</code>). An ability without game actions (only a handler) passes. With targets: <code>NoLegalTarget</code> when a target has no legal choice.</li>
             <li>A card target with no game action of its own, whose effect is the ability's (<code>.target({ … }).bow()</code>), offers only cards for which one of the ability's game actions has a legal target (RRG: an ability needs the potential to change the game state; Wildfire Kick can't be played with no defenders). Only for a single-card target that is the ability's only target, with no dependent target and no following step (<code>hasFollowingStep()</code>): an action may read a target not chosen yet, and a step may change the game on its own.</li>
         </ol>
     </li>
