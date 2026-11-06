@@ -74,6 +74,12 @@ All tests should also pass:
 npm test
 ```
 
+`npm test` runs the whole suite in parallel. To run a few spec files in one process (specs live in `test/server/`, card specs in `test/server/cards/<pack>/`):
+
+```
+npm run jasmine -- test/server/cards/01-Core/AdeptOfShadows.spec.js
+```
+
 TypeScript type checking (the server and the specs):
 
 ```
@@ -81,6 +87,10 @@ npm run typecheck
 ```
 
 If you are making any game engine changes, these will not be accepted without unit tests to cover them.
+
+### Writing cards
+
+Cards live in `server/game/cards/<pack>/` and are written with the ability builder. The reference for it (builder methods, game actions, effects, costs, events and helpers) is the docs site in `docs/`: open `docs/index.html` in a browser. Card specs use the `integration()` helper and `this.setupTest()`; see the existing specs in `test/server/cards/`.
 
 ### Discord Discussion
 [Jigoku Discord Server](https://discord.gg/tMzhyND)
