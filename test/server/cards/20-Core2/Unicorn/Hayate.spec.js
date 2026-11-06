@@ -55,8 +55,11 @@ describe('Hayate', function () {
             this.player2.pass();
             this.player1.clickCard(this.hayate);
             expect(this.player1).toBeAbleToSelect(this.rider);
+            expect(this.player1).not.toHavePromptButton('Done');
             this.player1.clickCard(this.rider);
             expect(this.rider.isParticipating()).toBe(true);
+            expect(this.getChatLogs(3)).toContain('player1 uses Hayate to move Border Rider into the conflict');
         });
+
     });
 });

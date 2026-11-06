@@ -145,7 +145,7 @@ export class AbilityTargetCard extends AbilityTargetBase<AbilityTargetCardProper
             return true;
         }
         if(!context.targets[this.name]) {
-            return false;
+            return this.selector.optional;
         } else if(this.mustBeChosenAgain(context)) {
             return false;
         }

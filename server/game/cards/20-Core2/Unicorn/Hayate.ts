@@ -21,18 +21,30 @@ export default class Hayate extends DrawCard {
             })
         });
 
-        // Hayate isn't chosen: the ability works while either character can move in
+        // Hayate isn't chosen: the ability works while either character can move in.
+        // While Hayate is participating, choosing no one would change nothing (RRG Target), so a character must be chosen.
         this.conflictAction('Move this and another character to the conflict', { evenFromHome: true })
             .condition((context) =>
                 context.player.charactersInPlay.some((card) => moveToConflict().canAffect(card, context)))
+            .skippableTarget({
+                name: 'required',
+                cardType: CardType.Character,
+                controller: Players.Self,
+                skipIf: (context) => !context.source.isParticipating(),
+                cardCondition: (card, context) => card !== context.source
+            }, moveToConflict())
             .target({
                 name: 'optional',
                 cardType: CardType.Character,
                 controller: Players.Self,
-                cardCondition: (card, context) => card !== context.source,
-                optional: true
+                optional: true,
+                hideIfNoLegalTargets: true,
+                cardCondition: (card, context) => card !== context.source && !context.source.isParticipating()
             }, moveToConflict())
             .moveToConflict((context) => ({ target: context.source }))
-            .chatText((context) => msg`move ${context.source}${!Array.isArray(context.targets.optional) ? ' and ' : ''}${!Array.isArray(context.targets.optional) ? context.targets.optional : ''} into the conflict`);
+            .chatText((context) => {
+                const moved = [context.source.isParticipating() ? [] : context.source, context.targets.required, context.targets.optional];
+                return msg`move ${moved.flat().filter((card) => card !== undefined)} into the conflict`;
+            });
     }
 }
