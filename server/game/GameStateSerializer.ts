@@ -139,13 +139,9 @@ export class GameStateSerializer {
         };
     }
 
-    getState(activePlayerName?: string, sharedState?: SharedGameState | null): GameState | GameSummary | undefined {
+    getState(activePlayerName?: string, sharedState?: SharedGameState | null): GameState {
         const game = this.game;
         const activePlayer: StateViewer = (activePlayerName && game.playersAndSpectators[activePlayerName]) || new AnonymousSpectator();
-
-        if(!game.started) {
-            return this.getSummary(activePlayerName);
-        }
 
         const shared = sharedState || this.getSharedState();
 

@@ -918,10 +918,6 @@ export class Game {
         return this.connections.watch(socketId, user);
     }
 
-    join(socketId: string, user: GamePlayerUser): boolean {
-        return this.connections.join(socketId, user);
-    }
-
     isEmpty(): boolean {
         return this.connections.isEmpty();
     }
@@ -1013,7 +1009,7 @@ export class Game {
         return this.serializer.getSharedState();
     }
 
-    getState(activePlayerName?: string, sharedState?: SharedGameState | null): GameState | GameSummary | undefined {
+    getState(activePlayerName?: string, sharedState?: SharedGameState | null): GameState {
         return this.serializer.getState(activePlayerName, sharedState);
     }
 

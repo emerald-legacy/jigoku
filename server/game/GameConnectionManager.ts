@@ -1,9 +1,7 @@
 import { msg } from './GameChat.js';
-import Player from './Player.js';
 import { Spectator } from './Spectator.js';
 import type Game from './Game.js';
 import type { Socket } from '../Socket.js';
-import type { GamePlayerUser } from './Player.js';
 import type { UserIdentity } from '../gamenode/LobbyProtocol.js';
 
 export class GameConnectionManager {
@@ -17,17 +15,6 @@ export class GameConnectionManager {
 
         game.addPlayerOrSpectator(user.username, new Spectator(socketId, user));
         game.addMessage(msg`${user.username} has joined the game as a spectator`);
-
-        return true;
-    }
-
-    join(socketId: string, user: GamePlayerUser): boolean {
-        const game = this.game;
-        if(game.started || game.getPlayers().length === 2) {
-            return false;
-        }
-
-        game.addPlayerOrSpectator(user.username, new Player(socketId, user, game.owner === user.username, game));
 
         return true;
     }
@@ -54,7 +41,7 @@ export class GameConnectionManager {
 
         game.addMessage(msg`${playerName} has left the game`);
 
-        if(game.isSpectator(player) || !game.started) {
+        if(game.isSpectator(player)) {
             game.removePlayerOrSpectator(playerName);
         } else {
             player.left = true;
@@ -92,7 +79,7 @@ export class GameConnectionManager {
             return;
         }
 
-        if(game.isSpectator(player) || !game.started) {
+        if(game.isSpectator(player)) {
             game.removePlayerOrSpectator(playerName);
         } else {
             game.addMessage(msg`${player} has failed to connect to the game`);

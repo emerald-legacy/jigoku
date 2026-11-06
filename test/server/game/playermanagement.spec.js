@@ -3,66 +3,26 @@ import Game from '../../../build/server/game/Game.js';
 describe('Game - Player Management', function() {
     beforeEach(function() {
         this.gameRouter = jasmine.createSpyObj('gameRouter', ['playerLeft']);
-        this.game = new Game({
-            id: '1',
-            name: 'Test Game',
-            allowSpectators: true,
-            spectatorSquelch: false,
-            owner: 'player1',
-            gameType: 'casual',
-            gameMode: 'stronghold',
-            clocks: null,
-            players: {},
-            spectators: {}
-        }, { router: this.gameRouter });
-    });
-
-    describe('join()', function() {
-        describe('when the game has not started and there are not enough players', function() {
-            beforeEach(function() {
-                this.result = this.game.join('1', { username: 'foo', settings: {} });
+        this.createGame = (playerNames = []) => {
+            const players = {};
+            playerNames.forEach((name, index) => {
+                players[name] = { id: String(index + 1), user: { username: name, settings: {} } };
             });
-
-            it('should add the player', function() {
-                expect(this.game.playersAndSpectators['foo']).toBeDefined();
-                expect(this.game.playersAndSpectators['foo'].id).toBe('1');
-            });
-
-            it('should return true', function() {
-                expect(this.result).toBe(true);
-            });
-        });
-
-        describe('when the game has started', function() {
-            beforeEach(function() {
-                this.game.started = true;
-                this.result = this.game.join('1', { username: 'foo', settings: {} });
-            });
-
-            it('should not add the player', function() {
-                expect(this.game.playersAndSpectators['foo']).toBeUndefined();
-            });
-
-            it('should return false', function() {
-                expect(this.result).toBe(false);
-            });
-        });
-
-        describe('when the game already has two players', function() {
-            beforeEach(function() {
-                this.game.join('1', { username: 'foo', settings: {} });
-                this.game.join('2', { username: 'bar', settings: {} });
-                this.result = this.game.join('3', { username: 'baz', settings: {} });
-            });
-
-            it('should not add the player', function() {
-                expect(this.game.playersAndSpectators['baz']).toBeUndefined();
-            });
-
-            it('should return false', function() {
-                expect(this.result).toBe(false);
-            });
-        });
+            this.game = new Game({
+                id: '1',
+                name: 'Test Game',
+                allowSpectators: true,
+                spectatorSquelch: false,
+                owner: 'player1',
+                gameType: 'casual',
+                gameMode: 'stronghold',
+                clocks: null,
+                players,
+                spectators: {}
+            }, { router: this.gameRouter });
+            this.game.started = true;
+        };
+        this.createGame();
     });
 
     describe('watch()', function() {
@@ -108,36 +68,17 @@ describe('Game - Player Management', function() {
 
         describe('when the user is a player', function() {
             beforeEach(function() {
-                this.game.join('1', { username: 'foo', settings: {} });
+                this.createGame(['foo']);
+                this.game.finishedAt = undefined;
+                this.game.leave('foo');
             });
 
-            describe('when the game has not started', function() {
-                it('should delete the player', function() {
-                    this.game.leave('foo');
-                    expect(this.game.playersAndSpectators['foo']).toBeUndefined();
-                });
+            it('should mark the player as left', function() {
+                expect(this.game.playersAndSpectators['foo'].left).toBe(true);
             });
 
-            describe('when the game has started', function() {
-                beforeEach(function() {
-                    this.game.started = true;
-                });
-
-                describe('and the game has not finished', function() {
-                    beforeEach(function() {
-                        this.game.finishedAt = undefined;
-                        this.game.leave('foo');
-                    });
-
-                    it('should mark the player as left', function() {
-                        this.game.leave('foo');
-                        expect(this.game.playersAndSpectators['foo'].left).toBe(true);
-                    });
-
-                    it('should set the finishedAt property', function() {
-                        expect(this.game.finishedAt).toBeDefined();
-                    });
-                });
+            it('should set the finishedAt property', function() {
+                expect(this.game.finishedAt).toBeDefined();
             });
         });
 
@@ -166,7 +107,7 @@ describe('Game - Player Management', function() {
 
         describe('when the user is a player', function() {
             beforeEach(function() {
-                this.game.join('1', { username: 'foo', settings: {} });
+                this.createGame(['foo']);
             });
 
             it('should mark the player as disconnected', function() {
@@ -189,7 +130,7 @@ describe('Game - Player Management', function() {
 
     describe('reconnect()', function() {
         beforeEach(function() {
-            this.game.join('1', { username: 'foo', settings: {} });
+            this.createGame(['foo']);
             this.game.disconnect('foo');
             this.game.reconnect({ id: '2' }, 'foo');
         });
@@ -216,8 +157,7 @@ describe('Game - Player Management', function() {
 
         describe('when there are players and spectators', function() {
             beforeEach(function() {
-                this.game.join('1', { username: 'foo', settings: {} });
-                this.game.join('2', { username: 'bar', settings: {} });
+                this.createGame(['foo', 'bar']);
                 this.game.watch('3', { username: 'baz', settings: {} });
             });
 

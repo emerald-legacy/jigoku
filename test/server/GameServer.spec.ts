@@ -519,10 +519,12 @@ describe('GameServer rejoin after leaving', () => {
     it('restores the seat of a player who left a started game when they reconnect', () => {
         const game = new Game({
             id: 'g1', name: 'Test Game', allowSpectators: false, spectatorSquelch: false, owner: 'alice',
-            gameType: 'casual', gameMode: 'stronghold', clocks: null, players: {}, spectators: {}
+            gameType: 'casual', gameMode: 'stronghold', clocks: null, spectators: {},
+            players: {
+                alice: { id: 'alice-socket', user: { username: 'alice', settings: {} } },
+                bob: { id: 'bob-socket', user: { username: 'bob', settings: {} } }
+            }
         }, {});
-        game.join('alice-socket', { username: 'alice', settings: {} });
-        game.join('bob-socket', { username: 'bob', settings: {} });
         game.started = true;
         game.leave('bob');
         expect(game.getPlayerByName('bob')?.left).toBe(true);
