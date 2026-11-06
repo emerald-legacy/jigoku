@@ -26,12 +26,12 @@
     <p>Shared helpers for families of cards, and the card, player and game queries abilities use most.</p>
 </header>
 <h2 id="he-helpers">Shared card helpers</h2>
-<p>Some cards share most of their implementation: the province attachments, the mantras, the cards that search for an attachment, the cards with a "claimed ring" symbol. The shared parts live in the modules directly in <code>server/game/cards/</code> (not in a set folder). Import them with <code>'../name.js'</code> from a set folder such as <code>01-Core/</code>, and with <code>'../../name.js'</code> from a clan folder such as <code>20-Core2/Crab/</code>.</p>
-<p>Before you write a helper for a new card, check this list. If two or more cards need the same code, put it in a module here; code that only one card uses stays in that card's file.</p>
+<p>Code shared by a family of cards (province attachments, mantras, attachment searches, "claimed ring" symbols) lives in modules directly in <code>server/game/cards/</code>. Import with <code>'../name.js'</code> from a set folder (<code>01-Core/</code>) and <code>'../../name.js'</code> from a clan folder (<code>20-Core2/Crab/</code>).</p>
+<p>Check this list before writing a helper. Code two or more cards need goes here; code for one card stays in its file.</p>
 
 <section class="group">
   <h3 class="group-title" id="he-group-base">Base classes</h3>
-  <p>Extend these instead of <code>DrawCard</code> when the card is one of these kinds. They change where the card can be played and attached; the card's abilities are still declared in <code>setupCardAbilities()</code>.</p>
+  <p>Extend these instead of <code>DrawCard</code>. They change where the card can be played and attached; abilities still go in <code>setupCardAbilities()</code>.</p>
 
   <div class="ref" id="he-BattlefieldAttachment" data-name="BattlefieldAttachment">
     <h3><code>class X extends BattlefieldAttachment</code> <span class="kind">Base class</span> <a class="anchor" href="#he-BattlefieldAttachment">#</a></h3>
@@ -39,7 +39,7 @@
     <ul class="edge">
       <li>When your card declares its own abilities, call <code>super.setupCardAbilities()</code> first, or the Battlefield limit is lost.</li>
       <li>When a second Battlefield attachment is attached to the same province, the earlier one is discarded as no longer legal.</li>
-      <li>Everything else comes from <code>ProvinceAttachment</code>: by default it can only be played on an unbroken province. Override <code>unbrokenOnly()</code> to return <code>false</code> for "Attach to a province." (Field of Ruin, Declaration of Dominion).</li>
+      <li>The rest comes from <code>ProvinceAttachment</code>: unbroken provinces only unless <code>unbrokenOnly()</code> returns <code>false</code> (Field of Ruin, Declaration of Dominion).</li>
     </ul>
     <pre><code>// Total Warfare: Attach to an unbroken province. Limit 1 Battlefield attachment per province.
 // Forced Reaction: After a player loses a conflict at attached province - that player must sacrifice a participating character.
@@ -61,7 +61,7 @@ export default class TotalWarfare extends BattlefieldAttachment {
 
   <div class="ref" id="he-ProvinceAttachment" data-name="ProvinceAttachment">
     <h3><code>class X extends ProvinceAttachment</code> <span class="kind">Base class</span> <a class="anchor" href="#he-ProvinceAttachment">#</a></h3>
-    <p>An attachment that is played on and attached to a province instead of a character. <code>canPlayOn</code> and <code>canAttach</code> accept only a card of type province, and only while the card itself is an attachment.</p>
+    <p>An attachment played on a province instead of a character. <code>canPlayOn</code> and <code>canAttach</code> accept only a province, and only while the card itself is an attachment.</p>
     <table>
       <thead><tr><th>Override</th><th>Returns</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -71,9 +71,9 @@ export default class TotalWarfare extends BattlefieldAttachment {
     </table>
     <ul class="edge">
       <li>Both overrides are <code>protected</code> methods, not constructor options.</li>
-      <li><code>ProvinceAttachment</code> replaces <code>canAttach</code>, so the restrictions of <code>attachmentConditions</code> that <code>canAttach</code> checks for character attachments (<code>myControl</code>, <code>opponentControlOnly</code>, <code>unique</code>, <code>faction</code>, <code>trait</code>, <code>cardCondition</code>) have no effect here. Use the two overrides. Trait limits (<code>limitTrait</code>) and <code>limit</code> still apply.</li>
-      <li><code>canAttach</code> is checked again while attached: with <code>unbrokenOnly()</code> the attachment is no longer legal, and is discarded, once its province is broken.</li>
-      <li>The attachment reaches its province with <code>context.source.parent</code> or <code>parentProvince</code>.</li>
+      <li><code>canAttach</code> is replaced, so the <code>attachmentConditions</code> it checks for character attachments (<code>myControl</code>, <code>opponentControlOnly</code>, <code>unique</code>, <code>faction</code>, <code>trait</code>, <code>cardCondition</code>) have no effect. Use the overrides. <code>limitTrait</code> and <code>limit</code> still apply.</li>
+      <li><code>canAttach</code> is rechecked while attached: with <code>unbrokenOnly()</code>, the attachment is discarded once its province breaks.</li>
+      <li>The province is <code>context.source.parent</code> or <code>parentProvince</code>.</li>
     </ul>
     <pre><code>// Inventive Buttressing: Attach to an unbroken province you control.
 // Attached province gets +3 strength during [conflict-military] conflicts.
@@ -98,10 +98,10 @@ class InventiveButtressing extends ProvinceAttachment {
 
   <div class="ref" id="he-RingAttachment" data-name="RingAttachment">
     <h3><code>class X extends RingAttachment</code> <span class="kind">Base class</span> <a class="anchor" href="#he-RingAttachment">#</a></h3>
-    <p>An attachment played on and attached to a ring: "Attach to a ring." <code>canPlayOn</code> and <code>canAttach</code> accept only a ring, and <code>mustAttachToRing()</code> returns <code>true</code>, all while the card is an attachment.</p>
+    <p>"Attach to a ring." While the card is an attachment, <code>canPlayOn</code> and <code>canAttach</code> accept only a ring and <code>mustAttachToRing()</code> returns <code>true</code>.</p>
     <ul class="edge">
       <li>The ring is <code>this.parent</code> (a <code>Ring</code>, not a card); check it with <code>parent?.isRing()</code> before using ring methods.</li>
-      <li>The checks look at the card's current type, so a card that only becomes an attachment through an effect (Crafty Tsukumogami uses <code>changeType(CardType.Attachment)</code>) behaves as a ring attachment only while it is one.</li>
+      <li>The checks use the current type: a card made an attachment by <code>changeType(CardType.Attachment)</code> (Crafty Tsukumogami) is a ring attachment only while it is one.</li>
     </ul>
     <pre><code>// Greater Understanding: Attach to a ring.
 // Reaction: After fate is placed on attached ring - resolve that ring's effect as if you were the attacking player.
@@ -122,7 +122,7 @@ class GreaterUnderstanding extends RingAttachment {
 
   <div class="ref" id="he-TokenCard" data-name="TokenCard">
     <h3><code>abstract class TokenCard extends DrawCard</code> <span class="kind">Base class</span> <a class="anchor" href="#he-TokenCard">#</a></h3>
-    <p>A facedown card that is in play as a token ("put the top card of your dynasty deck into play facedown as a 1 military … character"). The token class holds the token's printed data; the real card is kept in <code>facedownCard</code>. You don't create tokens yourself: the game actions <code>tokenFromTopCard</code> and <code>createToken</code> take the token class and make one.</p>
+    <p>A facedown card in play as a token ("put the top card of your dynasty deck into play facedown as a 1 military … character"). The subclass holds the token's printed data; the real card is <code>facedownCard</code>. Tokens are made by the game actions <code>tokenFromTopCard</code> and <code>createToken</code>, which take the token class.</p>
     <table>
       <thead><tr><th>Parameter / member</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -132,9 +132,8 @@ class GreaterUnderstanding extends RingAttachment {
       </tbody>
     </table>
     <ul class="edge">
-      <li>When the token leaves play, the facedown card moves to <code>facedownDestination(destination)</code> and the token object is removed from its pile and from <code>game.allCards</code>: the token is gone, not discarded.</li>
-      <li>The token is owned by the facedown card's owner.</li>
-      <li>In the client the token shows as a token; only its controller sees which card is facedown under it.</li>
+      <li>When the token leaves play, the facedown card moves to <code>facedownDestination(destination)</code> and the token is removed from its pile and from <code>game.allCards</code>, not discarded.</li>
+      <li>The token's owner is the facedown card's owner.</li>
     </ul>
     <pre><code>// Ashigaru Encampment: Action: Put the top card of your dynasty deck into play facedown (at home)
 // as a 1 [conflict-military], 0 [conflict-political], 1 glory [clan-lion] character with the Peasant trait.
@@ -181,11 +180,11 @@ this.action('Recruit a fresh Ashigaru')
 
 <section class="group">
   <h3 class="group-title" id="he-group-trackers">Trackers</h3>
-  <p>Some card text depends on what happened earlier: "a character that entered play during this conflict", "a character that has won a duel during this conflict". A tracker listens to game events and remembers. Create it once in <code>setupCardAbilities()</code> and keep it in a local constant; each copy of the card then has its own tracker.</p>
+  <p>For text about earlier events ("a character that entered play during this conflict"). A tracker listens to game events and remembers. Create it once in <code>setupCardAbilities()</code> in a local constant, so each copy of the card has its own.</p>
 
   <div class="ref" id="he-CharactersEnteredThisConflict" data-name="CharactersEnteredThisConflict">
     <h3><code>new CharactersEnteredThisConflict(game)</code> <span class="kind">Tracker</span> <a class="anchor" href="#he-CharactersEnteredThisConflict">#</a></h3>
-    <p>Remembers, for each character that enters play (<code>onCharacterEntersPlay</code>), the conflict that was current at that moment. <code>has(card)</code> answers "did this character enter play during this conflict?".</p>
+    <p>Records the current conflict for each character entering play (<code>onCharacterEntersPlay</code>). <code>has(card)</code>: did it enter play during this conflict?</p>
     <table>
       <thead><tr><th>Member</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -194,8 +193,7 @@ this.action('Recruit a fresh Ashigaru')
       </tbody>
     </table>
     <ul class="edge">
-      <li>The conflict counts from its declaration: a character that enters play after the conflict is declared counts.</li>
-      <li><code>has(card)</code> is <code>false</code> outside a conflict, and for a character that entered play in an earlier conflict.</li>
+      <li>The conflict counts from its declaration. <code>has(card)</code> is <code>false</code> outside a conflict.</li>
     </ul>
     <pre><code>// Zealous Exorcist: Conflict Action: Choose a character that entered play during this conflict - remove that character from the game.
 const charactersEntered = new CharactersEnteredThisConflict(this.game);
@@ -209,7 +207,7 @@ this.conflictAction('Remove a character from play')
 
   <div class="ref" id="he-DuelsThisConflict" data-name="DuelsThisConflict">
     <h3><code>DuelsThisConflict.winners(game)</code> <span class="kind">Tracker</span> <a class="anchor" href="#he-DuelsThisConflict">#</a></h3>
-    <p>Remembers characters from each duel resolved during the current conflict. The static factories pick which ones; <code>has(card)</code> answers the question.</p>
+    <p>Records characters from each duel in the current conflict. The static factory picks which; <code>has(card)</code> checks.</p>
     <table>
       <thead><tr><th>Member</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -240,7 +238,7 @@ this.action('Bow a character who lost a duel')
 
   <div class="ref" id="he-LimitedPlaysFromOutOfPlay" data-name="LimitedPlaysFromOutOfPlay">
     <h3><code>new LimitedPlaysFromOutOfPlay&lt;this&gt;(card, options)</code> <span class="kind">Tracker</span> <a class="anchor" href="#he-LimitedPlaysFromOutOfPlay">#</a></h3>
-    <p>Counts the plays a card allows "as if it were in your hand", for "You cannot play more than 3 cards per round this way." It adds a persistent effect to <code>card</code> that counts each matching play, writes the chat line and runs <code>afterPlay</code>. It does not make anything playable: the card's own persistent effect does that and must check <code>available</code>.</p>
+    <p>For "You cannot play more than 3 cards per round this way." Adds a persistent effect to <code>card</code> that counts each matching play, writes the chat line and runs <code>afterPlay</code>. It does not make anything playable: the card's own persistent effect does that and must check <code>available</code>.</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -281,11 +279,11 @@ this.persistentEffect({
 
 <section class="group">
   <h3 class="group-title" id="he-group-factories">Ability factories</h3>
-  <p>These build a whole ability, a game action or the properties for a builder call, for card text that several cards share word for word.</p>
+  <p>Build a whole ability, a game action or builder properties for card text several cards share word for word.</p>
 
   <div class="ref" id="he-attachmentSearch" data-name="attachmentSearch">
     <h3><code>attachmentSearch({ controller, maxCost? })</code> <span class="kind">Game action</span> <a class="anchor" href="#he-attachmentSearch">#</a></h3>
-    <p>"Search the top 5 cards of your conflict deck for an attachment and put it into play attached to a character. Shuffle." Returns a <code>sequential</code> action: a card menu of the top 5 cards, then a character choice for the chosen attachment, then a shuffle of the player's conflict deck.</p>
+    <p>"Search the top 5 cards of your conflict deck for an attachment and put it into play attached to a character. Shuffle." Returns a <code>sequential</code> action: card menu of the top 5, character choice, shuffle.</p>
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -294,8 +292,7 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>Only attachments that can be attached to at least one eligible character can be picked. The menu always has "Take nothing", so the ability can be used with no attachment in the top 5.</li>
-      <li>The deck is shuffled in every case, also after "Take nothing".</li>
+      <li>Only attachments with at least one eligible character can be picked. The menu always has "Take nothing"; the deck is shuffled either way.</li>
       <li>Chat: "{player} chooses to attach {attachment} to {character}", or "{player} takes nothing".</li>
     </ul>
     <pre><code>// Excellence, Attained: Reaction: After a conflict is declared against this province - search the top 5 cards of your conflict deck
@@ -313,8 +310,8 @@ this.reaction('Search for an attachment')
     <h3><code>cheapCharacterSearch()</code> <span class="kind">Deck search properties</span> <a class="anchor" href="#he-cheapCharacterSearch">#</a></h3>
     <p>"Look at the top 5 cards of your dynasty deck. You may put a character with cost 2 or lower from among those cards into play. Discard the rest." Returns the properties for <code>.deckSearch(…)</code>.</p>
     <ul class="edge">
-      <li>The cost check is <a href="#q-costAtMost"><code>costAtMost(2)</code></a>, which reads <code>getCost()</code>: a dash cost counts as 0 (RRG Cost), so such a character can be chosen.</li>
-      <li>The rest are discarded (<code>RemainingCards.Discard</code>), also when nothing is chosen.</li>
+      <li>Uses <a href="#q-costAtMost"><code>costAtMost(2)</code></a>: a dash cost counts as 0 (RRG Cost), so such a character qualifies.</li>
+      <li>The rest are discarded (<code>RemainingCards.Discard</code>) even when nothing is chosen.</li>
       <li>Chat: "{player} puts {card} into play", or "{player} takes nothing"; then "{player} discards {cards}" for the rest.</li>
     </ul>
     <pre><code>// Shinjo Gunsō: Reaction: After you play this character from your provinces - look at the top 5 cards of your dynasty deck.
@@ -328,7 +325,7 @@ this.reaction('Put a character into play')
 
   <div class="ref" id="he-copyBaseSkillEffects" data-name="copyBaseSkillEffects">
     <h3><code>copyBaseSkillEffects(card, { base?, skills?, overrideModifiers? }?)</code> <span class="kind">Effects</span> <a class="anchor" href="#he-copyBaseSkillEffects">#</a></h3>
-    <p>Effects that set a character's base skills to another character's skills: "set this character's base skill to the chosen character's current skill values". Returns an array of effects for a lasting effect.</p>
+    <p>"Set this character's base skill to the chosen character's current skill values." Returns an array of effects for a lasting effect.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -339,8 +336,8 @@ this.reaction('Put a character into play')
       </tbody>
     </table>
     <ul class="edge">
-      <li>The values are read when the function is called and don't follow later changes to <code>card</code>.</li>
-      <li>A dash on <code>card</code> is copied as a dash (<code>setBaseDash</code>), not as 0.</li>
+      <li>Values are read once, at the call; later changes to <code>card</code> don't follow.</li>
+      <li>A dash is copied as a dash (<code>setBaseDash</code>), not as 0.</li>
     </ul>
     <pre><code>// Kaito Temple Protector: Action: While this character is defending, choose another participating character - until the end of the conflict,
 // set this character's base [conflict-military] and [conflict-political] skill to the chosen character's current skill values.
@@ -356,7 +353,7 @@ this.reaction('Put a character into play')
 
   <div class="ref" id="he-discardBottomTop" data-name="discardBottomTop">
     <h3><code>discardBottomTop(player, deck)</code> <span class="kind">Game action</span> <a class="anchor" href="#he-discardBottomTop">#</a></h3>
-    <p>"Discard 1 of those cards, place another on top of that deck, and the other on the bottom of that deck." An <code>assignRoles</code> action on the top 3 cards of the deck: the player picks the card to discard, then the card for the bottom; the last stays on top.</p>
+    <p>"Discard 1 of those cards, place another on top of that deck, and the other on the bottom of that deck." An <code>assignRoles</code> action on the top 3 cards: the player picks the discard, then the bottom card; the last stays on top.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -366,7 +363,7 @@ this.reaction('Put a character into play')
     </table>
     <ul class="edge">
       <li>The signature matches <code>DeckChoice.choices</code>, so <code>decks.choices(discardBottomTop)</code> gives one choice per deck.</li>
-      <li>With fewer than 3 cards each card still gets a different role, and the player may skip a picked role ("None"), so any of the effects can be left out (ruling #328).</li>
+      <li>With fewer than 3 cards each card still gets a different role. Any role may be skipped ("None", ruling #328).</li>
       <li>Chat: "{player} chooses to discard {card}" and "{player} places a card on the bottom of the deck".</li>
     </ul>
     <pre><code>// Magnificent Lighthouse: Action: Look at the top 3 cards of an opponent's deck. Discard 1 of those cards,
@@ -383,7 +380,7 @@ this.action('Look at top 3 cards')
 
   <div class="ref" id="he-makeMantra" data-name="makeMantra">
     <h3><code>makeMantra(id, element, title, effect, chatText)</code> <span class="kind">Card class factory</span> <a class="anchor" href="#he-makeMantra">#</a></h3>
-    <p>Builds the whole card class of a Mantra: "Reaction: After an opponent declares a [element] conflict, choose a Monk character or a character with a Monk attachment – {effect} and draw 1 card." The card file only exports the result.</p>
+    <p>Builds the card class of a Mantra: "Reaction: After an opponent declares a [element] conflict, choose a Monk character or a character with a Monk attachment – {effect} and draw 1 card." The card file just exports it.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -395,9 +392,8 @@ this.action('Look at top 3 cards')
       </tbody>
     </table>
     <ul class="edge">
-      <li>The trigger checks <code>event.ring?.hasElement(element)</code>, so a ring that has gained the element counts too.</li>
-      <li>Only the opponent's declaration triggers it (<code>event.conflict.attackingPlayer === context.player.opponent</code>).</li>
-      <li>The draw is a second game action of the same ability (<code>.draw()</code>), for the ability's player.</li>
+      <li>The trigger checks <code>event.ring?.hasElement(element)</code>, so a ring that gained the element counts.</li>
+      <li>The draw is a second game action (<code>.draw()</code>) of the same ability.</li>
     </ul>
     <pre><code>// Mantra of Fire: Reaction: After an opponent declares a [element-fire] conflict, choose a Monk character or a character
 // with a Monk attachment – place 1 fate on that character and draw 1 card.
@@ -407,7 +403,7 @@ export default makeMantra('mantra-of-fire', Element.Fire, 'Add 1 fate to a monk 
 
   <div class="ref" id="he-moveCardInProvinceAction" data-name="moveCardInProvinceAction">
     <h3><code>moveCardInProvinceAction(source)</code> <span class="kind">Ability</span> <a class="anchor" href="#he-moveCardInProvinceAction">#</a></h3>
-    <p>Declares the action "choose a card in or attached to a province - move that card to another unbroken non-stronghold province controlled by the same player" on <code>source</code> and returns the builder, so you can add costs and steps.</p>
+    <p>Declares on <code>source</code> the action "choose a card in or attached to a province - move that card to another unbroken non-stronghold province controlled by the same player" and returns the builder for costs and further steps.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -415,7 +411,7 @@ export default makeMantra('mantra-of-fire', Element.Fire, 'Add 1 fate to a monk 
       </tbody>
     </table>
     <ul class="edge">
-      <li>First target <code>cardInProvince</code>: an attachment, character, event or holding in a province (not a province or stronghold), or an attachment attached to a province. Second target <code>province</code>: unbroken, not the stronghold province, same controller as the card (for an attachment, as its province), and a different location.</li>
+      <li>Targets: <code>cardInProvince</code> (an attachment, character, event or holding in a province, or an attachment on a province) and <code>province</code> (unbroken, non-stronghold, same controller as the card or the attachment's province, different location).</li>
       <li>An attachment is re-attached to the new province; any other card is moved there.</li>
       <li>Chat: "move {card} to {province}", with "a facedown card" or the location name in place of facedown cards.</li>
     </ul>
@@ -429,7 +425,7 @@ moveCardInProvinceAction(this)
 
   <div class="ref" id="he-moveHoldingAction" data-name="moveHoldingAction">
     <h3><code>moveHoldingAction(holding)</code> <span class="kind">Ability</span> <a class="anchor" href="#he-moveHoldingAction">#</a></h3>
-    <p>Declares the holding's action "Choose a non-stronghold province you control - move this card to that province." on <code>holding</code> and returns the builder for further steps.</p>
+    <p>Declares on <code>holding</code> the action "Choose a non-stronghold province you control - move this card to that province." and returns the builder.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -437,7 +433,7 @@ moveCardInProvinceAction(this)
       </tbody>
     </table>
     <ul class="edge">
-      <li>The target is a province you control in another location that is not the stronghold province. Broken provinces are not excluded.</li>
+      <li>Broken provinces are allowed.</li>
     </ul>
     <pre><code>// Song of the Empty City: Action: Choose a non-stronghold province you control - move this card to that province.
 // Then, discard each other holding in that province.
@@ -461,9 +457,9 @@ moveHoldingAction(this)
     </table>
     <ul class="edge">
       <li>Add <code>nameCardType()</code> as a cost before <code>.deckSearch(…)</code>, so the type is known when the search builds its properties.</li>
-      <li>After a reveal cost (<code>context.costs.reveal</code>) it looks only at the revealed cards still on top of the deck; a card played from there has left it (EmeraldDB ruling).</li>
-      <li>The search sets <code>hideIfNoLegalTargets</code>, so with no card of the named type the cards are discarded without a prompt. It writes no "takes nothing" line.</li>
-      <li>Chat: the cost text of <code>nameCardType()</code> is <code>naming {0}</code>, with the named type as <code>{0}</code>; the search adds "{player} adds {cards} to their hand"; the rest: "{player} discards {cards}".</li>
+      <li>After a reveal cost (<code>context.costs.reveal</code>) it looks only at revealed cards still on top of the deck; a card played from there has left it (EmeraldDB ruling).</li>
+      <li>Sets <code>hideIfNoLegalTargets</code>: with no card of the named type the cards are discarded without a prompt or "takes nothing" line.</li>
+      <li>Chat: cost text <code>naming {0}</code>; "{player} adds {cards} to their hand"; "{player} discards {cards}".</li>
     </ul>
     <pre><code>// Test of Skill: Action: Name a card type. Reveal the top 3 cards of your conflict deck (top 4 cards instead if you control a Duelist character)
 // – add up to 2 revealed cards of that type to your hand and discard the rest.
@@ -479,7 +475,7 @@ this.action('Reveal cards and take ones matching named type')
 
   <div class="ref" id="he-playableFromUnderneath" data-name="playableFromUnderneath">
     <h3><code>playableFromUnderneath(match?)</code> <span class="kind">Persistent effect properties</span> <a class="anchor" href="#he-playableFromUnderneath">#</a></h3>
-    <p>"You may play each card underneath it as if it were in your hand." Returns the properties for <code>this.persistentEffect(…)</code>: while the card with the effect is in play, its controller can play the cards underneath it that pass <code>match</code>.</p>
+    <p>"You may play each card underneath it as if it were in your hand." Returns properties for <code>this.persistentEffect(…)</code>: the controller can play cards underneath that pass <code>match</code>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -488,7 +484,7 @@ this.action('Reveal cards and take ones matching named type')
     </table>
     <ul class="edge">
       <li>Cards underneath a card are in <code>Location.Underneath</code> with <code>host</code> set to it: <code>underneath.isUnderneath(card)</code>. <code>cardsUnderneath(card)</code> lists them.</li>
-      <li>The card is the effect's <code>context.source</code>, not the card that wrote it: a copy or a card that gained the effect (Contemplative Wisdom) offers the cards underneath itself, to its own controller.</li>
+      <li>The card is the effect's <code>context.source</code>: a card that gained the effect (Contemplative Wisdom) offers the cards underneath itself, to its own controller.</li>
       <li>Spread the result to add a condition: <code>this.persistentEffect({ condition: …, ...playableFromUnderneath() })</code>.</li>
     </ul>
     <pre><code>// Togashi Tsurumi: … You may play Kihō cards under this character as if they were in your hand.
@@ -504,7 +500,7 @@ this.persistentEffect({
 
   <div class="ref" id="he-randomHandCards" data-name="randomHandCards chooseCardToDiscard">
     <h3><code>randomHandCards(player, amount)</code>, <code>chooseCardToDiscard(cards)</code> <span class="kind">Helper and game action</span> <a class="anchor" href="#he-randomHandCards">#</a></h3>
-    <p>"Reveal X random cards from their hand … Choose and discard one of those cards." <code>randomHandCards</code> picks the cards; <code>chooseCardToDiscard</code> is a card menu in which the ability's player picks one of them to discard.</p>
+    <p>"Reveal X random cards from their hand … Choose and discard one of those cards." <code>randomHandCards</code> picks the cards; <code>chooseCardToDiscard</code> is a card menu for the ability's player to pick the discard.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -514,7 +510,7 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>The random cards are sorted by name, so their order shows nothing about the shuffle.</li>
+      <li>The result is sorted by name.</li>
       <li>Call <code>randomHandCards</code> once inside a <code>multiple((context) =&gt; …)</code> or <code>sequential((context) =&gt; …)</code> factory and pass the same array to the reveal and to <code>chooseCardToDiscard</code>, so both see the same cards.</li>
       <li><code>chooseCardToDiscard</code> sets <code>targets: true</code>. Chat: "{player} chooses {card} to be discarded".</li>
     </ul>
@@ -537,7 +533,7 @@ this.persistentEffect({
 
   <div class="ref" id="he-revealedTopCardPlayable" data-name="revealedTopCardPlayable">
     <h3><code>revealedTopCardPlayable(player, source, endsWith)</code> <span class="kind">Lasting effect properties</span> <a class="anchor" href="#he-revealedTopCardPlayable">#</a></h3>
-    <p>"Reveal the top card of your conflict deck. Until the end of the phase, you may play that card as if it were in your hand." Returns the properties for <code>.playerLastingEffect(…)</code>: the top card is shown and can be played from the deck.</p>
+    <p>"Reveal the top card of your conflict deck. Until the end of the phase, you may play that card as if it were in your hand." Returns properties for <code>.playerLastingEffect(…)</code>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -547,9 +543,9 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>The top card is fixed when the function runs. The effect also ends when that card leaves the conflict deck or the player's conflict deck is shuffled; a new top card is not playable.</li>
-      <li>It only applies while the revealed card is the top card: after a rearrange (Truthseeker) buries it, nothing is shown and it can't be played, until it is on top again.</li>
-      <li>Check <code>context.player.conflictDeck.length &gt; 0</code> in the ability's condition: with an empty deck there is no card to reveal.</li>
+      <li>The card is fixed when the function runs. The effect ends early if it leaves the deck or the deck is shuffled; a new top card is not playable.</li>
+      <li>It only applies while that card is on top: buried by a rearrange (Truthseeker), it is hidden and unplayable until on top again.</li>
+      <li>Check <code>context.player.conflictDeck.length &gt; 0</code> in the ability's condition.</li>
     </ul>
     <pre><code>// Artisan Academy: Action: During the conflict phase – reveal the top card of your conflict deck.
 // Until the end of the phase, you may play that card as if it were in your hand.
@@ -563,7 +559,7 @@ this.action('Make top card of conflict deck playable')
 
   <div class="ref" id="he-getExtraUseDuration" data-name="getExtraUseDuration">
     <h3><code>getExtraUseDuration(ability)</code> <span class="kind">Helper</span> <a class="anchor" href="#he-getExtraUseDuration">#</a></h3>
-    <p>The duration for "trigger that ability an additional time this round (or specified period)": the ability's own limit period (<code>Duration.UntilEndOfConflict</code> for a per-conflict limit, <code>Duration.UntilEndOfPhase</code> for a per-phase limit), otherwise <code>Duration.UntilEndOfRound</code>. Pass it as the <code>duration</code> of the <code>increaseLimitOnAbilities</code> lasting effect.</p>
+    <p>The duration for "trigger that ability an additional time this round (or specified period)": <code>Duration.UntilEndOfConflict</code> or <code>UntilEndOfPhase</code> for a per-conflict or per-phase limit, otherwise <code>UntilEndOfRound</code>. Pass it as <code>duration</code> of the <code>increaseLimitOnAbilities</code> lasting effect.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -571,8 +567,8 @@ this.action('Make top card of conflict deck playable')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Reads <code>ability.limit.getResetEvents()</code>. An ability without a limit gets the round.</li>
-      <li>One effect per ability: a card that gives every ability of a card an extra use (Kaiu Inventor) builds one lasting effect per triggered ability, each with <code>targetAbility</code> and its own duration.</li>
+      <li>Reads <code>ability.limit.getResetEvents()</code>.</li>
+      <li>For "each ability" (Kaiu Inventor) build one lasting effect per ability, each with <code>targetAbility</code> and its own duration.</li>
     </ul>
     <pre><code>// Kaiu Inventor: Action: Choose a holding you control – you may trigger each of that holding's triggered abilities an additional time this round (or specified period).
 multiple((context) =&gt; [...context.target?.getActions() ?? [], ...context.target?.getReactions() ?? []]
@@ -593,7 +589,7 @@ multiple((context) =&gt; [...context.target?.getActions() ?? [], ...context.targ
 
   <div class="ref" id="he-attachSearchedCard" data-name="attachSearchedCard">
     <h3><code>attachSearchedCard(context, parent, card, message)</code> <span class="kind">Helper</span> <a class="anchor" href="#he-attachSearchedCard">#</a></h3>
-    <p>For "search your deck for an attachment and attach it to that character": call it in a deck search's <code>selectedCardsHandler</code>. It writes <code>message(card)</code> to the chat and attaches <code>card</code> to <code>parent</code> once the search has finished.</p>
+    <p>For "search your deck for an attachment and attach it to that character": call it in a deck search's <code>selectedCardsHandler</code>. Writes <code>message(card)</code> and attaches <code>card</code> to <code>parent</code> once the search has finished.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -604,8 +600,8 @@ multiple((context) =&gt; [...context.target?.getActions() ?? [], ...context.targ
       </tbody>
     </table>
     <ul class="edge">
-      <li>Does nothing, and writes nothing, when <code>card</code> is <code>undefined</code>. Write your own "takes nothing" line for that case.</li>
-      <li>The attach is queued as a step once the search's choice is made, before the rest of the deck is shuffled, and resolves as the ability's <code>attach</code> action: an attachment that can't be attached to <code>parent</code> stays where the search left it.</li>
+      <li>Does nothing when <code>card</code> is <code>undefined</code>; write your own "takes nothing" line.</li>
+      <li>The attach is queued before the deck is shuffled and resolves as an <code>attach</code> action: an attachment that can't go on <code>parent</code> stays where the search left it.</li>
     </ul>
     <pre><code>// Kaiu no Ishi Tauro: … search your conflict deck for an attachment (Weapon, Armor, or Item) with printed cost equal to or lower than
 // the number of rings returned and attach it to that character. Shuffle.
@@ -634,8 +630,7 @@ selectedCardsHandler: (context, event, [card]) =&gt; {
     </table>
     <ul class="edge">
       <li>Empty piles are not offered.</li>
-      <li>Without an opponent (solo game), <code>Players.Opponent</code> offers nothing and <code>Players.Any</code> only the player's own piles.</li>
-      <li>Create it once at module level (it holds no game state).</li>
+      <li>Holds no game state: create it once at module level.</li>
     </ul>
     <pre><code>// Truthseeker: Reaction: After this character enters play, choose a deck - look at the top 3 cards of that deck and put them back in any order.
 const decks = new DeckChoice({ players: Players.Any, pile: 'deck' });
@@ -655,7 +650,7 @@ const decks = new DeckChoice({ players: Players.Any, pile: 'deck' });
 
   <div class="ref" id="he-placeInProvinces" data-name="placeInProvinces">
     <h3><code>placeInProvinces(context, cards)</code> <span class="kind">Handler</span> <a class="anchor" href="#he-placeInProvinces">#</a></h3>
-    <p>"Put 1 of those cards into each of your non-stronghold provinces faceup. Shuffle." Prompts the player to pick a card, then a province for it, until every non-stronghold province has received one or no card is left; then shuffles the player's dynasty deck. Call it from <code>.handler(…)</code>.</p>
+    <p>"Put 1 of those cards into each of your non-stronghold provinces faceup. Shuffle." Prompts for a card, then a province, until the provinces or the cards run out (no "done" button); then shuffles the dynasty deck. Call it from <code>.handler(…)</code>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -664,8 +659,7 @@ const decks = new DeckChoice({ players: Players.Any, pile: 'deck' });
       </tbody>
     </table>
     <ul class="edge">
-      <li>There is no "done" button: the player places cards until the provinces or the cards run out.</li>
-      <li>Each province can be chosen once; broken provinces can be chosen.</li>
+      <li>Each province can be chosen once; broken provinces count.</li>
       <li>Chat for each card: "{player} puts {card} into {province}", or "into a facedown province".</li>
     </ul>
     <pre><code>// Landfall: Reaction: After this province is revealed – look at the top 8 cards of your dynasty deck.
@@ -692,7 +686,6 @@ this.reaction('Look at your dynasty deck')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Without an opponent (solo game) only the player's own choice is offered.</li>
       <li>The choice label is the player's name, so in <code>chatText</code> compare <code>context.select</code> with <code>context.player.name</code>.</li>
     </ul>
     <pre><code>// Backhanded Compliment: Action: Choose a player – that player draws 1 card and loses 1 honor.
@@ -724,7 +717,7 @@ this.action('Select a player to lose an honor and draw a card')
       </tbody>
     </table>
     <ul class="edge">
-      <li>The count uses <code>getNumberOfParticipantsFor(player)</code>, which includes effects that count extra characters in the conflict; such an effect makes the attack not alone.</li>
+      <li>Counts with <code>getNumberOfParticipantsFor(player)</code>: an effect that counts extra characters makes the attack not alone.</li>
     </ul>
     <pre><code>// Reckless Assault: Reaction: After a Berserker character you control attacks alone - characters with less than 3[conflict-military] cannot be declared as defenders
 .when({
@@ -735,7 +728,7 @@ this.action('Select a player to lose an honor and draw a card')
 
   <div class="ref" id="he-controlsClanCard" data-name="controlsClanCard">
     <h3><code>controlsClanCard(player, clan)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-controlsClanCard">#</a></h3>
-    <p>"If you control a [clan] card": true if the player controls a faceup card of that clan in play: a character or attachment (wherever it is attached), the stronghold, a faceup province, or a holding in a province.</p>
+    <p>"If you control a [clan] card": a faceup card of that clan in play: character, attachment (wherever attached), stronghold, faceup province, or holding.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -770,7 +763,7 @@ cardCondition: (card) =&gt; canSwitchSkills(card)</code></pre>
 
   <div class="ref" id="he-controlsShugenja" data-name="controlsShugenja">
     <h3><code>controlsShugenja(player)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-controlsShugenja">#</a></h3>
-    <p>"Play only if you control a Shugenja character." True if the player has a character with the Shugenja trait in play.</p>
+    <p>"Play only if you control a Shugenja character."</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -787,12 +780,12 @@ this.playOnlyIf((context) =&gt; controlsShugenja(context.player));</code></pre>
 
   <div class="ref" id="he-controlsParticipating" data-name="controlsParticipating">
     <h3><code>controlsParticipating(player, ...traits)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-controlsParticipating">#</a></h3>
-    <p>"If you control a participating [trait] character." True if the player has a participating character with any of the traits.</p>
+    <p>"If you control a participating [trait] character." Any of the traits counts.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>player</code></td><td><code>Player</code></td><td>required</td><td>Usually <code>context.player</code>.</td></tr>
-        <tr><td><code>...traits</code></td><td><code>Trait[]</code></td><td>required</td><td>One or more traits; a character with any of them counts.</td></tr>
+        <tr><td><code>...traits</code></td><td><code>Trait[]</code></td><td>required</td><td>One or more traits.</td></tr>
       </tbody>
     </table>
     <pre><code>// Arrows from the Woods: … X is equal to 1 if you control a participating Bushi character, or 2 if you also control a participating Shinobi or Scout character. …
@@ -820,7 +813,7 @@ this.persistentEffect({
 
   <div class="ref" id="he-countTargetable" data-name="countTargetable">
     <h3><code>countTargetable(cards, context)</code> <span class="kind">Count</span> <a class="anchor" href="#he-countTargetable">#</a></h3>
-    <p>How many of <code>cards</code> can be chosen as targets together, for a variable X ("Lose X honor. Choose X characters"). It goes through the cards in order and keeps each one that can be targeted alongside those kept before.</p>
+    <p>How many of <code>cards</code> can be targeted together, for a variable X ("Lose X honor. Choose X characters").</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -829,7 +822,7 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>The order matters for restrictions that depend on the other chosen targets; the count is the result of one greedy pass, not the largest possible set.</li>
+      <li>One greedy pass in order, keeping each card targetable alongside those kept before: not the largest possible set when restrictions depend on other targets.</li>
     </ul>
     <pre><code>// Imbued With Shadows: Action: Lose X honor. Choose X characters - discard a status token from each of those characters.
 private getNumberOfLegalTargets(context: AbilityContext) {
@@ -840,7 +833,7 @@ private getNumberOfLegalTargets(context: AbilityContext) {
 
   <div class="ref" id="he-defendingAtKaiuWall" data-name="defendingAtKaiuWall">
     <h3><code>defendingAtKaiuWall(player, conflict)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-defendingAtKaiuWall">#</a></h3>
-    <p>"if the attacked province has a Kaiu Wall holding": whether <code>player</code> is the defending player and one of the conflict's provinces holds a faceup holding with the Kaiu Wall trait.</p>
+    <p>"if the attacked province has a Kaiu Wall holding": <code>player</code> is defending and a conflict province holds a faceup Kaiu Wall holding.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -849,7 +842,7 @@ private getNumberOfLegalTargets(context: AbilityContext) {
       </tbody>
     </table>
     <ul class="edge">
-      <li>"Defending" is checked with <code>player.isDefendingPlayer()</code>, which looks at the current conflict, not at <code>conflict</code>.</li>
+      <li>"Defending" uses <code>player.isDefendingPlayer()</code>, i.e. the current conflict, not <code>conflict</code>.</li>
     </ul>
     <pre><code>// Seventh Tower: Reaction: After you win a conflict as the defending player, if the attacked province has a Kaiu Wall holding -
 // Resolve the ring effect of the contested ring as if you were the attacking player.
@@ -862,7 +855,7 @@ private getNumberOfLegalTargets(context: AbilityContext) {
 
   <div class="ref" id="he-extraConflictPossible" data-name="extraConflictPossible">
     <h3><code>extraConflictPossible(player)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-extraConflictPossible">#</a></h3>
-    <p>For "you may declare an additional conflict this phase": false while the player is under a set conflict maximum (<a href="effects.html#ef-setMaxConflicts"><code>setMaxConflicts</code></a>, Waning Hostilities), or once a declared-conflict maximum (<a href="effects.html#ef-setMaxDeclaredConflicts"><code>setMaxDeclaredConflicts</code></a>, Privileged Position) is reached (<code>player.conflictManager.declaredConflictCapReached()</code>), where an additional conflict changes nothing.</p>
+    <p>For "you may declare an additional conflict this phase": false when an extra conflict would change nothing, i.e. under a set conflict maximum (<a href="effects.html#ef-setMaxConflicts"><code>setMaxConflicts</code></a>, Waning Hostilities) or once a declared-conflict maximum (<a href="effects.html#ef-setMaxDeclaredConflicts"><code>setMaxDeclaredConflicts</code></a>, Privileged Position) is reached (<code>player.conflictManager.declaredConflictCapReached()</code>).</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -870,7 +863,7 @@ private getNumberOfLegalTargets(context: AbilityContext) {
       </tbody>
     </table>
     <ul class="edge">
-      <li>Use it as the ability's <code>condition</code>, so the ability can't be triggered (and its costs paid) for nothing.</li>
+      <li>Use it as the ability's <code>condition</code>, so costs aren't paid for nothing.</li>
     </ul>
     <pre><code>// Hida O-Ushi: Reaction: After you win a conflict as the defending player - you may declare an additional [conflict-military] conflict this phase. (Max 1 per phase.)
 this.reaction('Gain additional military conflict')
@@ -885,12 +878,12 @@ this.reaction('Gain additional military conflict')
 
   <div class="ref" id="he-isOpponentsRingOrCardEffect" data-name="isOpponentsRingOrCardEffect isOwnRingEffect">
     <h3><code>isOpponentsRingOrCardEffect(player, context)</code>, <code>isOwnRingEffect(player, context)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-isOpponentsRingOrCardEffect">#</a></h3>
-    <p>Who caused an event: pass the event's <code>context</code>. <code>isOpponentsRingOrCardEffect</code> is true for "an opponent's card ability or ring effect"; <code>isOwnRingEffect</code> for "the effect of the ring" resolved by <code>player</code>.</p>
+    <p>Who caused an event; pass <code>event.context</code>. <code>isOpponentsRingOrCardEffect</code>: "an opponent's card ability or ring effect". <code>isOwnRingEffect</code>: "the effect of the ring" resolved by <code>player</code>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>player</code></td><td><code>Player</code></td><td>required</td><td>The player the text speaks for ("your").</td></tr>
-        <tr><td><code>context</code></td><td><code>AbilityContext | undefined</code></td><td>required</td><td>The context of the event, <code>event.context</code>. <code>undefined</code> gives <code>false</code>.</td></tr>
+        <tr><td><code>context</code></td><td><code>AbilityContext | undefined</code></td><td>required</td><td><code>event.context</code>. <code>undefined</code> gives <code>false</code>.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
@@ -933,7 +926,7 @@ this.persistentEffect({
 
   <div class="ref" id="he-isReducibleAttachmentPlay" data-name="isReducibleAttachmentPlay">
     <h3><code>isReducibleAttachmentPlay(context)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-isReducibleAttachmentPlay">#</a></h3>
-    <p>For "when you play an attachment … reduce the cost": whether <code>context</code> plays an attachment (or a card as one) that still costs fate, so a reduction would apply. A type guard: when true, <code>context</code> is set.</p>
+    <p>For "when you play an attachment … reduce the cost": <code>context</code> plays an attachment (or a card as one) that still costs fate. A type guard: when true, <code>context</code> is defined.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -954,7 +947,7 @@ onAbilityResolverInitiated: (event, context) =&gt;
 
   <div class="ref" id="he-otherHoldingsInSameProvince" data-name="otherHoldingsInSameProvince">
     <h3><code>otherHoldingsInSameProvince(context)</code> <span class="kind">Query</span> <a class="anchor" href="#he-otherHoldingsInSameProvince">#</a></h3>
-    <p>"each other holding in that province": the faceup holdings in the source's location, controlled by the source's controller, other than the source.</p>
+    <p>"each other holding in that province": the other faceup holdings in the source's location with the source's controller.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -962,7 +955,7 @@ onAbilityResolverInitiated: (event, context) =&gt;
       </tbody>
     </table>
     <ul class="edge">
-      <li>Returns <code>BaseCard[]</code>; the holding's location is read when you call it, so after a move it is the new province.</li>
+      <li>Returns <code>BaseCard[]</code>. The location is read at call time, so after a move it is the new province.</li>
     </ul>
     <pre><code>// Song of the Empty City: … Then, discard each other holding in that province.
 .thenIf((context) =&gt; otherHoldingsInSameProvince(context).length &gt; 0)
@@ -972,7 +965,7 @@ onAbilityResolverInitiated: (event, context) =&gt;
 
   <div class="ref" id="he-participatingGlory" data-name="participatingGlory hasMoreParticipatingGlory">
     <h3><code>participatingGlory(player)</code>, <code>hasMoreParticipatingGlory(player)</code> <span class="kind">Count and condition</span> <a class="anchor" href="#he-participatingGlory">#</a></h3>
-    <p>"if you count more current glory than your opponent among ready participating characters". <code>participatingGlory</code> sums the current glory of the player's ready participating characters; <code>hasMoreParticipatingGlory</code> compares it with the opponent's.</p>
+    <p>"if you count more current glory than your opponent among ready participating characters". <code>participatingGlory</code> sums it for one player; <code>hasMoreParticipatingGlory</code> compares with the opponent.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -980,8 +973,7 @@ onAbilityResolverInitiated: (event, context) =&gt;
       </tbody>
     </table>
     <ul class="edge">
-      <li>Bowed characters count 0.</li>
-      <li><code>hasMoreParticipatingGlory</code> is <code>false</code> without an opponent, and on a tie.</li>
+      <li><code>hasMoreParticipatingGlory</code> is <code>false</code> on a tie or without an opponent.</li>
     </ul>
     <pre><code>// Radiant Orator: Action: While this character is participating in a conflict, if you count more current glory than your opponent
 // among ready participating characters, choose an enemy character – move that character home.
@@ -992,7 +984,7 @@ onAbilityResolverInitiated: (event, context) =&gt;
 
   <div class="ref" id="he-soldierAttachCheck" data-name="soldierAttachCheck">
     <h3><code>soldierAttachCheck(owner)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-soldierAttachCheck">#</a></h3>
-    <p>Returns a check <code>(character, context) =&gt; boolean</code>: could a Soldier token be attached to this character? It asks the <code>attach</code> action with a dummy Soldier that never enters the game, so attachment restrictions ("No attachments", "cannot have Follower attachments") apply before the top card is turned into a token.</p>
+    <p>Returns a check <code>(character, context) =&gt; boolean</code>: could a Soldier token attach here? Asks the <code>attach</code> action with a dummy Soldier, so restrictions ("No attachments", "cannot have Follower attachments") apply before the top card becomes a token.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1021,7 +1013,7 @@ const canAttachSoldier = soldierAttachCheck(this.owner);
 
   <div class="ref" id="he-stateWhenLeftPlay" data-name="stateWhenLeftPlay">
     <h3><code>stateWhenLeftPlay(context)</code> <span class="kind">Query</span> <a class="anchor" href="#he-stateWhenLeftPlay">#</a></h3>
-    <p>The card that left play in the previous step of the ability, as it was then (with its tokens and fate). Use it after <code>.then()</code> when the step before sacrificed or discarded the card.</p>
+    <p>Snapshot (tokens, fate) of the card that left play in the previous step. Use after <code>.then()</code> when that step sacrificed or discarded it.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1029,7 +1021,7 @@ const canAttachSoldier = soldierAttachCheck(this.owner);
       </tbody>
     </table>
     <ul class="edge">
-      <li>Returns the snapshot of the first <code>onCardLeavesPlay</code> event of the previous step, or <code>undefined</code> if no card left play (for example the player chose not to sacrifice).</li>
+      <li>Takes the first <code>onCardLeavesPlay</code> event of the previous step; <code>undefined</code> if no card left play.</li>
     </ul>
     <pre><code>// Distinguished Dōjō: … Then, you may sacrifice this holding to gain honor equal to the number of honor tokens on this holding. …
 function honorTokens(context: AbilityContext) {
@@ -1044,11 +1036,11 @@ function honorTokens(context: AbilityContext) {
 
 <section class="group">
   <h3 class="group-title" id="he-group-rings">Claimed rings and element symbols</h3>
-  <p>A printed element on a card ("While you have claimed the [element-earth] ring") is an element symbol: other cards can replace it. Declare it in the card's <code>protected printedElementSymbols</code> list with a key unique to the card, and always ask for its current element by key (<code>getCurrentElementSymbol(key)</code>). These helpers do both.</p>
+  <p>A printed element ("While you have claimed the [element-earth] ring") is an element symbol that other cards can replace. Declare it in <code>protected printedElementSymbols</code> with a unique key and read its current element by key (<code>getCurrentElementSymbol(key)</code>). These helpers do both.</p>
 
   <div class="ref" id="he-claimedRingSymbols" data-name="claimedRingSymbols">
     <h3><code>claimedRingSymbols(symbols)</code> <span class="kind">Helper</span> <a class="anchor" href="#he-claimedRingSymbols">#</a></h3>
-    <p>Turns <code>{ key, element }</code> pairs into the card's printed element symbols, named "Claimed Ring". Assign the result to the card's <code>protected override printedElementSymbols</code>.</p>
+    <p>Turns <code>{ key, element }</code> pairs into printed element symbols named "Claimed Ring", for <code>protected override printedElementSymbols</code>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1056,7 +1048,6 @@ function honorTokens(context: AbilityContext) {
       </tbody>
     </table>
     <ul class="edge">
-      <li>Called once, as the field's value. <code>getPrintedElementSymbols()</code> returns copies, so an effect that replaces a printed element never changes the field.</li>
     </ul>
     <pre><code>// Third Tower Guard: This character gets +2[conflict-military] while you have claimed the [element-earth] or [element-water] ring.
 const elementSymbols = [
@@ -1081,7 +1072,7 @@ class ThirdTowerGuard extends DrawCard {
 
   <div class="ref" id="he-claimsRingOf" data-name="claimsRingOf">
     <h3><code>claimsRingOf(card, key, event)</code> <span class="kind">Condition</span> <a class="anchor" href="#he-claimsRingOf">#</a></h3>
-    <p>For <code>onClaimRing</code>: "After the [element] ring is claimed". True if the claimed ring has the element of <code>card</code>'s symbol <code>key</code>. A ring claimed at the end of a conflict is still contested during the claim's reactions, so the elements the attackers added count; a different ring claimed by a card effect during the conflict doesn't take the contested ring's elements.</p>
+    <p>For <code>onClaimRing</code>: "After the [element] ring is claimed". True if the claimed ring has the element of <code>card</code>'s symbol <code>key</code>. A ring claimed at the end of a conflict is still contested during the claim's reactions, so elements added to it count; another ring claimed by an effect doesn't take the contested ring's elements.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1091,7 +1082,6 @@ class ThirdTowerGuard extends DrawCard {
       </tbody>
     </table>
     <ul class="edge">
-      <li>Elements the ring has gained count (<code>hasElement</code>).</li>
       <li>Throws if <code>card</code> has no symbol <code>key</code>.</li>
     </ul>
     <pre><code>// Asako Tsuki: Reaction: After the [element-water] ring is claimed, choose a Scholar character – honor that character.
@@ -1113,7 +1103,7 @@ class ThirdTowerGuard extends DrawCard {
     </table>
     <ul class="edge">
       <li><code>false</code> when the player has no role. It doesn't check who claimed the ring: add <code>event.player === context.player</code>.</li>
-      <li><code>player.role.getElement()</code> gives the same elements as a list (Venerable Fortunist, Unveiled Destiny): every element trait of the role card, so all five for an "Allied with the &lt;Clan&gt;" role.</li>
+      <li><code>player.role.getElement()</code> lists the role's element traits (Venerable Fortunist, Unveiled Destiny); all five for an "Allied with the &lt;Clan&gt;" role.</li>
     </ul>
     <pre><code>// Keeper Initiate: Reaction: After you claim a ring that matches the element of your role – put this character into play
 // from your dynasty discard pile or provinces. Then, put 1 fate on this character.
@@ -1225,7 +1215,7 @@ this.action('Ready this character')
 
   <div class="ref" id="he-captureCost" data-name="captureCost">
     <h3><code>captureCost(name, capture)</code> <span class="kind">Cost</span> <a class="anchor" href="#he-captureCost">#</a></h3>
-    <p>A free cost that records a value as <code>context.costs[name]</code> while costs are paid. Put it before a cost that changes what you need to remember, such as "sacrifice this holding" (which moves the holding out of its province).</p>
+    <p>A free cost that records a value as <code>context.costs[name]</code>. Costs resolve in order, so add it before the cost that changes the state, such as "sacrifice this holding" (which moves the holding out of its province).</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1233,10 +1223,6 @@ this.action('Ready this character')
         <tr><td><code>capture</code></td><td><code>(context: AbilityContext) =&gt; Value</code></td><td>required</td><td>The value to record.</td></tr>
       </tbody>
     </table>
-    <ul class="edge">
-      <li>Costs resolve in the order they are added, so it must come before the cost that changes the state.</li>
-      <li>It can always be paid and prompts nobody.</li>
-    </ul>
     <pre><code>// Road to Shakyaku Mura: Interrupt: When a non-unique character you control would leave play, sacrifice this holding -
 // put that character into this province instead, adding each attachment on it to its owner's hand.
 .cost(captureCost('captureLocationCost', (context) =&gt; context.source.location))
@@ -1257,7 +1243,7 @@ this.action('Ready this character')
 
   <div class="ref" id="he-captureParentCost" data-name="captureParentCost capturedParent">
     <h3><code>captureParentCost()</code>, <code>capturedParent(context)</code> <span class="kind">Cost and helper</span> <a class="anchor" href="#he-captureParentCost">#</a></h3>
-    <p>For an attachment that pays "sacrifice this attachment" or "return this attachment to your hand" and then refers to "attached character". <code>captureParentCost()</code> is <code>captureCost('captureParentCost', …)</code> recording <code>context.source.parentCharacter</code>; <code>capturedParent(context)</code> returns the recorded character, or the current parent before the costs are paid.</p>
+    <p>For an attachment that sacrifices or returns itself as a cost and then refers to "attached character". <code>captureParentCost()</code> is <code>captureCost('captureParentCost', …)</code> recording <code>context.source.parentCharacter</code>; <code>capturedParent(context)</code> returns it, or the current parent before costs are paid.</p>
     <ul class="edge">
       <li>Add <code>captureParentCost()</code> before the cost that moves the attachment.</li>
       <li><code>capturedParent</code> can return <code>null</code> (no parent); targets usually need <code>?? []</code>.</li>
@@ -1284,8 +1270,8 @@ this.action('Gain abilities from a character in your discard pile')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Can be paid only if the triggering player controls the character, is not <code>recipient</code>, can lose honor, and <code>recipient</code> can gain honor. Otherwise the ability can't be triggered.</li>
-      <li>The honor is transferred as <code>takeHonor</code> from the triggering player to their opponent.</li>
+      <li>Payable only if the triggering player controls the character, is not <code>recipient</code>, can lose honor, and <code>recipient</code> can gain honor; otherwise the ability can't be triggered.</li>
+      <li>Paid as <code>takeHonor</code> from the triggering player to their opponent.</li>
       <li>Chat: "{player} gives {recipient} 1 honor to trigger {source}'s ability".</li>
     </ul>
     <pre><code>// Compromised Secrets: Play only if you are less honorable than an opponent.
@@ -1311,9 +1297,8 @@ this.whileAttached({
       </tbody>
     </table>
     <ul class="edge">
-      <li>It only looks at the first letter, so "Unicorn" gets "an".</li>
+      <li>Only the first letter counts: "Unicorn" gets "an".</li>
     </ul>
-    <p>Utaku Takeko's chat line names the character found by the search with "a" or "an":</p>
     <pre><code>// Utaku Takeko: Action: Search the top 8 cards of your dynasty deck for a non-unique [clan-unicorn] character …
 private msgArticle(card: DrawCard): string {
     if(card.hasTrait(Trait.Army)) {
@@ -1331,14 +1316,13 @@ private msgArticle(card: DrawCard): string {
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>required</td><td>The ability's context.</td></tr>
-        <tr><td><code>chosen</code></td><td><code>Chosen | [] | undefined</code></td><td>required</td><td>The opponent's optional target, <code>context.targets.oppCharacter</code>. An empty array means "not chosen".</td></tr>
+        <tr><td><code>chosen</code></td><td><code>Chosen | [] | undefined</code></td><td>required</td><td>The opponent's optional target, e.g. <code>context.targets.oppCharacter</code>; <code>[]</code> means not chosen.</td></tr>
         <tr><td><code>what</code></td><td><code>(chosen: Chosen) =&gt; MessageArgs</code></td><td>required</td><td>The rest of the sentence, as a <code>msg</code> template naming the chosen card or ring.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li>Pairs with <code>costs.optionalTakeHonorFromOpponent(…)</code> and an optional opponent target guarded by <code>context.costs.honorTakenFromOpponent</code>.</li>
-      <li>Empty when there is no opponent.</li>
-      <li>It returns a nested message (<code>MsgArg</code>) to put inside the ability's <code>msg</code> chat text; the players and the chosen card show as links.</li>
+      <li>Returns a nested message (<code>MsgArg</code>) for use inside a <code>msg</code> template. Empty without an opponent.</li>
     </ul>
     <pre><code>// Roadside Inn: Reaction: After the fate phase begins, choose a character. Each opponent may give you 1 honor and choose a character - …
 .chatText((context) =&gt; msg`${context.player.fate &gt; 0 ? 'place a fate from their pool on' : 'choose'} ${context.targets.myCharacter}${honorTransferMessage(context, context.targets.oppCharacter, (card) =&gt; msg`place a fate from their pool on ${card}`)}`);</code></pre>
@@ -1347,7 +1331,7 @@ private msgArticle(card: DrawCard): string {
 
   <div class="ref" id="he-lookAtProvincesMessage" data-name="lookAtProvincesMessage">
     <h3><code>lookAtProvincesMessage(context, provinces)</code> <span class="kind">Helper</span> <a class="anchor" href="#he-lookAtProvincesMessage">#</a></h3>
-    <p>The chat line for "look at a province": pass it as the <a href="game-actions.html#ga-lookAt"><code>lookAt</code></a> <code>message</code>. A province is named (<code>{source} sees {province} in {location}</code>), except the player's own facedown province, which is given only by its location (<code>{source} looks at {controller}'s {location}</code>), so the opponent doesn't learn it.</p>
+    <p>The chat line for "look at a province": pass it as the <a href="game-actions.html#ga-lookAt"><code>lookAt</code></a> <code>message</code>. Provinces are named (<code>{source} sees {province} in {location}</code>), except the player's own facedown ones, given only by location (<code>{source} looks at {controller}'s {location}</code>) so the opponent doesn't learn them.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1356,8 +1340,7 @@ private msgArticle(card: DrawCard): string {
       </tbody>
     </table>
     <ul class="edge">
-      <li>Several provinces are joined with "and" (three or more: "A, B, and C"). Named and own facedown provinces together: <code>{source} sees …, and looks at …</code>, e.g. "Reconnaissance sees Manicured Garden in province 1 and Fertile Fields in province 2, and looks at player1's province 1".</li>
-      <li>A faceup province of the player's own is named.</li>
+      <li>Mixed: <code>{source} sees … and …, and looks at …</code>.</li>
     </ul>
     <pre><code>// Hunting Falcon: Reaction: After this attachment enters play, choose a facedown province - look at that province.
 this.reaction('Look at a province')
@@ -1384,9 +1367,8 @@ this.reaction('Look at a province')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Each part is checked with <code>ready().canAffect</code> and <code>moveToConflict().canAffect</code> when the chat text is built: a bowed participant is only readied, a ready character at home is only moved.</li>
-      <li>When neither can happen it still says "move … into the conflict"; the target's game actions keep that case from being chosen.</li>
-      <li>It returns a message for <code>chatText</code>. Inside a longer <code>msg</code> template, wrap it with <code>context.game.gameChat.nested(…)</code> (Shattered Blade Pass).</li>
+      <li>Each part is checked with <code>ready().canAffect</code> and <code>moveToConflict().canAffect</code>. When neither applies it says "move … into the conflict".</li>
+      <li>Inside a longer <code>msg</code> template, wrap it with <code>context.game.gameChat.nested(…)</code> (Shattered Blade Pass).</li>
     </ul>
     <pre><code>// Fight On: Action: While you are the defending player, choose a bowed character you control – ready that character and move it to the conflict.
 this.action('Ready character and move to conflict')
@@ -1401,7 +1383,7 @@ this.action('Ready character and move to conflict')
   </div>
   <div class="ref" id="he-topCards" data-name="topCards">
     <h3><code>topCards(count, inDeck, inWords?)</code> <span class="kind">Helper</span> <a class="anchor" href="#he-topCards">#</a></h3>
-    <p>"look at the top 3 cards" in a chat line, with the number capped by the cards left in the deck: <code>'top 3 cards'</code>, or <code>'top card'</code> when one card is left (or <code>count</code> is 1).</p>
+    <p>"top 3 cards" for a chat line, capped by the cards left in the deck; <code>'top card'</code> when the result is 1.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1411,8 +1393,7 @@ this.action('Ready character and move to conflict')
       </tbody>
     </table>
     <ul class="edge">
-      <li>It returns plain text without "the" or "of …"; write those in the chat line.</li>
-      <li>The <code>deckSearch</code> game action's own chat line caps its count the same way.</li>
+      <li>Returns plain text without "the" or "of …".</li>
     </ul>
     <pre><code>// Alibi Artist: Action: If you have 6 or fewer honor – look at the top 2 cards of your conflict deck. …
 .chatText((context) =&gt; msg`look at the ${topCards(2, context.player.conflictDeck.length, true)} of their conflict deck`);</code></pre>
@@ -1432,12 +1413,12 @@ this.action('Ready character and move to conflict')
 </section>
 
 <h2 id="q-queries">Queries</h2>
-<p>Conditions and callbacks ask the game about its state: is this character participating, is the player more honorable, is the ring claimed. These are the methods card abilities call most often, counted over all card files and grouped by the object they are called on. You reach the objects from the context: <code>context.source</code> (the card), <code>context.player</code> and <code>context.player.opponent</code>, <code>context.game</code>, <code>context.game.currentConflict</code>, and in triggers <code>event.card</code>, <code>event.conflict</code>, <code>event.ring</code>.</p>
-<p class="note">Queries only read. To change the game state, use a <a href="game-actions.html">game action</a>, so that interrupts, reactions and restrictions see the change.</p>
+<p>The state queries card abilities call most, grouped by the object they are on. Reach the objects through <code>context.source</code>, <code>context.player</code>, <code>context.player.opponent</code>, <code>context.game</code>, <code>context.game.currentConflict</code>, and in triggers <code>event.card</code>, <code>event.conflict</code>, <code>event.ring</code>.</p>
+<p class="note">Queries only read. Change state with a <a href="game-actions.html">game action</a>, so interrupts, reactions and restrictions see it.</p>
 
 <section class="group">
   <h3 class="group-title" id="q-group-card-conflict">Card: conflicts</h3>
-  <p><code>isParticipating</code>, <code>isAttacking</code>, <code>isDefending</code> and <code>isParticipatingFor</code> are <code>DrawCard</code> methods: when the type is <code>BaseCard</code> (an event's card, a province), narrow with <code>card.isDrawCard()</code> first.</p>
+  <p><code>isParticipating</code>, <code>isAttacking</code>, <code>isDefending</code> and <code>isParticipatingFor</code> are <code>DrawCard</code> methods: narrow a <code>BaseCard</code> with <code>card.isDrawCard()</code> first. All are <code>false</code> outside a conflict; <code>conflictType</code> also requires that conflict type.</p>
 
   <div class="ref" id="q-isParticipating" data-name="isParticipating">
     <h3><code>card.isParticipating(conflictType?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-isParticipating">#</a></h3>
@@ -1449,8 +1430,8 @@ this.action('Ready character and move to conflict')
       </tbody>
     </table>
     <ul class="edge">
-      <li><code>false</code> outside a conflict, and while the attacking player is still declaring the conflict: it becomes true once the declaration is confirmed. <code>isAttacking()</code> doesn't wait for that.</li>
-      <li>A character that participates from home (an effect such as "considered to be participating") counts, although <code>isAtHome()</code> is true.</li>
+      <li><code>false</code> while the conflict is still being declared; true once the declaration is confirmed. <code>isAttacking()</code> doesn't wait for that.</li>
+      <li>A character participating from home ("considered to be participating") counts, although <code>isAtHome()</code> is true.</li>
     </ul>
     <pre><code>// Burnished Reputation: Conflict Action: Choose a participating character - honor it.
 cardCondition: (card) =&gt; card.isParticipating()</code></pre>
@@ -1467,8 +1448,8 @@ cardCondition: (card) =&gt; card.isParticipating()</code></pre>
       </tbody>
     </table>
     <ul class="edge">
-      <li><code>false</code> outside a conflict. True as soon as the character is declared, before the declaration is confirmed.</li>
-      <li>Includes characters that participate from home on that side.</li>
+      <li>True as soon as the character is declared, before the declaration is confirmed.</li>
+      <li>Includes characters participating from home on that side.</li>
     </ul>
     <pre><code>// Meditations on the Tao: Conflict Action: Choose an attacking character – remove 1 fate from that character.
 cardCondition: (card) =&gt; card.isAttacking()
@@ -1480,7 +1461,7 @@ condition: (context) =&gt; context.source.isDefending(),</code></pre>
 
   <div class="ref" id="q-isParticipatingFor" data-name="isParticipatingFor">
     <h3><code>card.isParticipatingFor(player)</code> <span class="kind">Query</span> <a class="anchor" href="#q-isParticipatingFor">#</a></h3>
-    <p>True for a character participating on <code>player</code>'s side: attacking while <code>player</code> is the attacking player, or defending while <code>player</code> is the defending player. "A character on the enemy side" is <code>card.isParticipatingFor(context.player.opponent)</code>.</p>
+    <p>True for a character participating on <code>player</code>'s side. "A character on the enemy side" is <code>card.isParticipatingFor(context.player.opponent)</code>.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1488,7 +1469,7 @@ condition: (context) =&gt; context.source.isDefending(),</code></pre>
       </tbody>
     </table>
     <ul class="edge">
-      <li>It doesn't check who controls the character: a character you took control of counts for the side it participates on.</li>
+      <li>Ignores control: a character counts for the side it participates on.</li>
     </ul>
     <pre><code>// Brash Samurai: Action: While this character is your only participating character in a conflict – honor this character.
 context.source.isParticipatingFor(context.player) &amp;&amp;</code></pre>
@@ -1497,10 +1478,9 @@ context.source.isParticipatingFor(context.player) &amp;&amp;</code></pre>
 
   <div class="ref" id="q-isAtHome" data-name="isAtHome isInConflict">
     <h3><code>card.isAtHome()</code>, <code>card.isInConflict()</code> <span class="kind">Query</span> <a class="anchor" href="#q-isAtHome">#</a></h3>
-    <p>Where the character is: in the conflict, or at home. <code>isAtHome()</code> is <code>!isInConflict()</code>.</p>
+    <p>Where the character is, not whether it participates: a character participating from home is at home. <code>isAtHome()</code> is <code>!isInConflict()</code>.</p>
     <ul class="edge">
-      <li>These read where the card is, not whether it participates: a character participating from home is at home.</li>
-      <li>On any card, also outside a conflict; a card not in play is "at home".</li>
+      <li>Works on any card, also outside a conflict; a card not in play is "at home".</li>
     </ul>
     <pre><code>// Iuchi Soulweaver: … It does not bow as a result of conflict resolution in conflicts in which it is at home. …
 condition: (context) =&gt; context.source.isAtHome(),</code></pre>
@@ -1510,10 +1490,11 @@ condition: (context) =&gt; context.source.isAtHome(),</code></pre>
 
 <section class="group">
   <h3 class="group-title" id="q-group-card-identity">Card: traits, type and identity</h3>
+  <p>Trait, keyword and clan queries read the current value: printed, plus gained, minus lost.</p>
 
   <div class="ref" id="q-anotherUniqueInPlay" data-name="anotherUniqueInPlay">
     <h3><code>card.anotherUniqueInPlay(player)</code> <span class="kind">Query</span> <a class="anchor" href="#q-anotherUniqueInPlay">#</a></h3>
-    <p>True if the card is unique and another card with the same printed name is in play, owned or controlled by <code>player</code>, or owned by this card's owner. Use it before taking or giving control of a character.</p>
+    <p>True if the card is unique and another card with the same printed name is in play, owned or controlled by <code>player</code> or owned by this card's owner. Check it before changing control of a character.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1535,10 +1516,10 @@ event.card.hasEveryTrait(Trait.Fire, Trait.Spell)</code></pre>
 
   <div class="ref" id="q-hasKeyword" data-name="hasKeyword">
     <h3><code>card.hasKeyword(keyword)</code> <span class="kind">Query</span> <a class="anchor" href="#q-hasKeyword">#</a></h3>
-    <p>True if the card currently has the keyword (a <code>PrintedKeyword</code>: covert, pride, sincerity, …): printed or gained, and not lost.</p>
+    <p>True if the card currently has the keyword (a <code>PrintedKeyword</code>: covert, pride, sincerity, …).</p>
     <ul class="edge">
-      <li>A gained and a lost copy cancel out: the keyword counts if it was added more often than removed.</li>
-      <li>A card that lost its gained abilities only keeps keywords from its own effects, including its printed ones.</li>
+      <li>Counts if added more often than removed.</li>
+      <li>A card that lost its gained abilities keeps only keywords from its own effects, printed ones included.</li>
     </ul>
     <pre><code>// Battle Aspirant: … choose a character your opponent controls without covert - …
 cardCondition: (card) =&gt; !card.hasKeyword('covert')</code></pre>
@@ -1555,7 +1536,7 @@ cardCondition: (card) =&gt; card.hasSomeTrait(Trait.Scholar, Trait.Monk)</code><
 
   <div class="ref" id="q-hasTrait" data-name="hasTrait">
     <h3><code>card.hasTrait(trait)</code> <span class="kind">Query</span> <a class="anchor" href="#q-hasTrait">#</a></h3>
-    <p>True if the card currently has the trait: printed or gained, and not lost.</p>
+    <p>True if the card currently has the trait.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1572,13 +1553,13 @@ cardCondition: (card) =&gt; !card.hasTrait(Trait.Weapon)</code></pre>
 
   <div class="ref" id="q-getTraits" data-name="getTraits">
     <h3><code>card.getTraits()</code> <span class="kind">Query</span> <a class="anchor" href="#q-getTraits">#</a></h3>
-    <p>The card's current traits as a <code>Set&lt;string&gt;</code>: printed, plus gained, minus lost. A new set on each call. They are plain strings, not <code>Trait</code> values; to compare two cards use <code>sharesTrait</code>.</p>
+    <p>The card's current traits as a new <code>Set&lt;string&gt;</code> (plain strings, not <code>Trait</code>). To compare two cards use <code>sharesTrait</code>.</p>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Unicorn/TheEastWind.ts">The East Wind</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/HirumasEyes.ts">Hiruma&#x27;s Eyes</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/OpportunisticRustler.ts">Opportunistic Rustler</a></p>
   </div>
 
   <div class="ref" id="q-sharesTrait" data-name="sharesTrait">
     <h3><code>card.sharesTrait(other)</code> <span class="kind">Query</span> <a class="anchor" href="#q-sharesTrait">#</a></h3>
-    <p>Whether this card and <code>other</code> have at least one trait in common now (printed, gained, minus lost).</p>
+    <p>Whether this card and <code>other</code> currently share a trait.</p>
     <pre><code>// Hiruma's Eyes: … each defending character that shares a trait with that character gets -2[conflict-military], …
 return defenders.filter((a) =&gt; a.sharesTrait(card));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/SpellScroll.ts">Spell Scroll</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/HirumasEyes.ts">Hiruma's Eyes</a></p>
@@ -1594,10 +1575,7 @@ if(attachment.hasTrait(Trait.Poison) &amp;&amp; !this.isBlank()) {</code></pre>
 
   <div class="ref" id="q-isCharacter" data-name="isCharacter isDrawCard isProvinceCard">
     <h3><code>card.isCharacter()</code>, <code>card.isDrawCard()</code>, <code>card.isProvinceCard()</code> <span class="kind">Type guard</span> <a class="anchor" href="#q-isCharacter">#</a></h3>
-    <p>Narrow a <code>BaseCard</code> before calling methods that only some cards have. <code>isCharacter()</code> checks the current type (<code>type === CardType.Character</code>) and narrows to <code>DrawCard</code>; <code>isDrawCard()</code> is true for every dynasty and conflict card; <code>isProvinceCard()</code> for province cards.</p>
-    <ul class="edge">
-      <li><code>isDrawCard()</code> doesn't check the type: holdings, events and attachments are draw cards too.</li>
-    </ul>
+    <p>Narrow a <code>BaseCard</code>. <code>isCharacter()</code> checks the current type and narrows to <code>DrawCard</code>; <code>isDrawCard()</code> is true for every dynasty and conflict card (holdings, events, attachments too); <code>isProvinceCard()</code> for provinces.</p>
     <pre><code>// Master of Bindings: Reaction: After a character an opponent controls with printed cost 3 or lower is readied - bow that character.
 card.isCharacter() &amp;&amp;</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/CourtGames.ts">Court Games</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/CeaselessDuty.ts">Ceaseless Duty</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Lion/PromisingHohei.ts">Promising Hohei</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Lion/LiaisonToTheAncestors.ts">Liaison to the Ancestors</a> and others</p>
@@ -1605,7 +1583,7 @@ card.isCharacter() &amp;&amp;</code></pre>
 
   <div class="ref" id="q-isFaction" data-name="isFaction">
     <h3><code>card.isFaction(faction)</code> <span class="kind">Query</span> <a class="anchor" href="#q-isFaction">#</a></h3>
-    <p>True if the card belongs to the clan: printed, or gained through an effect, and not lost. A copied character uses the copied card's clan.</p>
+    <p>True if the card currently belongs to the clan. A copy uses the copied card's clan.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1613,7 +1591,7 @@ card.isCharacter() &amp;&amp;</code></pre>
       </tbody>
     </table>
     <ul class="edge">
-      <li><code>'neutral'</code> is true only for a card whose only faction is neutral; a neutral card that gained a clan is no longer neutral.</li>
+      <li><code>'neutral'</code> is false once a neutral card gains a clan.</li>
     </ul>
     <pre><code>// Way of the Crane: Action: Choose a [clan-crane] character you control – honor that character.
 cardCondition: (card) =&gt; card.isFaction('crane')</code></pre>
@@ -1634,10 +1612,9 @@ cardCondition: (card) =&gt; card.isFaction('crane')</code></pre>
 
   <div class="ref" id="q-costLessThan" data-name="costLessThan">
     <h3><code>card.costLessThan(num)</code> <span class="kind">Query</span> <a class="anchor" href="#q-costLessThan">#</a></h3>
-    <p>True if the card's printed cost is lower than <code>num</code>, read through <a href="#q-getCost"><code>getCost()</code></a>: a copy has the copied character's cost (RRG Copy).</p>
+    <p>True if the printed cost is lower than <code>num</code>, read through <a href="#q-getCost"><code>getCost()</code></a>: a copy has the copied character's cost (RRG Copy), a dash counts as 0 (RRG Cost).</p>
     <ul class="edge">
-      <li>A dash cost counts as 0 (RRG Cost). <code>false</code> for a holding or a token (no cost, ruling #1116), and when <code>num</code> is <code>null</code> (comparing with a card that has no cost).</li>
-      <li>"Printed cost X or lower" is <a href="#q-costAtMost"><code>costAtMost(X)</code></a>; "X or higher" is <a href="#q-costAtMost"><code>costAtLeast(X)</code></a>.</li>
+      <li><code>false</code> for a holding or token (no cost, ruling #1116) and when <code>num</code> is <code>null</code>.</li>
     </ul>
     <pre><code>// Assassination: Conflict Action: Lose 3 honor. Choose a character with printed cost 2 or lower – discard that character. …
 cardCondition: (card) =&gt; card.costLessThan(3)</code></pre>
@@ -1646,7 +1623,7 @@ cardCondition: (card) =&gt; card.costLessThan(3)</code></pre>
 
   <div class="ref" id="q-costAtMost" data-name="costAtMost costAtLeast">
     <h3><code>card.costAtMost(num)</code>, <code>card.costAtLeast(num)</code> <span class="kind">Query</span> <a class="anchor" href="#q-costAtMost">#</a></h3>
-    <p>"Printed cost <code>num</code> or lower" and "<code>num</code> or higher", read like <a href="#q-costLessThan"><code>costLessThan()</code></a>: a copy's cost is the copied character's, a dash counts as 0, and a token or holding never matches. <code>num</code> may be another card's <code>getCost()</code>; <code>null</code> never matches.</p>
+    <p>"Printed cost <code>num</code> or lower" / "or higher", with the same rules as <a href="#q-costLessThan"><code>costLessThan()</code></a>. <code>num</code> may be another card's <code>getCost()</code>.</p>
     <pre><code>// Chronicler of Calamities: Conflict Action: Choose a character on the enemy side with equal or lower printed cost than a character on your side. …
 .some((myCard) =&gt; card.costAtMost(myCard.getCost()))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/ChroniclerOfCalamities.ts">Chronicler of Calamities</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/GoodOmen.ts">Good Omen</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/HumbleMagistrate.ts">Humble Magistrate</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Scorpion/KagiNawa.ts">Kagi Nawa</a> and others</p>
@@ -1654,7 +1631,7 @@ cardCondition: (card) =&gt; card.costLessThan(3)</code></pre>
 
   <div class="ref" id="q-getCost" data-name="getCost">
     <h3><code>card.getCost()</code> <span class="kind">Query</span> <a class="anchor" href="#q-getCost">#</a></h3>
-    <p>The card's printed cost, or the printed cost of the character it copies. <code>number | null</code>: a dash cost counts as 0 (RRG Cost), <code>null</code> only for a holding or a token (Soldier, Unleashed Hound, …), which print no cost. Compare costs with <a href="#q-costLessThan"><code>costLessThan()</code></a>, <a href="#q-costAtMost"><code>costAtMost()</code></a> or <code>costAtLeast()</code>, which keep tokens out; read <code>getCost() ?? 0</code> only for a number (a sum, a count of cards).</p>
+    <p>The card's printed cost, or the printed cost of the character it copies. <code>number | null</code>: a dash counts as 0 (RRG Cost); <code>null</code> only for a holding or token, which print no cost. Compare with <a href="#q-costLessThan"><code>costLessThan()</code></a> / <a href="#q-costAtMost"><code>costAtMost()</code></a> / <code>costAtLeast()</code>, which keep tokens out; use <code>getCost() ?? 0</code> only for sums.</p>
     <pre><code>// Ambush: … choose up to 2 [clan-scorpion] characters with total printed cost 6 or lower from your hand and/or provinces …
 cardStat: (card) =&gt; card.getCost() ?? 0,</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Ambush.ts">Ambush</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/OfferTestimony.ts">Offer Testimony</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/ParanoidHososhi.ts">Paranoid Hōsōshi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MarvelousBeings.ts">Marvelous Beings</a> and others</p>
@@ -1662,7 +1639,7 @@ cardStat: (card) =&gt; card.getCost() ?? 0,</code></pre>
 
   <div class="ref" id="q-printedCost" data-name="printedCost">
     <h3><code>card.printedCost</code> <span class="kind">Field</span> <a class="anchor" href="#q-printedCost">#</a></h3>
-    <p>"Printed cost": the number on the card, ignoring copies and modifiers. <code>number | null</code>: <code>null</code> for a dash on a non-event and for cards that print no cost; a dash-cost event gets 0. Card abilities read "printed cost" through <a href="#q-getCost"><code>getCost()</code></a> and the comparisons (a copy has the copied character's cost); the field is for the cost to play a card.</p>
+    <p>"Printed cost": the number on the card, ignoring copies and modifiers. <code>number | null</code>: <code>null</code> for a dash on a non-event and for cards that print no cost; a dash-cost event gets 0. Card text "printed cost" means <a href="#q-getCost"><code>getCost()</code></a> (copies count); this field is for the cost to play a card.</p>
     <pre><code>// Root Out Heresy: … where X is the cost of the discarded card.
 // a card in a discard pile is never a copy: its printed cost is its cost
 return -1 * (card.isDrawCard() ? card.printedCost ?? 0 : 0);</code></pre>
@@ -1679,7 +1656,7 @@ cardCondition: (card) =&gt; card.getFate() === 0</code></pre>
 
   <div class="ref" id="q-isDire" data-name="isDire">
     <h3><code>card.isDire()</code> <span class="kind">Query</span> <a class="anchor" href="#q-isDire">#</a></h3>
-    <p>True for a draw card with no fate (<code>getFate() === 0</code>); always false for other cards. Dire abilities use the card method <a href="builder.html#cm-dire"><code>dire(…)</code></a>, which checks this for you.</p>
+    <p>True for a draw card with no fate (<code>getFate() === 0</code>). Dire abilities use <a href="builder.html#cm-dire"><code>dire(…)</code></a>, which checks this.</p>
     <pre><code>// Togashi Kazue: Each character you control gains: "Dire - You may trigger each of this character's triggered abilities an additional time …"
 condition: (context) =&gt; context.source.isDire(),</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.3-ACO/TogashiKazue2.ts">Togashi Kazue</a></p>
@@ -1687,7 +1664,7 @@ condition: (context) =&gt; context.source.isDire(),</code></pre>
 
   <div class="ref" id="q-militarySkill" data-name="militarySkill politicalSkill glory getMilitarySkill getPoliticalSkill">
     <h3><code>card.militarySkill</code>, <code>card.politicalSkill</code>, <code>card.glory</code> <span class="kind">Getters</span> <a class="anchor" href="#q-militarySkill">#</a></h3>
-    <p>The current skill and glory, with all modifiers. <code>getMilitarySkill(floor = true)</code> and <code>getPoliticalSkill(floor = true)</code> are the same with the floor as a parameter: with <code>false</code>, a negative total stays negative.</p>
+    <p>Current skill and glory with all modifiers. <code>getMilitarySkill(floor = true)</code> / <code>getPoliticalSkill(floor = true)</code>: with <code>false</code>, a negative total stays negative.</p>
     <ul class="edge">
       <li>A dash skill reads as 0. Use <code>hasDash(type)</code> to tell a dash from 0.</li>
       <li>Skill isn't contribution: a bowed character still has skill. "contributes zero skill" is <code>conflict.calculateSkillFor([card]) === 0</code>.</li>
@@ -1699,7 +1676,7 @@ return context.player.opponent?.charactersInPlay.filter((card) =&gt; card.milita
 
   <div class="ref" id="q-getBaseMilitarySkill" data-name="getBaseMilitarySkill getBasePoliticalSkill">
     <h3><code>card.getBaseMilitarySkill()</code>, <code>card.getBasePoliticalSkill()</code> <span class="kind">Query</span> <a class="anchor" href="#q-getBaseMilitarySkill">#</a></h3>
-    <p>The base skill: the printed skill as changed by effects that set or modify base skill ("double that character's base skill"), without the other modifiers. Also available as the getters <code>baseMilitarySkill</code> and <code>basePoliticalSkill</code>.</p>
+    <p>Printed skill changed only by base-skill effects ("double that character's base skill"). Also the getters <code>baseMilitarySkill</code> / <code>basePoliticalSkill</code>.</p>
     <pre><code>// Way of the Lion: Action: During a conflict, choose a [clan-lion] character – double that character's base [conflict-military] skill …
 cardCondition: (card) =&gt; card.isFaction('lion') &amp;&amp; card.getBaseMilitarySkill() &gt; 0</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/WayOfTheLion.ts">Way of the Lion</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/TrueStrikeKenjutsu.ts">True Strike Kenjutsu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/CantorOfGales.ts">Cantor of Gales</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/CollapsibleTunnels.ts">Collapsible Tunnels</a></p>
@@ -1707,11 +1684,11 @@ cardCondition: (card) =&gt; card.isFaction('lion') &amp;&amp; card.getBaseMilita
 
   <div class="ref" id="q-getMilitarySkillExcludingModifiers" data-name="getMilitarySkillExcludingModifiers getPoliticalSkillExcludingModifiers">
     <h3><code>card.getMilitarySkillExcludingModifiers(exclusions, floor?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getMilitarySkillExcludingModifiers">#</a></h3>
-    <p>The current military (or, with <code>getPoliticalSkillExcludingModifiers</code>, political) skill without some modifiers: "ignoring the skill modifiers of attachments".</p>
+    <p>Current military (or political) skill without some modifiers: "ignoring the skill modifiers of attachments".</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>exclusions</code></td><td><code>Exclusions | EffectName</code></td><td>required</td><td>The effect names to leave out, or a function that picks the modifiers to leave out.</td></tr>
+        <tr><td><code>exclusions</code></td><td><code>Exclusions | EffectName</code></td><td>required</td><td>Effect names, or a function picking the modifiers to leave out.</td></tr>
         <tr><td><code>floor</code></td><td><code>boolean</code></td><td><code>true</code></td><td>Floor the total at 0.</td></tr>
       </tbody>
     </table>
@@ -1725,7 +1702,7 @@ statistic: (card, duelRules) =&gt;
 
   <div class="ref" id="q-hasDash" data-name="hasDash">
     <h3><code>card.hasDash(type?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-hasDash">#</a></h3>
-    <p>True if the character's base skill of <code>type</code> is a dash. Without <code>type</code>, true if either skill is a dash.</p>
+    <p>True if the base skill of <code>type</code> (either, if omitted) is a dash.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1742,7 +1719,7 @@ condition: (context) =&gt; !!context.source.parentCharacter &amp;&amp; !context.
 
   <div class="ref" id="q-bowed" data-name="bowed">
     <h3><code>card.bowed</code> <span class="kind">Field</span> <a class="anchor" href="#q-bowed">#</a></h3>
-    <p>True if the card is bowed. Change it with the <code>bow</code> and <code>ready</code> game actions, not by setting the field (specs may set it directly).</p>
+    <p>True if the card is bowed. Change it with the <code>bow</code> / <code>ready</code> game actions (specs may set it directly).</p>
     <pre><code>// Doji Gift Giver: … That opponent must choose a ready participating character he or she controls – bow that character.
 cardCondition: (card) =&gt; card.isParticipating() &amp;&amp; !card.bowed</code></pre>
     <p class="seen">Used by many cards, for example <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DojiGiftGiver.ts">Doji Gift Giver</a>.</p>
@@ -1750,7 +1727,7 @@ cardCondition: (card) =&gt; card.isParticipating() &amp;&amp; !card.bowed</code>
 
   <div class="ref" id="q-isHonored" data-name="isHonored isDishonored isTainted">
     <h3><code>card.isHonored</code>, <code>card.isDishonored</code>, <code>card.isTainted</code> <span class="kind">Getters</span> <a class="anchor" href="#q-isHonored">#</a></h3>
-    <p>True if the card has the status token. A token that is treated as another status (Disciple of Deception) counts as the status it grants.</p>
+    <p>True if the card has the status token. A token treated as another status (Disciple of Deception) counts as the status it grants.</p>
     <pre><code>// Voice of Honor: Interrupt: When the effects of an event would initiate, if you control more honored characters than each opponent – …
 context.player.inPlay({ attachments: true }).filter((card) =&gt; card.isHonored).length &gt;</code></pre>
     <p class="seen">Used by many cards, for example <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/VoiceOfHonor.ts">Voice of Honor</a>.</p>
@@ -1766,7 +1743,7 @@ condition: (context) =&gt; context.source.isOrdinary(),</code></pre>
 
   <div class="ref" id="q-getStatusToken" data-name="getStatusToken hasStatusToken">
     <h3><code>card.getStatusToken(type)</code>, <code>card.hasStatusToken(type)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getStatusToken">#</a></h3>
-    <p>The card's status token granting <code>type</code> (<code>CharacterStatus.Honored</code>, <code>Dishonored</code>, <code>Tainted</code>), or <code>undefined</code>; <code>hasStatusToken</code> is the boolean form. Status token game actions (discard, move) take the token as their target.</p>
+    <p>The card's status token granting <code>type</code> (<code>CharacterStatus.Honored</code>, <code>Dishonored</code>, <code>Tainted</code>), or <code>undefined</code>; <code>hasStatusToken</code> is the boolean form. Status token game actions (discard, move) take the token as target.</p>
     <pre><code>// Origami Master: Pride. Action: Choose another character you control – move an honored status token from this character to the chosen character.
 target: context.source.getStatusToken(CharacterStatus.Honored),</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/OrigamiMaster.ts">Origami Master</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/BayushiCollector.ts">Bayushi Collector</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/CourtOfDeception.ts">Court of Deception</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/PledgeOfLoyalty.ts">Pledge of Loyalty</a> and others</p>
@@ -1774,7 +1751,7 @@ target: context.source.getStatusToken(CharacterStatus.Honored),</code></pre>
 
   <div class="ref" id="q-getTokenCount" data-name="getTokenCount hasToken">
     <h3><code>card.getTokenCount(type)</code>, <code>card.hasToken(type)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getTokenCount">#</a></h3>
-    <p>How many tokens of <code>type</code> (<code>TokenType.Honor</code>, the only type) are on the card; <code>hasToken</code> is true for one or more. These are the honor tokens of holdings and provinces, not status tokens.</p>
+    <p>Count of tokens of <code>type</code> (<code>TokenType.Honor</code>, the only type: honor tokens on holdings and provinces, not status tokens). <code>hasToken</code>: one or more.</p>
     <pre><code>// Fortified Assembly: … This province gets +2 strength for each honor token on it. …
 effect: modifyProvinceStrength((_province, context) =&gt; context.source.getTokenCount(TokenType.Honor) * 2)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.4-TCoH/FortifiedAssembly.ts">Fortified Assembly</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/EndlessArchives.ts">Endless Archives</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/PropitiousMarket.ts">Propitious Market</a> and others</p>
@@ -1786,10 +1763,10 @@ effect: modifyProvinceStrength((_province, context) =&gt; context.source.getToke
 
   <div class="ref" id="q-parentCharacter" data-name="parentCharacter parentProvince">
     <h3><code>card.parentCharacter</code>, <code>card.parentProvince</code> <span class="kind">Getters</span> <a class="anchor" href="#q-parentCharacter">#</a></h3>
-    <p>"Attached character" / "attached province": what an attachment is attached to, or <code>null</code> when it is attached to something else or to nothing. A detached card has no parent.</p>
+    <p>"Attached character" / "attached province", or <code>null</code> when attached to something else or nothing.</p>
     <ul class="edge">
-      <li><code>card.parent</code> is the raw host (it can also be a ring or a holding); prefer these getters for card text.</li>
-      <li>Game actions need a target, so write <code>context.source.parentCharacter ?? []</code>.</li>
+      <li><code>card.parent</code> is the raw host (also a ring or holding); prefer these getters.</li>
+      <li>As a game action target write <code>context.source.parentCharacter ?? []</code>.</li>
     </ul>
     <pre><code>// Court Mask: Action: Return this attachment to your hand and dishonor attached character.
 .dishonor((context) =&gt; ({ target: context.source.parentCharacter ?? [] }))
@@ -1800,17 +1777,17 @@ context.source.parentProvince?.isConflictProvince()</code></pre>
 
   <div class="ref" id="q-canAttach" data-name="canAttach">
     <h3><code>card.canAttach(parent, properties?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-canAttach">#</a></h3>
-    <p>Whether this attachment's own restrictions allow <code>parent</code>: a character, the card is an attachment, and the <code>attachmentConditions</code> (control, unique, faction, trait, card condition) are met. <code>ProvinceAttachment</code> and <code>RingAttachment</code> override it; a card states its restrictions with <code>attachmentConditions</code>.</p>
+    <p>Whether this attachment's own restrictions allow <code>parent</code>: a character, the card is an attachment, and its <code>attachmentConditions</code> (control, unique, faction, trait, card condition) hold. <code>ProvinceAttachment</code> and <code>RingAttachment</code> override it.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>parent</code></td><td><code>BaseCard | Ring</code></td><td>none</td><td>The card to attach to; a ring or no parent is always refused here.</td></tr>
+        <tr><td><code>parent</code></td><td><code>BaseCard | Ring</code></td><td>none</td><td>The card to attach to; a ring or none is refused.</td></tr>
         <tr><td><code>properties.ignoreType</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Allow a card that isn't an attachment.</td></tr>
         <tr><td><code>properties.controller</code></td><td><code>Player</code></td><td>the card's controller</td><td>Who would control the attachment, for "my control" checks.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
-      <li>This is not the whole legality check: the <code>attach</code> game action also checks uniqueness, copies, restrictions on the parent and its allowed attachment traits. In a condition use <code>attach({ attachment }).canAffect(parent, context)</code>.</li>
+      <li>Not the full legality check: the <code>attach</code> game action also checks uniqueness, copies, the parent's restrictions and allowed attachment traits. For that use <code>attach({ attachment }).canAffect(parent, context)</code>.</li>
     </ul>
     <pre><code>// Niten: Action: During a conflict in which attached character is participating, return this attachment to your hand - put an attachment from your hand into play attached to the same character. (Max 1 per round.)
 cardCondition: (card, context) =&gt; card.canAttach(capturedParent(context) ?? undefined)</code></pre>
@@ -1819,9 +1796,9 @@ cardCondition: (card, context) =&gt; card.canAttach(capturedParent(context) ?? u
 
   <div class="ref" id="q-canBeAttacked" data-name="canBeAttacked isEligibleToBeAttacked">
     <h3><code>province.canBeAttacked()</code>, <code>province.isEligibleToBeAttacked()</code> <span class="kind">Query</span> <a class="anchor" href="#q-canBeAttacked">#</a></h3>
-    <p><code>ProvinceCard</code>. <code>isEligibleToBeAttacked()</code> is true if the province is eligible to be attacked: unbroken, not protected by a "cannot be attacked" effect, and the stronghold province only after 3 other provinces are broken (or an effect allows it). <code>canBeAttacked()</code> also needs the opponent to be able to pay the fate costs of declaring a conflict against it; use it for "could be declared against".</p>
+    <p><code>ProvinceCard</code>. <code>isEligibleToBeAttacked()</code>: unbroken, no "cannot be attacked" effect, and the stronghold province only after 3 other provinces are broken (or an effect allows it). <code>canBeAttacked()</code> also needs the opponent to be able to pay the fate costs of declaring against it ("could be declared against").</p>
     <ul class="edge">
-      <li>During a conflict, use <code>isEligibleToBeAttacked()</code> for "an eligible province" (moving the conflict, A War on Two Fronts, Diversionary Maneuver): the declaration's fate costs aren't paid again (RRG Eligible; <a href="game-actions.html#ga-moveConflict"><code>moveConflict</code></a> checks it this way).</li>
+      <li>During a conflict, use <code>isEligibleToBeAttacked()</code> for "an eligible province" (A War on Two Fronts, <a href="game-actions.html#ga-moveConflict"><code>moveConflict</code></a>): declaration costs aren't paid again (RRG Eligible).</li>
     </ul>
     <pre><code>// Scout's Steed: … choose an opponent's eligible facedown province - …
 cardCondition: (card, context) =&gt; card.isFacedown() &amp;&amp; card.canBeAttacked() &amp;&amp; card.controller !== context.player</code></pre>
@@ -1838,7 +1815,7 @@ const province = this.conflictProvinceWithText();</code></pre>
 
   <div class="ref" id="q-getCurrentElementSymbol" data-name="getCurrentElementSymbol">
     <h3><code>card.getCurrentElementSymbol(key)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getCurrentElementSymbol">#</a></h3>
-    <p>The current element of one of the card's printed element symbols. Effects can replace a printed element, so never compare with the printed element directly.</p>
+    <p>The current element of one of the card's printed element symbols. Effects can replace it, so never compare with the printed element.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -1872,7 +1849,7 @@ protected override printedElementSymbols = [
 
   <div class="ref" id="q-getStrength" data-name="getStrength">
     <h3><code>province.getStrength()</code> <span class="kind">Query</span> <a class="anchor" href="#q-getStrength">#</a></h3>
-    <p><code>ProvinceCard</code>. The current strength: base strength, modifiers, and the stronghold or holding bonus, multiplied by multiplier effects, at least 0. A "set strength" effect replaces all of it.</p>
+    <p><code>ProvinceCard</code>. Base strength plus modifiers and stronghold/holding bonus, times multipliers, at least 0. A "set strength" effect replaces all of it.</p>
     <pre><code>// Siege Warfare: … the attacked province gets -2 strength (to a minimum of 0).
 cardCondition: (card) =&gt; card.getStrength() &gt; 0,</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/NezumiInfiltrator.ts">Nezumi Infiltrator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.6-SD/HeroOfThreeTrees.ts">Hero of Three Trees</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Unicorn/ShinjoAtagi.ts">Shinjo Atagi</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Phoenix/IsawaHaruyo.ts">Isawa Haruyo</a> and others</p>
@@ -1880,7 +1857,7 @@ cardCondition: (card) =&gt; card.getStrength() &gt; 0,</code></pre>
 
   <div class="ref" id="q-isBroken" data-name="isBroken">
     <h3><code>province.isBroken</code> <span class="kind">Field</span> <a class="anchor" href="#q-isBroken">#</a></h3>
-    <p>True if the province is broken ("unbroken province" is <code>!province.isBroken</code>). Only a <code>ProvinceCard</code> has it.</p>
+    <p><code>ProvinceCard</code>. True if the province is broken.</p>
     <pre><code>// Rebuild: Action: Shuffle a card in one of your unbroken provinces back into your dynasty deck. …
 !card.controller.getProvinceCardInProvince(card.location)?.isBroken</code></pre>
     <p class="seen">Used by many cards, for example <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Rebuild.ts">Rebuild</a>.</p>
@@ -1890,7 +1867,7 @@ cardCondition: (card) =&gt; card.getStrength() &gt; 0,</code></pre>
     <h3><code>province.isConflictProvince()</code> <span class="kind">Query</span> <a class="anchor" href="#q-isConflictProvince">#</a></h3>
     <p>True if this province is attacked in the current conflict (the declared one or one added by an effect).</p>
     <ul class="edge">
-      <li>Only a <code>ProvinceCard</code> can return true; on other cards it is always <code>false</code>. For a holding or attachment, ask its province: <code>context.source.parentProvince?.isConflictProvince()</code>, or use <code>isInConflictProvince()</code>.</li>
+      <li>Always <code>false</code> on non-province cards. For a holding or attachment use <code>isInConflictProvince()</code> or <code>context.source.parentProvince?.isConflictProvince()</code>.</li>
     </ul>
     <pre><code>// Blood of Onnotangu: … During conflicts at this province, each player cannot spend fate from his or her fate pool.
 condition: (context) =&gt; context.source.isConflictProvince(),</code></pre>
@@ -1899,10 +1876,7 @@ condition: (context) =&gt; context.source.isConflictProvince(),</code></pre>
 
   <div class="ref" id="q-isFaceup" data-name="isFaceup isFacedown">
     <h3><code>card.isFaceup()</code>, <code>card.isFacedown()</code> <span class="kind">Query</span> <a class="anchor" href="#q-isFaceup">#</a></h3>
-    <p>Whether the card is face up or face down.</p>
-    <ul class="edge">
-      <li>In a game mode without province cards (Skirmish), a province is neither: both return <code>false</code>.</li>
-    </ul>
+    <p>Whether the card is face up or face down. In Skirmish (no province cards) a province is neither.</p>
     <pre><code>// Border Fortress: Action: During a conflict at this province, choose a facedown province – reveal that province.
 cardCondition: (card) =&gt; card.isFacedown()</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BorderlandsFortifications.ts">Borderlands Fortifications</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/07-WotW/AgashaTaiko.ts">Agasha Taiko</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/Kakudaira.ts">Kakudaira</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/StokeInsurrection.ts">Stoke Insurrection</a> and others</p>
@@ -1926,7 +1900,7 @@ cardCondition: (card) =&gt; card.isInConflictProvince() &amp;&amp; card.isFacedo
 
   <div class="ref" id="q-isInProvince" data-name="isInProvince">
     <h3><code>card.isInProvince()</code> <span class="kind">Query</span> <a class="anchor" href="#q-isInProvince">#</a></h3>
-    <p>True if the card's location is one of the province locations of the game mode, the stronghold province included. Province cards themselves are in a province too.</p>
+    <p>True if the card is in a province location of the game mode, the stronghold province and province cards included.</p>
     <pre><code>// Protected Merchant: This character gets +1 glory for each holding you control (to a maximum of 2).
 card.isInProvince()</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ShrewdYasuki.ts">Shrewd Yasuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/SeppunIshikawa.ts">Seppun Ishikawa</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/Logistics.ts">Logistics</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.5-AHD/SoshiDiviner.ts">Soshi Diviner</a> and others</p>
@@ -1934,7 +1908,7 @@ card.isInProvince()</code></pre>
 
   <div class="ref" id="q-discardPile" data-name="discardPile">
     <h3><code>card.discardPile</code> <span class="kind">Field</span> <a class="anchor" href="#q-discardPile">#</a></h3>
-    <p>The discard pile this card goes to: <code>Location.DynastyDiscardPile</code> for a dynasty card, else <code>Location.ConflictDiscardPile</code>. Read-only.</p>
+    <p>Read-only: <code>Location.DynastyDiscardPile</code> for a dynasty card, else <code>Location.ConflictDiscardPile</code>.</p>
     <pre><code>// Back-Alley Hideaway: Interrupt: When a [clan-scorpion] character you control leaves play – attach that character to this holding facedown instead of placing it in its owner's discard pile. …
 card.owner.moveCard(card, card.discardPile);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.3-ItFC/BackAlleyHideaway.ts">Back-Alley Hideaway</a>; the engine's discard actions use it too.</p>
@@ -1949,7 +1923,7 @@ card.owner.moveCard(card, card.discardPile);</code></pre>
     <h3><code>player.opponent</code> <span class="kind">Property</span> <a class="anchor" href="#q-opponent">#</a></h3>
     <p>The other player, <code>Player | undefined</code>.</p>
     <ul class="edge">
-      <li>Can be <code>undefined</code> in a solo game. Guard with <code>?.</code> or <code>!!context.player.opponent</code> in conditions; the type checker requires it.</li>
+      <li><code>undefined</code> in a solo game; the type checker makes you guard with <code>?.</code> or <code>!!context.player.opponent</code>.</li>
     </ul>
     <pre><code>// Compromised Secrets: Play only if you are less honorable than an opponent. …
 this.playOnlyIf((context) =&gt; !!context.player.opponent &amp;&amp; context.player.isLessHonorable());</code></pre>
@@ -1962,38 +1936,37 @@ this.playOnlyIf((context) =&gt; !!context.player.opponent &amp;&amp; context.pla
     <table>
       <thead><tr><th>Property</th><th>Type</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>charactersInPlay</code></td><td><code>DrawCard[]</code></td><td>The play area pile: the player's characters. Attachments are not in it (they are in each parent's <code>attachments</code>). For other cards in play use <a href="#q-inPlay"><code>inPlay(scope)</code></a>.</td></tr>
+        <tr><td><code>charactersInPlay</code></td><td><code>DrawCard[]</code></td><td>The player's characters in play (attachments are in each parent's <code>attachments</code>). For other cards use <a href="#q-inPlay"><code>inPlay(scope)</code></a>.</td></tr>
         <tr><td><code>hand</code></td><td><code>DrawCard[]</code></td><td>The hand.</td></tr>
         <tr><td><code>conflictDeck</code>, <code>dynastyDeck</code></td><td><code>DrawCard[]</code></td><td>The decks; index 0 is the top card.</td></tr>
         <tr><td><code>conflictDiscardPile</code>, <code>dynastyDiscardPile</code></td><td><code>DrawCard[]</code></td><td>The discard piles.</td></tr>
         <tr><td><code>honor</code>, <code>fate</code></td><td><code>number</code></td><td>The honor and fate pools.</td></tr>
         <tr><td><code>showBid</code>, <code>honorBid</code></td><td><code>number</code></td><td>The revealed honor dial ("your bid"). <code>honorBid</code> adds the bid modifiers, at least 0.</td></tr>
         <tr><td><code>imperialFavor</code></td><td><code>FavorType | ''</code></td><td>The side of the Imperial Favor this player holds, <code>''</code> without it. See <a href="#q-getFavorSide"><code>game.getFavorSide()</code></a>.</td></tr>
-        <tr><td><code>firstPlayer</code></td><td><code>boolean</code></td><td>"If you are the first player": true for the first player. The same as <code>game.getFirstPlayer() === player</code>.</td></tr>
+        <tr><td><code>firstPlayer</code></td><td><code>boolean</code></td><td>"If you are the first player". Same as <code>game.getFirstPlayer() === player</code>.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
-      <li>These arrays are the game's own piles: don't change them, use game actions. Copy with <code>slice()</code> before sorting.</li>
+      <li>The arrays are the game's own piles: don't mutate them; copy with <code>slice()</code> before sorting.</li>
     </ul>
   </div>
 
   <div class="ref" id="q-inPlay" data-name="inPlay InPlayScope">
     <h3><code>player.inPlay(scope?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-inPlay">#</a></h3>
-    <p>"each … you control", "if you control …", "for each … you control": the cards in play that the player controls. Characters are always included; <code>scope</code> adds the other cards in play (RRG In Play and Out of Play). Use <code>.some(…)</code>, <code>.filter(…)</code> or <code>.filter(…).length</code> on the result.</p>
+    <p>"each … you control", "if you control …": the cards in play the player controls. Characters are always included; <code>scope</code> adds other cards in play (RRG In Play and Out of Play).</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>scope.attachments</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Also the other cards in the play area: the attachments the player controls.</td></tr>
-        <tr><td><code>scope.provinces</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Also the player's faceup provinces that are not broken.</td></tr>
+        <tr><td><code>scope.attachments</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Also the attachments the player controls.</td></tr>
+        <tr><td><code>scope.provinces</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Also the player's faceup unbroken provinces.</td></tr>
         <tr><td><code>scope.holdings</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Also the faceup holdings in the player's provinces.</td></tr>
         <tr><td><code>scope.stronghold</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Also the stronghold.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li>Returns <code>DrawCard[]</code> without a scope or with only <code>attachments</code>, otherwise <code>BaseCard[]</code>.</li>
-      <li>"character you control" is <code>player.charactersInPlay</code>. With <code>attachments: true</code>, check the type in the predicate when the text says "character".</li>
-      <li>Facedown and broken provinces and facedown holdings are never included.</li>
-      <li>The order is the game's card order (<code>game.allCards</code>), not the order of the player's piles. <code>player.charactersInPlay</code> is the pile itself.</li>
+      <li>With <code>attachments: true</code>, check the type when the text says "character".</li>
+      <li>The order is <code>game.allCards</code> order, not pile order.</li>
     </ul>
     <pre><code>// Katana of Fire: Attached character gets +1[conflict-military] for each Fire card you control.
 this.controller.inPlay({ attachments: true }).filter((card) =&gt; card.hasTrait(Trait.Fire)).length</code></pre>
@@ -2002,10 +1975,7 @@ this.controller.inPlay({ attachments: true }).filter((card) =&gt; card.hasTrait(
 
   <div class="ref" id="q-areLocationsAdjacent" data-name="areLocationsAdjacent">
     <h3><code>player.areLocationsAdjacent(locationA, locationB)</code> <span class="kind">Query</span> <a class="anchor" href="#q-areLocationsAdjacent">#</a></h3>
-    <p>True if two province locations are next to each other: province 1 and 2, 2 and 3, 3 and 4.</p>
-    <ul class="edge">
-      <li>The stronghold province is adjacent to nothing here.</li>
-    </ul>
+    <p>True if two province locations are next to each other: 1–2, 2–3, 3–4. The stronghold province is adjacent to nothing.</p>
     <pre><code>// Hidden Moon Dōjō: … You may play cards in adjacent provinces as if they were in your hand. …
 context.player.areLocationsAdjacent(context.source.location, card.location),</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/HiddenMoonDojo.ts">Hidden Moon Dōjō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/NorthernCurtainWall.ts">Northern Curtain Wall</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.2-HiF/GuardianDojo.ts">Guardian Dōjō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Crab/DeployedGarrison.ts">Deployed Garrison</a> and others</p>
@@ -2013,7 +1983,7 @@ context.player.areLocationsAdjacent(context.source.location, card.location),</co
 
   <div class="ref" id="q-getClaimedRings" data-name="getClaimedRings">
     <h3><code>player.getClaimedRings()</code> <span class="kind">Query</span> <a class="anchor" href="#q-getClaimedRings">#</a></h3>
-    <p>The rings in the player's claimed ring pool (<code>Ring[]</code>), including rings an effect makes count as claimed by the player.</p>
+    <p>The player's claimed rings (<code>Ring[]</code>), including rings an effect makes count as claimed.</p>
     <pre><code>// Heroic Resolve: Action: If you have 2 or more rings in your claimed ring pool – ready attached character.
 .ifCondition((context) =&gt; context.player.getClaimedRings().length &gt;= 2)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.6-MotE/BeastmasterMatriarch.ts">Beastmaster Matriarch</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/10-TEL/HonorInBattle.ts">Honor in Battle</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/InsightfulGatekeeper.ts">Insightful Gatekeeper</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.3-ACO/InHarmony.ts">In Harmony</a> and others</p>
@@ -2029,7 +1999,7 @@ target: context.target?.controller.getDynastyCardsInProvince(context.target.loca
 
   <div class="ref" id="q-getProvinceCardInProvince" data-name="getProvinceCardInProvince">
     <h3><code>player.getProvinceCardInProvince(location)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getProvinceCardInProvince">#</a></h3>
-    <p>The province card in one of the player's province locations, or <code>undefined</code>. A holding finds "this holding's province" with <code>getProvinceCardInProvince(context.source.location)</code>.</p>
+    <p>The province card in one of the player's province locations, or <code>undefined</code>. "This holding's province" is <code>getProvinceCardInProvince(context.source.location)</code>.</p>
     <pre><code>// Rediscovered Shrine: Interrupt: When you play an event, if this holding is on an unbroken province - reduce that event's cost by 1.
 const province = context.player.getProvinceCardInProvince(context.source.location);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Rebuild.ts">Rebuild</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/11-DoR/SubterraneanGuile.ts">Subterranean Guile</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/FireAndOil.ts">Fire and Oil</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Lion/PlantedFields.ts">Planted Fields</a> and others</p>
@@ -2045,10 +2015,9 @@ return player.getProvinceCards().reduce((sum, province) =&gt; (province.isBroken
 
   <div class="ref" id="q-getNumberOfFaceupProvinces" data-name="getNumberOfFaceupProvinces getNumberOfFacedownProvinces getNumberOfOpponentsFaceupProvinces getNumberOfOpponentsFacedownProvinces">
     <h3><code>player.getNumberOfFaceupProvinces(predicate?)</code>, <code>getNumberOfFacedownProvinces(predicate?)</code>, <code>getNumberOfOpponentsFaceupProvinces(predicate?)</code>, <code>getNumberOfOpponentsFacedownProvinces(predicate?)</code> <span class="kind">Count</span> <a class="anchor" href="#q-getNumberOfFaceupProvinces">#</a></h3>
-    <p>How many of the player's (or the opponent's) province cards are face up (face down) and pass <code>predicate</code>.</p>
+    <p>How many of the player's (or opponent's) province cards are face up (face down) and pass <code>predicate</code>.</p>
     <ul class="edge">
       <li>The stronghold province counts. For "non-stronghold" pass <code>(province) =&gt; province.location !== Location.StrongholdProvince</code>.</li>
-      <li>The opponent forms return 0 without an opponent.</li>
     </ul>
     <pre><code>// Local Daimyō's Retainer: You can only play this card if you control at least 3 faceup provinces.
 this.playOnlyIf((context) =&gt; context.player.getNumberOfFaceupProvinces() &gt;= 3);</code></pre>
@@ -2065,16 +2034,16 @@ effect: modifyBothSkills(2 * context.player.getNumberOfHoldingsInPlay())</code><
 
   <div class="ref" id="q-hasAffinity" data-name="hasAffinity">
     <h3><code>player.hasAffinity(trait, context?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-hasAffinity">#</a></h3>
-    <p>"With [Trait] affinity": true if the player controls a character with the trait, or an effect satisfies that affinity, and nothing forbids the player to have affinity.</p>
+    <p>"With [Trait] affinity": the player controls a character with the trait or an effect grants it, and nothing forbids affinity.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>trait</code></td><td><code>Trait</code></td><td>required</td><td>Any trait, not only elements: <code>Trait.Water</code>, <code>Trait.Shadow</code>.</td></tr>
-        <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>a framework context</td><td>Pass the ability's context, so that restrictions on whose spells can have affinity apply.</td></tr>
+        <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>a framework context</td><td>Pass the ability's context so affinity restrictions apply.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
-      <li>For an affinity step, prefer the builder's <code>.onAffinity(…)</code>, which also handles the prompt and chat.</li>
+      <li>For an affinity step prefer the builder's <code>.onAffinity(…)</code>.</li>
     </ul>
     <pre><code>// Appeasing the Restless: … Then, unless you have Void affinity, injure the bowed character.
 .if((context) =&gt; !context.player.hasAffinity(Trait.Void, context))</code></pre>
@@ -2083,10 +2052,7 @@ effect: modifyBothSkills(2 * context.player.getNumberOfHoldingsInPlay())</code><
 
   <div class="ref" id="q-hasComposure" data-name="hasComposure">
     <h3><code>player.hasComposure()</code> <span class="kind">Query</span> <a class="anchor" href="#q-hasComposure">#</a></h3>
-    <p>True if the player's revealed honor dial (<code>showBid</code>) is lower than the opponent's. Composure abilities use the card method <a href="builder.html#cm-composure"><code>composure(…)</code></a>, which checks this for you.</p>
-    <ul class="edge">
-      <li><code>false</code> without an opponent.</li>
-    </ul>
+    <p>True if the player's revealed honor dial (<code>showBid</code>) is lower than the opponent's. Composure abilities use <a href="builder.html#cm-composure"><code>composure(…)</code></a>, which checks this.</p>
     <pre><code>// Guardian of Virtue: Composure - This character does not bow as a result of conflict resolution in conflicts in which it is defending. …
 condition: (context) =&gt; context.source.isDefending() &amp;&amp; context.player.hasComposure(),</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/GuardianOfVirtue.ts">Guardian of Virtue</a></p>
@@ -2094,7 +2060,7 @@ condition: (context) =&gt; context.source.isDefending() &amp;&amp; context.playe
 
   <div class="ref" id="q-hasDeclaredConflictOfType" data-name="hasDeclaredConflictOfType">
     <h3><code>player.hasDeclaredConflictOfType(context, conflictType)</code> <span class="kind">Query</span> <a class="anchor" href="#q-hasDeclaredConflictOfType">#</a></h3>
-    <p>True if the player declared a conflict of that type this round (the record is cleared when the dynasty phase starts).</p>
+    <p>True if the player declared a conflict of that type this round (cleared when the dynasty phase starts).</p>
     <pre><code>// Empress' Favorite: [conflict-political] Conflict Action: While defending, if your opponent has not declared a military conflict this phase - …
 !!context.player.opponent &amp;&amp; !context.player.opponent.hasDeclaredConflictOfType(context, ConflictType.Military))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/EmpressFavorite.ts">Empress' Favorite</a></p>
@@ -2102,7 +2068,7 @@ condition: (context) =&gt; context.source.isDefending() &amp;&amp; context.playe
 
   <div class="ref" id="q-honorGained" data-name="honorGained">
     <h3><code>player.honorGained(round?, phase?, onlyPositive?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-honorGained">#</a></h3>
-    <p>The net honor the player gained, from the recorded honor changes.</p>
+    <p>Net honor the player gained.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
@@ -2118,9 +2084,9 @@ condition: (context) =&gt; context.source.isDefending() &amp;&amp; context.playe
 
   <div class="ref" id="q-isAttackingPlayer" data-name="isAttackingPlayer isDefendingPlayer">
     <h3><code>player.isAttackingPlayer()</code>, <code>player.isDefendingPlayer()</code> <span class="kind">Query</span> <a class="anchor" href="#q-isAttackingPlayer">#</a></h3>
-    <p>True if there is a current conflict and the player is its attacking (defending) player. "While defending" on a non-character card is <code>context.player.isDefendingPlayer()</code>.</p>
+    <p>True if the player attacks (defends) in the current conflict. "While defending" on a non-character card is <code>context.player.isDefendingPlayer()</code>.</p>
     <ul class="edge">
-      <li><code>false</code> outside a conflict. In reactions to a finished conflict use <code>event.conflict.attackingPlayer</code> instead.</li>
+      <li><code>false</code> outside a conflict: in reactions to a finished conflict use <code>event.conflict.attackingPlayer</code>.</li>
     </ul>
     <pre><code>// Border's Edge Barracks: Conflict Action: While defending, choose a character you control - move it to the conflict. …
 .condition((context) =&gt; context.player.isDefendingPlayer())</code></pre>
@@ -2129,7 +2095,7 @@ condition: (context) =&gt; context.source.isDefending() &amp;&amp; context.playe
 
   <div class="ref" id="q-isCharacterTraitInPlay" data-name="isCharacterTraitInPlay">
     <h3><code>player.isCharacterTraitInPlay(trait)</code> <span class="kind">Query</span> <a class="anchor" href="#q-isCharacterTraitInPlay">#</a></h3>
-    <p>"if you control a [Trait] character": true if the player controls a face-up character with the trait in play.</p>
+    <p>"if you control a [Trait] character" (face up, in play).</p>
     <pre><code>// Retreat to Safety: … Then, if you control a Commander character, you may ready one of those characters.
 .if((context) =&gt; context.player.isCharacterTraitInPlay(Trait.Commander))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Neutral/ChroniclesOfValor.ts">Chronicles of Valor</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Neutral/RetreatToSafety.ts">Retreat to Safety</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Neutral/TrailOfBloodAndLies.ts">Trail of Blood and Lies</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Unicorn/CampfireCounsel.ts">Campfire Counsel</a> and others</p>
@@ -2137,7 +2103,7 @@ condition: (context) =&gt; context.source.isDefending() &amp;&amp; context.playe
 
   <div class="ref" id="q-player-isTraitInPlay" data-name="isTraitInPlay">
     <h3><code>player.isTraitInPlay(trait)</code> <span class="kind">Query</span> <a class="anchor" href="#q-player-isTraitInPlay">#</a></h3>
-    <p>True if the player controls a face-up card in play with the trait: a card in the play area (characters and attachments), an unbroken province, or a holding in a province.</p>
+    <p>True if the player controls a face-up card in play with the trait: character, attachment, unbroken province, or holding.</p>
     <pre><code>// Glory of the Five Rivers: Action: If you control a Courtier character - …
 .ifCondition((context) =&gt; context.player.isTraitInPlay(Trait.Courtier))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/GloryOfTheFiveRivers.ts">Glory of the Five Rivers</a></p>
@@ -2145,7 +2111,7 @@ condition: (context) =&gt; context.source.isDefending() &amp;&amp; context.playe
 
   <div class="ref" id="q-isKihoPlayedThisConflict" data-name="isKihoPlayedThisConflict">
     <h3><code>player.isKihoPlayedThisConflict(context, cardBeingPlayed)</code> <span class="kind">Query</span> <a class="anchor" href="#q-isKihoPlayedThisConflict">#</a></h3>
-    <p>"If you have played another Kihō in this conflict": true if the player played a Kihō card other than <code>cardBeingPlayed</code> during the current conflict.</p>
+    <p>"If you have played another Kihō in this conflict" (other than <code>cardBeingPlayed</code>).</p>
     <pre><code>// Iron Foundations Stance: … If you have played another Kihō in this conflict, draw 1 card.
 .if((context) =&gt; context.player.isKihoPlayedThisConflict(context, this))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/12-SoW/IronFoundationsStance.ts">Iron Foundations Stance</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/CenteredBreath.ts">Centered Breath</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/SwellOfSeafoam.ts">Swell of Seafoam</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Dragon/SurgingWave.ts">Surging Wave</a></p>
@@ -2153,9 +2119,9 @@ condition: (context) =&gt; context.source.isDefending() &amp;&amp; context.playe
 
   <div class="ref" id="q-isMoreHonorable" data-name="isMoreHonorable isLessHonorable">
     <h3><code>player.isMoreHonorable()</code>, <code>player.isLessHonorable()</code> <span class="kind">Query</span> <a class="anchor" href="#q-isMoreHonorable">#</a></h3>
-    <p>"While you are more (less) honorable than an opponent": compares the honor totals; an effect that makes a player "considered less honorable" wins over the totals.</p>
+    <p>"While you are more (less) honorable than an opponent": compares honor totals, but a "considered less honorable" effect overrides them (its player is less, never more, honorable; the opponent the reverse).</p>
     <ul class="edge">
-      <li>The "considered less honorable" effect decides whatever the totals: a player under it is less and never more honorable, and a player whose opponent is under it is more and never less honorable. Otherwise both are <code>false</code> on equal honor and without an opponent.</li>
+      <li>Otherwise both are <code>false</code> on equal honor or without an opponent.</li>
     </ul>
     <pre><code>// Ikoma Orator: While you are more honorable than an opponent, this character gets +2[conflict-political].
 condition: (context) =&gt; context.player.isMoreHonorable(),</code></pre>
@@ -2164,10 +2130,10 @@ condition: (context) =&gt; context.player.isMoreHonorable(),</code></pre>
 
   <div class="ref" id="q-moveCard" data-name="moveCard shuffleConflictDeck shuffleDynastyDeck">
     <h3><code>player.moveCard(card, location, options?)</code>, <code>shuffleConflictDeck()</code>, <code>shuffleDynastyDeck()</code> <span class="kind">Low level</span> <a class="anchor" href="#q-moveCard">#</a></h3>
-    <p>Move a card between piles directly, and shuffle a deck. Not queries, but they appear in many handlers.</p>
+    <p>Move a card between piles directly, and shuffle a deck. Not queries, but common in handlers.</p>
     <ul class="edge">
-      <li><code>moveCard</code> opens no event window: interrupts and reactions don't see the move and no restriction is checked (it only emits <code>onCardMoved</code> for lasting effects that end when a card moves). Use the <code>moveCard</code>, <code>discardCard</code>, <code>returnToHand</code>, … game actions unless the text describes a rules-level swap (Know the Terrain switches two provinces).</li>
-      <li><code>location</code> is a <code>Location</code>. <code>options.bottom</code> puts the card at the bottom of a deck; <code>options.host</code> is required for <code>Location.Underneath</code> (the card goes into the pile under the host and gets <code>card.host</code>; without it the move does nothing). Prefer <code>player.placeUnderneath(card, host)</code>.</li>
+      <li><code>moveCard</code> opens no event window: no interrupts, reactions or restrictions (it only emits <code>onCardMoved</code> for lasting effects that end on a move). Use the <code>moveCard</code>, <code>discardCard</code>, <code>returnToHand</code>, … game actions unless the text is a rules-level swap (Know the Terrain).</li>
+      <li><code>options.bottom</code> puts the card at the bottom of a deck; <code>options.host</code> is required for <code>Location.Underneath</code> (without it the move does nothing). Prefer <code>player.placeUnderneath(card, host)</code>.</li>
       <li>The shuffles write "{player} is shuffling their … deck" to the chat and emit <code>onDeckShuffled</code>.</li>
     </ul>
     <pre><code>// Know the Terrain: … switch it with another facedown non-stronghold province you control.
@@ -2183,10 +2149,7 @@ context.player.moveCard(chosenProvince, attackedLocation);</code></pre>
 
   <div class="ref" id="q-addMessage" data-name="addMessage">
     <h3><code>game.addMessage(message)</code> <span class="kind">Chat</span> <a class="anchor" href="#q-addMessage">#</a></h3>
-    <p>Writes a line to the game chat. Pass a <code>msg</code> tagged template (cards, players and rings in it are shown as such), or the pair it builds: <code>['format with {0} and {1}', [arg0, arg1]]</code>.</p>
-    <ul class="edge">
-      <li>The ability's own line comes from <code>chatText(…)</code>; use <code>addMessage</code> for extra lines in handlers and prompts.</li>
-    </ul>
+    <p>Writes a chat line: a <code>msg</code> tagged template, or the pair it builds (<code>['format with {0} and {1}', [arg0, arg1]]</code>). For extra lines in handlers and prompts; the ability's own line comes from <code>chatText(…)</code>.</p>
     <pre><code>// Kaiu Scout: … Then you may turn any of them faceup.
 this.game.addMessage(msg`${context.player} turns ${chosen} faceup`);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DisplayOfPower.ts">Display of Power</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.2-TL/UpholdingAuthority.ts">Upholding Authority</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/GovernorsSpy.ts">Governor's Spy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Dragon/PalmStrike.ts">Palm Strike</a> and others</p>
@@ -2194,10 +2157,9 @@ this.game.addMessage(msg`${context.player} turns ${chosen} faceup`);</code></pre
 
   <div class="ref" id="q-conflictRecord" data-name="conflictRecord">
     <h3><code>game.conflictRecord</code> <span class="kind">Field</span> <a class="anchor" href="#q-conflictRecord">#</a></h3>
-    <p>This round's conflict records of both players, passed ones included: the list that <a href="#q-getConflicts"><code>getConflicts(Players.All)</code></a> returns.</p>
+    <p>This round's conflict records of both players, passed ones included: what <a href="#q-getConflicts"><code>getConflicts(Players.All)</code></a> returns.</p>
     <ul class="edge">
-      <li>Prefer <code>getConflicts(player)</code> or <a href="#q-getDeclaredConflictCount"><code>getDeclaredConflictCount(player)</code></a>; filter <code>completed</code> for conflicts that finished.</li>
-      <li>The list is cleared when the dynasty phase starts.</li>
+      <li>Prefer <code>getConflicts(player)</code> or <a href="#q-getDeclaredConflictCount"><code>getDeclaredConflictCount(player)</code></a>; filter <code>completed</code> for finished conflicts.</li>
     </ul>
     <pre><code>// Young Warrior: This character must be declared as an attacker or defender in the first conflict declared each round.
 condition: (context) =&gt; context.game.conflictRecord.filter((record) =&gt; record.completed).length === 0,</code></pre>
@@ -2206,10 +2168,9 @@ condition: (context) =&gt; context.game.conflictRecord.filter((record) =&gt; rec
 
   <div class="ref" id="q-currentConflict" data-name="currentConflict requireConflict">
     <h3><code>game.currentConflict</code>, <code>game.requireConflict()</code> <span class="kind">Query</span> <a class="anchor" href="#q-currentConflict">#</a></h3>
-    <p>The conflict being resolved: <code>Conflict | null</code>. <code>requireConflict()</code> returns it, or throws if there is none.</p>
+    <p>The conflict being resolved, <code>Conflict | null</code> (<code>null</code> between conflicts; use <code>?.</code>). <code>requireConflict()</code> returns it or throws.</p>
     <ul class="edge">
-      <li><code>currentConflict</code> is <code>null</code> between conflicts and outside the conflict phase; use <code>?.</code> in conditions.</li>
-      <li>Use <code>requireConflict()</code> only where a conflict is certain (a conflict action's target condition, an effect that only applies during a conflict). In a condition that can be checked at any time it throws.</li>
+      <li>Use <code>requireConflict()</code> only where a conflict is certain (a conflict action's target condition, an effect that only applies during a conflict), never in a condition checked at any time.</li>
     </ul>
     <pre><code>// Vengeful Kami: … if you are defending and the attacked province has had a previous conflict declared against it this round - …
 .ifCondition((context) =&gt; context.player.isDefendingPlayer() &amp;&amp;
@@ -2222,9 +2183,9 @@ condition: (context) =&gt; context.game.conflictRecord.filter((record) =&gt; rec
 
   <div class="ref" id="q-findAnyCardsInPlay" data-name="findAnyCardsInPlay">
     <h3><code>game.findAnyCardsInPlay(predicate)</code> <span class="kind">Query</span> <a class="anchor" href="#q-findAnyCardsInPlay">#</a></h3>
-    <p>"each character …": the cards in every player's <code>charactersInPlay</code>, and the attachments on them, that match <code>predicate</code>.</p>
+    <p>"each character …": every player's characters in play plus the attachments on them, filtered by <code>predicate</code>.</p>
     <ul class="edge">
-      <li>Attachments are included: check the type in <code>predicate</code> when the text says "character". Attachments on provinces are not.</li>
+      <li>Attachments are included: check the type when the text says "character". Attachments on provinces are not.</li>
     </ul>
     <pre><code>// Mono no Aware: Action: Remove 1 fate from each character. Draw 1 card. (Max 1 per round.)
 target: this.game.findAnyCardsInPlay((card) =&gt; card.getFate() &gt; 0)</code></pre>
@@ -2235,10 +2196,10 @@ target: this.game.findAnyCardsInPlay((card) =&gt; card.getFate() &gt; 0)</code><
     <h3><code>game.getConflicts(player)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getConflicts">#</a></h3>
     <p>The conflicts declared this round by <code>player</code> (or by anyone with <code>Players.All</code>), as records: <code>attackingPlayer</code>, <code>declaredType</code>, <code>passed</code>, <code>uuid</code>, <code>completed</code>, <code>winner</code>, <code>typeSwitched</code>, <code>declaredProvince</code>, <code>brokenProvinces</code>.</p>
     <ul class="edge">
-      <li>Passed conflict opportunities are in the list too, with <code>passed: true</code>. To count declared conflicts use <a href="#q-getDeclaredConflictCount"><code>getDeclaredConflictCount</code></a>.</li>
-      <li><code>brokenProvinces</code> is the conflict's own <a href="#q-brokenProvinces">list</a>, so it also fills while the conflict is running.</li>
-      <li>A declared conflict is recorded as it is declared, before <code>onConflictDeclared</code>, so a reaction to the declaration already finds the current conflict (compare <code>uuid</code> with <code>currentConflict.uuid</code> to leave it out). <code>declaredProvince</code> is the province attacked at declaration (<code>null</code> for a passed opportunity), not provinces added later; it is the card, so a province that moves stays the same one.</li>
-      <li>The list is cleared when the dynasty phase starts.</li>
+      <li>Passed opportunities are included (<code>passed: true</code>). To count declared conflicts use <a href="#q-getDeclaredConflictCount"><code>getDeclaredConflictCount</code></a>.</li>
+      <li><code>brokenProvinces</code> is the conflict's own <a href="#q-brokenProvinces">list</a>, so it fills while the conflict runs.</li>
+      <li>A conflict is recorded before <code>onConflictDeclared</code>, so a reaction to the declaration finds the current conflict (compare <code>uuid</code> with <code>currentConflict.uuid</code> to leave it out). <code>declaredProvince</code> is the province card attacked at declaration (<code>null</code> if passed), not provinces added later.</li>
+      <li>Cleared when the dynasty phase starts (also <code>conflictRecord</code> and <code>getDeclaredConflictCount</code>).</li>
     </ul>
     <pre><code>// Ikoma Anakazu: During each conflict in which this character is participating, it gets +3[conflict-military] and +3[conflict-political] if your opponent has broken one or more of your provinces this phase.
 // the opponent is considered to have broken any of your provinces, also outside conflict resolution (ruling #634)
@@ -2255,10 +2216,9 @@ context.game.getConflicts(Players.All).some((record) =&gt;
 
   <div class="ref" id="q-getDeclaredConflictCount" data-name="getDeclaredConflictCount">
     <h3><code>game.getDeclaredConflictCount(player)</code> <span class="kind">Count</span> <a class="anchor" href="#q-getDeclaredConflictCount">#</a></h3>
-    <p>How many conflicts <code>player</code> declared this round. Passed conflict opportunities don't count.</p>
+    <p>How many conflicts <code>player</code> declared this round, passed opportunities excluded.</p>
     <ul class="edge">
-      <li>The conflict that is being declared is already counted when <code>onConflictDeclared</code> is raised, and a finished conflict stays counted in <code>onConflictFinished</code>: "the second conflict" is <code>=== 2</code>.</li>
-      <li>The count is cleared when the dynasty phase starts.</li>
+      <li>The conflict being declared already counts in <code>onConflictDeclared</code> and still counts in <code>onConflictFinished</code>: "the second conflict" is <code>=== 2</code>.</li>
     </ul>
     <pre><code>// Shiba Pureheart: Reaction: After an opponent declares their second conflict against you this phase, choose a character - honor that character.
 if(attacker === controller.opponent) {
@@ -2293,10 +2253,7 @@ target: context.game.getPlayers(),</code></pre>
 
   <div class="ref" id="q-getProvinceArray" data-name="getProvinceArray">
     <h3><code>game.getProvinceArray(includeStronghold?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getProvinceArray">#</a></h3>
-    <p>The province locations of the game mode (<code>Location[]</code>): provinces one to four, and the stronghold province if the mode has strongholds and <code>includeStronghold</code> is <code>true</code> (the default).</p>
-    <ul class="edge">
-      <li>Skirmish has three provinces and no stronghold province. Don't hardcode the four locations.</li>
-    </ul>
+    <p>The province locations of the game mode (<code>Location[]</code>), plus the stronghold province if the mode has one and <code>includeStronghold</code> is <code>true</code> (default). Don't hardcode four locations: Skirmish has three and no stronghold province.</p>
     <pre><code>// Subterranean Guile: During [conflict-military] conflicts, if you control a holding on an unbroken province, attached character gains covert.
 return context.game.getProvinceArray().some((location) =&gt; {
     …
@@ -2306,7 +2263,7 @@ return context.game.getProvinceArray().some((location) =&gt; {
 
   <div class="ref" id="q-provinceCards" data-name="provinceCards">
     <h3><code>game.provinceCards</code> <span class="kind">Field</span> <a class="anchor" href="#q-provinceCards">#</a></h3>
-    <p>Every province card of both players (<code>BaseCard[]</code>), broken or not, facedown or faceup, the stronghold province included. Filled when the game starts.</p>
+    <p>Every province card of both players (<code>BaseCard[]</code>), in any state, the stronghold province included. Filled when the game starts.</p>
     <pre><code>// Akodo Toshiro: Action: While this character is attacking – it gets +5[conflict-military] until the end of the conflict. Provinces cannot be broken during this conflict. …
 .cardLastingEffect(() =&gt; ({
     target: this.game.provinceCards,
@@ -2318,15 +2275,14 @@ return context.game.getProvinceArray().some((location) =&gt; {
 
   <div class="ref" id="q-isDuringConflict" data-name="isDuringConflict">
     <h3><code>game.isDuringConflict(types?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-isDuringConflict">#</a></h3>
-    <p>"During a conflict", "During [conflict-military] conflicts", "During an [element-air] conflict": true if a conflict is in progress and it matches every type and element given.</p>
+    <p>"During a conflict", "During [conflict-military] conflicts", "During an [element-air] conflict": a conflict is in progress and matches every type and element given.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>types</code></td><td><code>ConflictType | Element | Array&lt;ConflictType | Element&gt; | null</code></td><td><code>null</code> (any conflict)</td><td>Conflict types and elements that must all match. Elements are the contested ring's current elements, gained ones included.</td></tr>
+        <tr><td><code>types</code></td><td><code>ConflictType | Element | Array&lt;ConflictType | Element&gt; | null</code></td><td><code>null</code> (any conflict)</td><td>All must match (an array is "and", not "or"). Elements are the contested ring's current ones.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
-      <li>An array means all of them ("a military fire conflict"), not one of them.</li>
       <li>For a card's printed element pass <code>this.getCurrentElementSymbol(key)</code>, not the <code>Element</code> directly.</li>
     </ul>
     <pre><code>// Entrenched Position: This province gets +5 strength during [conflict-military] conflicts.
@@ -2344,19 +2300,19 @@ condition: (context) =&gt; context.game.isTraitInPlay(Trait.Battlefield),</code>
 
   <div class="ref" id="q-promptWithHandlerMenu" data-name="promptWithHandlerMenu promptForSelect promptForRingSelect">
     <h3><code>game.promptWithHandlerMenu(player, properties)</code>, <code>promptForSelect(player, properties)</code>, <code>promptForRingSelect(player, properties)</code> <span class="kind">Prompt</span> <a class="anchor" href="#q-promptWithHandlerMenu">#</a></h3>
-    <p>Ask a player inside a <code>.handler(…)</code>: a menu of buttons and cards, a card selection on the board, or a ring selection. Prefer the builder's targets, <code>selectFrom</code> and the <code>cardMenu</code> and <code>selectCard</code> game actions, which handle legality and chat; use these prompts for multi-step choices that don't fit.</p>
+    <p>Ask a player inside a <code>.handler(…)</code>: a button/card menu, a card selection, or a ring selection. Prefer builder targets, <code>selectFrom</code> and the <code>cardMenu</code> / <code>selectCard</code> game actions, which handle legality and chat; use these only for multi-step choices that don't fit.</p>
     <table>
       <thead><tr><th>Property (handler menu)</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>activePromptTitle</code></td><td><code>string</code></td><td><code>'Select one'</code></td><td>Title for the choosing player.</td></tr>
         <tr><td><code>waitingPromptTitle</code></td><td><code>string</code></td><td>from <code>source</code></td><td>Title for the other player.</td></tr>
         <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>a context for <code>player</code> and <code>source</code></td><td>The ability's context.</td></tr>
-        <tr><td><code>source</code></td><td><code>EffectSource | string</code></td><td><code>context.source</code></td><td>The origin of the prompt, usually a card. A string becomes a named source; otherwise the context's source is used instead of a card passed here.</td></tr>
+        <tr><td><code>source</code></td><td><code>EffectSource | string</code></td><td><code>context.source</code></td><td>A string becomes a named source; a card passed here is ignored in favour of the context's source.</td></tr>
         <tr><td><code>options</code></td><td><code>{ text, handler }[]</code></td><td>none</td><td>Buttons, each with its handler.</td></tr>
         <tr><td><code>choices</code>, <code>choiceHandler</code></td><td><code>ChoiceValue[]</code>, <code>(choice: ChoiceValue) =&gt; void</code></td><td>none</td><td>Button labels computed at run time, all handled by <code>choiceHandler</code>; not together with <code>options</code>.</td></tr>
         <tr><td><code>cards</code>, <code>cardHandler</code></td><td><code>Card[]</code>, <code>(card: Card) =&gt; void</code></td><td>none</td><td>Cards shown as buttons, and what clicking one does.</td></tr>
         <tr><td><code>cardCondition</code></td><td><code>(card, context) =&gt; boolean</code></td><td>all enabled</td><td>Disables the card buttons it returns <code>false</code> for.</td></tr>
-        <tr><td><code>controls</code></td><td><code>PromptControl[]</code></td><td>none</td><td>Declared but ignored: the prompt shows only the targeting control built from <code>target</code> or the context's targets.</td></tr>
+        <tr><td><code>controls</code></td><td><code>PromptControl[]</code></td><td>none</td><td>Ignored; the targeting control is built from <code>target</code> or the context's targets.</td></tr>
         <tr><td><code>target</code></td><td><code>GameObject | GameObject[]</code></td><td>none</td><td>The object the prompt is about.</td></tr>
       </tbody>
     </table>
@@ -2382,7 +2338,7 @@ this.game.promptForSelect(context.player, {
 
   <div class="ref" id="q-queueSimpleStep" data-name="queueSimpleStep">
     <h3><code>game.queueSimpleStep(handler)</code> <span class="kind">Step</span> <a class="anchor" href="#q-queueSimpleStep">#</a></h3>
-    <p>Runs <code>handler</code> as a later step of the game pipeline, after the steps already queued (open prompts, event windows).</p>
+    <p>Runs <code>handler</code> after the steps already queued (open prompts, event windows).</p>
     <pre><code>// Appeasing the Restless: Action: … move up to three fate from your fate pool onto Spirit characters you control. …
 context.game.queueSimpleStep(() =&gt; this.moveFate(context, remaining - 1));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.1-RaW/GovernorsSpy.ts">Governor's Spy</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/ReveredBonsho.ts">Revered Bonshō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/21-UEE/Crab/EbonyBloodGarrison.ts">Ebony Blood Garrison</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/AppeasingTheRestless.ts">Appeasing the Restless</a></p>
@@ -2390,7 +2346,7 @@ context.game.queueSimpleStep(() =&gt; this.moveFate(context, remaining - 1));</c
 
   <div class="ref" id="q-ringFor" data-name="ringFor rings">
     <h3><code>game.rings</code>, <code>game.ringFor(element)</code> <span class="kind">Query</span> <a class="anchor" href="#q-ringFor">#</a></h3>
-    <p><code>game.rings</code> maps each <code>Element</code> to its <code>Ring</code>. <code>ringFor(element)</code> takes any string and returns the ring, or <code>undefined</code> if the string is not an element (for example a role trait).</p>
+    <p><code>game.rings</code> maps each <code>Element</code> to its <code>Ring</code>. <code>ringFor(string)</code> returns the ring, or <code>undefined</code> for a non-element (e.g. a role trait).</p>
     <pre><code>// Onsen Quarters: … Reaction: After you win a conflict at this province - resolve the ring effect matching the element of your role.
 const ring = context.game.ringFor(trait);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.6-EU/SpecializedDefenses.ts">Specialized Defenses</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.2-SS/EtherealAlignment.ts">Ethereal Alignment</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crab/OnsenQuarters.ts">Onsen Quarters</a> and others</p>
@@ -2399,13 +2355,13 @@ const ring = context.game.ringFor(trait);</code></pre>
 
 <section class="group">
   <h3 class="group-title" id="q-group-conflict">Conflict</h3>
-  <p>Methods of <code>Conflict</code>, on <code>context.game.currentConflict</code> (can be <code>null</code>) or <code>event.conflict</code>. The conflict also has the properties <code>attackingPlayer</code>, <code>defendingPlayer</code>, <code>winner</code>, <code>loser</code> (set when the winner is determined, <code>undefined</code> if nobody wins; see <a href="#q-getWinningPlayer"><code>getWinningPlayer()</code></a>), <code>conflictType</code>, <code>ring</code>, <code>elements</code>, <code>declaredProvince</code>, <code>conflictProvince</code>, and <code>attackers</code> and <code>defenders</code> (the characters in the conflict only; <code>getAttackers()</code> and <code>getDefenders()</code> also include those participating from home). In a solo game <code>defendingPlayer</code> is <code>undefined</code>.</p>
+  <p>Methods of <code>Conflict</code>, on <code>context.game.currentConflict</code> (can be <code>null</code>) or <code>event.conflict</code>. Properties: <code>attackingPlayer</code>, <code>defendingPlayer</code> (<code>undefined</code> in a solo game), <code>winner</code>, <code>loser</code> (set when the winner is determined, <code>undefined</code> if nobody wins; see <a href="#q-getWinningPlayer"><code>getWinningPlayer()</code></a>), <code>conflictType</code>, <code>ring</code>, <code>elements</code>, <code>declaredProvince</code>, <code>conflictProvince</code>, <code>attackers</code>, <code>defenders</code> (characters in the conflict only; <code>getAttackers()</code> / <code>getDefenders()</code> add those participating from home).</p>
 
   <div class="ref" id="q-attackerSkill" data-name="attackerSkill defenderSkill skillDifference">
     <h3><code>conflict.attackerSkill</code>, <code>conflict.defenderSkill</code>, <code>conflict.skillDifference</code> <span class="kind">Field</span> <a class="anchor" href="#q-attackerSkill">#</a></h3>
-    <p>Each side's total skill, and by how much the winner won. The totals are recalculated at every game state check during the conflict: the contributing characters, the player's skill modifier, and 1 for the Imperial Favor if that side has a participating character. A "set total skill" effect replaces the total. They stop changing once the winner is determined.</p>
+    <p>Each side's total skill, and the winning margin. Totals are recalculated at each game state check (contributing characters, the player's skill modifier, +1 Imperial Favor if that side has a participant; a "set total skill" effect replaces it) and freeze once the winner is determined.</p>
     <ul class="edge">
-      <li><code>skillDifference</code> is <code>undefined</code> until the winner is determined, then the winner's total minus the loser's, and 0 if nobody wins. "Win by 5 or more skill" is <code>(event.conflict.skillDifference ?? 0) &gt;= 5</code>.</li>
+      <li><code>skillDifference</code> is <code>undefined</code> until the winner is determined, 0 if nobody wins. "Win by 5 or more skill" is <code>(event.conflict.skillDifference ?? 0) &gt;= 5</code>.</li>
       <li>For "the attacking player is winning" compare the totals or use <a href="#q-getWinningPlayer"><code>getWinningPlayer()</code></a>, which also needs a participating character.</li>
     </ul>
     <pre><code>// Gift of Amaterasu: Reaction: After you win a conflict by 5 or more skill, choose a character you control – honor that character.
@@ -2415,7 +2371,7 @@ afterConflict: (event, context) =&gt; event.conflict.winner === context.player &
 
   <div class="ref" id="q-calculateSkillFor" data-name="calculateSkillFor">
     <h3><code>conflict.calculateSkillFor(cards)</code> <span class="kind">Query</span> <a class="anchor" href="#q-calculateSkillFor">#</a></h3>
-    <p>The skill <code>cards</code> contribute to the conflict: each card's contribution for the conflict type, without bowed characters (unless they may contribute while bowed) and characters that cannot contribute.</p>
+    <p>The skill <code>cards</code> contribute for the conflict type, skipping bowed characters (unless allowed to contribute while bowed) and those that cannot contribute.</p>
     <pre><code>// Asako Shun: … Then, if the chosen character contributes zero skill to the conflict, gain 1 honor.
 return !!conflict &amp;&amp; conflict.calculateSkillFor([context.target]) === 0;</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Dragon/TheHundredHandStrike.ts">The Hundred Hand Strike</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Phoenix/AsakoShun.ts">Asako Shun</a></p>
@@ -2423,7 +2379,7 @@ return !!conflict &amp;&amp; conflict.calculateSkillFor([context.target]) === 0;
 
   <div class="ref" id="q-getCurrentSkill" data-name="getCurrentSkill">
     <h3><code>conflict.getCurrentSkill(player, type)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getCurrentSkill">#</a></h3>
-    <p>A player's current skill of a <code>ConflictType</code> (RRG "Current": the values used if the conflict were resolving now). For the conflict's type it is that side's total (<a href="#q-attackerSkill"><code>attackerSkill</code></a> or <code>defenderSkill</code>). For the other type it is that skill of each character that would count, with the same bowed and "cannot contribute" rules, but without the conflict's skill modifiers (Imperial Favor, side bonuses, changed skill functions).</p>
+    <p>A player's current skill of a <code>ConflictType</code> (RRG "Current"). For the conflict's type: that side's total (<a href="#q-attackerSkill"><code>attackerSkill</code></a> / <code>defenderSkill</code>). For the other type: the sum over characters that would count (same bowed and "cannot contribute" rules), without conflict-level modifiers (Imperial Favor, side bonuses, changed skill functions).</p>
     <pre><code>// Desperate Aide: … If you count more current [conflict-political] skill in the conflict than your opponent, gain 1 honor.
 conflict.getCurrentSkill(context.player, ConflictType.Political) &gt; conflict.getCurrentSkill(context.player.opponent, ConflictType.Political)</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crane/DesperateAide.ts">Desperate Aide</a></p>
@@ -2431,7 +2387,7 @@ conflict.getCurrentSkill(context.player, ConflictType.Political) &gt; conflict.g
 
   <div class="ref" id="q-isOnWinningSide" data-name="isOnWinningSide isOnLosingSide">
     <h3><code>conflict.isOnWinningSide(card)</code>, <code>conflict.isOnLosingSide(card)</code> <span class="kind">Query</span> <a class="anchor" href="#q-isOnWinningSide">#</a></h3>
-    <p>"This character wins / loses the conflict": the card participates on the winning (losing) side. RRG Winning a Conflict: the side counts, not the controller, so a character put on the other player's side (Join the Fray) wins with that side. <code>false</code> while nobody has won.</p>
+    <p>"This character wins / loses the conflict": the card participates on the winning (losing) side. The side counts, not the controller (RRG Winning a Conflict; Join the Fray). <code>false</code> while nobody has won.</p>
     <ul class="edge">
       <li>"You win a conflict" stays <code>event.conflict.winner === context.player</code>.</li>
       <li>Add <code>card.isAttacking()</code> / <code>card.isDefending()</code> for "as the attacker / defender".</li>
@@ -2444,7 +2400,7 @@ afterConflict: (event, context) =&gt;
 
   <div class="ref" id="q-wonAtResolution" data-name="wonAtResolution wonAsAttacker">
     <h3><code>conflict.wonAtResolution(card)</code>, <code>conflict.wonAsAttacker(card)</code> <span class="kind">Query</span> <a class="anchor" href="#q-wonAtResolution">#</a></h3>
-    <p>"This character won the conflict" (as an attacker) when it is read later than the winner: the side the card was on when the winner was determined (<code>attackersAtResolution</code> / <code>defendersAtResolution</code>). A character sent home afterwards (False Loyalties) or already home at step 3.3 still won. <code>false</code> before the winner is determined.</p>
+    <p>"This character won the conflict" (as an attacker), read after the winner is determined: uses the side the card was on then (<code>attackersAtResolution</code> / <code>defendersAtResolution</code>), so a character sent home afterwards (False Loyalties) or already home at step 3.3 still won. <code>false</code> before that.</p>
     <ul class="edge">
       <li>Use <code>isOnWinningSide</code> in an <code>afterConflict</code> reaction, where participation is still current.</li>
     </ul>
@@ -2455,7 +2411,7 @@ condition: (context) =&gt; !!this.game.currentConflict?.wonAsAttacker(context.so
 
   <div class="ref" id="q-getAttackers" data-name="getAttackers getDefenders">
     <h3><code>conflict.getAttackers(predicate?)</code>, <code>conflict.getDefenders(predicate?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getAttackers">#</a></h3>
-    <p>"each attacking character", "each defending character": the attacking (defending) characters that match <code>predicate</code>, including characters that participate from home on that side.</p>
+    <p>"each attacking (defending) character", filtered by <code>predicate</code>, including those participating from home.</p>
     <pre><code>// The Art of Peace: Interrupt: When this province is broken – dishonor each attacking character and honor each defending character.
 .dishonor((context) =&gt; ({ target: context.game.currentConflict?.getAttackers() ?? [] }))</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/TheArtOfPeace.ts">The Art of Peace</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/10-TEL/KensonNoGakka.ts">Kenson no Gakka</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/MasashigisSacrifice.ts">Masashigi's Sacrifice</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/23-SN/Crab/HirumasEyes.ts">Hiruma's Eyes</a> and others</p>
@@ -2465,7 +2421,7 @@ condition: (context) =&gt; !!this.game.currentConflict?.wonAsAttacker(context.so
     <h3><code>conflict.getCharacters(player)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getCharacters">#</a></h3>
     <p>"each character on your side": the attackers if <code>player</code> is the attacking player, else the defenders.</p>
     <ul class="edge">
-      <li><code>[]</code> for <code>undefined</code> (no opponent). Any player who is not the attacker gets the defenders.</li>
+      <li><code>[]</code> for <code>undefined</code>. Any player who is not the attacker gets the defenders.</li>
     </ul>
     <pre><code>// For Greater Glory: Reaction: After you break a province during a [conflict-military] conflict – place 1 fate on each Bushi character on your side. …
 target: context.event.conflict
@@ -2478,8 +2434,8 @@ target: context.event.conflict
     <h3><code>conflict.getConflictProvinces()</code> <span class="kind">Query</span> <a class="anchor" href="#q-getConflictProvinces">#</a></h3>
     <p>The attacked provinces: the conflict province first, then provinces an effect added ("The conflict is also at that province"). <code>[]</code> if the conflict has no province.</p>
     <ul class="edge">
-      <li>"the attacked province" usually means checking all of them with <code>some(…)</code>.</li>
-      <li>Read live: once the conflict finishes, a province added by an <code>UntilEndOfConflict</code> effect (A War on Two Fronts) drops out. In <code>onConflictFinished</code> reactions use <a href="#q-brokenProvinces"><code>conflict.provincesAtEnd</code></a>.</li>
+      <li>For "the attacked province" check all of them with <code>some(…)</code>.</li>
+      <li>Read live: a province added by an <code>UntilEndOfConflict</code> effect (A War on Two Fronts) drops out when the conflict finishes; in <code>onConflictFinished</code> use <a href="#q-brokenProvinces"><code>conflict.provincesAtEnd</code></a>.</li>
     </ul>
     <pre><code>// Silent Suburb: Reaction: After you win a conflict at this province - resolve the ring effect of that conflict.
 event.conflict.getConflictProvinces().some((p) =&gt; p === context.source)</code></pre>
@@ -2488,13 +2444,13 @@ event.conflict.getConflictProvinces().some((p) =&gt; p === context.source)</code
 
   <div class="ref" id="q-brokenProvinces" data-name="brokenProvinces attackersAtResolution defendersAtResolution attackersAtEnd defendersAtEnd provincesAtEnd">
     <h3><code>conflict.brokenProvinces</code>, <code>conflict.attackersAtResolution</code>, <code>conflict.defendersAtResolution</code>, <code>conflict.attackersAtEnd</code>, <code>conflict.defendersAtEnd</code>, <code>conflict.provincesAtEnd</code> <span class="kind">Field</span> <a class="anchor" href="#q-brokenProvinces">#</a></h3>
-    <p>What happened in a conflict, kept on the <code>Conflict</code> so a card needs no state of its own: the provinces broken while it was the current conflict, and the characters attacking and defending when the winner was determined.</p>
+    <p>Conflict history kept on the <code>Conflict</code>, so cards need no state of their own.</p>
     <ul class="edge">
-      <li><code>brokenProvinces</code> also records a province broken by an ability during the conflict. A province broken outside a conflict is in no conflict's list.</li>
-      <li><code>attackersAtResolution</code> and <code>defendersAtResolution</code> are copies taken when the winner is determined and stay empty until then; characters that leave the conflict afterwards remain in them ("this character won the conflict": Isawa Kaede).</li>
-      <li><code>attackersAtEnd</code> and <code>defendersAtEnd</code> are taken as the participants return home, from the characters in the conflict only (a character participating from home is never in them): a character sent home after the winner was determined (False Loyalties) isn't in them. For "after the resolution of a conflict in which this character was attacking/defending", check in <code>onConflictFinished</code> that it is in both the <code>…AtResolution</code> and the <code>…AtEnd</code> list: it must have taken part throughout the resolution (EmeraldDB rulings #655 Ivory Kingdoms Unicorn, #1121 Utaku Tomoe). A character that joined after the winner was determined is only in <code>…AtEnd</code>.</li>
-      <li><code>provincesAtEnd</code> is <code>getConflictProvinces()</code> taken as the conflict finishes, before its <code>UntilEndOfConflict</code> effects expire: a province attacked through A War on Two Fronts stays in it. Read it in <code>onConflictFinished</code> for "the attacked province" (Breakthrough, Lessons from Earth); it is empty for a passed conflict.</li>
-      <li>The current conflict is <code>context.game.currentConflict</code>; finished ones are the records of <a href="#q-getConflicts"><code>game.getConflicts(player)</code></a>, which share <code>brokenProvinces</code>.</li>
+      <li><code>brokenProvinces</code>: provinces broken while this was the current conflict, by any means. Shared with the <a href="#q-getConflicts"><code>game.getConflicts(player)</code></a> records.</li>
+      <li><code>attackersAtResolution</code> / <code>defendersAtResolution</code>: copies taken when the winner is determined (empty before); characters leaving the conflict afterwards stay in them (Isawa Kaede).</li>
+      <li><code>attackersAtEnd</code> / <code>defendersAtEnd</code>: taken as participants return home, from characters in the conflict only (never those participating from home, nor ones sent home after the winner was determined).</li>
+      <li>"After the resolution of a conflict in which this character was attacking/defending": in <code>onConflictFinished</code>, require it in both <code>…AtResolution</code> and <code>…AtEnd</code> (rulings #655 Ivory Kingdoms Unicorn, #1121 Utaku Tomoe). A character that joined after the winner was determined is only in <code>…AtEnd</code>.</li>
+      <li><code>provincesAtEnd</code>: <code>getConflictProvinces()</code> taken as the conflict finishes, before <code>UntilEndOfConflict</code> effects expire (keeps an A War on Two Fronts province). Use it in <code>onConflictFinished</code> for "the attacked province" (Breakthrough, Lessons from Earth). Empty for a passed conflict.</li>
     </ul>
     <pre><code>// Utaku Tomoe: Reaction: After the resolution of a conflict in which this character was defending - if you won the conflict, gain 2 honor. Otherwise, ready this character.
 onConflictFinished: (event, context) =&gt;
@@ -2505,31 +2461,30 @@ onConflictFinished: (event, context) =&gt;
 
   <div class="ref" id="q-getWinningPlayer" data-name="getWinningPlayer">
     <h3><code>conflict.getWinningPlayer(attackerSkill?, defenderSkill?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getWinningPlayer">#</a></h3>
-    <p>The player who wins the conflict at the given totals (by default the current <code>attackerSkill</code> and <code>defenderSkill</code>), or <code>undefined</code> if nobody does. <code>conflict.winner</code> is set from it when the conflict resolves, with the resolution bonus added.</p>
+    <p>The winner at the given totals (default: current <code>attackerSkill</code> / <code>defenderSkill</code>), or <code>undefined</code>. <code>conflict.winner</code> is set from it at resolution, with the resolution bonus added.</p>
     <ul class="edge">
-      <li>RRG "Winning a Conflict": a side needs at least 1 skill and at least one participating character. A tie goes to the attacker.</li>
-      <li>A player skill modifier (Disguised Protector) counts toward the total but does not make a side without characters win. Then <code>conflict.skillDifference</code> is 0, never negative.</li>
+      <li>RRG "Winning a Conflict": a side needs at least 1 skill and one participating character. A tie goes to the attacker.</li>
+      <li>A player skill modifier (Disguised Protector) doesn't make a side without characters win; <code>skillDifference</code> is then 0, never negative.</li>
     </ul>
     <p class="seen">Used by the engine: the conflict result and the "is winning" chat line. No card reads it.</p>
   </div>
 
   <div class="ref" id="q-getResolutionSkills" data-name="getResolutionSkills resolutionBonus">
     <h3><code>conflict.getResolutionSkills()</code>, <code>conflict.resolutionBonus(player)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getResolutionSkills">#</a></h3>
-    <p>The totals the conflict would resolve with now: <code>attackerSkill</code> and <code>defenderSkill</code> plus each side's skill added "during conflict resolution" (<code>changePlayerResolutionSkillModifier</code>). <code>resolutionBonus(player)</code> is that addition for one side.</p>
+    <p>The totals the conflict would resolve with now: <code>attackerSkill</code> / <code>defenderSkill</code> plus skill added "during conflict resolution" (<code>changePlayerResolutionSkillModifier</code>). <code>resolutionBonus(player)</code> is that addition for one side.</p>
     <ul class="edge">
-      <li><code>conflict.attackerSkill</code> and <code>conflict.defenderSkill</code> leave the resolution bonus out until the winner is determined; "current skill" checks read them.</li>
-      <li>The bonus is 0 for a player with <code>setConflictTotalSkill</code>, for a missing defender (solo game), and once the winner is determined (it is in the totals then).</li>
-      <li>The status line shows the bonus apart, and the "winning" and "breaking" hints use these totals.</li>
+      <li><code>attackerSkill</code> / <code>defenderSkill</code> exclude the bonus until the winner is determined; "current skill" checks read them.</li>
+      <li>The bonus is 0 with <code>setConflictTotalSkill</code>, for a missing defender, and once the winner is determined (it is in the totals then).</li>
     </ul>
     <p class="seen">Used by the engine: the status line, the conflict panel and the "is winning" chat line. No card reads it.</p>
   </div>
 
   <div class="ref" id="q-getNumberOfCardsPlayed" data-name="getNumberOfCardsPlayed getCardsPlayed">
     <h3><code>conflict.getNumberOfCardsPlayed(player, predicate?)</code>, <code>conflict.getCardsPlayed(player, predicate?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-getNumberOfCardsPlayed">#</a></h3>
-    <p>The cards <code>player</code> played during this conflict (as snapshots), and how many.</p>
+    <p>The cards <code>player</code> played during this conflict (snapshots), and how many.</p>
     <ul class="edge">
-      <li>Without <code>predicate</code>, the count also adds effects that count extra cards played; with a <code>predicate</code> it doesn't.</li>
-      <li>The cards are recorded per side: any player who is not the attacker reads the defender's list.</li>
+      <li>Only without <code>predicate</code> does the count include effects that count extra cards played.</li>
+      <li>Recorded per side: any player who is not the attacker reads the defender's list.</li>
     </ul>
     <pre><code>// Daidoji Kageyu: … draw 1 card for each card you opponent has played in this conflict.
 return conflict.getNumberOfCardsPlayed(opponent);</code></pre>
@@ -2547,7 +2502,7 @@ return conflict.getNumberOfCardsPlayed(opponent);</code></pre>
       </tbody>
     </table>
     <ul class="edge">
-      <li>Without <code>predicate</code>, effects that count extra characters in the conflict are added; with a <code>predicate</code> they aren't.</li>
+      <li>Only without <code>predicate</code> are effects that count extra characters added.</li>
     </ul>
     <pre><code>// Admit Defeat: Action: Choose a character that is defending alone – bow that character.
 .condition(() =&gt; this.game.currentConflict?.getNumberOfParticipantsFor('defender') === 1)</code></pre>
@@ -2564,10 +2519,9 @@ return conflict.getNumberOfCardsPlayed(opponent);</code></pre>
 
   <div class="ref" id="q-hasMoreParticipants" data-name="hasMoreParticipants">
     <h3><code>conflict.hasMoreParticipants(player)</code> <span class="kind">Query</span> <a class="anchor" href="#q-hasMoreParticipants">#</a></h3>
-    <p>"more participating characters than your opponent": true if <code>player</code>'s side has more participants than the opponent's.</p>
+    <p>"more participating characters than your opponent". A tie is <code>false</code>.</p>
     <ul class="edge">
       <li><code>false</code> for <code>undefined</code>. Without an opponent, true if the player has any participant.</li>
-      <li>A tie is <code>false</code>.</li>
     </ul>
     <pre><code>// Gregarious Ward: Reaction: After this character wins a conflict with more characters on your side than the enemy side - …
 event.conflict.hasMoreParticipants(context.player)</code></pre>
@@ -2594,7 +2548,7 @@ condition: (context) =&gt;
 
 <section class="group">
   <h3 class="group-title" id="q-group-ring">Ring</h3>
-  <p>Methods of <code>Ring</code>, on <code>event.ring</code>, <code>context.ring</code> (a ring target), <code>context.game.rings[element]</code> or a ring in a <code>ringCondition</code>. A ring also has the properties <code>element</code>, <code>conflictType</code>, <code>fate</code> and <code>claimedBy</code> (a player name, for the client state). Compare players with <code>ring.isClaimedBy(player)</code> (false for <code>undefined</code>) or read <code>ring.claimant</code> (the player, or <code>undefined</code> while unclaimed).</p>
+  <p>Methods of <code>Ring</code>, on <code>event.ring</code>, <code>context.ring</code>, <code>context.game.rings[element]</code> or in a <code>ringCondition</code>. Properties: <code>element</code>, <code>conflictType</code>, <code>fate</code>, <code>claimedBy</code> (a player name, for the client). Compare players with <code>ring.isClaimedBy(player)</code> (false for <code>undefined</code>) or <code>ring.claimant</code> (<code>undefined</code> while unclaimed).</p>
 
   <div class="ref" id="q-canDeclare" data-name="canDeclare">
     <h3><code>ring.canDeclare(player)</code> <span class="kind">Query</span> <a class="anchor" href="#q-canDeclare">#</a></h3>
@@ -2606,7 +2560,7 @@ ring.canDeclare(context.player) &amp;&amp; card.canDeclareAsAttacker(ConflictTyp
 
   <div class="ref" id="q-getElements" data-name="getElements">
     <h3><code>ring.getElements()</code> <span class="kind">Query</span> <a class="anchor" href="#q-getElements">#</a></h3>
-    <p>The ring's current elements: its own, those added by effects, and while it is contested, those the attackers add.</p>
+    <p>The ring's current elements: its own plus those added by effects (and, while contested, by the attackers).</p>
     <pre><code>// Way of the Phoenix: Action: Choose a ring and an opponent – that player cannot declare conflicts of that ring's element this phase. …
 target: context.ring.getElements().map((element) =&gt; this.game.rings[element]),</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/WayOfThePhoenix.ts">Way of the Phoenix</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.6-EU/SpecializedDefenses.ts">Specialized Defenses</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.6-Atonement/SuddenTempest.ts">Sudden Tempest</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/ReligiousConclave.ts">Religious Conclave</a> and others</p>
@@ -2614,7 +2568,7 @@ target: context.ring.getElements().map((element) =&gt; this.game.rings[element])
 
   <div class="ref" id="q-ring-getFate" data-name="getFate fate">
     <h3><code>ring.getFate()</code>, <code>ring.fate</code> <span class="kind">Query</span> <a class="anchor" href="#q-ring-getFate">#</a></h3>
-    <p>The fate on the ring. Both forms read the same value.</p>
+    <p>The fate on the ring (same value).</p>
     <pre><code>// Temple of the Fivefold Path: Action: Bow this stronghold and select one – either place 1 fate on a ring without fate …
 .ringTarget({ ringCondition: (ring) =&gt; ring.getFate() === 0 }, placeFateOnRing())</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/GreaterUnderstanding2.ts">Greater Understanding</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Dragon/TempleOfTheFivefoldPath.ts">Temple of the Fivefold Path</a> and others</p>
@@ -2632,7 +2586,7 @@ target: context.ring.getElements().map((element) =&gt; this.game.rings[element])
     <h3><code>ring.isConflictType(type)</code> <span class="kind">Query</span> <a class="anchor" href="#q-isConflictType">#</a></h3>
     <p>True if the ring's current conflict type is <code>type</code> ("a [conflict-military] ring in your claimed ring pool").</p>
     <ul class="edge">
-      <li>Always <code>false</code> for a ring in the unclaimed pool. The contested ring and claimed rings are checked; a contested ring that only counts as claimed (Secluded Shrine) still has the conflict's type, so check <code>isClaimed()</code> too for "claimed ring pool" (Shiotome Encampment, ruling #666). <a href="#he-isClaimedRingOfType"><code>isClaimedRingOfType</code></a> does both.</li>
+      <li>Always <code>false</code> for an unclaimed ring. A contested ring that only counts as claimed (Secluded Shrine) has the conflict's type, so for "claimed ring pool" also check <code>isClaimed()</code> (ruling #666), or use <a href="#he-isClaimedRingOfType"><code>isClaimedRingOfType</code></a>.</li>
     </ul>
     <pre><code>// Honor in Battle: Action: If you have claimed a [conflict-military] ring, choose a character - honor that character.
 .ifCondition((context) =&gt; context.player.getClaimedRings().some((ring) =&gt; ring.isConflictType(ConflictType.Military)))</code></pre>
@@ -2641,7 +2595,7 @@ target: context.ring.getElements().map((element) =&gt; this.game.rings[element])
 
   <div class="ref" id="q-isConsideredClaimed" data-name="isConsideredClaimed">
     <h3><code>ring.isConsideredClaimed(player?)</code> <span class="kind">Query</span> <a class="anchor" href="#q-isConsideredClaimed">#</a></h3>
-    <p>True if <code>player</code> claimed the ring or an effect makes it count as claimed by <code>player</code>. Without <code>player</code>, true if that holds for any player. Use it for "in your claimed ring pool".</p>
+    <p>True if <code>player</code> (any player, if omitted) claimed the ring or an effect makes it count as claimed. Use it for "in your claimed ring pool".</p>
     <pre><code>// isClaimedRingOfType (cards/claimedRings.ts), for Shiotome Encampment: "If you have a [conflict-military] ring in your claimed ring pool"
 return ring.isConsideredClaimed(player) &amp;&amp; ring.isClaimed() &amp;&amp; ring.isConflictType(type);</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/HallowedGround.ts">Hallowed Ground</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Phoenix/OneWithTheSea.ts">One with the Sea</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.1-EL01/Phoenix/RiddlesOfTheHenshin.ts">Riddles of the Henshin</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.6-EU/SpecializedDefenses.ts">Specialized Defenses</a>, and Shiotome Encampment through <code>isClaimedRingOfType</code></p>
@@ -2650,9 +2604,6 @@ return ring.isConsideredClaimed(player) &amp;&amp; ring.isClaimed() &amp;&amp; r
   <div class="ref" id="q-isUnclaimed" data-name="isUnclaimed">
     <h3><code>ring.isUnclaimed()</code> <span class="kind">Query</span> <a class="anchor" href="#q-isUnclaimed">#</a></h3>
     <p>True if the ring is in the unclaimed pool: not contested, not claimed, not removed from the game.</p>
-    <ul class="edge">
-      <li>The contested ring is not unclaimed.</li>
-    </ul>
     <pre><code>// Togashi Yoshi: Reaction: After this character wins a conflict - gain 1 fate from an unclaimed ring.
 ringCondition: (ring) =&gt; ring.fate &gt;= 1 &amp;&amp; ring.isUnclaimed(),</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/BornInWar.ts">Born in War</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.6-MotE/WrittenInTheStars.ts">Written in the Stars</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.5-aCF/ShiroKitsuki.ts">Shiro Kitsuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/TogashiDreamer.ts">Togashi Dreamer</a> and others</p>
@@ -2672,7 +2623,7 @@ ringCondition: (ring, context) =&gt; !ring.isContested() &amp;&amp; !ring.isRemo
   </div>
 </section>
 
-<p>This list covers the most used methods. The full API is in the classes <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/BaseCard.ts">BaseCard</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/DrawCard.ts">DrawCard</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/ProvinceCard.ts">ProvinceCard</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/Player.ts">Player</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/Game.ts">Game</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/Conflict.ts">Conflict</a> and <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/Ring.ts">Ring</a>.</p>
+<p>The full API is in <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/BaseCard.ts">BaseCard</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/DrawCard.ts">DrawCard</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/ProvinceCard.ts">ProvinceCard</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/Player.ts">Player</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/Game.ts">Game</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/Conflict.ts">Conflict</a> and <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/Ring.ts">Ring</a>.</p>
 
 </main>
 </div>

@@ -36,19 +36,19 @@
   <table>
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>Stronghold</code></td><td><code>'stronghold'</code></td><td>A stronghold. A target with this type holds a <code>StrongholdCard</code>.</td></tr>
-          <tr><td><code>Role</code></td><td><code>'role'</code></td><td>A role card. A target with this type holds a <code>RoleCard</code>.</td></tr>
-          <tr><td><code>Province</code></td><td><code>'province'</code></td><td>A province. A target with this type holds a <code>ProvinceCard</code>.</td></tr>
-          <tr><td><code>Character</code></td><td><code>'character'</code></td><td>A character (dynasty or conflict). Holds a <code>DrawCard</code>.</td></tr>
-          <tr><td><code>Holding</code></td><td><code>'holding'</code></td><td>A holding. Holds a <code>DrawCard</code>.</td></tr>
-          <tr><td><code>Event</code></td><td><code>'event'</code></td><td>An event. Holds a <code>DrawCard</code>. An event's abilities count as playing the card (<code>isCardPlayed()</code>).</td></tr>
-          <tr><td><code>Attachment</code></td><td><code>'attachment'</code></td><td>An attachment. Holds a <code>DrawCard</code>.</td></tr>
-          <tr><td><code>Warlord</code></td><td><code>'warlord'</code></td><td>Declared but not used anywhere in the server code.</td></tr>
-          <tr><td><code>Treaty</code></td><td><code>'treaty'</code></td><td>Declared but not used anywhere in the server code.</td></tr>
+          <tr><td><code>Stronghold</code></td><td><code>'stronghold'</code></td><td>Target holds a <code>StrongholdCard</code>.</td></tr>
+          <tr><td><code>Role</code></td><td><code>'role'</code></td><td>Target holds a <code>RoleCard</code>.</td></tr>
+          <tr><td><code>Province</code></td><td><code>'province'</code></td><td>Target holds a <code>ProvinceCard</code>.</td></tr>
+          <tr><td><code>Character</code></td><td><code>'character'</code></td><td>Dynasty or conflict. <code>DrawCard</code>.</td></tr>
+          <tr><td><code>Holding</code></td><td><code>'holding'</code></td><td><code>DrawCard</code>.</td></tr>
+          <tr><td><code>Event</code></td><td><code>'event'</code></td><td><code>DrawCard</code>. Its abilities count as playing the card (<code>isCardPlayed()</code>).</td></tr>
+          <tr><td><code>Attachment</code></td><td><code>'attachment'</code></td><td><code>DrawCard</code>.</td></tr>
+          <tr><td><code>Warlord</code></td><td><code>'warlord'</code></td><td>Unused.</td></tr>
+          <tr><td><code>Treaty</code></td><td><code>'treaty'</code></td><td>Unused.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
-    <li><code>ALL_CARD_TYPES</code> lists the card types in a game (all but <code>Warlord</code> and <code>Treaty</code>). Without <code>cardType</code>, the card selector accepts those, and the builder types the target as <code>BaseCard</code>. A list (<code>cardType: [CardType.Character, CardType.Attachment]</code>) types it as the union of the classes.</li>
+    <li><code>ALL_CARD_TYPES</code> lists the card types in a game (all but <code>Warlord</code> and <code>Treaty</code>); a card selector without <code>cardType</code> accepts those. How <code>cardType</code> types the target: see <a href="#ctx-target"><code>context.target</code></a>.</li>
     <li>A card's type can change through the <code>changeType</code> effect (<code>EffectName.ChangeType</code>), so compare <code>card.type</code> (the current type), not the printed one.</li>
   </ul>
   <pre><code>// Hiruma Ambusher: Reaction: After this character enters play as a defender, choose a character – that character's abilities cannot be triggered during this conflict.
@@ -69,9 +69,9 @@ this.reaction('Disable a character')
   <table>
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>Honored</code></td><td><code>'honored'</code></td><td>The honored status token.</td></tr>
-          <tr><td><code>Dishonored</code></td><td><code>'dishonored'</code></td><td>The dishonored status token.</td></tr>
-          <tr><td><code>Tainted</code></td><td><code>'tainted'</code></td><td>The tainted status token. A character entering play with the printed Corrupted keyword is tainted by <code>putIntoPlay</code>.</td></tr>
+          <tr><td><code>Honored</code></td><td><code>'honored'</code></td><td>–</td></tr>
+          <tr><td><code>Dishonored</code></td><td><code>'dishonored'</code></td><td>–</td></tr>
+          <tr><td><code>Tainted</code></td><td><code>'tainted'</code></td><td>A character entering play with the printed Corrupted keyword is tainted by <code>putIntoPlay</code>.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -96,8 +96,8 @@ this.reaction('Disable a character')
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>Ordinary</code></td><td><code>'ordinary'</code></td><td>Neither honored nor dishonored.</td></tr>
-          <tr><td><code>Honored</code></td><td><code>'honored'</code></td><td>Enters play honored.</td></tr>
-          <tr><td><code>Dishonored</code></td><td><code>'dishonored'</code></td><td>Enters play dishonored.</td></tr>
+          <tr><td><code>Honored</code></td><td><code>'honored'</code></td><td>–</td></tr>
+          <tr><td><code>Dishonored</code></td><td><code>'dishonored'</code></td><td>–</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -110,8 +110,8 @@ this.reaction('Disable a character')
   <table>
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>Conflict</code></td><td><code>'conflict deck'</code></td><td>The conflict deck. Default <code>deck</code> of <code>deckSearch</code> and <code>rearrangeDeck</code>.</td></tr>
-          <tr><td><code>Dynasty</code></td><td><code>'dynasty deck'</code></td><td>The dynasty deck.</td></tr>
+          <tr><td><code>Conflict</code></td><td><code>'conflict deck'</code></td><td>Default <code>deck</code> of <code>deckSearch</code> and <code>rearrangeDeck</code>.</td></tr>
+          <tr><td><code>Dynasty</code></td><td><code>'dynasty deck'</code></td><td>–</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -134,20 +134,20 @@ this.reaction('Disable a character')
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>Any</code></td><td><code>'any'</code></td><td>Every location. In a target or selection: any card in the game, filtered by <code>controller</code>. Lasting effects use it internally, so they reach a card wherever it is.</td></tr>
-          <tr><td><code>Hand</code></td><td><code>'hand'</code></td><td>A player's hand. Default ability location of events.</td></tr>
-          <tr><td><code>ConflictDeck</code></td><td><code>'conflict deck'</code></td><td>The conflict deck.</td></tr>
-          <tr><td><code>DynastyDeck</code></td><td><code>'dynasty deck'</code></td><td>The dynasty deck.</td></tr>
-          <tr><td><code>ConflictDiscardPile</code></td><td><code>'conflict discard pile'</code></td><td>The conflict discard pile.</td></tr>
-          <tr><td><code>DynastyDiscardPile</code></td><td><code>'dynasty discard pile'</code></td><td>The dynasty discard pile.</td></tr>
+          <tr><td><code>Hand</code></td><td><code>'hand'</code></td><td>Default ability location of events.</td></tr>
+          <tr><td><code>ConflictDeck</code></td><td><code>'conflict deck'</code></td><td>–</td></tr>
+          <tr><td><code>DynastyDeck</code></td><td><code>'dynasty deck'</code></td><td>–</td></tr>
+          <tr><td><code>ConflictDiscardPile</code></td><td><code>'conflict discard pile'</code></td><td>–</td></tr>
+          <tr><td><code>DynastyDiscardPile</code></td><td><code>'dynasty discard pile'</code></td><td>–</td></tr>
           <tr><td><code>PlayArea</code></td><td><code>'play area'</code></td><td>In play. Default ability location of characters and attachments, and default <code>location</code> of targets. Attachments in play are found through their parent.</td></tr>
           <tr><td><code>Provinces</code></td><td><code>'province'</code></td><td>All province slots at once. In <code>.location()</code> it expands to the game's province array; in a card selector to <code>ProvinceOne</code>–<code>ProvinceFour</code> and <code>StrongholdProvince</code>. Default ability location of holdings and provinces.</td></tr>
-          <tr><td><code>ProvinceOne</code></td><td><code>'province 1'</code></td><td>The first province slot.</td></tr>
-          <tr><td><code>ProvinceTwo</code></td><td><code>'province 2'</code></td><td>The second province slot.</td></tr>
-          <tr><td><code>ProvinceThree</code></td><td><code>'province 3'</code></td><td>The third province slot.</td></tr>
-          <tr><td><code>ProvinceFour</code></td><td><code>'province 4'</code></td><td>The fourth province slot.</td></tr>
-          <tr><td><code>StrongholdProvince</code></td><td><code>'stronghold province'</code></td><td>The stronghold province slot. Default ability location of strongholds.</td></tr>
+          <tr><td><code>ProvinceOne</code></td><td><code>'province 1'</code></td><td>–</td></tr>
+          <tr><td><code>ProvinceTwo</code></td><td><code>'province 2'</code></td><td>–</td></tr>
+          <tr><td><code>ProvinceThree</code></td><td><code>'province 3'</code></td><td>–</td></tr>
+          <tr><td><code>ProvinceFour</code></td><td><code>'province 4'</code></td><td>–</td></tr>
+          <tr><td><code>StrongholdProvince</code></td><td><code>'stronghold province'</code></td><td>Default ability location of strongholds.</td></tr>
           <tr><td><code>ProvinceDeck</code></td><td><code>'province deck'</code></td><td>Provinces not chosen for the game.</td></tr>
-          <tr><td><code>RemovedFromGame</code></td><td><code>'removed from game'</code></td><td>Removed from the game.</td></tr>
+          <tr><td><code>RemovedFromGame</code></td><td><code>'removed from game'</code></td><td>–</td></tr>
           <tr><td><code>UnderneathStronghold</code></td><td><code>'underneath stronghold'</code></td><td>Facedown under the stronghold province (Kaiu Shihobu).</td></tr>
           <tr><td><code>Underneath</code></td><td><code>'underneath'</code></td><td>Under another card, <code>card.host</code> (<code>placeCardUnderneath</code>, Back-Alley Hideaway); <code>card.isUnderneath(host?)</code>. The pile is kept by the player who placed it, under the host's uuid (the client shows it on the host).</td></tr>
           <tr><td><code>OutsideTheGame</code></td><td><code>'outside the game'</code></td><td>Cards the deck lists as outside the game.</td></tr>
@@ -156,7 +156,6 @@ this.reaction('Disable a character')
         </tbody>
       </table>
   <ul class="edge">
-    <li><code>ConflictDeck</code>, <code>DynastyDeck</code> use the same strings as <code>DeckType.Conflict</code> and <code>DeckType.Dynasty</code>.</li>
     <li>The <code>location</code> of a target only filters where candidates come from; the target still has to pass <code>canAffect</code> of its game actions.</li>
   </ul>
   <pre><code>// Sneaky Shinjo: Reaction: After you pass in the dynasty phase – play this character from your province.
@@ -230,8 +229,8 @@ this.conflictAction('Search your conflict deck', { evenFromHome: true })
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>ElementSymbol</code></td><td><code>'elementSymbol'</code></td><td>An element symbol of a card.</td></tr>
-          <tr><td><code>Player</code></td><td><code>'player'</code></td><td>A player.</td></tr>
-          <tr><td><code>Ring</code></td><td><code>'ring'</code></td><td>A ring.</td></tr>
+          <tr><td><code>Player</code></td><td><code>'player'</code></td><td>–</td></tr>
+          <tr><td><code>Ring</code></td><td><code>'ring'</code></td><td>–</td></tr>
           <tr><td><code>Token</code></td><td><code>'token'</code></td><td>A status token.</td></tr>
         </tbody>
       </table>
@@ -351,7 +350,7 @@ cancels.registerTriggerWindow(EventName.OnInitiateAbilityEffects, AbilityType.Ot
         </tbody>
       </table>
   <ul class="edge">
-    <li>"Ignorable: yes" means that listing the blocker in <code>ignoredBlockers</code> skips its check (in at least one <code>meetsRequirements</code>). Blockers marked "no" are always checked.</li>
+    <li>Ignorable: listing it in <code>ignoredBlockers</code> skips its check (in at least one <code>meetsRequirements</code>); "no" is always checked.</li>
     <li><code>resolveAbility</code> always adds <code>WrongPlayer</code>, <code>WrongLocation</code>, <code>LimitReached</code>, <code>CannotTrigger</code>, <code>CannotPlay</code> and <code>LimitedAlreadyPlayed</code> to the ignored blockers (resolving isn't playing); <code>triggerAbility</code> adds <code>WrongPlayer</code>, <code>WrongLocation</code> and <code>LimitReached</code>. With <code>subResolution: true</code>, both also ignore <code>MaxReached</code>.</li>
   </ul>
   <pre><code>// The Mirror's Gaze: Reaction: After the effects of an opponent's event resolve – resolve that event again as if you had just played it, ignoring costs and triggering conditions. You may choose new targets.
@@ -467,7 +466,6 @@ onSpendFate: (event, context) =&gt;
       </table>
   <ul class="edge">
     <li>Without a mode, a card selector uses <code>MaxStat</code> if <code>maxStat</code> is given, <code>Single</code> for one card, <code>Unlimited</code> for <code>numCards: 0</code>, else <code>UpTo</code>.</li>
-    <li>A multi-card mode stores an array in <code>context.targets[name]</code> and leaves <code>context.target</code> unset.</li>
   </ul>
   <pre><code>// Twenty-four Steps: [conflict-military] Conflict Action: Choose up to two Monk characters you control - move them to the conflict.
 this.conflictAction('Move two monks to the conflict', { conflictType: ConflictType.Military })
@@ -491,8 +489,8 @@ this.conflictAction('Move two monks to the conflict', { conflictType: ConflictTy
   <table>
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>Military</code></td><td><code>'military'</code></td><td>A military conflict.</td></tr>
-          <tr><td><code>Political</code></td><td><code>'political'</code></td><td>A political conflict.</td></tr>
+          <tr><td><code>Military</code></td><td><code>'military'</code></td><td>–</td></tr>
+          <tr><td><code>Political</code></td><td><code>'political'</code></td><td>–</td></tr>
           <tr><td><code>Passed</code></td><td><code>'passed'</code></td><td>Not a conflict type: a counter key in <code>declaredConflictOpportunities</code> for passed opportunities.</td></tr>
           <tr><td><code>Forced</code></td><td><code>'forced'</code></td><td>Not a conflict type: a counter key for conflicts declared with a forced type.</td></tr>
         </tbody>
@@ -534,11 +532,11 @@ this.action('Initiate a political duel')
   <table>
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>Fire</code></td><td><code>'fire'</code></td><td>The fire ring.</td></tr>
-          <tr><td><code>Earth</code></td><td><code>'earth'</code></td><td>The earth ring.</td></tr>
-          <tr><td><code>Air</code></td><td><code>'air'</code></td><td>The air ring.</td></tr>
-          <tr><td><code>Water</code></td><td><code>'water'</code></td><td>The water ring.</td></tr>
-          <tr><td><code>Void</code></td><td><code>'void'</code></td><td>The void ring.</td></tr>
+          <tr><td><code>Fire</code></td><td><code>'fire'</code></td><td>–</td></tr>
+          <tr><td><code>Earth</code></td><td><code>'earth'</code></td><td>–</td></tr>
+          <tr><td><code>Air</code></td><td><code>'air'</code></td><td>–</td></tr>
+          <tr><td><code>Water</code></td><td><code>'water'</code></td><td>–</td></tr>
+          <tr><td><code>Void</code></td><td><code>'void'</code></td><td>–</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -558,8 +556,8 @@ this.wouldInterrupt('Replace a void effect with another ring effect')
   <table>
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>Military</code></td><td><code>'military'</code></td><td>The military side.</td></tr>
-          <tr><td><code>Political</code></td><td><code>'political'</code></td><td>The political side.</td></tr>
+          <tr><td><code>Military</code></td><td><code>'military'</code></td><td>–</td></tr>
+          <tr><td><code>Political</code></td><td><code>'political'</code></td><td>–</td></tr>
           <tr><td><code>Both</code></td><td><code>'both'</code></td><td>Both sides; what a player has when the game's rules give the favor no sides.</td></tr>
         </tbody>
       </table>
@@ -581,10 +579,10 @@ this.wouldInterrupt('Replace a void effect with another ring effect')
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>Setup</code></td><td><code>'setup'</code></td><td>The setup before the first round. It raises <code>onPhaseEnded</code> but not <code>onPhaseCreated</code> or <code>onPhaseStarted</code>.</td></tr>
-          <tr><td><code>Dynasty</code></td><td><code>'dynasty'</code></td><td>The dynasty phase.</td></tr>
-          <tr><td><code>Draw</code></td><td><code>'draw'</code></td><td>The draw phase.</td></tr>
-          <tr><td><code>Conflict</code></td><td><code>'conflict'</code></td><td>The conflict phase.</td></tr>
-          <tr><td><code>Fate</code></td><td><code>'fate'</code></td><td>The fate phase (it also returns rings and passes the first player token).</td></tr>
+          <tr><td><code>Dynasty</code></td><td><code>'dynasty'</code></td><td>–</td></tr>
+          <tr><td><code>Draw</code></td><td><code>'draw'</code></td><td>–</td></tr>
+          <tr><td><code>Conflict</code></td><td><code>'conflict'</code></td><td>–</td></tr>
+          <tr><td><code>Fate</code></td><td><code>'fate'</code></td><td>Also returns rings and passes the first player token.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -623,8 +621,8 @@ this.action('Taint a character')
   <table>
         <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>Military</code></td><td><code>'military'</code></td><td>Military skill.</td></tr>
-          <tr><td><code>Political</code></td><td><code>'political'</code></td><td>Political skill.</td></tr>
+          <tr><td><code>Military</code></td><td><code>'military'</code></td><td>–</td></tr>
+          <tr><td><code>Political</code></td><td><code>'political'</code></td><td>–</td></tr>
         </tbody>
       </table>
   <pre><code>// Castigated: … If attached character's [conflict-political] skill is 0, discard it. (Do not discard if its skill is a dash.)
@@ -640,178 +638,19 @@ effect: delayedEffect({
 <div class="ref" id="en-EffectName" data-name="EffectName">
   <h3><code>EffectName</code> <span class="kind">Enum</span> <a class="anchor" href="#en-EffectName">#</a></h3>
   <p>The type key of every effect the engine applies (<code>effect.type</code>). The engine looks effects up by it (<code>card.anyEffect(EffectName.Blank)</code>, <code>player.sumEffects(EffectName.AdditionalAction)</code>).</p>
-  <p>Cards rarely create effects from it directly: they call the effect factories in <code>effects.ts</code> (<code>modifyMilitarySkill(2)</code>, <code>cardCannot(…)</code>), which pick the name. Hida Kisada is the exception: it builds its <code>CancelFirstAction</code> effect with <code>EffectBuilder.player.detached</code>. Otherwise cards name it only to inspect effects, as Kiss of the Sea does with <code>event.effectTypes</code> of <code>onEffectApplied</code>. The table lists every value with the factories that create it; a few values are shared by several factories.</p>
+  <p>Cards don't create effects from it (except Hida Kisada, below): the factories in <code>effects.ts</code> (<code>modifyMilitarySkill(2)</code>, <code>cardCannot(…)</code>) pick the name. Cards name it only to inspect effects (Kiss of the Sea reads <code>event.effectTypes</code> of <code>onEffectApplied</code>).</p>
+  <p>Each value's string is the member name in lower camel case (<code>Blank</code> → <code>'blank'</code>), and the factory of that name creates it. The full list is in <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/Constants/EffectName.ts"><code>Constants/EffectName.ts</code></a>. The exceptions:</p>
   <table>
-        <thead><tr><th>Value</th><th>String</th><th>Created by</th></tr></thead>
+        <thead><tr><th>Value</th><th>Created by</th></tr></thead>
         <tbody>
-          <tr><td><code>AbilityRestrictions</code></td><td><code>'abilityRestrictions'</code></td><td><code>cardCannot</code>, <code>charactersCannot</code>, <code>immunity</code>, <code>playerCannot</code></td></tr>
-          <tr><td><code>AddElementAsAttacker</code></td><td><code>'addElementAsAttacker'</code></td><td><code>addElementAsAttacker</code></td></tr>
-          <tr><td><code>AddFlag</code></td><td><code>'addFlag'</code></td><td><code>addFlag</code>, <code>addPlayerFlag</code></td></tr>
-          <tr><td><code>AddFaction</code></td><td><code>'addFaction'</code></td><td><code>addFaction</code></td></tr>
-          <tr><td><code>LoseFaction</code></td><td><code>'loseFaction'</code></td><td><code>loseFaction</code></td></tr>
-          <tr><td><code>AddKeyword</code></td><td><code>'addKeyword'</code></td><td><code>addKeyword</code></td></tr>
-          <tr><td><code>AddTrait</code></td><td><code>'addTrait'</code></td><td><code>addTrait</code></td></tr>
-          <tr><td><code>LoseTrait</code></td><td><code>'loseTrait'</code></td><td><code>loseTrait</code></td></tr>
-          <tr><td><code>AttachmentCardCondition</code></td><td><code>'attachmentCardCondition'</code></td><td><code>attachmentCardCondition</code></td></tr>
-          <tr><td><code>AttachmentFactionRestriction</code></td><td><code>'attachmentFactionRestriction'</code></td><td><code>attachmentFactionRestriction</code></td></tr>
-          <tr><td><code>AttachmentLimit</code></td><td><code>'attachmentLimit'</code></td><td><code>attachmentLimit</code></td></tr>
-          <tr><td><code>AttachmentMyControlOnly</code></td><td><code>'attachmentMyControlOnly'</code></td><td><code>attachmentMyControlOnly</code></td></tr>
-          <tr><td><code>AttachmentOpponentControlOnly</code></td><td><code>'attachmentOpponentControlOnly'</code></td><td><code>attachmentOpponentControlOnly</code></td></tr>
-          <tr><td><code>AttachmentRestrictTraitAmount</code></td><td><code>'attachmentRestrictTraitAmount'</code></td><td><code>attachmentRestrictTraitAmount</code></td></tr>
-          <tr><td><code>AttachmentTraitRestriction</code></td><td><code>'attachmentTraitRestriction'</code></td><td><code>attachmentTraitRestriction</code></td></tr>
-          <tr><td><code>AttachmentUniqueRestriction</code></td><td><code>'attachmentUniqueRestriction'</code></td><td><code>attachmentUniqueRestriction</code></td></tr>
-          <tr><td><code>Blank</code></td><td><code>'blank'</code></td><td><code>blank</code></td></tr>
-          <tr><td><code>CalculatePrintedMilitarySkill</code></td><td><code>'calculatePrintedMilitarySkill'</code></td><td><code>calculatePrintedMilitarySkill</code></td></tr>
-          <tr><td><code>CanBeSeenWhenFacedown</code></td><td><code>'canBeSeenWhenFacedown'</code></td><td><code>canBeSeenWhenFacedown</code></td></tr>
-          <tr><td><code>CanBeTriggeredByOpponent</code></td><td><code>'canBeTriggeredByOpponent'</code></td><td><code>canBeTriggeredByOpponent</code></td></tr>
-          <tr><td><code>CanOnlyBeDeclaredAsAttackerWithElement</code></td><td><code>'canOnlyBeDeclaredAsAttackerWithElement'</code></td><td><code>canOnlyBeDeclaredAsAttackerWithElement</code></td></tr>
-          <tr><td><code>CanOnlyBeDeclaredAsAttackerWithCondition</code></td><td><code>'canOnlyBeDeclaredAsAttackerWithCondition'</code></td><td><code>canOnlyBeDeclaredAsAttackerWithCondition</code></td></tr>
-          <tr><td><code>CannotApplyLastingEffects</code></td><td><code>'cannotApplyLastingEffects'</code></td><td><code>cannotApplyLastingEffects</code></td></tr>
-          <tr><td><code>CannotBeAttacked</code></td><td><code>'cannotBeAttacked'</code></td><td><code>cannotBeAttacked</code></td></tr>
-          <tr><td><code>CannotBidInDuels</code></td><td><code>'cannotBidInDuels'</code></td><td><code>cannotBidInDuels</code></td></tr>
-          <tr><td><code>CannotContribute</code></td><td><code>'cannotContribute'</code></td><td><code>cannotContribute</code></td></tr>
-          <tr><td><code>CannotHaveConflictsDeclaredOfType</code></td><td><code>'cannotHaveConflictsDeclaredOfType'</code></td><td><code>cannotHaveConflictsDeclaredOfType</code></td></tr>
-          <tr><td><code>CannotHaveOtherRestrictedAttachments</code></td><td><code>'cannotHaveOtherRestrictedAttachments'</code></td><td><code>cannotHaveOtherRestrictedAttachments</code></td></tr>
-          <tr><td><code>CannotParticipateAsAttacker</code></td><td><code>'cannotParticipateAsAttacker'</code></td><td><code>cannotParticipateAsAttacker</code></td></tr>
-          <tr><td><code>CannotParticipateAsDefender</code></td><td><code>'cannotParticipateAsDefender'</code></td><td><code>cannotParticipateAsDefender</code></td></tr>
-          <tr><td><code>CardCostToAttackMilitary</code></td><td><code>'cardCostToAttackMilitary'</code></td><td><code>cardCostToAttackMilitary</code></td></tr>
-          <tr><td><code>ChangeContributionFunction</code></td><td><code>'changeContributionFunction'</code></td><td><code>changeContributionFunction</code></td></tr>
-          <tr><td><code>ChangeType</code></td><td><code>'changeType'</code></td><td><code>changeType</code></td></tr>
-          <tr><td><code>CopyCharacter</code></td><td><code>'copyCharacter'</code></td><td><code>copyCard</code></td></tr>
-          <tr><td><code>CopyProvince</code></td><td><code>'copyProvince'</code></td><td><code>copyProvince</code></td></tr>
-          <tr><td><code>CustomProvinceRefillEffect</code></td><td><code>'customProvinceRefillEffect'</code></td><td><code>customRefillProvince</code></td></tr>
-          <tr><td><code>DelayedEffect</code></td><td><code>'delayedEffect'</code></td><td><code>delayedEffect</code>, <code>playerDelayedEffect</code></td></tr>
-          <tr><td><code>DoesNotBow</code></td><td><code>'doesNotBow'</code></td><td><code>doesNotBow</code></td></tr>
-          <tr><td><code>DoesNotReady</code></td><td><code>'doesNotReady'</code></td><td><code>doesNotReady</code></td></tr>
-          <tr><td><code>EntersPlayWithStatus</code></td><td><code>'entersPlayWithStatus'</code></td><td><code>entersPlayWithStatus</code></td></tr>
-          <tr><td><code>EntersPlayForOpponent</code></td><td><code>'entersPlayForOpponent'</code></td><td><code>entersPlayForOpponent</code></td></tr>
-          <tr><td><code>FateCostToAttack</code></td><td><code>'fateCostToAttack'</code></td><td><code>fateCostToAttack</code></td></tr>
-          <tr><td><code>HonorCostToDeclare</code></td><td><code>'honorCostToDeclare'</code></td><td><code>honorCostToDeclare</code></td></tr>
-          <tr><td><code>FateCostToRingToDeclareConflictAgainst</code></td><td><code>'fateCostToRingToDeclareConflictAgainst'</code></td><td><code>fateCostToRingToDeclareConflictAgainst</code></td></tr>
-          <tr><td><code>FateCostToTarget</code></td><td><code>'fateCostToTarget'</code></td><td><code>fateCostToTarget</code></td></tr>
-          <tr><td><code>PlayerFateCostToTargetCard</code></td><td><code>'playerFateCostToTargetCard'</code></td><td><code>playerFateCostToTargetCard</code></td></tr>
-          <tr><td><code>GainAbility</code></td><td><code>'gainAbility'</code></td><td><code>gainAbility</code></td></tr>
-          <tr><td><code>GainPrintedAbilities</code></td><td><code>'gainPrintedAbilities'</code></td><td><code>gainPrintedAbilities</code></td></tr>
-          <tr><td><code>GainAllAbilitiesDynamic</code></td><td><code>'gainAllAbilitiesDynamic'</code></td><td><code>gainAllAbilitiesDynamic</code></td></tr>
-          <tr><td><code>GainExtraFateWhenPlayed</code></td><td><code>'gainExtraFateWhenPlayed'</code></td><td><code>gainExtraFateWhenPlayed</code></td></tr>
-          <tr><td><code>GainPlayAction</code></td><td><code>'gainPlayAction'</code></td><td><code>gainPlayAction</code></td></tr>
-          <tr><td><code>HideWhenFaceUp</code></td><td><code>'hideWhenFaceUp'</code></td><td><code>hideWhenFaceUp</code></td></tr>
-          <tr><td><code>HonorStatusDoesNotAffectLeavePlay</code></td><td><code>'honorStatusDoesNotAffectLeavePlay'</code></td><td><code>honorStatusDoesNotAffectLeavePlay</code></td></tr>
-          <tr><td><code>HonorStatusDoesNotModifySkill</code></td><td><code>'honorStatusDoesNotModifySkill'</code></td><td><code>honorStatusDoesNotModifySkill</code></td></tr>
-          <tr><td><code>StatusTokensDoNotDecreaseSkill</code></td><td><code>'statusTokensDoNotDecreaseSkill'</code></td><td><code>statusTokensDoNotDecreaseSkill</code></td></tr>
-          <tr><td><code>TaintedStatusDoesNotCostHonor</code></td><td><code>'taintedStatusDoesNotCostHonor'</code></td><td><code>taintedStatusDoesNotCostHonor</code></td></tr>
-          <tr><td><code>HonorStatusReverseModifySkill</code></td><td><code>'honorStatusReverseModifySkill'</code></td><td><code>honorStatusReverseModifySkill</code></td></tr>
-          <tr><td><code>IncreaseLimitOnAbilities</code></td><td><code>'increaseLimitOnAbilities'</code></td><td><code>increaseLimitOnAbilities</code></td></tr>
-          <tr><td><code>IncreaseLimitOnPrintedAbilities</code></td><td><code>'increaseLimitOnPrintedAbilities'</code></td><td><code>increaseLimitOnPrintedAbilities</code></td></tr>
-          <tr><td><code>LegendaryFate</code></td><td><code>'legendaryFate'</code></td><td><code>legendaryFate</code></td></tr>
-          <tr><td><code>LoseKeyword</code></td><td><code>'loseKeyword'</code></td><td><code>loseKeyword</code></td></tr>
-          <tr><td><code>ModifyBaseMilitarySkillMultiplier</code></td><td><code>'modifyBaseMilitarySkillMultiplier'</code></td><td><code>modifyBaseMilitarySkillMultiplier</code></td></tr>
-          <tr><td><code>ModifyBasePoliticalSkillMultiplier</code></td><td><code>'modifyBasePoliticalSkillMultiplier'</code></td><td><code>modifyBasePoliticalSkillMultiplier</code></td></tr>
-          <tr><td><code>ModifyBaseProvinceStrength</code></td><td><code>'modifyBaseProvinceStrength'</code></td><td><code>modifyBaseProvinceStrength</code></td></tr>
-          <tr><td><code>ModifyBothSkills</code></td><td><code>'modifyBothSkills'</code></td><td><code>modifyBothSkills</code></td></tr>
-          <tr><td><code>ModifyDuelistSkill</code></td><td><code>'modifyDuelistSkill'</code></td><td><code>modifyDuelistSkill</code></td></tr>
-          <tr><td><code>ModifyGlory</code></td><td><code>'modifyGlory'</code></td><td><code>modifyGlory</code></td></tr>
-          <tr><td><code>ModifyMilitarySkill</code></td><td><code>'modifyMilitarySkill'</code></td><td><code>modifyMilitarySkill</code></td></tr>
-          <tr><td><code>SwitchAttachmentSkillModifiers</code></td><td><code>'switchAttachmentSkillModifiers'</code></td><td><code>switchAttachmentSkillModifiers</code></td></tr>
-          <tr><td><code>AttachmentMilitarySkillModifier</code></td><td><code>'attachmentMilitarySkillModifier'</code></td><td><code>attachmentMilitarySkillModifier</code></td></tr>
-          <tr><td><code>ModifyMilitarySkillMultiplier</code></td><td><code>'modifyMilitarySkillMultiplier'</code></td><td><code>modifyMilitarySkillMultiplier</code></td></tr>
-          <tr><td><code>ModifyPoliticalSkill</code></td><td><code>'modifyPoliticalSkill'</code></td><td><code>modifyPoliticalSkill</code></td></tr>
-          <tr><td><code>AttachmentPoliticalSkillModifier</code></td><td><code>'attachmentPoliticalSkillModifier'</code></td><td><code>attachmentPoliticalSkillModifier</code></td></tr>
-          <tr><td><code>ModifyPoliticalSkillMultiplier</code></td><td><code>'modifyPoliticalSkillMultiplier'</code></td><td><code>modifyPoliticalSkillMultiplier</code></td></tr>
-          <tr><td><code>ModifyProvinceStrengthBonus</code></td><td><code>'modifyProvinceStrengthBonus'</code></td><td><code>modifyProvinceStrengthBonus</code></td></tr>
-          <tr><td><code>ModifyProvinceStrength</code></td><td><code>'modifyProvinceStrength'</code></td><td><code>modifyProvinceStrength</code></td></tr>
-          <tr><td><code>ModifyProvinceStrengthMultiplier</code></td><td><code>'modifyProvinceStrengthMultiplier'</code></td><td><code>modifyProvinceStrengthMultiplier</code></td></tr>
-          <tr><td><code>ModifyRestrictedAttachmentAmount</code></td><td><code>'modifyRestrictedAttachmentAmount'</code></td><td><code>modifyRestrictedAttachmentAmount</code></td></tr>
-          <tr><td><code>MustBeChosen</code></td><td><code>'mustBeChosen'</code></td><td><code>mustBeChosen</code></td></tr>
-          <tr><td><code>MustBeDeclaredAsAttacker</code></td><td><code>'mustBeDeclaredAsAttacker'</code></td><td><code>mustBeDeclaredAsAttacker</code></td></tr>
-          <tr><td><code>MustBeDeclaredAsAttackerIfType</code></td><td><code>'mustBeDeclaredAsAttackerIfType'</code></td><td><code>mustBeDeclaredAsAttackerIfType</code></td></tr>
-          <tr><td><code>MustBeDeclaredAsDefender</code></td><td><code>'mustBeDeclaredAsDefender'</code></td><td><code>mustBeDeclaredAsDefender</code></td></tr>
-          <tr><td><code>SetApparentFate</code></td><td><code>'setApparentFate'</code></td><td><code>setApparentFate</code></td></tr>
-          <tr><td><code>SetBaseDash</code></td><td><code>'setBaseDash'</code></td><td><code>setBaseDash</code></td></tr>
-          <tr><td><code>SetBaseMilitarySkill</code></td><td><code>'setBaseMilitarySkill'</code></td><td><code>setBaseMilitarySkill</code></td></tr>
-          <tr><td><code>SetBasePoliticalSkill</code></td><td><code>'setBasePoliticalSkill'</code></td><td><code>setBasePoliticalSkill</code></td></tr>
-          <tr><td><code>SetBaseProvinceStrength</code></td><td><code>'setBaseProvinceStrength'</code></td><td><code>setBaseProvinceStrength</code></td></tr>
-          <tr><td><code>SatisfyAffinity</code></td><td><code>'satisfyAffinity'</code></td><td><code>satisfyAffinity</code></td></tr>
-          <tr><td><code>SetConflictDeclarationType</code></td><td><code>'setConflictDeclarationType'</code></td><td><code>setConflictDeclarationType</code></td></tr>
-          <tr><td><code>ProvideConflictDeclarationType</code></td><td><code>'provideConflictDeclarationType'</code></td><td><code>provideConflictDeclarationType</code></td></tr>
-          <tr><td><code>ForceConflictDeclarationType</code></td><td><code>'forceConflictDeclarationType'</code></td><td><code>forceConflictDeclarationType</code></td></tr>
-          <tr><td><code>SetConflictTotalSkill</code></td><td><code>'setConflictTotalSkill'</code></td><td><code>setConflictTotalSkill</code></td></tr>
-          <tr><td><code>SetDash</code></td><td><code>'setDash'</code></td><td><code>setDash</code></td></tr>
-          <tr><td><code>SetGlory</code></td><td><code>'setGlory'</code></td><td><code>setGlory</code></td></tr>
-          <tr><td><code>SetMaxDeclaredConflicts</code></td><td><code>'setMaxDeclaredConflicts'</code></td><td><code>setMaxDeclaredConflicts</code></td></tr>
-          <tr><td><code>SetMilitarySkill</code></td><td><code>'setMilitarySkill'</code></td><td><code>setMilitarySkill</code></td></tr>
-          <tr><td><code>SetPoliticalSkill</code></td><td><code>'setPoliticalSkill'</code></td><td><code>setPoliticalSkill</code></td></tr>
-          <tr><td><code>SetProvinceStrengthBonus</code></td><td><code>'setProvinceStrengthBonus'</code></td><td><code>setProvinceStrengthBonus</code></td></tr>
-          <tr><td><code>SetProvinceStrength</code></td><td><code>'setProvinceStrength'</code></td><td><code>setProvinceStrength</code></td></tr>
-          <tr><td><code>SwitchBaseSkills</code></td><td><code>'switchBaseSkills'</code></td><td><code>switchBaseSkills</code></td></tr>
-          <tr><td><code>SuppressEffects</code></td><td><code>'suppressEffects'</code></td><td><code>suppressEffects</code></td></tr>
-          <tr><td><code>TakeControl</code></td><td><code>'takeControl'</code></td><td><code>takeControl</code></td></tr>
-          <tr><td><code>UnlessActionCost</code></td><td><code>'unlessActionCost'</code></td><td><code>unlessActionCost</code></td></tr>
-          <tr><td><code>AddElement</code></td><td><code>'addElement'</code></td><td><code>addElement</code></td></tr>
-          <tr><td><code>CannotDeclareRing</code></td><td><code>'cannotDeclareRing'</code></td><td><code>cannotDeclareRing</code></td></tr>
-          <tr><td><code>ConsiderRingAsClaimed</code></td><td><code>'considerRingAsClaimed'</code></td><td><code>considerRingAsClaimed</code></td></tr>
-          <tr><td><code>AdditionalAction</code></td><td><code>'additionalAction'</code></td><td><code>additionalAction</code></td></tr>
-          <tr><td><code>AdditionalActionAfterWindowCompleted</code></td><td><code>'additionalActionAfterWindowCompleted'</code></td><td><code>additionalActionAfterWindowCompleted</code></td></tr>
-          <tr><td><code>AdditionalCardPlayed</code></td><td><code>'additionalCardPlayed'</code></td><td><code>additionalCardPlayed</code></td></tr>
-          <tr><td><code>AdditionalCharactersInConflict</code></td><td><code>'additionalCharactersInConflict'</code></td><td><code>additionalCharactersInConflict</code></td></tr>
-          <tr><td><code>AdditionalConflict</code></td><td><code>'additionalConflict'</code></td><td><code>additionalConflict</code></td></tr>
-          <tr><td><code>AdditionalTriggerCost</code></td><td><code>'additionalTriggerCost'</code></td><td><code>additionalTriggerCost</code>, <code>additionalTriggerCostForCard</code></td></tr>
-          <tr><td><code>AdditionalPlayCost</code></td><td><code>'additionalPlayCost'</code></td><td><code>additionalPlayCost</code></td></tr>
-          <tr><td><code>AlternateFatePool</code></td><td><code>'alternateFatePool'</code></td><td><code>alternateFatePool</code></td></tr>
-          <tr><td><code>CannotDeclareConflictsOfType</code></td><td><code>'cannotDeclareConflictsOfType'</code></td><td><code>cannotDeclareConflictsOfType</code></td></tr>
-          <tr><td><code>CanPlayFromOwn</code></td><td><code>'canPlayFromOwn'</code></td><td><code>canPlayFromOwn</code></td></tr>
-          <tr><td><code>CanPlayFromOutOfPlay</code></td><td><code>'canPlayFromOutOfPlay'</code></td><td><code>canPlayFromOutOfPlay</code></td></tr>
-          <tr><td><code>CanPlayFromOpponents</code></td><td><code>'canPlayFromOpponents'</code></td><td><code>canPlayFromOpponents</code></td></tr>
-          <tr><td><code>CancelFirstAction</code></td><td><code>'cancelFirstAction'</code></td><td>No factory: Hida Kisada builds it with <code>EffectBuilder.player.detached</code> (the opponent's first action ability in each conflict is cancelled).</td></tr>
-          <tr><td><code>CannotResolveRings</code></td><td><code>'cannotResolveRings'</code></td><td><code>cannotResolveRings</code></td></tr>
-          <tr><td><code>ChangePlayerGloryModifier</code></td><td><code>'changePlayerGloryModifier'</code></td><td><code>changePlayerGloryModifier</code></td></tr>
-          <tr><td><code>ChangePlayerSkillModifier</code></td><td><code>'changePlayerSkillModifier'</code></td><td><code>changePlayerSkillModifier</code></td></tr>
-          <tr><td><code>ChangePlayerResolutionSkillModifier</code></td><td><code>'changePlayerResolutionSkillModifier'</code></td><td><code>changePlayerResolutionSkillModifier</code></td></tr>
-          <tr><td><code>GainActionPhasePriority</code></td><td><code>'gainActionPhasePriority'</code></td><td><code>gainActionPhasePriority</code></td></tr>
-          <tr><td><code>CostReducer</code></td><td><code>'costReducer'</code></td><td><code>reduceCost</code>, <code>reduceNextPlayedCardCost</code></td></tr>
-          <tr><td><code>ModifyCardsDrawnInDrawPhase</code></td><td><code>'modifyCardsDrawnInDrawPhase'</code></td><td><code>modifyCardsDrawnInDrawPhase</code></td></tr>
-          <tr><td><code>SetMaxConflicts</code></td><td><code>'setMaxConflicts'</code></td><td><code>setMaxConflicts</code></td></tr>
-          <tr><td><code>ShowTopConflictCard</code></td><td><code>'showTopConflictCard'</code></td><td><code>showTopConflictCard</code></td></tr>
-          <tr><td><code>ShowTopDynastyCard</code></td><td><code>'showTopDynastyCard'</code></td><td><code>showTopDynastyCard</code></td></tr>
-          <tr><td><code>ContributeToConflict</code></td><td><code>'contributeToConflict'</code></td><td><code>contributeToConflict</code></td></tr>
-          <tr><td><code>CanContributeWhileBowed</code></td><td><code>'canContributeWhileBowed'</code></td><td><code>canContributeWhileBowed</code></td></tr>
-          <tr><td><code>CanContributeGloryWhileBowed</code></td><td><code>'canContributeGloryWhileBowed'</code></td><td><code>canContributeGloryWhileBowed</code></td></tr>
-          <tr><td><code>ChangeConflictSkillFunction</code></td><td><code>'changeConflictSkillFunction'</code></td><td><code>changeConflictSkillFunction</code></td></tr>
-          <tr><td><code>ConflictSkillExclusion</code></td><td><code>'conflictSkillExclusion'</code></td><td><code>conflictSkillExclusion</code></td></tr>
-          <tr><td><code>ModifyConflictElementsToResolve</code></td><td><code>'modifyConflictElementsToResolve'</code></td><td><code>modifyConflictElementsToResolve</code></td></tr>
-          <tr><td><code>RestrictNumberOfDefenders</code></td><td><code>'restrictNumberOfDefenders'</code></td><td><code>restrictNumberOfDefenders</code></td></tr>
-          <tr><td><code>ResolveConflictEarly</code></td><td><code>'resolveConflictEarly'</code></td><td><code>resolveConflictEarly</code></td></tr>
-          <tr><td><code>SetBaseGlory</code></td><td><code>'setBaseGlory'</code></td><td><code>setBaseGlory</code></td></tr>
-          <tr><td><code>EventsCannotBeCancelled</code></td><td><code>'eventsCannotBeCancelled'</code></td><td><code>eventsCannotBeCancelled</code></td></tr>
-          <tr><td><code>ForceConflictUnopposed</code></td><td><code>'forceConflictUnopposed'</code></td><td><code>forceConflictUnopposed</code></td></tr>
-          <tr><td><code>MustDeclareMaximumAttackers</code></td><td><code>'mustDeclareMaximumAttackers'</code></td><td><code>mustDeclareMaximumAttackers</code></td></tr>
-          <tr><td><code>RefillProvinceTo</code></td><td><code>'refillProvinceTo'</code></td><td><code>refillProvinceTo</code></td></tr>
-          <tr><td><code>RestartDynastyPhase</code></td><td><code>'restartDynastyPhase'</code></td><td><code>restartDynastyPhase</code></td></tr>
-          <tr><td><code>StrongholdCanBeAttacked</code></td><td><code>'strongholdCanBeAttacked'</code></td><td><code>strongholdCanBeAttacked</code></td></tr>
-          <tr><td><code>DefendersChosenFirstDuringConflict</code></td><td><code>'defendersChosenFirstDuringConflict'</code></td><td><code>defendersChosenFirstDuringConflict</code></td></tr>
-          <tr><td><code>LimitHonorGainPerPhase</code></td><td><code>'limitHonorGainPerPhase'</code></td><td><code>limitHonorGainPerPhase</code></td></tr>
-          <tr><td><code>RegisterToPlayFromOutOfPlay</code></td><td><code>'registerToPlayFromOutOfPlay'</code></td><td><code>registerToPlayFromOutOfPlay</code></td></tr>
-          <tr><td><code>CostToDeclareAnyParticipants</code></td><td><code>'costToDeclareAnyParticipants'</code></td><td><code>costToDeclareAnyParticipants</code></td></tr>
-          <tr><td><code>LoseAllNonKeywordAbilities</code></td><td><code>'loseAllNonKeywordAbilities'</code></td><td><code>loseAllNonKeywordAbilities</code></td></tr>
-          <tr><td><code>LoseGainedAbilities</code></td><td><code>'loseGainedAbilities'</code></td><td><code>loseGainedAbilities</code></td></tr>
-          <tr><td><code>ParticipatesFromHome</code></td><td><code>'participatesFromHome'</code></td><td><code>participatesFromHome</code></td></tr>
-          <tr><td><code>AdditionalAttackedProvince</code></td><td><code>'additionalAttackedProvince'</code></td><td><code>additionalAttackedProvince</code></td></tr>
-          <tr><td><code>ReplacePrintedElement</code></td><td><code>'replacePrintedElement'</code></td><td><code>replacePrintedElement</code></td></tr>
-          <tr><td><code>RemoveFromGameInsteadOfLeavingPlay</code></td><td><code>'removeFromGameInsteadOfLeavingPlay'</code></td><td><code>removeFromGameInsteadOfLeavingPlay</code></td></tr>
-          <tr><td><code>ProvinceCannotHaveSkillIncreased</code></td><td><code>'provinceCannotHaveSkillIncreased'</code></td><td><code>provinceCannotHaveSkillIncreased</code></td></tr>
-          <tr><td><code>ConsideredLessHonorable</code></td><td><code>'consideredLessHonorable'</code></td><td><code>consideredLessHonorable</code></td></tr>
-          <tr><td><code>CustomFatePhaseFateRemoval</code></td><td><code>'customFatePhaseFateRemoval'</code></td><td><code>customFatePhaseFateRemoval</code></td></tr>
-          <tr><td><code>WinDuel</code></td><td><code>'winDuel'</code></td><td><code>winDuel</code></td></tr>
-          <tr><td><code>WinDuelTies</code></td><td><code>'winDuelTies'</code></td><td><code>winDuelTies</code></td></tr>
-          <tr><td><code>IgnoreDuelSkill</code></td><td><code>'ignoreDuelSkill'</code></td><td><code>ignoreDuelSkill</code></td></tr>
-          <tr><td><code>ConflictIgnoreStatusTokens</code></td><td><code>'conflictIgnoreStatusTokens'</code></td><td><code>conflictIgnoreStatusTokens</code></td></tr>
-          <tr><td><code>LimitLegalAttackers</code></td><td><code>'limitLegalAttackers'</code></td><td><code>limitLegalAttackers</code></td></tr>
-          <tr><td><code>ModifyUnopposedHonorLoss</code></td><td><code>'modifyUnopposedHonorLoss'</code></td><td><code>modifyUnopposedHonorLoss</code></td></tr>
-          <tr><td><code>NoUnopposedHonorLoss</code></td><td><code>'noUnopposedHonorLoss'</code></td><td><code>noUnopposedHonorLoss</code></td></tr>
-          <tr><td><code>TreatStatusTokenAs</code></td><td><code>'treatStatusTokenAs'</code></td><td><code>treatStatusTokenAs</code></td></tr>
-          <tr><td><code>ModifyDuelTotal</code></td><td><code>'modifyDuelTotal'</code></td><td><code>modifyDuelTotal</code></td></tr>
-          <tr><td><code>ApplyStatusTokensToDuel</code></td><td><code>'applyStatusTokensToDuel'</code></td><td><code>applyStatusTokensToDuel</code></td></tr>
-          <tr><td><code>DuelIgnorePrintedSkill</code></td><td><code>'duelIgnorePrintedSkill'</code></td><td><code>duelIgnorePrintedSkill</code></td></tr>
+          <tr><td><code>AbilityRestrictions</code></td><td><code>cardCannot</code>, <code>charactersCannot</code>, <code>immunity</code>, <code>playerCannot</code></td></tr>
+          <tr><td><code>AddFlag</code></td><td><code>addFlag</code>, <code>addPlayerFlag</code></td></tr>
+          <tr><td><code>CopyCharacter</code></td><td><code>copyCard</code></td></tr>
+          <tr><td><code>CustomProvinceRefillEffect</code></td><td><code>customRefillProvince</code></td></tr>
+          <tr><td><code>DelayedEffect</code></td><td><code>delayedEffect</code>, <code>playerDelayedEffect</code></td></tr>
+          <tr><td><code>AdditionalTriggerCost</code></td><td><code>additionalTriggerCost</code>, <code>additionalTriggerCostForCard</code></td></tr>
+          <tr><td><code>CancelFirstAction</code></td><td>No factory: Hida Kisada builds it with <code>EffectBuilder.player.detached</code> (the opponent's first action ability in each conflict is cancelled).</td></tr>
+          <tr><td><code>CostReducer</code></td><td><code>reduceCost</code>, <code>reduceNextPlayedCardCost</code></td></tr>
         </tbody>
       </table>
   <pre><code>// Kiss of the Sea: Reaction: After a triggered ability changes the [conflict-military] or [conflict-political] skill of attached character while it is participating in a conflict – bow attached character. …
@@ -837,54 +676,54 @@ onEffectApplied: (event, context) =&gt; {
     <li>In the table, "the applying player" is <code>applyingPlayer</code> if the restriction sets it, else the player of the effect's context. "The opponent" is that player's opponent.</li>
   </ul>
   <table>
-        <thead><tr><th>Value</th><th>String</th><th>Meaning</th></tr></thead>
+        <thead><tr><th>Value</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>AbilitiesTriggeredByOpponents</code></td><td><code>'abilitiesTriggeredByOpponents'</code></td><td>Non-forced triggered abilities of the applying player's opponent.</td></tr>
-          <tr><td><code>ActionEvents</code></td><td><code>'actionEvents'</code></td><td>Action abilities of event cards.</td></tr>
-          <tr><td><code>AdjacentCharacters</code></td><td><code>'adjacentCharacters'</code></td><td>Characters in a location adjacent to the effect source's location.</td></tr>
-          <tr><td><code>AllButOwnCardEffects</code></td><td><code>'allButOwnCardEffects'</code></td><td>Every attempt that is not <code>OwnCardEffects</code>: the opponent's effects, framework steps, costs and playing the card. Bayushi Traitor: it can't be put into a conflict except by its owner's card effects.</td></tr>
-          <tr><td><code>AttachmentsWithSameClan</code></td><td><code>'attachmentsWithSameClan'</code></td><td>Playing a non-neutral attachment whose printed clan the restricted card has (the attachment's own abilities are not restricted).</td></tr>
-          <tr><td><code>AttackedProvinceNonForced</code></td><td><code>'attackedProvinceNonForced'</code></td><td>Non-forced triggered abilities of an attacked province.</td></tr>
-          <tr><td><code>CardAndRingEffects</code></td><td><code>'cardAndRingEffects'</code></td><td><code>CardEffects</code> or <code>RingEffects</code>.</td></tr>
-          <tr><td><code>CardEffects</code></td><td><code>'cardEffects'</code></td><td>Attempts whose source is a card (event, character, holding, attachment, stronghold, province or role), made by a card ability or another non-play ability, outside <code>Stage.Cost</code>. Playing a character, attachment or holding does not count; an event's ability does. Costs are not effects.</td></tr>
-          <tr><td><code>CardEffectsExceptOwn</code></td><td><code>'cardEffectsExceptOwn'</code></td><td><code>CardEffects</code> whose source is not the effect's source.</td></tr>
-          <tr><td><code>Characters</code></td><td><code>'characters'</code></td><td>Sources that are characters (<code>charactersCannot</code> sets it). A character played as an attachment (Tattooed Wanderer) is not one.</td></tr>
-          <tr><td><code>CharactersWithNoFate</code></td><td><code>'charactersWithNoFate'</code></td><td>Characters with no fate on them.</td></tr>
-          <tr><td><code>CopiesOfDiscardEvents</code></td><td><code>'copiesOfDiscardEvents'</code></td><td>Events with a copy in the player's conflict discard pile.</td></tr>
-          <tr><td><code>CopiesOfX</code></td><td><code>'copiesOfX'</code></td><td>Sources named <code>params</code> (the restriction's <code>params</code>).</td></tr>
-          <tr><td><code>EqualOrMoreExpensiveCharacterKeywords</code></td><td><code>'equalOrMoreExpensiveCharacterKeywords'</code></td><td>Keyword abilities of characters whose printed cost is at least the restricted card's.</td></tr>
-          <tr><td><code>EqualOrMoreExpensiveCharacterTriggeredAbilities</code></td><td><code>'equalOrMoreExpensiveCharacterTriggeredAbilities'</code></td><td>Non-keyword abilities of such characters.</td></tr>
-          <tr><td><code>EventPlayedByHigherBidPlayer</code></td><td><code>'eventPlayedByHigherBidPlayer'</code></td><td>Events played by a player whose shown bid is higher than the restricted card's controller's.</td></tr>
-          <tr><td><code>Events</code></td><td><code>'events'</code></td><td>Event cards.</td></tr>
-          <tr><td><code>EventsWithSameClan</code></td><td><code>'eventsWithSameClan'</code></td><td>Non-neutral events whose printed clan the restricted card has.</td></tr>
-          <tr><td><code>KeywordAbilities</code></td><td><code>'keywordAbilities'</code></td><td>Keyword abilities.</td></tr>
-          <tr><td><code>LoseHonorAsCost</code></td><td><code>'loseHonorAsCost'</code></td><td>Attempts at <code>Stage.Cost</code>.</td></tr>
-          <tr><td><code>NonDynastyPhase</code></td><td><code>'nonDynastyPhase'</code></td><td>Any attempt outside the dynasty phase.</td></tr>
-          <tr><td><code>NonForcedAbilities</code></td><td><code>'nonForcedAbilities'</code></td><td>Triggered abilities that are not forced.</td></tr>
-          <tr><td><code>NonKeywordAbilities</code></td><td><code>'nonKeywordAbilities'</code></td><td>Abilities that are not keywords.</td></tr>
-          <tr><td><code>NonSpellEvents</code></td><td><code>'nonSpellEvents'</code></td><td>Events without the Spell trait.</td></tr>
-          <tr><td><code>OpponentsAttachments</code></td><td><code>'opponentsAttachments'</code></td><td>Attachments used by the applying player's opponent.</td></tr>
-          <tr><td><code>OpponentsCardAbilities</code></td><td><code>'opponentsCardAbilities'</code></td><td>Card abilities of the opponent.</td></tr>
-          <tr><td><code>OpponentsCardAndRingEffects</code></td><td><code>'opponentsCardAndRingEffects'</code></td><td><code>OpponentsCardEffects</code> or <code>OpponentsRingEffects</code>.</td></tr>
-          <tr><td><code>OpponentsCardEffects</code></td><td><code>'opponentsCardEffects'</code></td><td><code>CardEffects</code> attempts by the opponent.</td></tr>
-          <tr><td><code>OpponentsCharacterAbilitiesWithLowerGlory</code></td><td><code>'opponentsCharacterAbilitiesWithLowerGlory'</code></td><td>Opponent's characters with lower glory than the effect source's parent character.</td></tr>
-          <tr><td><code>OpponentsCharacters</code></td><td><code>'opponentsCharacters'</code></td><td>Characters the opponent controls.</td></tr>
-          <tr><td><code>OpponentsEvents</code></td><td><code>'opponentsEvents'</code></td><td>Events played by the opponent.</td></tr>
-          <tr><td><code>OpponentsProvinceEffects</code></td><td><code>'opponentsProvinceEffects'</code></td><td>Province abilities of the opponent: card effects (<code>isCardEffect</code>) from a province.</td></tr>
-          <tr><td><code>OpponentsRingEffects</code></td><td><code>'opponentsRingEffects'</code></td><td>Ring effects resolved by the opponent.</td></tr>
-          <tr><td><code>OpponentsTriggeredAbilities</code></td><td><code>'opponentsTriggeredAbilities'</code></td><td>Triggered abilities (including actions) of the opponent.</td></tr>
-          <tr><td><code>OpponentsTriggeredActionAbilities</code></td><td><code>'opponentsTriggeredActionAbilities'</code></td><td>Action abilities of the opponent.</td></tr>
-          <tr><td><code>OwnCardEffects</code></td><td><code>'ownCardEffects'</code></td><td><code>CardEffects</code> attempts by the applying player.</td></tr>
-          <tr><td><code>OwnPrintedAbilities</code></td><td><code>'ownPrintedAbilities'</code></td><td>Printed abilities used by the applying player ("You cannot trigger X's printed abilities": Shinjo Takame, Ide Nobutada).</td></tr>
-          <tr><td><code>Reactions</code></td><td><code>'reactions'</code></td><td>Reaction abilities.</td></tr>
-          <tr><td><code>RingEffects</code></td><td><code>'ringEffects'</code></td><td>Ring effects (the source is a ring).</td></tr>
-          <tr><td><code>Source</code></td><td><code>'source'</code></td><td>Attempts whose source is the effect's source.</td></tr>
-          <tr><td><code>ThisAbility</code></td><td><code>'thisAbility'</code></td><td>The ability that created the effect, not other abilities of the same card ("cannot trigger this ability": Perfect Guest).</td></tr>
-          <tr><td><code>UnlessMeishodo</code></td><td><code>'unlessMeishodo'</code></td><td>Spells without the Meishodo trait.</td></tr>
+          <tr><td><code>AbilitiesTriggeredByOpponents</code></td><td>Non-forced triggered abilities of the applying player's opponent.</td></tr>
+          <tr><td><code>ActionEvents</code></td><td>Action abilities of event cards.</td></tr>
+          <tr><td><code>AdjacentCharacters</code></td><td>Characters in a location adjacent to the effect source's location.</td></tr>
+          <tr><td><code>AllButOwnCardEffects</code></td><td>Every attempt that is not <code>OwnCardEffects</code>: the opponent's effects, framework steps, costs and playing the card. Bayushi Traitor: it can't be put into a conflict except by its owner's card effects.</td></tr>
+          <tr><td><code>AttachmentsWithSameClan</code></td><td>Playing a non-neutral attachment whose printed clan the restricted card has (the attachment's own abilities are not restricted).</td></tr>
+          <tr><td><code>AttackedProvinceNonForced</code></td><td>Non-forced triggered abilities of an attacked province.</td></tr>
+          <tr><td><code>CardAndRingEffects</code></td><td><code>CardEffects</code> or <code>RingEffects</code>.</td></tr>
+          <tr><td><code>CardEffects</code></td><td>Attempts whose source is a card (event, character, holding, attachment, stronghold, province or role), made by a card ability or another non-play ability, outside <code>Stage.Cost</code>. Playing a character, attachment or holding does not count; an event's ability does. Costs are not effects.</td></tr>
+          <tr><td><code>CardEffectsExceptOwn</code></td><td><code>CardEffects</code> whose source is not the effect's source.</td></tr>
+          <tr><td><code>Characters</code></td><td>Sources that are characters (<code>charactersCannot</code> sets it). A character played as an attachment (Tattooed Wanderer) is not one.</td></tr>
+          <tr><td><code>CharactersWithNoFate</code></td><td>Characters with no fate on them.</td></tr>
+          <tr><td><code>CopiesOfDiscardEvents</code></td><td>Events with a copy in the player's conflict discard pile.</td></tr>
+          <tr><td><code>CopiesOfX</code></td><td>Sources named <code>params</code> (the restriction's <code>params</code>).</td></tr>
+          <tr><td><code>EqualOrMoreExpensiveCharacterKeywords</code></td><td>Keyword abilities of characters whose printed cost is at least the restricted card's.</td></tr>
+          <tr><td><code>EqualOrMoreExpensiveCharacterTriggeredAbilities</code></td><td>Non-keyword abilities of such characters.</td></tr>
+          <tr><td><code>EventPlayedByHigherBidPlayer</code></td><td>Events played by a player whose shown bid is higher than the restricted card's controller's.</td></tr>
+          <tr><td><code>Events</code></td><td>Event cards.</td></tr>
+          <tr><td><code>EventsWithSameClan</code></td><td>Non-neutral events whose printed clan the restricted card has.</td></tr>
+          <tr><td><code>KeywordAbilities</code></td><td>Keyword abilities.</td></tr>
+          <tr><td><code>LoseHonorAsCost</code></td><td>Attempts at <code>Stage.Cost</code>.</td></tr>
+          <tr><td><code>NonDynastyPhase</code></td><td>Any attempt outside the dynasty phase.</td></tr>
+          <tr><td><code>NonForcedAbilities</code></td><td>Triggered abilities that are not forced.</td></tr>
+          <tr><td><code>NonKeywordAbilities</code></td><td>Abilities that are not keywords.</td></tr>
+          <tr><td><code>NonSpellEvents</code></td><td>Events without the Spell trait.</td></tr>
+          <tr><td><code>OpponentsAttachments</code></td><td>Attachments used by the applying player's opponent.</td></tr>
+          <tr><td><code>OpponentsCardAbilities</code></td><td>Card abilities of the opponent.</td></tr>
+          <tr><td><code>OpponentsCardAndRingEffects</code></td><td><code>OpponentsCardEffects</code> or <code>OpponentsRingEffects</code>.</td></tr>
+          <tr><td><code>OpponentsCardEffects</code></td><td><code>CardEffects</code> attempts by the opponent.</td></tr>
+          <tr><td><code>OpponentsCharacterAbilitiesWithLowerGlory</code></td><td>Opponent's characters with lower glory than the effect source's parent character.</td></tr>
+          <tr><td><code>OpponentsCharacters</code></td><td>Characters the opponent controls.</td></tr>
+          <tr><td><code>OpponentsEvents</code></td><td>Events played by the opponent.</td></tr>
+          <tr><td><code>OpponentsProvinceEffects</code></td><td>Province abilities of the opponent: card effects (<code>isCardEffect</code>) from a province.</td></tr>
+          <tr><td><code>OpponentsRingEffects</code></td><td>Ring effects resolved by the opponent.</td></tr>
+          <tr><td><code>OpponentsTriggeredAbilities</code></td><td>Triggered abilities (including actions) of the opponent.</td></tr>
+          <tr><td><code>OpponentsTriggeredActionAbilities</code></td><td>Action abilities of the opponent.</td></tr>
+          <tr><td><code>OwnCardEffects</code></td><td><code>CardEffects</code> attempts by the applying player.</td></tr>
+          <tr><td><code>OwnPrintedAbilities</code></td><td>Printed abilities used by the applying player ("You cannot trigger X's printed abilities": Shinjo Takame, Ide Nobutada).</td></tr>
+          <tr><td><code>Reactions</code></td><td>Reaction abilities.</td></tr>
+          <tr><td><code>RingEffects</code></td><td>Ring effects (the source is a ring).</td></tr>
+          <tr><td><code>Source</code></td><td>Attempts whose source is the effect's source.</td></tr>
+          <tr><td><code>ThisAbility</code></td><td>The ability that created the effect, not other abilities of the same card ("cannot trigger this ability": Perfect Guest).</td></tr>
+          <tr><td><code>UnlessMeishodo</code></td><td>Spells without the Meishodo trait.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
-    <li><code>OpponentsTriggeredAbilities</code> also matches action abilities: <code>isTriggeredAbility()</code> is true for every <code>CardAbility</code> (actions, triggered abilities, events). It does not match keyword abilities (Pride, Rally, Covert, Tutored, Thriving, Courtesy, Sincerity), nor a then-step, whose ability is a plain <code>ResolvableAbility</code> (<code>CardAbility</code> extends it; <code>isStep()</code> is true for a step).</li>
+    <li><code>OpponentsTriggeredAbilities</code> uses <a href="#ctx-ability"><code>isTriggeredAbility()</code></a>: it matches actions too, but not keyword abilities or then-steps.</li>
   </ul>
   <pre><code>// Master of the Blade: Duel Strike: For this conflict, this character cannot be bowed by opponents' card effects and does not bow as a result of conflict resolution.
 cardCannot({
@@ -898,63 +737,63 @@ cardCannot({
   <h3><code>RestrictionType</code> <span class="kind">Enum</span> <a class="anchor" href="#en-RestrictionType">#</a></h3>
   <p>What a restriction forbids: <code>cannot</code> of <code>cardCannot</code>, <code>playerCannot</code>, <code>charactersCannot</code> and <code>immunity</code> (also a bare value: <code>cardCannot(RestrictionType.Bow)</code>). A game action checks its own <code>restriction</code> on each target (<code>canAffect</code>); the other values are checked by a rule at one place.</p>
   <table>
-        <thead><tr><th>Value</th><th>String</th><th>Checked by</th></tr></thead>
+        <thead><tr><th>Value</th><th>Checked by</th></tr></thead>
         <tbody>
-          <tr><td><code>ApplyCovert</code></td><td><code>'applyCovert'</code></td><td>Covert: the character cannot be evaded by covert.</td></tr>
-          <tr><td><code>ApplyEffect</code></td><td><code>'applyEffect'</code></td><td>Card effects: the card is not affected by matching effects.</td></tr>
-          <tr><td><code>Attach</code></td><td><code>'attach'</code></td><td>Attaching a card to it (<code>attach</code>). An immunity doesn't match it: attachments aren't protected by immunity.</td></tr>
-          <tr><td><code>Bow</code></td><td><code>'bow'</code></td><td><code>bow</code></td></tr>
-          <tr><td><code>Break</code></td><td><code>'break'</code></td><td><code>breakProvince</code>; also the "is breaking" line of the conflict action window's prompt.</td></tr>
-          <tr><td><code>ChooseConflictRing</code></td><td><code>'chooseConflictRing'</code></td><td>Declaring a conflict: a restricted attacker does not choose the ring; the defender does.</td></tr>
-          <tr><td><code>ClaimRings</code></td><td><code>'claimRings'</code></td><td><code>claimRing</code> and claiming the contested ring after a conflict.</td></tr>
-          <tr><td><code>ContributeSkillToConflictResolution</code></td><td><code>'contributeSkillToConflictResolution'</code></td><td>Counting skill at conflict resolution.</td></tr>
-          <tr><td><code>DeclareAsAttacker</code></td><td><code>'declareAsAttacker'</code></td><td>Declaring attackers (<code>cannotBeDeclaredAsAttacker</code>).</td></tr>
-          <tr><td><code>DeclareAsDefender</code></td><td><code>'declareAsDefender'</code></td><td>Declaring defenders (<code>cannotBeDeclaredAsDefender</code>).</td></tr>
-          <tr><td><code>Discard</code></td><td><code>'discard'</code></td><td>Discarding from hand: <code>chosenDiscard</code>, <code>discardAtRandom</code>, <code>discardMatching</code>, and <code>discardCard</code> on a card in hand (checked on the player).</td></tr>
-          <tr><td><code>DiscardFromPlay</code></td><td><code>'discardFromPlay'</code></td><td><code>discardFromPlay</code></td></tr>
-          <tr><td><code>Dishonor</code></td><td><code>'dishonor'</code></td><td><code>dishonor</code>, <code>dishonorProvince</code>, <code>moveStatusToken</code> (a dishonored token, on the recipient)</td></tr>
-          <tr><td><code>Draw</code></td><td><code>'draw'</code></td><td><code>draw</code></td></tr>
-          <tr><td><code>Duel</code></td><td><code>'duel'</code></td><td><code>duel</code> and adding duel participants.</td></tr>
-          <tr><td><code>EnterPlay</code></td><td><code>'enterPlay'</code></td><td>Playing or putting a character into play (checked on the player).</td></tr>
-          <tr><td><code>GainFate</code></td><td><code>'gainFate'</code></td><td><code>gainFate</code></td></tr>
-          <tr><td><code>GainHonor</code></td><td><code>'gainHonor'</code></td><td><code>gainHonor</code></td></tr>
-          <tr><td><code>HaveAffinity</code></td><td><code>'haveAffinity'</code></td><td>Affinity checks (<code>player.hasAffinity</code>).</td></tr>
-          <tr><td><code>HaveImperialFavor</code></td><td><code>'haveImperialFavor'</code></td><td>Keeping the Imperial Favor.</td></tr>
-          <tr><td><code>Honor</code></td><td><code>'honor'</code></td><td><code>honor</code> (on the card and on the ability's player), <code>moveStatusToken</code> (an honored token, on the recipient).</td></tr>
-          <tr><td><code>InitiateKeywords</code></td><td><code>'initiateKeywords'</code></td><td>Keyword abilities, covert.</td></tr>
-          <tr><td><code>LeavePlay</code></td><td><code>'leavePlay'</code></td><td>Every way of leaving play: matches <code>DiscardFromPlay</code>, <code>Sacrifice</code>, <code>ReturnToHand</code>, <code>ReturnToDeck</code>, <code>RemoveFromGame</code>, <code>PutIntoProvince</code>.</td></tr>
-          <tr><td><code>LoseDuels</code></td><td><code>'loseDuels'</code></td><td>Losing a duel: a restricted loser does not lose.</td></tr>
-          <tr><td><code>LoseHonor</code></td><td><code>'loseHonor'</code></td><td><code>loseHonor</code></td></tr>
-          <tr><td><code>Move</code></td><td><code>'move'</code></td><td><code>moveCard</code></td></tr>
-          <tr><td><code>MoveToConflict</code></td><td><code>'moveToConflict'</code></td><td><code>moveToConflict</code></td></tr>
-          <tr><td><code>MoveToHand</code></td><td><code>'moveToHand'</code></td><td><code>moveCard</code> with <code>destination: Location.Hand</code> (besides <code>Move</code>)</td></tr>
-          <tr><td><code>PlaceFate</code></td><td><code>'placeFate'</code></td><td><code>placeFate</code>, <code>placeFateOnRing</code>, extra fate when a character is played.</td></tr>
-          <tr><td><code>PlaceFateWhenPlayingCharacter</code></td><td><code>'placeFateWhenPlayingCharacter'</code></td><td>Choosing extra fate when playing a character.</td></tr>
-          <tr><td><code>PlaceFateWhenPlayingCharacterFromProvince</code></td><td><code>'placeFateWhenPlayingCharacterFromProvince'</code></td><td>The same, from a province.</td></tr>
-          <tr><td><code>Play</code></td><td><code>'play'</code></td><td>Playing a card (<code>canPlay</code>: on the card and on its player). Playing an attachment also checks it on the card it would attach to.</td></tr>
-          <tr><td><code>PlayCharacter</code></td><td><code>'playCharacter'</code></td><td>Playing a character from hand (checked on the player).</td></tr>
-          <tr><td><code>PreventedFromLeavingPlay</code></td><td><code>'preventedFromLeavingPlay'</code></td><td><code>cancel()</code> on <code>onCardLeavesPlay</code>: a restricted card cannot have leaving play cancelled (Legendary).</td></tr>
-          <tr><td><code>PutIntoConflict</code></td><td><code>'putIntoConflict'</code></td><td><code>putIntoConflict</code></td></tr>
-          <tr><td><code>PutIntoPlay</code></td><td><code>'putIntoPlay'</code></td><td><code>putIntoPlay</code>, <code>putIntoConflict</code></td></tr>
-          <tr><td><code>PutIntoProvince</code></td><td><code>'putIntoProvince'</code></td><td><code>putIntoProvince</code> (a <code>LeavePlay</code> restriction stops it too)</td></tr>
-          <tr><td><code>Ready</code></td><td><code>'ready'</code></td><td><code>ready</code></td></tr>
-          <tr><td><code>ReceiveDishonorToken</code></td><td><code>'receiveDishonorToken'</code></td><td>Dishonoring an ordinary character or province (<code>dishonor</code>, <code>dishonorProvince</code>), <code>gainStatusToken</code>, <code>moveStatusToken</code>.</td></tr>
-          <tr><td><code>ReceiveHonorToken</code></td><td><code>'receiveHonorToken'</code></td><td>Honoring an ordinary character, <code>gainStatusToken</code>, <code>moveStatusToken</code>.</td></tr>
-          <tr><td><code>ReceiveTaintedToken</code></td><td><code>'receiveTaintedToken'</code></td><td><code>taint</code>, <code>gainStatusToken</code>, <code>moveStatusToken</code>.</td></tr>
-          <tr><td><code>RemoveFate</code></td><td><code>'removeFate'</code></td><td><code>removeFate</code>. An immunity doesn't match it: fate isn't protected by immunity.</td></tr>
-          <tr><td><code>RemoveFromGame</code></td><td><code>'removeFromGame'</code></td><td><code>removeFromGame</code></td></tr>
-          <tr><td><code>RestoreProvince</code></td><td><code>'restoreProvince'</code></td><td><code>restoreProvince</code></td></tr>
-          <tr><td><code>ReturnToDeck</code></td><td><code>'returnToDeck'</code></td><td><code>returnToDeck</code>, <code>chosenReturnToDeck</code></td></tr>
-          <tr><td><code>ReturnToHand</code></td><td><code>'returnToHand'</code></td><td><code>returnToHand</code></td></tr>
-          <tr><td><code>Sacrifice</code></td><td><code>'sacrifice'</code></td><td><code>sacrifice</code></td></tr>
-          <tr><td><code>SendHome</code></td><td><code>'sendHome'</code></td><td><code>sendHome</code></td></tr>
-          <tr><td><code>SpendFate</code></td><td><code>'spendFate'</code></td><td>Spending fate from a player's pool: fate costs, <code>loseFate</code>, <code>placeFate</code> and <code>placeFateOnRing</code> with <code>spend: true</code> (<code>player.canSpendFate</code>). Losing or moving fate isn't spending it.</td></tr>
-          <tr><td><code>TakeControl</code></td><td><code>'takeControl'</code></td><td><code>takeControl</code>, moving a card to another player.</td></tr>
-          <tr><td><code>TakeFateFromRings</code></td><td><code>'takeFateFromRings'</code></td><td>Taking fate from rings (declaring a conflict, claiming, <code>takeFateFromRing</code>).</td></tr>
-          <tr><td><code>TakeHonor</code></td><td><code>'takeHonor'</code></td><td><code>takeHonor</code></td></tr>
-          <tr><td><code>Target</code></td><td><code>'target'</code></td><td>Being chosen as a target (and covert, attacking a province).</td></tr>
-          <tr><td><code>TriggerAbilities</code></td><td><code>'triggerAbilities'</code></td><td>Triggering the card's abilities (<code>cannotTriggerAbilities</code>).</td></tr>
-          <tr><td><code>TurnFacedown</code></td><td><code>'turnFacedown'</code></td><td><code>turnFacedown</code></td></tr>
+          <tr><td><code>ApplyCovert</code></td><td>Covert: the character cannot be evaded by covert.</td></tr>
+          <tr><td><code>ApplyEffect</code></td><td>Card effects: the card is not affected by matching effects.</td></tr>
+          <tr><td><code>Attach</code></td><td>Attaching a card to it (<code>attach</code>). An immunity doesn't match it: attachments aren't protected by immunity.</td></tr>
+          <tr><td><code>Bow</code></td><td><code>bow</code></td></tr>
+          <tr><td><code>Break</code></td><td><code>breakProvince</code>; also the "is breaking" line of the conflict action window's prompt.</td></tr>
+          <tr><td><code>ChooseConflictRing</code></td><td>Declaring a conflict: a restricted attacker does not choose the ring; the defender does.</td></tr>
+          <tr><td><code>ClaimRings</code></td><td><code>claimRing</code> and claiming the contested ring after a conflict.</td></tr>
+          <tr><td><code>ContributeSkillToConflictResolution</code></td><td>Counting skill at conflict resolution.</td></tr>
+          <tr><td><code>DeclareAsAttacker</code></td><td>Declaring attackers (<code>cannotBeDeclaredAsAttacker</code>).</td></tr>
+          <tr><td><code>DeclareAsDefender</code></td><td>Declaring defenders (<code>cannotBeDeclaredAsDefender</code>).</td></tr>
+          <tr><td><code>Discard</code></td><td>Discarding from hand: <code>chosenDiscard</code>, <code>discardAtRandom</code>, <code>discardMatching</code>, and <code>discardCard</code> on a card in hand (checked on the player).</td></tr>
+          <tr><td><code>DiscardFromPlay</code></td><td><code>discardFromPlay</code></td></tr>
+          <tr><td><code>Dishonor</code></td><td><code>dishonor</code>, <code>dishonorProvince</code>, <code>moveStatusToken</code> (a dishonored token, on the recipient)</td></tr>
+          <tr><td><code>Draw</code></td><td><code>draw</code></td></tr>
+          <tr><td><code>Duel</code></td><td><code>duel</code> and adding duel participants.</td></tr>
+          <tr><td><code>EnterPlay</code></td><td>Playing or putting a character into play (checked on the player).</td></tr>
+          <tr><td><code>GainFate</code></td><td><code>gainFate</code></td></tr>
+          <tr><td><code>GainHonor</code></td><td><code>gainHonor</code></td></tr>
+          <tr><td><code>HaveAffinity</code></td><td>Affinity checks (<code>player.hasAffinity</code>).</td></tr>
+          <tr><td><code>HaveImperialFavor</code></td><td>Keeping the Imperial Favor.</td></tr>
+          <tr><td><code>Honor</code></td><td><code>honor</code> (on the card and on the ability's player), <code>moveStatusToken</code> (an honored token, on the recipient).</td></tr>
+          <tr><td><code>InitiateKeywords</code></td><td>Keyword abilities, covert.</td></tr>
+          <tr><td><code>LeavePlay</code></td><td>Every way of leaving play: matches <code>DiscardFromPlay</code>, <code>Sacrifice</code>, <code>ReturnToHand</code>, <code>ReturnToDeck</code>, <code>RemoveFromGame</code>, <code>PutIntoProvince</code>.</td></tr>
+          <tr><td><code>LoseDuels</code></td><td>Losing a duel: a restricted loser does not lose.</td></tr>
+          <tr><td><code>LoseHonor</code></td><td><code>loseHonor</code></td></tr>
+          <tr><td><code>Move</code></td><td><code>moveCard</code></td></tr>
+          <tr><td><code>MoveToConflict</code></td><td><code>moveToConflict</code></td></tr>
+          <tr><td><code>MoveToHand</code></td><td><code>moveCard</code> with <code>destination: Location.Hand</code> (besides <code>Move</code>)</td></tr>
+          <tr><td><code>PlaceFate</code></td><td><code>placeFate</code>, <code>placeFateOnRing</code>, extra fate when a character is played.</td></tr>
+          <tr><td><code>PlaceFateWhenPlayingCharacter</code></td><td>Choosing extra fate when playing a character.</td></tr>
+          <tr><td><code>PlaceFateWhenPlayingCharacterFromProvince</code></td><td>The same, from a province.</td></tr>
+          <tr><td><code>Play</code></td><td>Playing a card (<code>canPlay</code>: on the card and on its player). Playing an attachment also checks it on the card it would attach to.</td></tr>
+          <tr><td><code>PlayCharacter</code></td><td>Playing a character from hand (checked on the player).</td></tr>
+          <tr><td><code>PreventedFromLeavingPlay</code></td><td><code>cancel()</code> on <code>onCardLeavesPlay</code>: a restricted card cannot have leaving play cancelled (Legendary).</td></tr>
+          <tr><td><code>PutIntoConflict</code></td><td><code>putIntoConflict</code></td></tr>
+          <tr><td><code>PutIntoPlay</code></td><td><code>putIntoPlay</code>, <code>putIntoConflict</code></td></tr>
+          <tr><td><code>PutIntoProvince</code></td><td><code>putIntoProvince</code> (a <code>LeavePlay</code> restriction stops it too)</td></tr>
+          <tr><td><code>Ready</code></td><td><code>ready</code></td></tr>
+          <tr><td><code>ReceiveDishonorToken</code></td><td>Dishonoring an ordinary character or province (<code>dishonor</code>, <code>dishonorProvince</code>), <code>gainStatusToken</code>, <code>moveStatusToken</code>.</td></tr>
+          <tr><td><code>ReceiveHonorToken</code></td><td>Honoring an ordinary character, <code>gainStatusToken</code>, <code>moveStatusToken</code>.</td></tr>
+          <tr><td><code>ReceiveTaintedToken</code></td><td><code>taint</code>, <code>gainStatusToken</code>, <code>moveStatusToken</code>.</td></tr>
+          <tr><td><code>RemoveFate</code></td><td><code>removeFate</code>. An immunity doesn't match it: fate isn't protected by immunity.</td></tr>
+          <tr><td><code>RemoveFromGame</code></td><td><code>removeFromGame</code></td></tr>
+          <tr><td><code>RestoreProvince</code></td><td><code>restoreProvince</code></td></tr>
+          <tr><td><code>ReturnToDeck</code></td><td><code>returnToDeck</code>, <code>chosenReturnToDeck</code></td></tr>
+          <tr><td><code>ReturnToHand</code></td><td><code>returnToHand</code></td></tr>
+          <tr><td><code>Sacrifice</code></td><td><code>sacrifice</code></td></tr>
+          <tr><td><code>SendHome</code></td><td><code>sendHome</code></td></tr>
+          <tr><td><code>SpendFate</code></td><td>Spending fate from a player's pool: fate costs, <code>loseFate</code>, <code>placeFate</code> and <code>placeFateOnRing</code> with <code>spend: true</code> (<code>player.canSpendFate</code>). Losing or moving fate isn't spending it.</td></tr>
+          <tr><td><code>TakeControl</code></td><td><code>takeControl</code>, moving a card to another player.</td></tr>
+          <tr><td><code>TakeFateFromRings</code></td><td>Taking fate from rings (declaring a conflict, claiming, <code>takeFateFromRing</code>).</td></tr>
+          <tr><td><code>TakeHonor</code></td><td><code>takeHonor</code></td></tr>
+          <tr><td><code>Target</code></td><td>Being chosen as a target (and covert, attacking a province).</td></tr>
+          <tr><td><code>TriggerAbilities</code></td><td>Triggering the card's abilities (<code>cannotTriggerAbilities</code>).</td></tr>
+          <tr><td><code>TurnFacedown</code></td><td><code>turnFacedown</code></td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1022,7 +861,7 @@ cardCannot({
     <li>the event's card is an event card whose controller (the player playing it) has <code>eventsCannotBeCancelled()</code>;</li>
     <li>the event is <code>onCardLeavesPlay</code> of a card that cannot be prevented from leaving play.</li>
 </ul>
-<p><strong>Fields.</strong> Every event has <code>name</code>, <code>context</code>, <code>cancelled</code>, <code>resolved</code>, <code>cannotBeCancelled</code>, <code>isContingent</code> (raised as a consequence of another event: the fate and attachments leaving with a character), <code>window</code> and <code>is(name)</code>; <code>event.is(EventName.OnCardHonored)</code> narrows the type. Events a game action creates always have a <code>context</code>. Events the game flow raises have <code>context: null</code>, which is why many predicates read <code>event.context?.player</code>. The payload tables list the other fields, typed as in <code>server/game/Events/EventPayloads.ts</code>.</p>
+<p><strong>Fields.</strong> Every event has <code>name</code>, <code>context</code>, <code>cancelled</code>, <code>resolved</code>, <code>cannotBeCancelled</code>, <code>isContingent</code> (raised as a consequence of another event: the fate and attachments leaving with a character), <code>window</code> and <code>is(name)</code>; <code>event.is(EventName.OnCardHonored)</code> narrows the type. The payload tables list the other fields, typed as in <code>server/game/Events/EventPayloads.ts</code>. They list <code>context</code> only when it can be <code>null</code> or means something specific; otherwise it is the <code>AbilityContext</code> of the ability or rule that raised the event. Events the game flow raises have <code>context: null</code>, which is why many predicates read <code>event.context?.player</code>.</p>
 <p><strong>Who may trigger.</strong> A <code>when</code> predicate is evaluated once per player, with <code>context.player</code> set to that player. The ability is then offered only to a player allowed to trigger it.</p>
 <p><strong>Listening without a trigger.</strong> Event names are also used by <code>until</code> maps of lasting effects (<code>Duration.Custom</code>), <code>when</code> of <code>delayedEffect</code>, <code>EventRegistrar.register()</code> and <code>registerTriggerWindow()</code>. <code>until</code> maps and <code>EventRegistrar.register()</code> listen to the event itself, so they also see the two events that open no window: <code>onCardMoved</code> (from moving a card) and <code>onDeckShuffled</code>. A <code>delayedEffect</code>'s <code>when</code> is checked against the events a window resolved, and <code>registerTriggerWindow()</code> hooks a trigger window, so neither sees those two.</p>
 
@@ -1034,11 +873,11 @@ cardCannot({
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
-    <li>No payload and no handler: cancelling it only stops its reactions.</li>
+    <li>No payload, no handler.</li>
   </ul>
   <pre><code>// Sudden Tempest: … Action: Choose an unclaimed ring - remove that ring from the unclaimed ring pool until the end of the round. …
 ringLastingEffect((context) =&gt; ({
@@ -1056,7 +895,7 @@ ringLastingEffect((context) =&gt; ({
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>phase</code></td><td><code>Phase | 'setup'</code></td><td>The phase.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1077,7 +916,7 @@ this.wouldInterrupt('Take top 4 cards from both players\' decks')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>phase</code></td><td><code>Phase | 'setup'</code></td><td>The phase.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1099,7 +938,7 @@ this.reaction('Draw a card')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>phase</code></td><td><code>Phase | 'setup'</code></td><td>The phase.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1120,7 +959,7 @@ this.interrupt('Resolve 2 rings')
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1144,7 +983,7 @@ effect: delayedEffect({
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player giving up priority.</td></tr>
           <tr><td><code>consecutiveActions</code></td><td><code>number</code></td><td>Actions that player took in a row.</td></tr>
           <tr><td><code>actionWindow</code></td><td><code>ActionWindow</code></td><td>The action window.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1161,7 +1000,7 @@ effect: delayedEffect({
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The passing player.</td></tr>
           <tr><td><code>firstToPass</code></td><td><code>boolean</code></td><td>Whether this player passed first (and gains 1 fate).</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1182,7 +1021,7 @@ this.reaction('Gain 1 fate')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player who receives the first player token (the current first player's opponent).</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1204,7 +1043,7 @@ this.wouldInterrupt('Keep the first player token')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>allRevealedCards</code></td><td><code>Set&lt;DrawCard&gt;</code></td><td>Every card flipped, both players.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1227,10 +1066,7 @@ this.wouldInterrupt('Keep the first player token')
   <h3 class="group-title" id="ev-group-abilities">Abilities and costs</h3>
 <div class="ref" id="ev-onAbilityResolved" data-name="onAbilityResolved OnAbilityResolved">
   <h3><code>onAbilityResolved</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onAbilityResolved">#</a></h3>
-  <p>Never raised: nothing in <code>server/</code> creates this event, so a <code>when</code> on it never fires.</p>
-  <ul class="edge">
-    <li>Declared in <code>EventName</code> with an empty payload in <code>EventPayloads.ts</code>.</li>
-  </ul>
+  <p>Never raised: a <code>when</code> on it never fires.</p>
   <p class="seen">Not used by any card yet.</p>
 </div>
 <div class="ref" id="ev-onAbilityResolverInitiated" data-name="onAbilityResolverInitiated OnAbilityResolverInitiated">
@@ -1240,12 +1076,11 @@ this.wouldInterrupt('Keep the first player token')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code>, <code>player</code></td><td><code>BaseCard?</code>, <code>Player?</code></td><td>Set only on the probe event that <code>PlayerCostManager.getMinimumCost()</code> builds to count interrupts that reduce a cost. The real event has only <code>context</code>.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
     <li>Interrupts to it come before any cost is paid, which is where cost reductions for playing attachments hook in (Iron Mountain Castle, Mirumoto Rikitaro). <a href="helpers.html#he-isReducibleAttachmentPlay"><code>isReducibleAttachmentPlay(event.context)</code></a> tells whether the event plays an attachment that still costs fate.</li>
-    <li>Cancelling it stops the ability: its handler, which queues costs, targets and the effect, does not run.</li>
+    <li>Cancelling it stops the whole ability.</li>
   </ul>
   <pre><code>// Mirumoto Rikitaro: Interrupt: When you play an attachment on this character, if it has no other attachments you control - reduce the cost to play that attachment by 1. …
 this.interrupt('Reduce cost of next attachment')
@@ -1266,7 +1101,6 @@ this.interrupt('Reduce cost of next attachment')
         <tbody>
           <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The ability's source.</td></tr>
           <tr><td><code>ability</code></td><td><code>BaseAbility</code></td><td>The ability.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
           <tr><td><code>resolvedWithoutTriggering</code></td><td><code>boolean?</code></td><td><code>true</code> when another ability resolves it (<code>resolveAbility</code>): it isn't triggered, so "triggers" cards (Hantei XXXVIII, Kamayari, Kirei-ko) ignore it.</td></tr>
         </tbody>
       </table>
@@ -1293,12 +1127,11 @@ this.reaction('Bow character who triggered ability')
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player using the ability.</td></tr>
           <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The ability's source.</td></tr>
           <tr><td><code>ability</code></td><td><code>CardAbility</code></td><td>The ability.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
           <tr><td><code>resolvedWithoutTriggering</code></td><td><code>boolean?</code></td><td><code>true</code> when another ability resolves it: it isn't triggered, so "triggers" cards (Breach of Etiquette, The Weight of Duty) ignore it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
-    <li>No handler: cancelling it only stops reactions to it.</li>
+    <li>No handler.</li>
     <li>Its reactions come after the ability resolved, so "after the effects of an event resolve" uses it (The Mirror's Gaze).</li>
     <li>A running duel listens to it to record which players used a challenge, focus or strike ability, ignoring abilities resolved without triggering.</li>
   </ul>
@@ -1322,11 +1155,9 @@ this.reaction('Mirror an opponent\'s event')
           <tr><td><code>ring</code></td><td><code>Ring?</code></td><td>The ring affected (<code>ringLastingEffect</code>).</td></tr>
           <tr><td><code>effectTypes</code></td><td><code>EffectName[]?</code></td><td>The <code>EffectName</code>s of the effects (<code>cardLastingEffect</code> and <code>takeControl</code>).</td></tr>
           <tr><td><code>matches</code></td><td><code>EffectMatch[]?</code></td><td>What each effect matches (<code>cardLastingEffect</code> and <code>takeControl</code>).</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
-    <li>Cancelling it stops the effect from being applied.</li>
     <li>A card lasting effect only creates the event for a card where at least one of its effects can be applied (<code>canBeApplied</code>, and no matching <code>cannotApplyLastingEffects</code>).</li>
   </ul>
   <pre><code>// Kiss of the Sea: Reaction: After a triggered ability changes the [conflict-military] or [conflict-political] skill of attached character while it is participating in a conflict – bow attached character. …
@@ -1346,7 +1177,6 @@ if(!parent || !event.matches || !event.matches.includes(parent)) {
           <tr><td><code>cardTargets</code></td><td><code>BaseCard[]</code></td><td>Every card in <code>context.targets</code>.</td></tr>
           <tr><td><code>ringTargets</code></td><td><code>Ring[]</code></td><td>Every ring in <code>context.rings</code>.</td></tr>
           <tr><td><code>resolvedWithoutTriggering</code></td><td><code>boolean?</code></td><td><code>true</code> when another ability resolves it (<code>resolveAbility</code>): it isn't triggered, so "triggers" cards (Hida Kisada) ignore it.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1364,7 +1194,7 @@ this.wouldInterrupt('Cancel an event')
 </div>
 <div class="ref" id="ev-onResolveFateCost" data-name="onResolveFateCost OnResolveFateCost">
   <h3><code>onResolveFateCost</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onResolveFateCost">#</a></h3>
-  <p>Never raised: nothing in <code>server/</code> creates this event, so a <code>when</code> on it never fires.</p>
+  <p>Never raised: a <code>when</code> on it never fires.</p>
   <p class="seen">Not used by any card yet.</p>
 </div>
 <div class="ref" id="ev-onSpendFate" data-name="onSpendFate OnSpendFate">
@@ -1414,7 +1244,6 @@ onSpendFate: (event, context) =&gt;
           <tr><td><code>player</code></td><td><code>Player?</code></td><td>Set by player actions.</td></tr>
           <tr><td><code>ring</code></td><td><code>Ring?</code></td><td>Set by ring actions.</td></tr>
           <tr><td><code>cardStateWhenMoved</code></td><td><code>DrawCard?</code></td><td>Snapshot taken by some move actions.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1436,11 +1265,9 @@ onSpendFate: (event, context) =&gt;
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>The attachment.</td></tr>
           <tr><td><code>parent</code></td><td><code>BaseCard | Ring</code></td><td>What it is attached to.</td></tr>
           <tr><td><code>originalLocation</code></td><td><code>Location?</code></td><td>Where the attachment was; set by the handler, so only reactions see it.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
-    <li>Cancelling it leaves the attachment where it was.</li>
     <li>Its condition re-checks that the parent can still take the attachment when it resolves.</li>
   </ul>
   <pre><code>// Niten Master: Reaction: After you attach a Weapon attachment to this character – ready this character. (Limit twice per round.)
@@ -1462,7 +1289,6 @@ this.reaction('Ready this character')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>The attachment.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1494,7 +1320,6 @@ cardLastingEffect({
           <tr><td><code>playedFromOutOfPlaySource</code></td><td><code>BaseCard[]?</code></td><td>The cards whose effects made it playable from out of play.</td></tr>
           <tr><td><code>resolver</code></td><td><code>AbilityResolver?</code></td><td>The resolver playing an event card.</td></tr>
           <tr><td><code>limitedPlaySource</code></td><td><code>BaseCard?</code></td><td>Set by the card whose limited-use permission let it be played (Master Tactician, Bayushi Kachiko).</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1538,7 +1363,6 @@ this.reaction('Opponent discards or dishonors')
           <tr><td><code>controller</code></td><td><code>Players?</code></td><td>Who will control it, relative to the ability's player.</td></tr>
           <tr><td><code>intoConflict</code></td><td><code>boolean</code></td><td>Whether it enters the conflict.</td></tr>
           <tr><td><code>side</code></td><td><code>Player</code></td><td>Whose side of the conflict it joins.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1563,7 +1387,6 @@ this.reaction('Refill province faceup')
         <tbody>
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>The facedown card turned into the token.</td></tr>
           <tr><td><code>tokenCharacter</code></td><td><code>DrawCard?</code></td><td>The token; set by the handler, so only reactions see it.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1594,7 +1417,6 @@ this.reaction('Refill province faceup')
           <tr><td><code>isSacrifice</code></td><td><code>boolean?</code></td><td>Whether it is a sacrifice.</td></tr>
           <tr><td><code>shuffle</code></td><td><code>boolean?</code></td><td><code>returnToDeck</code> with <code>shuffle</code>.</td></tr>
           <tr><td><code>options</code></td><td><code>{ bottom?: boolean }?</code></td><td><code>returnToDeck</code> to the bottom.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1655,12 +1477,11 @@ card.lastingEffect({
         <tbody>
           <tr><td><code>cards</code></td><td><code>DrawCard[]</code></td><td>The cards discarded.</td></tr>
           <tr><td><code>originalCardStateInfo</code></td><td><code>{ location: Location; owner: Player }[]</code></td><td>Where each card was, and its owner.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
     <li>A card in hand can only be discarded if its controller has no <code>Discard</code> restriction.</li>
-    <li>Its condition always holds; cancelling it keeps every card.</li>
+    <li>Its condition always holds.</li>
   </ul>
   <pre><code>// Shosuro Hyobu: Reaction: After an opponent discards 1 or more cards from his or her hand due to the cost or effect of a card ability, choose a character - dishonor that character.
 onCardsDiscarded: (event, context) =&gt;
@@ -1680,7 +1501,6 @@ onCardsDiscarded: (event, context) =&gt;
           <tr><td><code>match</code></td><td><code>((context, card) =&gt; boolean)?</code></td><td><code>discardMatching</code>: which cards.</td></tr>
           <tr><td><code>discardedAtRandom</code></td><td><code>boolean?</code></td><td>Whether the cards were chosen at random.</td></tr>
           <tr><td><code>discardedCards</code></td><td><code>BaseCard[]?</code></td><td>The cards discarded; set by the handler.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1707,11 +1527,9 @@ this.reaction('Opponent discards an equal number of cards at random')
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player drawing.</td></tr>
           <tr><td><code>amount</code></td><td><code>number</code></td><td>How many cards.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
-    <li>Cancelling it prevents the draw (Subterfuge replaces it).</li>
     <li>Setup draws the starting hand without this event.</li>
   </ul>
   <pre><code>// Subterfuge: Interrupt: When an opponent would draw 1 or more cards outside the draw phase, if you are less honorable than that opponent - discard up to 3 of those cards instead.
@@ -1737,7 +1555,6 @@ this.wouldInterrupt('Prevent draw')
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player whose deck is searched.</td></tr>
           <tr><td><code>amount</code></td><td><code>number</code></td><td>Cards looked at; <code>-1</code> for the whole deck.</td></tr>
           <tr><td><code>selectedCards</code></td><td><code>DrawCard[]?</code></td><td>The cards taken.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1753,7 +1570,7 @@ this.wouldInterrupt('Prevent draw')
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>Whose deck.</td></tr>
           <tr><td><code>deck</code></td><td><code>DeckType</code></td><td>Which deck.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <pre><code>// revealedTopCardPlayable(), shared by Artisan Academy, Pillow Book and Masterpiece Painter:
@@ -1773,7 +1590,6 @@ until: {
         <tbody>
           <tr><td><code>cards</code></td><td><code>BaseCard[]</code></td><td>The cards looked at.</td></tr>
           <tr><td><code>stateBeforeResolution</code></td><td><code>{ card: BaseCard; location: Location }[]</code></td><td>Where each card was.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1802,7 +1618,6 @@ until: {
         <tbody>
           <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The card.</td></tr>
           <tr><td><code>tokenType</code></td><td><code>TokenType?</code></td><td>The token (default <code>TokenType.Honor</code>).</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <p class="seen">Not used by any card yet.</p>
@@ -1814,7 +1629,6 @@ until: {
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>DrawCard | StrongholdCard</code></td><td>The card bowed.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1839,7 +1653,6 @@ this.reaction('Ready a character')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>DrawCard | ProvinceCard</code></td><td>The card dishonored.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1864,7 +1677,6 @@ this.wouldInterrupt('Dishonor this character instead')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>The character honored.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1888,7 +1700,6 @@ this.reaction('Honor a character')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>DrawCard | StrongholdCard</code></td><td>The card readied.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1911,7 +1722,6 @@ this.reaction('Bow a character that just readied')
         <tbody>
           <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The card revealed.</td></tr>
           <tr><td><code>onDeclaration</code></td><td><code>boolean?</code></td><td>Revealed as the attacked province when the conflict was declared.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1933,7 +1743,6 @@ this.reaction('Force opponent to discard cards equal to the number of attackers'
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The character or province tainted.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1949,7 +1758,6 @@ this.reaction('Force opponent to discard cards equal to the number of attackers'
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>BaseCard</code></td><td>The card.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -1959,7 +1767,7 @@ this.reaction('Force opponent to discard cards equal to the number of attackers'
 </div>
 <div class="ref" id="ev-onDynastyCardTurnedFaceup" data-name="onDynastyCardTurnedFaceup OnDynastyCardTurnedFaceup">
   <h3><code>onDynastyCardTurnedFaceup</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onDynastyCardTurnedFaceup">#</a></h3>
-  <p>Never raised: nothing in <code>server/</code> creates this event, so a <code>when</code> on it never fires. Turning dynasty cards faceup raises <code>onCardRevealed</code>.</p>
+  <p>Never raised: a <code>when</code> on it never fires. Turning dynasty cards faceup raises <code>onCardRevealed</code>.</p>
   <p class="seen">Not used by any card yet.</p>
 </div>
 <div class="ref" id="ev-onStatusTokenDiscarded" data-name="onStatusTokenDiscarded OnStatusTokenDiscarded">
@@ -1970,7 +1778,6 @@ this.reaction('Force opponent to discard cards equal to the number of attackers'
         <tbody>
           <tr><td><code>token</code></td><td><code>StatusToken</code></td><td>The token.</td></tr>
           <tr><td><code>cards</code></td><td><code>BaseCard[]</code></td><td>The cards losing a status.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <pre><code>// Diligent Chaperone: … Reaction: After an honored status token is removed from a character you control by a card ability or ring effect, if this character is ready - honor that character.
@@ -2011,7 +1818,6 @@ this.reaction('Copy status token')
           <tr><td><code>token</code></td><td><code>StatusToken</code></td><td>The token.</td></tr>
           <tr><td><code>donor</code></td><td><code>BaseCard?</code></td><td>The card it came from.</td></tr>
           <tr><td><code>recipient</code></td><td><code>DrawCard</code></td><td>The card it goes to.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2040,7 +1846,7 @@ onStatusTokenMoved: (event, context) =&gt;
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>conflict</code></td><td><code>Conflict</code></td><td>The conflict (<code>winner</code>, <code>loser</code>, <code>conflictType</code>, <code>conflictUnopposed</code>, …).</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2066,7 +1872,6 @@ this.reaction('Take 1 honor')
           <tr><td><code>card</code></td><td><code>ProvinceCard</code></td><td>The province.</td></tr>
           <tr><td><code>conflict</code></td><td><code>Conflict | null</code></td><td>The current conflict.</td></tr>
           <tr><td><code>breaker</code></td><td><code>Player | undefined</code></td><td>The player who breaks it: the <code>breakProvince</code> <code>breaker</code>, by default the province controller's opponent (the attacking player when conflict resolution breaks it). "After you break a province" checks <code>event.breaker === context.player</code>.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2092,7 +1897,7 @@ this.interrupt('Force opponent to discard to 4 cards')
           <tr><td><code>ring</code></td><td><code>Ring?</code></td><td>The contested ring; set by the handler.</td></tr>
           <tr><td><code>attackers</code></td><td><code>DrawCard[]?</code></td><td>The declared attackers; set by the handler.</td></tr>
           <tr><td><code>ringFate</code></td><td><code>number?</code></td><td>Fate that was on the ring; set by the handler.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2119,7 +1924,7 @@ this.reaction('Gain 1 fate')
           <tr><td><code>ring</code></td><td><code>Ring?</code></td><td>The contested ring.</td></tr>
           <tr><td><code>attackers</code></td><td><code>DrawCard[]</code></td><td>The attackers.</td></tr>
           <tr><td><code>ringFate</code></td><td><code>number?</code></td><td>Fate on the ring.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2142,7 +1947,7 @@ this.wouldInterrupt('Switch the attacked province with a facedown province')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>conflict</code></td><td><code>Conflict</code></td><td>The conflict.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2168,7 +1973,6 @@ this.reaction('Declare a new conflict')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The attacking player.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2183,7 +1987,6 @@ this.reaction('Declare a new conflict')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>ProvinceCard</code></td><td>The new attacked province.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2200,7 +2003,7 @@ this.reaction('Declare a new conflict')
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The attacking player.</td></tr>
           <tr><td><code>attackerMatrix</code></td><td><code>AttackersMatrix</code></td><td>Which attackers, rings and types are legal.</td></tr>
           <tr><td><code>type</code></td><td><code>ConflictType?</code></td><td>The conflict type if already set.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <pre><code>// Under the New Moon: Interrupt: When you declare a conflict, lose 1 honor. Choose a number greater than 0 - your opponent declares defenders for this conflict. Then declare the conflict …
@@ -2218,7 +2021,7 @@ this.interrupt('Force defenders to assign first')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>conflict</code></td><td><code>Conflict</code></td><td>The passed conflict (<code>attackingPlayer</code>).</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2239,7 +2042,7 @@ this.reaction('Make opponent lose honor')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>conflict</code></td><td><code>Conflict</code></td><td>The conflict.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2279,7 +2082,7 @@ this.reaction('Steal a fate')
         <tbody>
           <tr><td><code>conflict</code></td><td><code>Conflict</code></td><td>The conflict.</td></tr>
           <tr><td><code>defenders</code></td><td><code>DrawCard[]</code></td><td>The declared defenders.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2301,7 +2104,6 @@ this.reaction('Steal a fate')
         <tbody>
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>The character.</td></tr>
           <tr><td><code>side</code></td><td><code>Player</code></td><td>The side it joins (default its controller).</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2323,7 +2125,7 @@ this.reaction('Gain a fate/card')
         <tbody>
           <tr><td><code>conflict</code></td><td><code>Conflict</code></td><td>The conflict.</td></tr>
           <tr><td><code>returnHomeEvents</code></td><td><code>Event[]</code></td><td>The <code>onReturnHome</code> events.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2340,7 +2142,7 @@ this.reaction('Gain a fate/card')
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>The character.</td></tr>
           <tr><td><code>conflict</code></td><td><code>Conflict</code></td><td>The conflict.</td></tr>
           <tr><td><code>bowEvent</code></td><td><code>Event</code></td><td>The character's bow event (check <code>bowEvent.cancelled</code>).</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <pre><code>// Curry Favor: Reaction: After a character you control bows as a result of conflict resolution from the second conflict you declared this round – ready that character.
@@ -2359,7 +2161,6 @@ onReturnHome: (event, context) =&gt; {
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>ProvinceCard</code></td><td>The province.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2374,7 +2175,6 @@ onReturnHome: (event, context) =&gt; {
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>The character.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2394,7 +2194,6 @@ onReturnHome: (event, context) =&gt; {
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>ring</code></td><td><code>Ring</code></td><td>The ring that becomes contested.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2409,7 +2208,6 @@ onReturnHome: (event, context) =&gt; {
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>ring</code></td><td><code>Ring</code></td><td>The contested ring (the action's default target).</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2424,7 +2222,7 @@ onReturnHome: (event, context) =&gt; {
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>conflict</code></td><td><code>Conflict</code></td><td>The conflict.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2472,7 +2270,6 @@ this.reaction('Resolve ring effect')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>ring</code></td><td><code>Ring</code></td><td>The ring.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2489,7 +2286,6 @@ this.reaction('Resolve ring effect')
           <tr><td><code>ring</code></td><td><code>Ring</code></td><td>The ring.</td></tr>
           <tr><td><code>conflict</code></td><td><code>Conflict?</code></td><td>The current conflict.</td></tr>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player resolving it.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2520,7 +2316,6 @@ this.reaction('Resolve ring effect')
           <tr><td><code>effectResolved</code></td><td><code>boolean</code></td><td><code>false</code> until the ring ability resolved.</td></tr>
           <tr><td><code>physicalRing</code></td><td><code>Ring?</code></td><td>The contested ring, when resolving a conflict ring.</td></tr>
           <tr><td><code>optional</code></td><td><code>boolean?</code></td><td>Whether the player may skip it.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2546,11 +2341,10 @@ this.reaction('Resolve ring effect')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>ring</code></td><td><code>Ring</code></td><td>The ring.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
-    <li>Any ring not in the unclaimed pool can be returned: claimed, contested or removed from the game. Cancelling it keeps the ring where it was.</li>
+    <li>Any ring not in the unclaimed pool can be returned: claimed, contested or removed from the game.</li>
   </ul>
   <pre><code>// Wholeness of the World: Interrupt: When a ring in your claimed ring pool would be returned to the unclaimed ring pool – it remains claimed instead. (Max 1 per round.)
 this.wouldInterrupt('Keep a claimed ring')
@@ -2567,7 +2361,6 @@ this.wouldInterrupt('Keep a claimed ring')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>ring</code></td><td><code>Ring</code></td><td>The ring.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2582,7 +2375,6 @@ this.wouldInterrupt('Keep a claimed ring')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>ring</code></td><td><code>Ring</code></td><td>The ring.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <p class="seen">Not used by any card yet.</p>
@@ -2603,7 +2395,7 @@ this.wouldInterrupt('Keep a claimed ring')
           <tr><td><code>loser</code></td><td><code>DrawCard[]?</code></td><td>The losing characters.</td></tr>
           <tr><td><code>winningPlayer</code></td><td><code>(Player | Player[])?</code></td><td>The winning player(s).</td></tr>
           <tr><td><code>losingPlayer</code></td><td><code>(Player | Player[])?</code></td><td>The losing player(s).</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2625,7 +2417,7 @@ this.reaction('Gain honor on duel win')
         <tbody>
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>A winning character.</td></tr>
           <tr><td><code>duel</code></td><td><code>Duel</code></td><td>The duel.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <pre><code>// Proving Ground: Reaction: After a character you control wins a duel - draw 1 card. (Limit twice per round.)
@@ -2645,7 +2437,6 @@ this.reaction('Draw a card after winning a duel')
         <tbody>
           <tr><td><code>card</code></td><td><code>DrawCard</code></td><td>The character.</td></tr>
           <tr><td><code>duel</code></td><td><code>Duel</code></td><td>The duel.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2660,7 +2451,7 @@ this.reaction('Draw a card after winning a duel')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>duel</code></td><td><code>Duel</code></td><td>The duel.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2682,7 +2473,7 @@ this.duelChallenge('Dishonor a character')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>duel</code></td><td><code>Duel</code></td><td>The duel.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2707,7 +2498,7 @@ this.reaction('Honor a Character')
         <tbody>
           <tr><td><code>duel</code></td><td><code>Duel</code></td><td>The duel.</td></tr>
           <tr><td><code>isHonorBid</code></td><td><code>boolean?</code></td><td>Always <code>true</code> for a duel.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2735,7 +2526,6 @@ this.duelFocus('Set bid to 0')
           <tr><td><code>duelType</code></td><td><code>DuelType</code></td><td>The duel type.</td></tr>
           <tr><td><code>challenger</code></td><td><code>DrawCard</code></td><td>The challenger.</td></tr>
           <tr><td><code>duelTarget</code></td><td><code>BaseCard | BaseCard[] | undefined</code></td><td>The <code>target</code> property.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2760,12 +2550,9 @@ this.wouldInterrupt('Cancel a duel')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>duel</code></td><td><code>Duel</code></td><td>The duel.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
-  <ul class="edge">
-    <li>Cancelling it stops the duel's effect.</li>
-  </ul>
   <p class="seen">Not used by any card yet.</p>
 </div>
 <div class="ref" id="ev-onDuelStarted" data-name="onDuelStarted OnDuelStarted">
@@ -2775,7 +2562,7 @@ this.wouldInterrupt('Cancel a duel')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>duel</code></td><td><code>Duel</code></td><td>The duel.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2790,7 +2577,7 @@ this.wouldInterrupt('Cancel a duel')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>duel</code></td><td><code>Duel</code></td><td>The duel.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <pre><code>// Master of the Blade: Duel Strike: For this conflict, this character cannot be bowed by opponents' card effects and does not bow as a result of conflict resolution.
@@ -2801,7 +2588,7 @@ this.duelStrike('Don\'t bow during resolution', (duel, context) =&gt; context.ga
 </div>
 <div class="ref" id="ev-onReplaceDuelParticipant" data-name="onReplaceDuelParticipant OnReplaceDuelParticipant">
   <h3><code>onReplaceDuelParticipant</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onReplaceDuelParticipant">#</a></h3>
-  <p>Never raised: nothing in <code>server/</code> creates this event, so a <code>when</code> on it never fires.</p>
+  <p>Never raised: a <code>when</code> on it never fires.</p>
   <p class="seen">Not used by any card yet.</p>
 </div>
 </section>
@@ -2815,7 +2602,7 @@ this.duelStrike('Don\'t bow during resolution', (duel, context) =&gt; context.ga
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2839,7 +2626,6 @@ this.reaction('Collect additional fate')
           <tr><td><code>giveHonor</code></td><td><code>boolean?</code></td><td>Whether honor is transferred after the bid (default <code>false</code>).</td></tr>
           <tr><td><code>postBidAction</code></td><td><code>GameAction?</code></td><td>Resolved after the bid.</td></tr>
           <tr><td><code>message</code></td><td><code>((context) =&gt; MessageArgs)?</code></td><td>Chat message after the bid.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <p class="seen">Not used by any card yet.</p>
@@ -2852,7 +2638,7 @@ this.reaction('Collect additional fate')
         <tbody>
           <tr><td><code>isHonorBid</code></td><td><code>boolean</code></td><td>Whether the reveal is an honor bid, i.e. honor is transferred afterwards. <code>true</code> in the draw phase and in duels; <code>false</code> for <code>honorBid</code> without <code>giveHonor: true</code> (Mischievous Tanuki).</td></tr>
           <tr><td><code>duel</code></td><td><code>Duel | null</code></td><td>The duel, for a duel's bid.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <pre><code>// Bayushi Manipulator: Reaction: After honor dials are revealed – increase the value of your bid by 1.
@@ -2870,7 +2656,6 @@ this.reaction('Increase bid by 1')
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player.</td></tr>
           <tr><td><code>amount</code></td><td><code>number</code></td><td>By how much.</td></tr>
           <tr><td><code>direction</code></td><td><code>Direction?</code></td><td>Increase or decrease; with <code>Direction.Prompt</code> the player chooses before the event.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2886,7 +2671,6 @@ this.reaction('Increase bid by 1')
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player.</td></tr>
           <tr><td><code>amount</code></td><td><code>number</code></td><td>Positive for a gain, negative for a loss.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2904,24 +2688,15 @@ this.reaction('Increase bid by 1')
           <tr><td><code>amount</code></td><td><code>number</code></td><td>Positive for a gain, negative for a loss (the requested amount; a gain may be capped by the honor limit when it resolves).</td></tr>
           <tr><td><code>dueToUnopposed</code></td><td><code>boolean?</code></td><td>Lost for an unopposed conflict.</td></tr>
           <tr><td><code>dueToStatusToken</code></td><td><code>boolean?</code></td><td>Caused by a status token.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
-  <ul class="edge">
-    <li>Cancelling it prevents the gain or loss.</li>
-  </ul>
   <pre><code>// Ikebana Artisan: Interrupt: When you would lose 1 honor for an unopposed conflict – cancel that honor loss. Then, lose 1 fate. (Unlimited.)
 this.wouldInterrupt('Lose fate instead of honor')
     .when({
         onModifyHonor: (event, context) =&gt; event.dueToUnopposed &amp;&amp; event.player === context.player
     })
     .gameAction(cancel())
-    .chatText((context) =&gt; context.player.fate &gt; 0
-        ? msg`lose 1 fate rather than 1 honor for not defending the conflict`
-        : msg`cancel the honor loss for not defending the conflict`)
-    .limit(unlimited())
-    .then()
-    .loseFate((context) =&gt; ({ target: context.player }));</code></pre>
+    …</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/IkebanaArtisan.ts">Ikebana Artisan</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.1-BotK/HeartlessIntimidator.ts">Heartless Intimidator</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/Duty.ts">Duty</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/ShiotomeHeroine.ts">Shiotome Heroine</a></p>
 </div>
 <div class="ref" id="ev-onMoveFate" data-name="onMoveFate OnMoveFate">
@@ -2962,7 +2737,7 @@ this.wouldInterrupt('Take Fate')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>recipients</code></td><td><code>{ ring: Ring; amount: number }[]</code></td><td>Each unclaimed ring and the fate it gets.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -2984,7 +2759,6 @@ this.reaction('Resolve the attached ring\'s effect')
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player.</td></tr>
           <tr><td><code>value</code></td><td><code>number</code></td><td>The dial value (1–5).</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -3001,7 +2775,6 @@ this.reaction('Resolve the attached ring\'s effect')
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player giving honor (the target of <code>takeHonor</code>, default the opponent).</td></tr>
           <tr><td><code>amount</code></td><td><code>number</code></td><td>The requested amount; transfer modifiers and the honor limit apply when it resolves.</td></tr>
           <tr><td><code>afterBid</code></td><td><code>boolean?</code></td><td>Caused by an honor bid.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <pre><code>// Way of the Chrysanthemum: Reaction: After 1 or more honor is given to you from an honor bid – gain that much honor. (Max 1 per round.)
@@ -3023,7 +2796,6 @@ this.reaction('Gain extra honor after bid')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player claiming it.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <pre><code>// The Stranger: Reaction: After you claim the Imperial Favor - gain 1 honor. (Limit twice per round.)
@@ -3041,11 +2813,10 @@ this.reaction('Gain 1 honor')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player losing it.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
-    <li>Only a player who has the favor. Cancelling it keeps the favor (Ikoma Yumiko's Dagger).</li>
+    <li>Only a player who has the favor.</li>
   </ul>
   <pre><code>// Ikoma Yumiko's Dagger: Interrupt: When you would discard the Imperial Favor - discard this character instead. …
 this.wouldInterrupt('Prevent discarding the Imperial Favor')
@@ -3061,7 +2832,7 @@ this.wouldInterrupt('Prevent discarding the Imperial Favor')
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
-          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td><code>null</code>: the game flow raises it without a context.</td></tr>
+          <tr><td><code>context</code></td><td><code>AbilityContext | null</code></td><td>Always <code>null</code> (game flow).</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -3076,7 +2847,6 @@ this.wouldInterrupt('Prevent discarding the Imperial Favor')
         <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
         <tbody>
           <tr><td><code>player</code></td><td><code>Player</code></td><td>The player who has it.</td></tr>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
         </tbody>
       </table>
   <ul class="edge">
@@ -3087,12 +2857,6 @@ this.wouldInterrupt('Prevent discarding the Imperial Favor')
 <div class="ref" id="ev-onGloryCount" data-name="onGloryCount OnGloryCount">
   <h3><code>onGloryCount</code> <span class="kind">Event</span> <a class="anchor" href="#ev-onGloryCount">#</a></h3>
   <p>The event of <code>performGloryCount</code>, which the end of the conflict phase uses. Its handler counts glory, raises <code>onFavorGloryTied</code> on a tie, and resolves the action's <code>gameAction</code> for the winner (claiming the favor).</p>
-  <table>
-        <thead><tr><th>Field</th><th>Type</th><th>Meaning</th></tr></thead>
-        <tbody>
-          <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>The context of the ability or rule that raised it.</td></tr>
-        </tbody>
-      </table>
   <ul class="edge">
     <li>Interrupts run before the count, so readying characters for it works.</li>
   </ul>
@@ -3128,7 +2892,7 @@ this.interrupt('Ready for Glory Count')
 <div class="ref" id="ctx-AbilityContext" data-name="AbilityContext">
   <h3><code>AbilityContext&lt;Source, Target&gt;</code> <span class="kind">Class</span> <a class="anchor" href="#ctx-AbilityContext">#</a></h3>
   <p>The object every callback of an ability receives as <code>context</code>: conditions, <code>cardCondition</code>, property factories (<code>(context) =&gt; ({ … })</code>), <code>chatText</code>, <code>handler</code>, <code>then</code> factories. One is created each time an ability is used (for a trigger, one per player while checking). <code>Source</code> is the source's type, <code>Target</code> the type of <code>context.target</code>. Defined in <code>server/game/AbilityContext.ts</code>.</p>
-  <p>The table lists every field and when it is set. The fields cards use most have their own entries below.</p>
+  <p>The fields cards use most have their own entries below.</p>
   <table>
         <thead><tr><th>Field</th><th>Type</th><th>Set</th></tr></thead>
         <tbody>
@@ -3287,7 +3051,7 @@ gameAction: multiple((context) =&gt; {
   <h3><code>context.element</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-element">#</a></h3>
   <p>The element symbol chosen with <code>elementTarget()</code> (an <code>ElementSymbol</code>: <code>element</code>, <code>key</code>, <code>prettyName</code>): <code>context.elements[name]</code>, and <code>context.element</code> for a target named <code>target</code>. <code>context.elementCard</code> is the card it is printed on.</p>
   <ul class="edge">
-    <li>Set when the element target is chosen; a single valid symbol is chosen without a prompt.</li>
+    <li>A single valid symbol is chosen without a prompt.</li>
   </ul>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/16-UFLS/TwinSoulTemple.ts">Twin Soul Temple</a></p>
 </div>
@@ -3295,7 +3059,7 @@ gameAction: multiple((context) =&gt; {
   <h3><code>context.ring</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-ring">#</a></h3>
   <p>The ring chosen with <code>ringTarget()</code>: <code>context.rings[name]</code> for every ring target, and <code>context.ring</code> when the target is named <code>target</code>.</p>
   <ul class="edge">
-    <li>Set when the ring is chosen. <code>ringCondition</code> gets the candidate ring as an argument; <code>context.ring</code> is not set on the candidate.</li>
+    <li><code>ringCondition</code> gets the candidate ring as an argument; <code>context.ring</code> is not set on the candidate.</li>
     <li>Ring game actions default to the contested ring, not to <code>context.ring</code>; the ring target passes its ring to its own game actions.</li>
   </ul>
   <pre><code>// All and Nothing: … resolve that ring's effect instead. Draw 1 card.
@@ -3310,7 +3074,7 @@ gameAction: multiple((context) =&gt; {
   <h3><code>context.select</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-select">#</a></h3>
   <p>The label chosen in a <code>select()</code>: <code>context.selects[name]</code> is a <code>SelectChoice</code> (<code>.choice</code> is the label), and <code>context.select</code> is the label itself when the select is named <code>target</code> (the default).</p>
   <ul class="edge">
-    <li>Set when the choice is made. The builder types the label as the union of the choice labels.</li>
+    <li>The builder types the label as the union of the choice labels.</li>
   </ul>
   <pre><code>// Levy: … Action: Choose an opponent, that player must select one - give you 1 fate or 1 honor. If you have fewer cards in your hand than that player, draw 1 card.
 .select({
@@ -3347,9 +3111,6 @@ this.reaction('Honor a character')
 <div class="ref" id="ctx-targetAbility" data-name="targetAbility">
   <h3><code>context.targetAbility</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-targetAbility">#</a></h3>
   <p>The printed ability chosen with <code>abilityTarget()</code> (a <code>CardAbility</code>: <code>card</code>, <code>title</code>, <code>abilityType</code>, …). There is one per ability, so the target takes no name.</p>
-  <ul class="edge">
-    <li>Set when the ability target is chosen.</li>
-  </ul>
   <pre><code>// Smuggling Deal: Action: Give an opponent 1 honor and choose an ability on a character you control - you may trigger that ability an additional time this round (or specified period).
 .abilityTarget({
     activePromptTitle: 'Select an ability to increase limits on',
@@ -3443,17 +3204,10 @@ onCardAbilityTriggered: (event, context) =&gt;
 </div>
 <div class="ref" id="ctx-stage" data-name="stage">
   <h3><code>context.stage</code> <span class="kind">Context field</span> <a class="anchor" href="#ctx-stage">#</a></h3>
-  <p>How far the resolution has got (<code>Stage</code>): <code>PreTarget</code> while choosing targets before costs, <code>Cost</code> while paying costs, <code>Target</code> while choosing targets after costs, <code>Effect</code> while the effects resolve.</p>
+  <p>How far the resolution has got: a <a href="#en-Stage"><code>Stage</code></a>. Read it on an event's context to tell a cost from an effect (<code>event.context?.stage === Stage.Cost</code>).</p>
   <ul class="edge">
     <li>A context made for an ability starts at <code>PreTarget</code>; a framework context is at <code>Effect</code> (<code>Cost</code> from <code>getFrameworkCostContext</code>).</li>
-    <li>Read it on an event's context to tell a cost from an effect (<code>event.context?.stage === Stage.Effect</code>).</li>
   </ul>
-  <pre><code>// Sententious Poet: Reaction: After your opponent spends fate to play a card during a conflict in which this character is participating - gain 1 fate.
-onSpendFate: (event, context) =&gt;
-    event.context.player === context.player.opponent &amp;&amp;
-    event.amount &gt; 0 &amp;&amp;
-    event.context.stage === Stage.Cost &amp;&amp;
-    …</code></pre>
   <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/SententiousPoet.ts">Sententious Poet</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/Duty.ts">Duty</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/06-CotE/ShiotomeHeroine.ts">Shiotome Heroine</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Scorpion/Funeral.ts">Funeral</a></p>
 </div>
 </section>
