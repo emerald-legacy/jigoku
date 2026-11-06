@@ -366,6 +366,7 @@ this.reaction('Put a character into play')
     </table>
     <ul class="edge">
       <li>The signature matches <code>DeckChoice.choices</code>, so <code>decks.choices(discardBottomTop)</code> gives one choice per deck.</li>
+      <li>With fewer than 3 cards each card still gets a different role, and the player may skip a picked role ("None"), so any of the effects can be left out (ruling #328).</li>
       <li>Chat: "{player} chooses to discard {card}" and "{player} places a card on the bottom of the deck".</li>
     </ul>
     <pre><code>// Magnificent Lighthouse: Action: Look at the top 3 cards of an opponent's deck. Discard 1 of those cards,
@@ -454,7 +455,7 @@ moveHoldingAction(this)
       <thead><tr><th>Function</th><th>Returns</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>nameCardType()</code></td><td><code>Cost&lt;{ namedCardType: CardType }&gt;</code></td><td>A free cost that asks the player to pick attachment, character or event, stored as <code>context.costs.namedCardType</code>.</td></tr>
-        <tr><td><code>revealCount(context, trait)</code></td><td><code>number</code></td><td>4 if the player has a card in play with <code>trait</code>, else 3.</td></tr>
+        <tr><td><code>revealCount(context, trait)</code></td><td><code>number</code></td><td>4 if the player controls a character with <code>trait</code>, else 3.</td></tr>
         <tr><td><code>takeUpToTwoOfNamedType(context, trait)</code></td><td><code>DeckSearchProperties</code></td><td>Look at <code>revealCount</code> cards, take up to 2 of the named type into hand, discard the rest.</td></tr>
       </tbody>
     </table>
@@ -1371,6 +1372,32 @@ this.reaction('Look at a province')
         message: lookAtProvincesMessage
     }));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/14.3-IPoT/HuntingFalcon.ts">Hunting Falcon</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/05-UotE/PeasantsAdvice.ts">Peasant's Advice</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.4-TToTS/Reconnaissance.ts">Reconnaissance</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/IuchiWayfinder.ts">Iuchi Wayfinder</a> (6 card files)</p>
+  </div>
+  <div class="ref" id="he-readyAndMoveMessage" data-name="readyAndMoveMessage">
+    <h3><code>readyAndMoveMessage(context, character)</code> <span class="kind">Helper</span> <a class="anchor" href="#he-readyAndMoveMessage">#</a></h3>
+    <p>The chat text for "ready that character and move it to the conflict", naming only the parts that can happen: <code>ready {character} and move it into the conflict</code>, <code>ready {character}</code> or <code>move {character} into the conflict</code>.</p>
+    <table>
+      <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><code>context</code></td><td><code>AbilityContext</code></td><td>required</td><td>The ability's context.</td></tr>
+        <tr><td><code>character</code></td><td><code>DrawCard</code></td><td>required</td><td>The character readied and moved, usually <code>context.target</code>.</td></tr>
+      </tbody>
+    </table>
+    <ul class="edge">
+      <li>Each part is checked with <code>ready().canAffect</code> and <code>moveToConflict().canAffect</code> when the chat text is built: a bowed participant is only readied, a ready character at home is only moved.</li>
+      <li>When neither can happen it still says "move … into the conflict"; the target's game actions keep that case from being chosen.</li>
+      <li>It returns a message for <code>chatText</code>. Inside a longer <code>msg</code> template, wrap it with <code>context.game.gameChat.nested(…)</code> (Shattered Blade Pass).</li>
+    </ul>
+    <pre><code>// Fight On: Action: While you are the defending player, choose a bowed character you control – ready that character and move it to the conflict.
+this.action('Ready character and move to conflict')
+    .condition((context) =&gt; context.player.isDefendingPlayer())
+    .target({
+        cardType: CardType.Character,
+        controller: Players.Self,
+        cardCondition: (card) =&gt; card.bowed
+    }, ready(), moveToConflict())
+    .chatText((context) =&gt; readyAndMoveMessage(context, context.target));</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.4-TEaF/FightOn.ts">Fight On</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Dragon/TwentyFourSteps.ts">Twenty-four Steps</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/13-CW/TakeUpCommand.ts">Take Up Command</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Crane/ShatteredBladePass.ts">Shattered Blade Pass</a> (6 card files)</p>
   </div>
   <div class="ref" id="he-topCards" data-name="topCards">
     <h3><code>topCards(count, inDeck, inWords?)</code> <span class="kind">Helper</span> <a class="anchor" href="#he-topCards">#</a></h3>

@@ -177,7 +177,7 @@ export default Assassination;</code></pre>
 <p>When an ability resolves, the chat says what happened: <em>player1 plays Assassination, losing 3 honor to discard Doji Whisperer</em>. The engine writes the start: the player, "plays" for an event or "uses" for any other card, the card, and the costs paid. The part after "to" comes from the ability:</p>
 <ul>
     <li><strong>By default</strong> it is built from the game actions' own texts, joined ("bow Doji Whisperer and draw 1 card"). Often that is all you need.</li>
-    <li><strong><code>chatText('format', args?)</code></strong> replaces it. <code>{0}</code> is the target (or the ring, or else the source); <code>{1}</code> onwards are the entries <code>args(context)</code> returns.</li>
+    <li><strong><code>chatText('format')</code></strong> replaces it. <code>{0}</code> is the target (or the ring, or else the source); for anything more use the template form.</li>
     <li><strong><code>chatText((context) =&gt; msg`…`)</code></strong> is a template; cards, players and rings in it are shown as such. Inside it, <code>context.chatTarget()</code> gives what <code>{0}</code> would. Most cards use this form.</li>
     <li><strong>Per choice:</strong> a <code>select</code> choice <code>{ action, chatText }</code> gives the line for that choice. The ability then has no <code>chatText()</code> of its own.</li>
     <li><strong>A step</strong> (after <code>then()</code> or <code>afterwards()</code>) has no <code>chatText()</code>. Its whole line, if any, comes from <code>message((context) =&gt; msg`…`)</code>.</li>
@@ -226,16 +226,23 @@ this.conflictAction('Initiate a duel that honors participants and move loser hom
             chooseAction({
                 player: duel.winnerController,
                 choices: {
-                    'Move all duel participants home': sendHome({
-                        target: duel.participants
-                    }),
-                    'Do nothing': noAction()
+                    'Move all duel participants home': {
+                        action: sendHome({
+                            target: duel.participants
+                        }),
+                        message: (_context, _target, chooser) =&gt;
+                            msg`${chooser} chooses to move ${duel.participants.filter((card) =&gt; card.isParticipating())} home`
+                    },
+                    'Do nothing': {
+                        action: noAction(),
+                        message: (_context, _target, chooser) =&gt; msg`${chooser} chooses not to move the contestants home`
+                    }
                 }
             })
         ]),
         onTie: (duel) =&gt; honor({ target: duel.participants })
     }));</code></pre>
-<p><code>gameAction</code> resolves after a duel with a winner, <code>onTie</code> after a tie. The choice is made while the effect resolves ("Then, … may choose"), so it is a <code>chooseAction</code> for the winner's controller.</p>
+<p><code>gameAction</code> resolves after a duel with a winner, <code>onTie</code> after a tie. The choice is made while the effect resolves ("Then, … may choose"), so it is a <code>chooseAction</code> for the winner's controller. Each choice brings its own chat line (<code>message</code>).</p>
 
 <h3 id="start-example-if-able">If able, otherwise: Calling in Favors</h3>
 <pre><code>// Calling in Favors: Action: Dishonor a (friendly) character. Choose an opponent's attachment – take control of

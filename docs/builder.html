@@ -464,14 +464,15 @@ this.whileAttached({
     <ul class="edge">
       <li>Called during setup it only runs <code>declare</code>; the abilities are registered with the others when setup returns.</li>
     </ul>
-    <pre><code>// City of the Open Hand, the FFG text (DivineAncestry.spec.js)
-this.declareAbilities(() =&gt; {
-    this.action('Steal an honor')
-        .condition((context) =&gt; !!(context.player.opponent &amp;&amp; context.player.isLessHonorable()))
-        .cost(costs.bowSelf())
-        .takeHonor();
+    <pre><code>// BayushiKachiko.spec.js: give Shrewd Yasuki a hypothetical ability which cancels send homes
+this.shrewdYasuki.declareAbilities(() =&gt; {
+    this.shrewdYasuki.wouldInterrupt('Cancel Send Home')
+        .when({
+            onSendHome: (event) =&gt; event.card === this.shrewdYasuki
+        })
+        .handler((context) =&gt; context.cancel());
 });</code></pre>
-    <p class="seen">Not used by any card; specs use it (test/server/cards/14.5-AHD/DivineAncestry.spec.js).</p>
+    <p class="seen">Not used by any card; specs use it (BayushiKachiko.spec.js, playonlyif.spec.js, duelresults.spec.js, optionaltargets.spec.js, removefrominsteadofleavingplay.spec.js, el-core-duels.spec.js, provincecard.moveto.spec.js).</p>
   </div>
 </section>
 
@@ -923,7 +924,7 @@ this.action('Prevent an opponent contesting a ring')
     </table>
     <ul class="edge">
       <li>The ability can only be used when at least one choice is offered. Choices are listed in the object's key order.</li>
-      <li>When only one choice is offered after costs are paid, it is taken without a prompt (before costs, the "Cancel" button, and "Pay costs first" when no cost depends on a target, still show the prompt).</li>
+      <li>When only one choice is offered after costs are paid, it is taken without a prompt (before costs, the "Cancel" button, and "Pay costs first", still show the prompt). A select offers "Pay costs first" even when a cost depends on a target.</li>
       <li>A value that is none of the three throws <code>"not a game action"</code>.</li>
       <li>With <code>{ action, chatText }</code> choices the ability has no <a href="#b-chatText"><code>chatText()</code></a> of its own: both together throw at registration <code>"chatText() and a select's chatText choices both say what the ability does"</code>. A choice without <code>chatText</code> uses its game actions' text. Only one select per ability can have such choices.</li>
       <li>In a step, <code>{ action, chatText }</code> choices throw at registration <code>"a then step prints its message with message()"</code>: a step has no ability line. Use <a href="#b-message"><code>message()</code></a>.</li>
@@ -1319,7 +1320,7 @@ this.reaction('Search for a character card')
     <p>In every other case the branches stay on the ability, and their actions name their targets. Examples: several card targets without game actions; a last target with game actions after the ability already has game actions of its own.</p>
     <ul class="edge">
       <li>On a target, <code>condition</code> is read for each candidate, before the other targets are chosen. Only cards that the applying branch can affect are selectable.</li>
-      <li>Without <code>otherwise()</code>, the "no" branch has no legal target. An ability whose only effect is a failing <code>if()</code> can't be used, and on a bare target the cards that fail the condition aren't selectable. Game actions before the <code>if()</code>, or a target's own game actions (which then form the "no" branch), still make it usable.</li>
+      <li>Without <code>otherwise()</code>, the "no" branch has no legal target. An ability whose only effect is a failing <code>if()</code> can't be used, and on a bare target the cards that fail the condition aren't selectable. Without card targets, game actions before the <code>if()</code> still make the ability usable. When the branches are on a target, only the target's own game actions (which then form the "no" branch) do.</li>
       <li>One <code>if()</code> or <code>ifAble()</code> per step: a second throws <code>"one if() per step"</code>. Targets after it throw <code>"targets come before if()"</code>.</li>
       <li>Each branch needs a game action: throws at registration <code>"if() and otherwise() each need a game action"</code>. Not with <code>handler()</code>.</li>
       <li>For several conditions in one step, or a condition nested inside another action, use the <code>conditional</code> game action.</li>
@@ -1526,7 +1527,7 @@ this.action('Place a fate on a participating character, bow it, move it home, an
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>message</code></td><td><code>string</code></td><td>required (first form)</td><td>A format: <code>{0}</code> is the target named <code>target</code> (a card, or the list of a <code>targetCards()</code>), else the ring target, else the source; <code>{1}</code> onwards are <code>args</code>' entries.</td></tr>
+        <tr><td><code>message</code></td><td><code>string</code></td><td>required (first form)</td><td>A format: <code>{0}</code> is the target named <code>target</code> (a card, or the list of a <code>targetCards()</code>), else the ring target, else the source. Only <code>{0}</code> is filled; for more use the template form.</td></tr>
         <tr><td><code>fn</code></td><td><code>(context) =&gt; msg…</code></td><td>required (second form)</td><td>A <code>msg</code> template; <code>context.chatTarget()</code> is what <code>{0}</code> would be.</td></tr>
       </tbody>
     </table>
@@ -1601,7 +1602,7 @@ this.action('Discard cards to dishonor attackers')
     <h3><code>firstPlayerChoosesFirst()</code> <span class="kind">Builder</span> <a class="anchor" href="#b-firstPlayerChoosesFirst">#</a></h3>
     <p>Both players choose ("Choose a character. Each opponent may give you 1 honor and choose a character"): the first player chooses first (developer rulings; RRG: without other direction the first player acts first). When the opponent is the first player, their targets come before yours, and costs they choose (<code>chosenByOpponent</code> on the cost, as in <code>costs.optionalTakeHonorFromOpponent()</code>) before your other costs.</p>
     <ul class="edge">
-      <li>Without it, an opponent's target always waits until the costs are paid, after your own.</li>
+      <li>Without it, an opponent's target, and every target declared after it, waits until the costs are paid; then they are chosen in declaration order. So declare your own targets first.</li>
       <li>Duels between a character of each player chosen by the other (Heresy) work too: each target goes by who chooses it.</li>
     </ul>
     <pre><code>// Called to War: Action: Choose a Bushi character. Each opponent may give you 1 honor and choose a Bushi character - place 1 fate on each chosen character.
@@ -2775,7 +2776,7 @@ override allowAttachment(attachment: BaseCard): boolean {
         location: Location.Provinces,
         cardCondition: (card) =&gt; card.isInConflictProvince() &amp;&amp; !card.isUnique() &amp;&amp; card.isFaceup()
     })</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/AkodoZentaro.ts">Akodo Zentarō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/ShrewdYasuki.ts">Shrewd Yasuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/IkomaUjiaki.ts">Ikoma Ujiaki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/KaiuInventor.ts">Kaiu Inventor</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/09.1-FtE/AkodoZentaro.ts">Akodo Zentarō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/08-MotC/DaidojiUji.ts">Daidōji Uji</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/IkomaUjiaki.ts">Ikoma Ujiaki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.4-TCT/KaiuInventor.ts">Kaiu Inventor</a></p>
   </div>
 </section>
 

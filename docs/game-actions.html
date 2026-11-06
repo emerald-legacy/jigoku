@@ -66,7 +66,7 @@ bow((context) =&gt; ({ target: context.targets.character }))  // computed when t
 <h3 id="ga-legality">Legality</h3>
 <ul>
     <li>An action only affects targets it can affect: a bowed character can't be bowed, a character with no fate loses none, restrictions such as "cannot be dishonored" apply. An action with no legal target does nothing.</li>
-    <li><strong>Illegal targets in a list:</strong> player, ring and token actions skip a target they can't affect. Most card actions create an event for every target, and the event window cancels the event of each card the action can't affect. That cancelled event counts as not resolved, so a <code>then()</code> step after the action doesn't run. <code>discardCard</code>, <code>lookAt</code>, <code>setAside</code> and <code>duel</code> skip illegal cards first. Also:
+    <li><strong>Illegal targets in a list:</strong> player, ring and token actions skip a target they can't affect. Most card actions create an event for every target, and the event window cancels the event of each card the action can't affect. That cancelled event counts as not resolved, so a <code>then()</code> step after the action doesn't run. <code>discardCard</code>, <code>injure</code>, <code>lookAt</code>, <code>setAside</code> and <code>duel</code> skip illegal cards first. Also:
         <ul>
             <li>An "unless" cost on a card (<a href="effects.html#ef-unlessActionCost"><code>unlessActionCost</code></a>, Softskin) is only asked for when the action can affect the card.</li>
             <li><code>moveCard</code>, <code>placeCardUnderneath</code> and <code>placeInProvince</code> raise unnamed events, which the window doesn't check. They also move a card they can't affect.</li>
@@ -684,7 +684,7 @@ this.conflictAction('Discard a character')
         cardCondition: (card) =&gt; card.costLessThan(3)
     }, discardFromPlay())
     .max(perRound(1));</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Assassination.ts">Assassination</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/NobleSacrifice.ts">Noble Sacrifice</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Reprieve.ts">Reprieve</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/MirumotoRaitsugu.ts">Mirumoto Raitsugu</a></p>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Assassination.ts">Assassination</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/NobleSacrifice.ts">Noble Sacrifice</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/Reprieve.ts">Reprieve</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/ForcedRetirement.ts">Forced Retirement</a></p>
   </div>
 <div class="ref" id="ga-injure" data-name="injure">
     <h3><code>injure(properties?)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-injure">#</a></h3>
@@ -696,7 +696,7 @@ this.conflictAction('Discard a character')
       </tbody>
     </table>
     <ul class="edge">
-      <li>Characters in play only. A character is legal if the action it would get can affect it: <code>removeFate({ amount: 1 })</code> with fate, <code>discardFromPlay()</code> without. So "cannot be discarded" protects a character only while it has no fate.</li>
+      <li>Meant for characters in play. The card type isn't checked: any draw card in the play area the inner action can affect is legal, so an attachment or holding in an explicit <code>target</code> would lose fate or be discarded. A character is legal if the action it would get can affect it: <code>removeFate({ amount: 1 })</code> with fate, <code>discardFromPlay()</code> without. So "cannot be discarded" protects a character only while it has no fate.</li>
       <li>It has no event of its own: it raises <code>onMoveFate</code> or <code>onCardLeavesPlay</code>.</li>
       <li>Chat: "injure <em>card</em>".</li>
       <li>Builder shortcut: <code>.injure(…)</code>.</li>
@@ -1040,7 +1040,7 @@ this.forcedReaction('After the conflict phase begins')
     </table>
     <ul class="edge">
       <li>A faceup card in a province or in play can't be looked at; any other card can.</li>
-      <li>The message names the cards in the game chat, which both players read. Sort a hand first (<code>.sort((a, b) =&gt; a.name.localeCompare(b.name))</code>) so its order isn't given away.</li>
+      <li>The message names the cards in the game chat, which both players read. Sort a hand first (<code>.sort((a, b) =&gt; a.name.localeCompare(b.name))</code>) so its order isn't given away; <a href="helpers.html#he-randomHandCards"><code>randomHandCards</code></a> picks random cards and sorts them.</li>
       <li>All targets go into one <code>onLookAtCards</code> event (<code>event.cards</code>, <code>event.stateBeforeResolution</code>). The ability's text: "look at a facedown card".</li>
       <li>Builder shortcut: <code>.lookAt(…)</code>.</li>
     </ul>
@@ -1048,7 +1048,7 @@ this.forcedReaction('After the conflict phase begins')
 this.reaction('Look at 3 random cards of the opponent\'s hand')
     .when({ … })
     .lookAt((context) =&gt; ({
-        target: shuffle(context.player.opponent?.hand ?? []).slice(0, 3),
+        target: randomHandCards(context.player.opponent, 3),
         message: (context, cards) =&gt; msg`${context.player} sees ${cards} from ${context.player.opponent}'s hand`
     }))
     .chatText((context) =&gt; {
@@ -1399,6 +1399,7 @@ multiple([
       <li>Legal if the card has at least one play ability whose requirements are met, ignoring location and player (and costs when <code>payCosts</code> is <code>false</code>). With several, the player picks one from a menu.</li>
       <li><code>resetOnCancel</code> only re-opens a choice when the card was chosen by <code>selectCard</code>; on a <code>.target(…)</code> there is nothing to reset.</li>
       <li>It has no restriction type of its own; "cannot play" restrictions are checked by the play ability itself.</li>
+      <li><code>playType</code> is written into the play's context, also over an "as if from hand" play action's <code>PlayFromHand</code>. Play restrictions, cost reducers and <code>onCardPlayed</code> read it. A card played from a deck or discard pile without "as if it were in your hand" keeps <code>Other</code> (Utaku Takeko, Agasha Ayako), so "from hand" effects don't see it (ruling #644).</li>
       <li>Chat: <code>play {0} as if it were in their hand</code>.</li>
       <li>Builder shortcut: <code>.playCard(…)</code>.</li>
     </ul>
@@ -1609,7 +1610,7 @@ this.reaction('Break the attacked province')
       <tbody>
         <tr><td><code>target</code></td><td><code>BaseCard | BaseCard[]</code></td><td>the ability's source</td><td>The facedown cards to turn into tokens.</td></tr>
         <tr><td><code>token</code></td><td><code>new (card: DrawCard) =&gt; DrawCard</code></td><td>required</td><td>The token's card class, e.g. <code>SpiritOfTheRiver</code>.</td></tr>
-        <tr><td><code>canEnterConflict</code></td><td><code>(type: ConflictType) =&gt; boolean</code></td><td>always true</td><td>During a conflict of a type it refuses, no card is legal.</td></tr>
+        <tr><td><code>canEnterConflict</code></td><td><code>(type: ConflictType) =&gt; boolean</code></td><td>required</td><td>During a conflict of a type it refuses, no card is legal. (The action's runtime default, always true, can't be reached from typed card code.)</td></tr>
         <tr><td><code>leavingPlayMessage</code></td><td><code>string</code></td><td><code>'{0} returns to the deep'</code></td><td>The chat line when the token is discarded; <code>{0}</code> is the token.</td></tr>
       </tbody>
     </table>
@@ -1643,7 +1644,7 @@ this.action('Create spirits from facedown dynasty cards')
       <thead><tr><th>Property</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
         <tr><td><code>target</code></td><td><code>Player | Player[]</code></td><td>the ability's player</td><td>Whose province.</td></tr>
-        <tr><td><code>location</code></td><td><code>Location</code></td><td><code>Location.ProvinceOne</code></td><td>Which province.</td></tr>
+        <tr><td><code>location</code></td><td><code>Location</code></td><td>required</td><td>Which province. (The runtime default, <code>Location.ProvinceOne</code>, can't be reached from typed card code.)</td></tr>
         <tr><td><code>fillTo</code></td><td><code>number</code></td><td><code>1</code></td><td>Refill it until it holds this many dynasty cards.</td></tr>
         <tr><td><code>amount</code></td><td><code>number</code></td><td>none</td><td>Instead of <code>fillTo</code>: put the top card of the dynasty deck into the province this many times.</td></tr>
         <tr><td><code>faceup</code></td><td><code>boolean</code></td><td><code>false</code></td><td>Place the cards faceup. With <code>fillTo</code>, every dynasty card in the province is turned faceup afterwards.</td></tr>
@@ -2294,13 +2295,8 @@ this.action('Duel an opposing character')
         cardCondition: (card) =&gt; card.isParticipating()
     }, duel({
         type: DuelType.Military,
-        gameAction: (duel) =&gt;
-            conditional({
-                target: duel.loser?.[0],
-                condition: (duel.loser?.[0]?.getFate() ?? 0) &gt; 0,
-                trueGameAction: removeFate(),
-                falseGameAction: discardFromPlay()
-            })
+        gameAction: (duel) =&gt; injure({ target: duel.loser ?? [] }),
+        chatText: (context, duel) =&gt; this.injureMessage(context, duel)
     }));</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/MirumotoRaitsugu.ts">Mirumoto Raitsugu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/DuelistTraining.ts">Duelist Training</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/KakitaKaezin.ts">Kakita Kaezin</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.2-FHaG/PolicyDebate.ts">Policy Debate</a></p>
   </div>
@@ -2478,6 +2474,7 @@ this.action('Resurrect a character')
     </table>
     <ul class="edge">
       <li>A card is legal when at least one effect can be applied to it and no <code>CannotApplyLastingEffects</code> effect on it blocks that effect. Only the effects that can be applied are added. The location isn't checked.</li>
+      <li>The effect's value isn't checked: a <code>+0</code> skill modifier still makes the card legal. When the amount can be 0, give the ability a condition so it can't be used without the potential to change the game state (Hida Guardian: <code>context.player.getNumberOfHoldingsInPlay() &gt; 0</code>).</li>
       <li>The effect ends with its duration, when the card changes zones (moving between provinces doesn't count) or when it is turned facedown, unless <code>canChangeZoneOnce</code> or <code>canChangeZoneNTimes</code> allow it.</li>
       <li>Raises <code>onEffectApplied</code> (<code>event.effectTypes</code>).</li>
       <li>Give the ability (or this action) a <code>chatText</code> that says what the effect does: the default "apply a lasting effect to <em>card</em>" doesn't tell the opponent.</li>
@@ -2504,7 +2501,7 @@ this.conflictAction('Reduce opponent\'s characters mil', { conflictType: Conflic
         <tr><td><code>duration</code></td><td><code>Duration</code></td><td><code>Duration.UntilEndOfConflict</code></td><td>How long it lasts.</td></tr>
         <tr><td><code>until</code></td><td><code>EffectUntil</code></td><td>none</td><td>With <code>Duration.Custom</code>: when it ends.</td></tr>
         <tr><td><code>match</code></td><td><code>(card, context) =&gt; boolean</code></td><td>none</td><td>For a card effect: the cards it reaches while it lasts, also cards that enter play later (Grasp of Earth).</td></tr>
-        <tr><td><code>targetController</code></td><td><code>Players | Player</code></td><td>none</td><td>With <code>match</code>: whose cards it reaches.</td></tr>
+        <tr><td><code>targetController</code></td><td><code>Players | Player</code></td><td><code>Players.Self</code></td><td>With <code>match</code>: whose cards it reaches. Without it only your own cards; use <code>Players.Opponent</code> or <code>Players.Any</code> for others.</td></tr>
         <tr><td><code>endingMessage</code></td><td><code>string</code></td><td>none</td><td>With <code>Duration.Custom</code>: a chat line when the effect ends.</td></tr>
         <tr><td><code>condition</code></td><td><code>(context) =&gt; boolean</code></td><td>none</td><td>Only active while this holds.</td></tr>
         <tr><td><code>ability</code></td><td><code>BaseAbility</code></td><td>the resolving ability</td><td>The ability the effect belongs to.</td></tr>
@@ -2725,29 +2722,20 @@ this.wouldInterrupt('Dishonor this character instead')
     </table>
     <ul class="edge">
       <li>Legality, the chat text and the events all come from the branch the condition picks at that moment; the other branch is ignored.</li>
-      <li>Builder: <code>.if(condition) … .otherwise() …</code> builds one; after a card target, its actions go on that target.</li>
+      <li>Builder: <code>.if(condition) … .otherwise() …</code> builds one; after a card target, its actions go on that target. Without <code>.otherwise()</code> the builder's false branch is an empty <code>multiple([])</code>, which has no legal target (not <code>noAction()</code>): see <a href="builder.html#b-if"><code>if()</code></a>.</li>
     </ul>
-    <pre><code>// Dispatch: Action: Move a [clan-unicorn] character you control into a conflict or home from a conflict.
-this.action('Move a character into or out of the conflict')
-    .selectCard({
-        cardType: CardType.Character,
-        cardCondition: (card) =&gt; card.isFaction('unicorn'),
-        controller: Players.Self,
-        gameAction: conditional({
-            condition: (_context, properties) =&gt; {
-                const target = properties.target;
-                if(!target || !Array.isArray(target)) {
-                    return false;
-                }
-                const first = target[0];
-                return first.isCard() &amp;&amp; first.isDrawCard() &amp;&amp; first.inConflict;
-            },
-            trueGameAction: sendHome(),
-            falseGameAction: moveToConflict()
-        }),
-        message: …
-    })</code></pre>
-    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/04.5-AaN/Dispatch.ts">Dispatch</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/01-Core/MirumotoRaitsugu.ts">Mirumoto Raitsugu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.3-ACO/DisparagingChallenge.ts">Disparaging Challenge</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MischievousTanuki.ts">Mischievous Tanuki</a></p>
+    <pre><code>// Ceremonial Robes: … Place 1 of those cards into that province faceup, place another on the bottom of that deck, and discard the other card. Then, if you discarded a [Spirit], each player loses 1 honor.
+'discard': sequential([
+    discardCard(),
+    conditional({
+        condition: (_context, properties) =&gt; targetList(properties.target).some((card) =&gt; card.isCard() &amp;&amp; card.hasTrait(Trait.Spirit) &amp;&amp; card.location === Location.DynastyDiscardPile),
+        trueGameAction: sequential([
+            chatMessage((context, [card]) =&gt; msg`${card} was a Spirit! ${context.player} and ${context.player.opponent} lose 1 honor`),
+            loseHonor((context) =&gt; ({ target: context.game.getPlayers() }))
+        ])
+    })
+])</code></pre>
+    <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Phoenix/CeremonialRobes.ts">Ceremonial Robes</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/15.3-ACO/DisparagingChallenge.ts">Disparaging Challenge</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Neutral/MischievousTanuki.ts">Mischievous Tanuki</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Lion/FieldOfTheFallen.ts">Field of the Fallen</a> (15 card files)</p>
   </div>
 <div class="ref" id="ga-handler" data-name="handler">
     <h3><code>handler(properties?)</code> <span class="kind">Game action</span> <a class="anchor" href="#ga-handler">#</a></h3>

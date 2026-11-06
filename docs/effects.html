@@ -111,7 +111,7 @@ this.whileAttached({
       <li><code>hasKeyword(k)</code> counts the <code>addKeyword</code> effects for <code>k</code> and the <code>loseKeyword</code> effects for it, and is true while there are more added than lost. Two copies of the keyword survive one <code>loseKeyword</code>.</li>
       <li>Printed keywords are applied the same way: the engine gives every card an <code>addKeyword</code> persistent effect per printed keyword. Blanking the card removes those, not keywords other cards give it.</li>
       <li><code>hasKeyword</code> takes a <code>PrintedKeyword</code> too; it still lower-cases the name it is asked about (not the stored value).</li>
-      <li>While the card has <code>loseGainedAbilities</code>, only keywords from its own effects count. <code>loseAllNonKeywordAbilities</code> keeps keyword effects.</li>
+      <li>While the card has <code>loseGainedAbilities</code>, only keywords from its own effects count. <code>loseAllNonKeywordAbilities</code> keeps the printed keywords (the engine marks their <code>addKeyword</code> effects <code>isKeywordEffect</code>) and keywords other cards give it.</li>
     </ul>
     <pre><code>// Magnificent Kimono: Attached character gains pride. (…)
 this.whileAttached({
@@ -436,13 +436,14 @@ this.reaction('Double military skill')
     </table>
     <ul class="edge">
       <li>It overrides the base like <code>setBaseMilitarySkill</code>. Because the base is a dash, <code>hasDash(type)</code> is true: the character can't participate in conflicts of that type, can't be chosen for duels of that type, and modifiers to that skill do nothing.</li>
-      <li>Cards don't call it directly: <code>copyBaseSkillEffects(card, { base?, skills? })</code> in <code>server/game/cards/copyBaseSkills.ts</code> returns <code>setBaseDash</code> for a dash and <code>setBaseMilitarySkill</code>/<code>setBasePoliticalSkill</code> otherwise.</li>
+      <li>Cards don't call it directly: <a href="helpers.html#he-copyBaseSkillEffects"><code>copyBaseSkillEffects(card, { base?, skills?, overrideModifiers? })</code></a> in <code>server/game/cards/copyBaseSkills.ts</code> returns <code>setBaseDash</code> for a dash and <code>setBaseMilitarySkill</code>/<code>setBasePoliticalSkill</code> otherwise (with <code>overrideModifiers</code> also <code>setMilitarySkill</code>/<code>setPoliticalSkill</code>).</li>
     </ul>
     <pre><code>// copyBaseSkills.ts: sets a character's base skills to another card's, keeping a dash as a dash.
-export function copyBaseSkillEffects(card: DrawCard, { base = false, skills = [SkillType.Military, SkillType.Political] }: { base?: boolean; skills?: SkillType[] } = {}) {
-    return skills.map((type) =&gt; {
+export function copyBaseSkillEffects(card: DrawCard, { base = false, skills = [SkillType.Military, SkillType.Political], overrideModifiers = false }:
+    { base?: boolean; skills?: SkillType[]; overrideModifiers?: boolean } = {}) {
+    return skills.flatMap((type) =&gt; {
         if(card.hasDash(type)) {
-            return setBaseDash(type);
+            return [setBaseDash(type)];
         }
         …
     });
@@ -527,10 +528,12 @@ this.action('Set skill values to printed values')
     <pre><code>// Traveling Tinkerer: Conflict Action: Even from home, choose an attachment - for this conflict, switch that attachment's [conflict-military] and [conflict-political] skill modifiers.
 this.conflictAction('Flip the modifiers of an attachment', { evenFromHome: true })
     .target({
-        cardType: CardType.Attachment
+        cardType: CardType.Attachment,
+        cardCondition: (card) =&gt; this.switchChangesSkills(card)
     }, cardLastingEffect({
         effect: switchAttachmentSkillModifiers()
-    }))</code></pre>
+    }))
+    .chatText('switch the skill modifiers of {0}');</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/18.2-EL02/Unicorn/TravelingTinkerer.ts">Traveling Tinkerer</a></p>
   </div>
 <div class="ref" id="ef-switchBaseSkills" data-name="switchBaseSkills">
@@ -566,7 +569,7 @@ this.action('Switch a character\'s M and P skill')
       </tbody>
     </table>
     <ul class="edge">
-      <li>It adds up with all other skill modifiers, like <code>modifyMilitarySkill</code>. The difference is the label: rules that treat attachment bonuses specially read these two effect names (<code>switchAttachmentSkillModifiers</code>, Shore of the Ashen Flames, Bayushi Gensato, Mirumoto Rei).</li>
+      <li>It adds up with all other skill modifiers, like <code>modifyMilitarySkill</code>. The difference is the label: rules that treat attachment bonuses specially read these two effect names (Shore of the Ashen Flames, Bayushi Gensato, Mirumoto Rei). <a href="#ef-switchAttachmentSkillModifiers"><code>switchAttachmentSkillModifiers</code></a> doesn't: the switch only flips printed numeric bonuses.</li>
       <li>The engine already creates one for every attachment with a printed numeric bonus. Use these only for a bonus printed as X.</li>
       <li>A character with a dash in that skill keeps the dash.</li>
     </ul>
@@ -1227,7 +1230,7 @@ cardLastingEffect((context) =&gt; ({
     <h3><code>loseAllNonKeywordAbilities()</code> <span class="kind">Card effect</span> <a class="anchor" href="#ef-loseAllNonKeywordAbilities">#</a></h3>
     <p>The card loses each non-keyword ability, printed or gained.</p>
     <ul class="edge">
-      <li>Actions and triggered abilities are kept only if they are keyword abilities. Persistent effects are kept only if they were declared as keyword effects (<code>isKeywordEffect</code>, which <code>dire(…)</code> sets).</li>
+      <li>Actions and triggered abilities are kept only if they are keyword abilities. Persistent effects are kept only if they were declared as keyword effects (<code>isKeywordEffect</code>, which <code>dire(…)</code> sets). Printed keywords stay: the engine declares their <code>addKeyword</code> effects that way.</li>
       <li>So grant it from <code>dire(…)</code> or from another card: a plain <code>persistentEffect</code> on the card itself would remove itself.</li>
     </ul>
     <pre><code>// Unleashed Experiment: Dire - this character loses each other non-keyword ability.
@@ -2140,7 +2143,7 @@ this.interrupt('Force defenders to assign first')
     </table>
     <ul class="edge">
       <li>The conflict phase starts the player's declarations with that type fixed. The player's opportunities all become that type: the usual total (plus <code>additionalConflict</code> effects), minus conflicts already declared of the other type.</li>
-      <li>The most recent effect wins. A <code>provideConflictDeclarationType</code> of a different type cancels it.</li>
+      <li>The most recent effect wins. A <code>provideConflictDeclarationType</code> of a different type only changes the opportunity count (the opportunities are no longer all of the forced type); the declaration stays forced.</li>
     </ul>
     <pre><code>// No card uses it; a sketch.
 this.persistentEffect({
@@ -2306,7 +2309,7 @@ this.reaction('Both players must attack with as many characters as they can ever
     </table>
     <ul class="edge">
       <li>All the player's opportunities may be used for <code>type</code>; the other type keeps its normal limit, within the same total.</li>
-      <li>A <code>setConflictDeclarationType</code> for a different type is ignored while this applies. The most recent effect of each kind counts.</li>
+      <li>A <code>setConflictDeclarationType</code> for a different type is ignored while this applies. A <a href="#ef-forceConflictDeclarationType"><code>forceConflictDeclarationType</code></a> for a different type is ignored only for the opportunity count; the declaration stays forced. The most recent effect of each kind counts.</li>
     </ul>
     <pre><code>this.persistentEffect({
     effect: provideConflictDeclarationType(ConflictType.Political)
@@ -3636,7 +3639,7 @@ this.persistentEffect({
     </ul>
     <pre><code>// Ride Them Down: Action: During a conflict, discard the Imperial Favor – set the base strength of the attacked province to 1 until the end of the conflict.
 .selectAttackedProvince({
-    message: (context, cards) =&gt; msg`${context.player} reduces the strength of ${cards} to 1`,
+    message: (context, cards) =&gt; msg`${context.player} sets the base strength of ${cards} to 1`,
     gameAction: cardLastingEffect({
         effect: setBaseProvinceStrength(1)
     })
