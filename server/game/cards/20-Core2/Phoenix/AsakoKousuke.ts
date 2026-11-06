@@ -4,7 +4,7 @@ import type { GameAction } from '../../../GameActions/GameAction.js';
 import { discardStatusToken, gainStatusToken, joint } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
 
-const ORIGINL_TOKEN = 'original';
+const ORIGINAL_TOKEN = 'original';
 const SELECTION = 'selection';
 
 export default class AsakoKousuke extends DrawCard {
@@ -13,16 +13,16 @@ export default class AsakoKousuke extends DrawCard {
     override setupCardAbilities() {
         this.conflictAction('Treat the status token on a character as if it was another status token', { evenFromHome: true })
             .tokenTarget({
-                name: ORIGINL_TOKEN,
+                name: ORIGINAL_TOKEN,
                 cardType: CardType.Character,
                 cardCondition: (card, context) =>
                     card.isParticipating() && card.glory <= context.source.glory
             })
             .selectFrom({
                 name: SELECTION,
-                dependsOn: ORIGINL_TOKEN
+                dependsOn: ORIGINAL_TOKEN
             }, (context) => {
-                const targetToken = context.tokens[ORIGINL_TOKEN][0];
+                const targetToken = context.tokens[ORIGINAL_TOKEN][0];
                 const targetCard = targetToken.card;
                 if(!targetCard?.isDrawCard()) {
                     return {};
@@ -62,7 +62,11 @@ export default class AsakoKousuke extends DrawCard {
 
                 return Object.fromEntries(choices);
             })
-            .chatText((context) => msg`clarify what it means to be ${context.selects.selection.choice === 'Turn it into Honored' ? 'honored' : context.selects.selection.choice === 'Turn it into Dishonored' ? 'dishonored' : 'tainted'}. The exposition reveals that ${context.tokens[ORIGINL_TOKEN][0].card} is ${context.selects.selection.choice === 'Turn it into Honored' ? 'honored' : context.selects.selection.choice === 'Turn it into Dishonored' ? 'dishonored' : 'tainted'}`)
+            .chatText((context) => {
+                const choice = context.selects.selection.choice;
+                const status = choice === 'Turn it into Honored' ? 'honored' : choice === 'Turn it into Dishonored' ? 'dishonored' : 'tainted';
+                return msg`clarify what it means to be ${status}. The exposition reveals that ${context.tokens[ORIGINAL_TOKEN][0].card} is ${status}`;
+            })
             .cannotTargetFirst();
     }
 }

@@ -3,7 +3,10 @@ import { msg } from '../GameChat.js';
 import { assignRoles, moveCard, noAction } from '../GameActions/GameActions.js';
 import type Player from '../Player.js';
 
-/** "Discard 1 of those cards, place another on top of that deck, and the other on the bottom of that deck." */
+/**
+ * "Discard 1 of those cards, place another on top of that deck, and the other on the bottom of that deck."
+ * With fewer than 3 cards the effects resolve in any order the player wants (ruling #328), so each card gets a different role.
+ */
 export function discardBottomTop(player: Player, deck: DeckType) {
     const isDynasty = deck === DeckType.Dynasty;
     return assignRoles(() => ({
