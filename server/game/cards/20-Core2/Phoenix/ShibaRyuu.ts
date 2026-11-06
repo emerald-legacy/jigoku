@@ -8,7 +8,7 @@ export default class ShibaRyuu extends DrawCard {
         this.persistentEffect({
             condition: (context) => context.source.isParticipating(),
             effect: changeConflictSkillFunction(
-                (card) => card.militarySkill + card.politicalSkill
+                (_card, _conflict, skills) => skills.military + skills.political
             )
         });
     }

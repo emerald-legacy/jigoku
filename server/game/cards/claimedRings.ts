@@ -44,7 +44,7 @@ export function claimsRingOf(card: BaseCard, key: string, event: { ring: Ring })
     return event.ring.hasElement(card.getCurrentElementSymbol(key));
 }
 
-/** The printed 'Claimed Ring' symbols, new on each call because a replaced element is written into them. */
+/** The printed 'Claimed Ring' element symbols of a card, for its `printedElementSymbols`. */
 export function claimedRingSymbols(symbols: readonly ClaimedRingSymbol[]): ElementSymbolInfo[] {
     return symbols.map(({ key, element }) => ({ key, prettyName: 'Claimed Ring', element }));
 }

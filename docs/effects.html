@@ -661,13 +661,13 @@ this.persistentEffect({
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>func</code></td><td><code>(card: DrawCard, conflict: Conflict) =&gt; number</code></td><td>required</td><td>What the character adds to its side's total.</td></tr>
+        <tr><td><code>func</code></td><td><code>(card: DrawCard, conflict: Conflict, skills: ConflictSkills) =&gt; number</code></td><td>required</td><td>What the character adds to its side's total. <code>skills.military</code> and <code>skills.political</code> are the character's skills as the conflict counts them (without what a <code>conflictSkillExclusion</code> removes); use them instead of <code>card.militarySkill</code>.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
       <li>Applies to both sides of the current conflict. The most recent one wins.</li>
       <li>It overrides <code>changeContributionFunction</code>. That effect is read in <code>getContributionToConflict(type)</code>, which the conflict only calls when no skill function applies.</li>
-      <li>A player's <code>changeConflictSkillFunctionPlayer</code> takes precedence for that player's characters.</li>
+      <li>A <code>conflictSkillExclusion</code> still applies: it changes the <code>skills</code> passed in, not the function.</li>
       <li>Bowed characters, <code>cannotContribute</code> and contribution restrictions still leave characters out before the function is called.</li>
     </ul>
     <pre><code>// Sanpuku Seidō: … While resolving a conflict at this province, characters count their glory
@@ -678,30 +678,28 @@ this.persistentEffect({
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/03-DotV/SanpukuSeido.ts">Sanpuku Seidō</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/02.5-FHNS/MassingAtTwilight.ts">Massing at Twilight</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/20-Core2/Phoenix/ShibaRyuu.ts">Shiba Ryuu</a>, <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/22-SoD/Lion/RiverCrossing.ts">River Crossing</a></p>
   </div>
-<div class="ref" id="ef-changeConflictSkillFunctionPlayer" data-name="changeConflictSkillFunctionPlayer">
-    <h3><code>changeConflictSkillFunctionPlayer(func)</code> <span class="kind">Player effect</span> <a class="anchor" href="#ef-changeConflictSkillFunctionPlayer">#</a></h3>
-    <p>Like <code>changeConflictSkillFunction</code>, but only for characters the affected player controls: "attacking characters cannot have their skills increased by attachment cards".</p>
+<div class="ref" id="ef-conflictSkillExclusion" data-name="conflictSkillExclusion">
+    <h3><code>conflictSkillExclusion(exclusion)</code> <span class="kind">Conflict effect</span> <a class="anchor" href="#ef-conflictSkillExclusion">#</a></h3>
+    <p>Leaves skill modifiers out of the skill the conflict counts for some characters: "attacking characters cannot have their skills increased by attachment cards". The characters' own skills don't change; only the conflict totals do.</p>
     <table>
       <thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Meaning</th></tr></thead>
       <tbody>
-        <tr><td><code>func</code></td><td><code>(card: DrawCard, conflict: Conflict) =&gt; number</code></td><td>required</td><td>What each of the player's counted characters adds.</td></tr>
+        <tr><td><code>exclusion.match</code></td><td><code>(card: DrawCard, conflict: Conflict) =&gt; boolean</code></td><td>required</td><td>The counted characters it applies to, for example <code>card.isAttacking()</code> for the attacking side, whoever controls the character.</td></tr>
+        <tr><td><code>exclusion.excludes</code></td><td><code>(effect: EffectApplier, card: DrawCard) =&gt; boolean</code></td><td>required</td><td>Whether a skill modifier on that character is left out.</td></tr>
       </tbody>
     </table>
     <ul class="edge">
-      <li>It is read from the counted character's controller and wins over the conflict's <code>changeConflictSkillFunction</code>. With several on one player, the most recent wins.</li>
-      <li>Choose the player with <code>targetController</code> (<code>Players.Self</code> by default).</li>
+      <li>Every exclusion on the current conflict applies (two provinces in one conflict both count).</li>
+      <li>It works together with <code>changeConflictSkillFunction</code> (the function receives the reduced skills) and with the default count of the conflict's skill type. A <code>changeContributionFunction</code> on the character replaces the count and ignores it.</li>
+      <li>Only the conflict totals use it; <code>getCurrentSkill</code> for the other skill type and the characters' displayed skills don't.</li>
     </ul>
     <pre><code>// Shore of the Ashen Flames: While resolving a conflict at this province, attacking characters
 // cannot have their skills increased by attachment cards.
 this.persistentEffect({
     condition: (context) =&gt; context.source.isConflictProvince(),
-    targetController: Players.Opponent,
-    effect: changeConflictSkillFunctionPlayer((card, conflict: Conflict) =&gt; {
-        const exclusionFunction = (effect: EffectApplier) =&gt; { … };
-        if(conflict.conflictType === ConflictType.Military) {
-            return card.getMilitarySkillExcludingModifiers(exclusionFunction);
-        }
-        return card.getPoliticalSkillExcludingModifiers(exclusionFunction);
+    effect: conflictSkillExclusion({
+        match: (card) =&gt; card.isAttacking(),
+        excludes: (effect, card) =&gt; this.isAttachmentSkillIncrease(effect, card)
     })
 });</code></pre>
     <p class="seen">Used by <a href="https://github.com/emerald-legacy/jigoku/blob/main/server/game/cards/19.1-AS01/Crab/ShoreOfTheAshenFlames.ts">Shore of the Ashen Flames</a></p>
@@ -716,7 +714,7 @@ this.persistentEffect({
       </tbody>
     </table>
     <ul class="edge">
-      <li>The most recent one wins. It replaces <code>getContributionToConflict()</code>, which is ignored while a <code>changeConflictSkillFunction</code> or <code>changeConflictSkillFunctionPlayer</code> applies.</li>
+      <li>The most recent one wins. It replaces <code>getContributionToConflict()</code>, which is ignored while a <code>changeConflictSkillFunction</code> applies.</li>
       <li>It does not make the character count; pair it with <code>contributeToConflict</code> for a character that isn't participating.</li>
     </ul>
     <pre><code>// Hiruma Yoshino: … Action: During a [conflict-military] conflict in which this character is participating,

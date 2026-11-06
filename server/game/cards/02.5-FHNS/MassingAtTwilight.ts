@@ -8,7 +8,7 @@ export default class MassingAtTwilight extends ProvinceCard {
         this.persistentEffect({
             condition: (context) => context.source.isConflictProvince(),
             effect: changeConflictSkillFunction(
-                (card) => card.militarySkill + card.politicalSkill
+                (_card, _conflict, skills) => skills.military + skills.political
             )
         });
     }
