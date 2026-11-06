@@ -60,8 +60,6 @@ export class FireRingAbility extends BaseAbility {
             });
         }
 
-        options.push({ text: 'Back', handler: () => context.player.resolveRingEffect(Element.Fire, this.optional, this.onResolution) });
-
         if(this.optional) {
             options.push({
                 text: 'Don\'t resolve the fire ring',
@@ -71,6 +69,8 @@ export class FireRingAbility extends BaseAbility {
                 }
             });
         }
+
+        options.push({ text: 'Back', handler: () => context.player.resolveRingEffect(Element.Fire, this.optional, this.onResolution) });
 
         context.game.promptWithHandlerMenu(context.player, {
             options,
