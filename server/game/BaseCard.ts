@@ -274,7 +274,7 @@ export class BaseCard extends EffectSource {
         if(this.anyEffect(EffectName.LoseAllNonKeywordAbilities)) {
             return this.abilities.persistentEffects
                 .concat(gained)
-                .filter((a) => a.isKeywordEffect || a.type === EffectName.AddKeyword);
+                .filter((a) => a.isKeywordEffect);
         }
         return this.isBlank() ? gained : this.abilities.persistentEffects.concat(gained);
     }
@@ -897,7 +897,7 @@ export class BaseCard extends EffectSource {
         this.allowedAttachmentTraits = parsed.allowedAttachmentTraits;
 
         for(const keyword of this.printedKeywords) {
-            this.persistentEffect({ effect: addKeyword(keyword) });
+            this.persistentEffect({ isKeywordEffect: true, effect: addKeyword(keyword) });
         }
     }
 
