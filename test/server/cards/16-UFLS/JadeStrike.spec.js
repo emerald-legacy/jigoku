@@ -69,5 +69,15 @@ describe('Jade Strike', function() {
             expect(this.whisperer.fate).toBe(fate - 1);
             expect(this.getChatLogs(5)).toContain('player1 plays Jade Strike to remove a fate from and set the base skills of Doji Whisperer to 0military/0political');
         });
+
+        it('does not claim a fate removal from a tainted character without fate', function() {
+            this.whisperer.fate = 0;
+            this.player2.pass();
+            this.player1.clickCard(this.strike);
+            this.player1.clickCard(this.whisperer);
+            expect(this.whisperer.getBasePoliticalSkill()).toBe(0);
+            expect(this.whisperer.fate).toBe(0);
+            expect(this.getChatLogs(5)).toContain('player1 plays Jade Strike to set the base skills of Doji Whisperer to 0military/0political');
+        });
     });
 });

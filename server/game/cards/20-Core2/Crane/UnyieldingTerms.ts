@@ -1,5 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import { DuelType, Trait } from '../../../Constants.js';
+import type { AbilityContext } from '../../../AbilityContext.js';
 import type { ResolvedDuel } from '../../../Duel.js';
 import { perRound } from '../../../AbilityLimit.js';
 import { bow, chosenDiscard, multiple, removeFate } from '../../../GameActions/GameActions.js';
@@ -27,9 +28,25 @@ export default class UnyieldingTerms extends DrawCard {
                         bow({ target: duel.loser }),
                         removeFate({ target: this.wonByDuelist(duel) ? duel.loser : undefined })
                     ]),
-                chatText: (_context, duel) => msg`bow${this.wonByDuelist(duel) ? ' and remove 1 fate from' : ''} ${duel.loser}`
+                chatText: (context, duel) => this.duelEffectMessage(context, duel)
             }))
             .max(perRound(1));
+    }
+
+    private duelEffectMessage(context: AbilityContext, duel: ResolvedDuel) {
+        const losers = duel.loser ?? [];
+        const bowed = losers.filter((card) => bow().canAffect(card, context));
+        const losingFate = this.wonByDuelist(duel) ? losers.filter((card) => removeFate().canAffect(card, context)) : [];
+        if(losingFate.length === 0) {
+            return msg`bow ${bowed}`;
+        }
+        if(bowed.length === 0) {
+            return msg`remove 1 fate from ${losingFate}`;
+        }
+        if(bowed.length === losingFate.length && bowed.every((card) => losingFate.includes(card))) {
+            return msg`bow and remove 1 fate from ${bowed}`;
+        }
+        return msg`bow ${bowed} and remove 1 fate from ${losingFate}`;
     }
 
     wonByDuelist(duel: ResolvedDuel): boolean {

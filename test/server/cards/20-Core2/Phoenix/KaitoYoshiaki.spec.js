@@ -70,6 +70,23 @@ describe('Kaito Yoshiaki', function () {
             );
         });
 
+        it('does not claim a fate removal from a tainted character without fate', function () {
+            this.brash.taint();
+            this.brash.fate = 0;
+            this.initiateConflict({
+                attackers: [this.kaitoYoshiaki],
+                defenders: [this.brash]
+            });
+            this.player2.clickCard(this.brash);
+            this.player1.clickCard(this.kaitoYoshiaki);
+            this.player1.clickCard(this.brash);
+            expect(this.brash.getBaseMilitarySkill()).toBe(0);
+            expect(this.brash.fate).toBe(0);
+            expect(this.getChatLogs(5)).toContain(
+                'player1 uses Kaito Yoshiaki to set the base skills of Brash Samurai to 0military/0political'
+            );
+        });
+
         it('set base to zero, and remove fate when corrupt', function () {
             this.initiateConflict({
                 attackers: [this.kaitoYoshiaki],

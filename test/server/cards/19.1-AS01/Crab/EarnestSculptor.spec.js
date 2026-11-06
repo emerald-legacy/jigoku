@@ -82,7 +82,7 @@ describe('Earnest Sculptor', function () {
                     'player1 uses Earnest Sculptor to reduce the cost of Jade Strike by 1'
                 );
                 expect(this.getChatLogs(5)).toContain(
-                    'player1 plays Jade Strike to remove a fate from and set the base skills of Goblin Sneak to 0military/0political'
+                    'player1 plays Jade Strike to set the base skills of Goblin Sneak to 0military/0political'
                 );
             });
         });

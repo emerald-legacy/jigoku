@@ -149,3 +149,48 @@ describe('Courteous Scheming', function() {
         });
     });
 });
+
+describe('Courteous Scheming under Waning Hostilities', function() {
+    integration(function() {
+        beforeEach(function() {
+            this.setupTest({
+                phase: 'draw',
+                player1: {
+                    inPlay: ['iuchi-daiyu', 'moto-youth'],
+                    hand: ['waning-hostilities', 'courteous-scheming']
+                },
+                player2: {
+                    inPlay: ['border-rider', 'aranat']
+                }
+            });
+            this.iuchiDaiyu = this.player1.findCardByName('iuchi-daiyu');
+            this.borderRider = this.player2.findCardByName('border-rider');
+            this.waning = this.player1.findCardByName('waning-hostilities');
+            this.scheming = this.player1.findCardByName('courteous-scheming');
+            this.player1.clickPrompt('1');
+            this.player2.clickPrompt('1');
+            this.noMoreActions();
+            this.player1.clickCard(this.waning);
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'political',
+                attackers: [this.iuchiDaiyu],
+                defenders: [this.borderRider]
+            });
+            this.player2.pass();
+        });
+
+        // ruling #372
+        it('does not claim an extra conflict the winner cannot declare', function() {
+            this.player1.clickCard(this.scheming);
+            this.player1.clickCard(this.iuchiDaiyu);
+            this.player2.clickCard(this.borderRider);
+            this.player1.clickPrompt('5');
+            this.player2.clickPrompt('1');
+            expect(this.getChatLogs(5)).toContain('Iuchi Daiyu: 8 vs 2: Border Rider');
+            expect(this.getChatLogs(5)).toContain('The duel has no effect');
+            expect(this.getChatLogs(5)).not.toContain('Duel Effect: allow player1 to declare an additional political conflict this phase');
+            expect(this.player1.player.getRemainingConflictOpportunitiesForType('political')).toBe(0);
+        });
+    });
+});

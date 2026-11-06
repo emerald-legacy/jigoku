@@ -25,7 +25,7 @@ class JadeStrike extends DrawCard {
                     target: context.target?.isTainted ? context.target : []
                 }))
             ]))
-            .chatText((context) => msg`${context.target.isTainted ? 'remove a fate from and ' : ''}set the base skills of ${context.chatTarget()} to 0${'military'}/0${'political'}`);
+            .chatText((context) => msg`${context.target.isTainted && removeFate().canAffect(context.target, context) ? 'remove a fate from and ' : ''}set the base skills of ${context.chatTarget()} to 0${'military'}/0${'political'}`);
     }
 }
 
