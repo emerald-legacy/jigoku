@@ -1,5 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
+import { playableCardNames } from '../../CardNameFilter.js';
 import { lookAt, nameCard, playerLastingEffect, sequential } from '../../GameActions/GameActions.js';
 import { playerCannot } from '../../effects.js';
 import { Duration, RestrictionType, RestrictionScope } from '../../Constants.js';
@@ -13,6 +14,7 @@ class BayushisWhisperers extends DrawCard {
             .gameAction(sequential([
                 lookAt((context) => ({ target: context.player.opponent?.hand.slice().sort((a, b) => a.name.localeCompare(b.name)) })),
                 nameCard((context) => ({
+                    cardNameFilter: playableCardNames,
                     message: (_context, cardName, player) => msg`${player} names ${cardName} - ${player.opponent} cannot play copies of this card this phase`,
                     gameAction: (cardName) => playerLastingEffect({
                         duration: Duration.UntilEndOfPhase,

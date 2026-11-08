@@ -9,6 +9,7 @@ import type { Cost, Result } from './Cost.js';
 import { addCostEvents } from './addCostEvents.js';
 import type { HandlerMenuOption } from '../gamesteps/HandlerMenuPrompt.js';
 import * as GameActions from '../GameActions/GameActions.js';
+import type { CardNameFilter } from '../CardNameFilter.js';
 
 export function returnRings(amount = -1, ringCondition = (_ring: Ring, _context: AbilityContext) => true): Cost<{ returnedRings: Ring[] }> {
     return {
@@ -426,7 +427,7 @@ export function optionalTakeHonorFromOpponent(canPayFunc = (_context: AbilityCon
     };
 }
 
-export function nameCard(): Cost<{ namedCard: string }> {
+export function nameCard(cardNameFilter?: CardNameFilter): Cost<{ namedCard: string }> {
     return {
         getActionName(_context) {
             return 'nameCard';
@@ -440,7 +441,7 @@ export function nameCard(): Cost<{ namedCard: string }> {
         resolve(context) {
             context.game.promptForCardName(context.player, (_player, cardName) => {
                 context.costs.namedCard = cardName;
-            });
+            }, undefined, cardNameFilter);
         },
         pay() { }
     };

@@ -25,6 +25,21 @@ describe('Ashalan Lantern', function () {
             this.player2.reduceDeckToNumber('dynasty deck', 0);
         });
 
+        it('offers only the names of non-unique dynasty characters', function () {
+            this.player1.clickCard(this.lantern);
+            this.player1.clickCard(this.recruit);
+            this.noMoreActions();
+            this.initiateConflict({
+                attackers: [this.recruit],
+                defenders: []
+            });
+            this.player2.pass();
+            this.player1.clickCard(this.lantern);
+
+            const control = this.player1.player.currentPrompt().controls.find((control) => control.name === 'card-name');
+            expect(control.filter).toEqual({ types: ['character'], sides: ['dynasty'], unique: false });
+        });
+
         it('searches the top 3 dynasty cards for a character and play it, then discard attachment', function () {
             this.leftPlay = [];
             this.game.on('onCardLeavesPlay', (event) => this.leftPlay.push([event.card, event.destination]));

@@ -20,6 +20,13 @@ describe('Gossip', function() {
                 this.kamiUnleashed = this.player2.findCardByName('kami-unleashed');
             });
 
+            it('offers only the names of conflict cards', function() {
+                this.player1.clickCard('gossip');
+
+                const control = this.player1.player.currentPrompt().controls.find((control) => control.name === 'card-name');
+                expect(control.filter).toEqual({ sides: ['conflict'] });
+            });
+
             it('should stop your opponent from playing events', function() {
                 this.player1.clickCard('gossip');
                 this.player1.chooseCardInPrompt(this.againstTheWaves.name, 'card-name');

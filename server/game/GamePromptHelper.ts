@@ -7,6 +7,7 @@ import { SelectCardPrompt, type SelectCardPromptProperties } from './gamesteps/S
 import { SelectRingPrompt } from './gamesteps/SelectRingPrompt.js';
 import type { CardTypes } from './types/CardOfType.js';
 import type BaseCard from './BaseCard.js';
+import type { CardNameFilter } from './CardNameFilter.js';
 
 export class GamePromptHelper {
     constructor(private game: Game) {}
@@ -16,7 +17,7 @@ export class GamePromptHelper {
     }
 
     /** "Name a card": the player types a card name, and `onName` gets it. */
-    promptForCardName(player: Player, onName: (player: Player, cardName: string) => void, menuTitle = 'Name a card'): void {
+    promptForCardName(player: Player, onName: (player: Player, cardName: string) => void, menuTitle = 'Name a card', filter?: CardNameFilter): void {
         this.promptWithMenu(player, {
             selectCardName: (namingPlayer, cardName) => {
                 onName(namingPlayer, cardName);
@@ -25,7 +26,7 @@ export class GamePromptHelper {
         }, {
             activePrompt: {
                 menuTitle,
-                controls: [{ type: 'card-name', command: 'menuButton', method: 'selectCardName', name: 'card-name' }]
+                controls: [{ type: 'card-name', command: 'menuButton', method: 'selectCardName', name: 'card-name', filter }]
             }
         });
     }

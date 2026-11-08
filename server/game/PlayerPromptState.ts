@@ -1,6 +1,7 @@
 import type BaseCard from './BaseCard.js';
 import type Player from './Player.js';
 import type Ring from './Ring.js';
+import type { CardNameFilter } from './CardNameFilter.js';
 
 /** A prompt button; a `card` button shows that card and defaults its text and arg to it. */
 export interface PromptButton {
@@ -26,6 +27,7 @@ export type PromptControl = {
     command?: string;
     method?: string;
     name?: string;
+    filter?: CardNameFilter;
 };
 
 export class PlayerPromptState {

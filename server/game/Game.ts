@@ -59,6 +59,7 @@ import type { AnimationEvent } from './AnimationEvent.js';
 import type { GameRouter } from './GameRouter.js';
 import type { GameSaveState, GameSummary } from '../gamenode/LobbyProtocol.js';
 import type { PlayerState, GamePlayerUser } from './Player.js';
+import type { CardNameFilter } from './CardNameFilter.js';
 
 export interface SharedGameState {
     [key: string]: unknown;
@@ -550,8 +551,8 @@ export class Game {
     }
 
     /** "Name a card": the player types a card name, and `onName` gets it. */
-    promptForCardName(player: Player, onName: (player: Player, cardName: string) => void, menuTitle?: string): void {
-        this.prompts.promptForCardName(player, onName, menuTitle);
+    promptForCardName(player: Player, onName: (player: Player, cardName: string) => void, menuTitle?: string, filter?: CardNameFilter): void {
+        this.prompts.promptForCardName(player, onName, menuTitle, filter);
     }
 
     promptWithHandlerMenu<Card extends BaseCard, ChoiceValue extends string | number | undefined>(player: Player, properties: HandlerMenuPromptProperties<Card, ChoiceValue>): void {
