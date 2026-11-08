@@ -18,13 +18,13 @@ export class ConflictActionWindow extends ActionWindow {
         this.displayTotals = true;
     }
 
-    /** "Attacker: 5 (+3 at resolution) Defender: 4". */
-    private skillText(): string {
+    /** "Attacker: 5 (+3 at resolution) Defender: 4", with `separator` between the two sides. */
+    private skillText(separator = ' '): string {
         const bonus = (player: Player | undefined) => {
             const value = this.conflict.resolutionBonus(player);
             return value !== 0 ? ` (${value > 0 ? '+' : ''}${value} at resolution)` : '';
         };
-        return `Attacker: ${this.conflict.attackerSkill}${bonus(this.conflict.attackingPlayer)} Defender: ${this.conflict.defenderSkill}${bonus(this.conflict.defendingPlayer)}`;
+        return `Attacker: ${this.conflict.attackerSkill}${bonus(this.conflict.attackingPlayer)}${separator}Defender: ${this.conflict.defenderSkill}${bonus(this.conflict.defendingPlayer)}`;
     }
 
     private conflictText(): string {
@@ -68,7 +68,7 @@ export class ConflictActionWindow extends ActionWindow {
         const props = super.activePrompt();
 
         const conflictText = this.conflictText();
-        const skillText = this.skillText();
+        const skillText = this.skillText('\n');
         return {
             menuTitle: [conflictText, skillText].join('\n'),
             buttons: props.buttons,
