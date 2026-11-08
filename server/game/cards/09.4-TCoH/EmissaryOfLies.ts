@@ -1,5 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
+import { conflictCardNames } from '../../CardNameFilter.js';
 import { chooseAction, conditional, lookAt, multiple, nameCard, noAction, sendHome } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 
@@ -16,6 +17,7 @@ class EmissaryOfLies extends DrawCard {
             })
             .gameAction(nameCard((context) => ({
                 player: Players.Opponent,
+                cardNameFilter: conflictCardNames,
                 message: (_context, cardName, player) => msg`${player} names ${cardName} - ${context.player} must choose if they want to reveal their hand`,
                 gameAction: (cardName) => chooseAction({
                     activePromptTitle: 'Do you want to reveal your hand?',

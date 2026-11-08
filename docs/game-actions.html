@@ -2835,6 +2835,7 @@ this.interrupt('Force defenders to assign first')
         <tr><td><code>gameAction</code></td><td><code>(cardName: string) =&gt; GameAction</code></td><td>required</td><td>What happens with the name.</td></tr>
         <tr><td><code>player</code></td><td><code>Players.Self | Players.Opponent | Player</code></td><td>the ability's player</td><td>Who names the card.</td></tr>
         <tr><td><code>activePromptTitle</code></td><td><code>string</code></td><td>the prompt's default</td><td>The prompt title.</td></tr>
+        <tr><td><code>cardNameFilter</code></td><td><code>CardNameFilter</code></td><td>none (every card)</td><td>Narrows the names the client offers, as for the <a href="costs.html#co-nameCard"><code>nameCard</code> cost</a>. The engine still accepts any name.</td></tr>
         <tr><td><code>message</code></td><td><code>(context, cardName, chooser) =&gt; MessageArgs</code></td><td>none</td><td>Chat line once the card is named.</td></tr>
       </tbody>
     </table>
@@ -2848,6 +2849,7 @@ this.action('Look at opponent\'s hand and name a card')
     .gameAction(sequential([
         lookAt((context) =&gt; ({ … })),
         nameCard((context) =&gt; ({
+            cardNameFilter: playableCardNames,
             message: (_context, cardName, player) =&gt; msg`${player} names ${cardName}`,
             gameAction: (cardName) =&gt; playerLastingEffect({
                 duration: Duration.UntilEndOfPhase,

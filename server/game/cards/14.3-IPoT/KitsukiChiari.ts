@@ -2,6 +2,7 @@ import { Trait } from '../../Constants.js';
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
 import * as costs from '../../costs/index.js';
+import { conflictCardNames } from '../../CardNameFilter.js';
 import { discardMatching, lookAt, multiple } from '../../GameActions/GameActions.js';
 import { randomHandCards } from '../randomHandCards.js';
 
@@ -14,7 +15,7 @@ class KitsukiChiari extends DrawCard {
                 onCardRevealed: (event, context) => event.card.isProvince && event.card.controller === context.player &&
                     context.player.opponent && context.player.opponent.hand.length > 0
             })
-            .cost(costs.nameCard())
+            .cost(costs.nameCard(conflictCardNames))
             .gameAction(multiple((context) => {
                 const cards = randomHandCards(context.player.opponent, 4);
                 return [

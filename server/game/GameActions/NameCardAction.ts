@@ -1,4 +1,5 @@
 import type { AbilityContext } from '../AbilityContext.js';
+import type { CardNameFilter } from '../CardNameFilter.js';
 import type { EventName } from '../Constants.js';
 import type { Event } from '../Events/Event.js';
 import type { MessageArgs } from '../GameChat.js';
@@ -10,6 +11,7 @@ export interface NameCardProperties<Context extends AbilityContext = AbilityCont
     /** Who names the card: the ability's player (default) or their opponent. */
     player?: Chooser;
     activePromptTitle?: string;
+    cardNameFilter?: CardNameFilter;
     gameAction: (cardName: string) => GameAction;
     message?(context: Context, cardName: string, chooser: Player): MessageArgs;
 }
@@ -37,6 +39,6 @@ export class NameCardAction<Context extends AbilityContext = AbilityContext> ext
                 context.game.addMessage(properties.message(context, cardName, player));
             }
             context.game.queueSimpleStep(() => properties.gameAction(cardName).addEventsToArray(events, context));
-        }, properties.activePromptTitle);
+        }, properties.activePromptTitle, properties.cardNameFilter);
     }
 }

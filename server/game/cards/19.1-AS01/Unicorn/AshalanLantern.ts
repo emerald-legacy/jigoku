@@ -6,6 +6,7 @@ import * as costs from '../../../costs/index.js';
 import { reduceNextPlayedCardCost } from '../../../effects.js';
 import { deckSearch, discardFromPlay, handler, playCard, playerLastingEffect, sequential } from '../../../GameActions/GameActions.js';
 import DrawCard from '../../../DrawCard.js';
+import { nonUniqueDynastyCharacterNames } from '../../../CardNameFilter.js';
 
 export default class AshalanLantern extends DrawCard {
     static id = 'ashalan-lantern';
@@ -24,7 +25,7 @@ export default class AshalanLantern extends DrawCard {
         });
 
         this.conflictAction('Play a character from your opponent\'s dynasty deck', { evenFromHome: true })
-            .cost(costs.nameCard())
+            .cost(costs.nameCard(nonUniqueDynastyCharacterNames))
             .gameAction(sequential([
                 playerLastingEffect((context) => ({
                     target: Players.Self,

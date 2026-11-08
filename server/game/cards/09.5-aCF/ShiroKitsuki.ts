@@ -1,6 +1,7 @@
 import { ConflictType } from '../../Constants.js';
 import { StrongholdCard } from '../../StrongholdCard.js';
 import * as costs from '../../costs/index.js';
+import { playableCardNames } from '../../CardNameFilter.js';
 import { unlimited } from '../../AbilityLimit.js';
 import { delayedEffect } from '../../effects.js';
 import { claimRing, selectRing } from '../../GameActions/GameActions.js';
@@ -14,7 +15,7 @@ export default class ShiroKitsuki extends StrongholdCard {
             .when({
                 onConflictDeclared: () => true
             })
-            .cost(costs.nameCard())
+            .cost(costs.nameCard(playableCardNames))
             .playerLastingEffect((playerLastingEffectContext) => ({
                 target: playerLastingEffectContext.player,
                 effect: delayedEffect({

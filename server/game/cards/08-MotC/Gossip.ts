@@ -1,5 +1,6 @@
 import { msg } from '../../GameChat.js';
 import DrawCard from '../../DrawCard.js';
+import { conflictCardNames } from '../../CardNameFilter.js';
 import { playerCannot } from '../../effects.js';
 import { nameCard, playerLastingEffect } from '../../GameActions/GameActions.js';
 import { Duration, PlayType, Players, RestrictionScope } from '../../Constants.js';
@@ -11,6 +12,7 @@ class Gossip extends DrawCard {
         // naming is the effect, so it happens after the event could be cancelled
         this.action('Name a card that your opponent cannot play for the phase')
             .gameAction(nameCard({
+                cardNameFilter: conflictCardNames,
                 message: (_context, cardName, player) =>
                     msg`${player} names ${cardName} - ${player.opponent} cannot play cards named ${cardName} from their hand this phase`,
                 gameAction: (cardName) => playerLastingEffect({

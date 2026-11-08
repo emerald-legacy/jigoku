@@ -1,5 +1,6 @@
 import { msg } from '../../../GameChat.js';
 import * as costs from '../../../costs/index.js';
+import { conflictCardNames } from '../../../CardNameFilter.js';
 import { perRound } from '../../../AbilityLimit.js';
 import { discardMatching, multiple, reveal } from '../../../GameActions/GameActions.js';
 import { Location, Trait } from '../../../Constants.js';
@@ -17,7 +18,7 @@ export default class HonestAssessment extends DrawCard {
                 onCardAttached: (event, context) =>
                     event.card === context.source && event.originalLocation !== Location.PlayArea
             })
-            .cost(costs.nameCard())
+            .cost(costs.nameCard(conflictCardNames))
             .gameAction(multiple((context) => {
                 const cards = randomHandCards(context.player.opponent, 4);
                 return [
