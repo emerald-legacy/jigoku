@@ -23,8 +23,18 @@ export interface HiddenInfoChange {
     info: Record<string, unknown>;
 }
 
+interface HiddenCardSummary {
+    id: string;
+    name: string;
+    packId: string | undefined;
+    type: string;
+    uuid: string;
+}
+
 export class GameStateSerializer {
     private lastHiddenInfoFingerprint = '';
+    /** The last summary of each hidden pile, so log entries share the piles that didn't change. */
+    private lastHiddenPiles = new Map<string, { key: string; summaries: HiddenCardSummary[] }>();
     private stateSeq = 0;
     /** The replay covers the game up to and including the winning state; states after it aren't numbered. */
     private hiddenInfoClosed = false;
@@ -204,28 +214,40 @@ export class GameStateSerializer {
 
     getHiddenInfo(): Record<string, unknown> {
         const info: Record<string, unknown> = {};
-        const cardSummary = (card: BaseCard) => ({
+        for(const player of this.game.getPlayers()) {
+            const { hand, stronghold, one, two, three, four, strongholdChildren } = this.hiddenPiles(player);
+            const pile = (name: string, cards: BaseCard[]) => this.hiddenPileSummary(`${player.name}|${name}`, cards);
+            info[player.name] = {
+                hand: pile('hand', hand),
+                provinces: {
+                    stronghold: pile('stronghold', stronghold),
+                    one: pile('one', one),
+                    two: pile('two', two),
+                    three: pile('three', three),
+                    four: pile('four', four)
+                },
+                strongholdChildren: pile('strongholdChildren', strongholdChildren)
+            };
+        }
+        return info;
+    }
+
+    /** A pile's summaries; the same array as last time when the pile is unchanged, which keeps the log small. */
+    private hiddenPileSummary(pileId: string, cards: BaseCard[]): HiddenCardSummary[] {
+        const summaries = cards.map((card) => ({
             id: card.cardData.id,
             name: card.cardData.name,
             packId: card.packId,
             type: card.getType(),
             uuid: card.uuid
-        });
-        for(const player of this.game.getPlayers()) {
-            const { hand, stronghold, one, two, three, four, strongholdChildren } = this.hiddenPiles(player);
-            info[player.name] = {
-                hand: hand.map(cardSummary),
-                provinces: {
-                    stronghold: stronghold.map(cardSummary),
-                    one: one.map(cardSummary),
-                    two: two.map(cardSummary),
-                    three: three.map(cardSummary),
-                    four: four.map(cardSummary)
-                },
-                strongholdChildren: strongholdChildren.map(cardSummary)
-            };
+        }));
+        const key = JSON.stringify(summaries);
+        const last = this.lastHiddenPiles.get(pileId);
+        if(last?.key === key) {
+            return last.summaries;
         }
-        return info;
+        this.lastHiddenPiles.set(pileId, { key, summaries });
+        return summaries;
     }
 
     getSummary(activePlayerName?: string): GameSummary {
