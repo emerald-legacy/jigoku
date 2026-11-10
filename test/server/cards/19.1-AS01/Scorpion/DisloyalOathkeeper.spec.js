@@ -52,7 +52,7 @@ describe('Disloyal Oathkeeper', function () {
             expect(this.crane.isUnderneath(this.oathkeeper)).toBe(true);
 
             const seenByOpponent = this.crane.getSummary(this.player1.player, false);
-            expect(seenByOpponent.facedown).toBe(false);
+            expect(seenByOpponent.facedown).toBeFalsy();
             expect(seenByOpponent.name).toBe('Way of the Crane');
         });
 

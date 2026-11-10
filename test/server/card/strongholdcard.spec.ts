@@ -119,8 +119,8 @@ describe('StrongholdCard', () => {
             expect(summary.isStronghold).toBe(true);
         });
 
-        it('includes the bowed state when unbowed', () => {
-            expect(summary.bowed).toBe(false);
+        it('leaves out the bowed state when unbowed', () => {
+            expect(summary.bowed).toBeUndefined();
         });
 
         it('includes the bowed state when bowed', () => {
@@ -128,9 +128,8 @@ describe('StrongholdCard', () => {
             expect(card.getSummary(owner).bowed).toBe(true);
         });
 
-        it('includes a childCards array', () => {
-            expect(summary.childCards).toBeDefined();
-            expect(Array.isArray(summary.childCards)).toBe(true);
+        it('leaves out childCards when nothing is underneath', () => {
+            expect(summary.childCards).toBeUndefined();
         });
 
         it('reflects base card summary fields', () => {

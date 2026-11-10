@@ -63,8 +63,8 @@ describe('Glory of the Five Rivers', function () {
 
             // Neither pick may stay highlighted once both selections have resolved
             expect(this.player2.player.promptState.selectedCards).toEqual([]);
-            expect(this.solemn.getSummary(this.player2.player).selected).toBe(false);
-            expect(this.brash.getSummary(this.player2.player).selected).toBe(false);
+            expect(this.solemn.getSummary(this.player2.player).selected).toBeFalsy();
+            expect(this.brash.getSummary(this.player2.player).selected).toBeFalsy();
         });
     });
 });

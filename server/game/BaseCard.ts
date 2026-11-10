@@ -1152,13 +1152,19 @@ export class BaseCard extends EffectSource {
             : this.isFacedown() || hideWhenFaceup || this.anyEffect(EffectName.HideWhenFaceUp);
     }
 
-    getSummary(activePlayer: StateViewer, hideWhenFaceup: boolean): CardSummary {
+    /** What the client sees of this card. Fields with a default value (false, '', empty) are left out. */
+    getSummary(activePlayer: StateViewer, hideWhenFaceup = false): CardSummary {
+        return compactSummary(this.buildSummary(activePlayer, hideWhenFaceup));
+    }
+
+    /** Builds the full summary; subclasses add their fields here. */
+    protected buildSummary(activePlayer: StateViewer, hideWhenFaceup: boolean): CardSummary {
         const isActivePlayer = activePlayer === this.controller;
         const selectionState = activePlayer.getCardSelectionState(this);
 
         if(this.isHiddenFrom(activePlayer, hideWhenFaceup)) {
             const state = {
-                controller: this.controller.getShortSummary(),
+                controller: this.controller.name,
                 menu: isActivePlayer ? this.getMenu() : undefined,
                 facedown: true,
                 inConflict: this.inConflict,
@@ -1191,6 +1197,25 @@ export class BaseCard extends EffectSource {
 
         return Object.assign(state, selectionState);
     }
+}
+
+function isDefaultValue(value: unknown): boolean {
+    if(value === undefined || value === null || value === false || value === '') {
+        return true;
+    }
+    if(Array.isArray(value)) {
+        return value.length === 0;
+    }
+    return typeof value === 'object' && Object.getPrototypeOf(value) === Object.prototype && Object.keys(value).length === 0;
+}
+
+function compactSummary(summary: CardSummary): CardSummary {
+    for(const [key, value] of Object.entries(summary)) {
+        if(isDefaultValue(value)) {
+            delete summary[key];
+        }
+    }
+    return summary;
 }
 
 function traitsToCheck(traitSetOrFirstTrait: Set<Trait> | Trait, otherTraits: Trait[]): Set<Trait> {

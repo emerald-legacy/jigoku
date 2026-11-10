@@ -87,7 +87,7 @@ describe('BaseCard', function () {
                 });
 
                 it('should not return facedown', function() {
-                    expect(this.summary.facedown).toBe(false);
+                    expect(this.summary.facedown).toBeFalsy();
                 });
             });
 
