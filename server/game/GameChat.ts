@@ -80,12 +80,21 @@ export class GameChat {
                 const lastWord = splitFragment.pop();
                 return splitFragment
                     .reduce<Array<MessageFragment>>((output, word) => {
-                        return output.concat(word || [], ' ');
+                        return output.concat(this.splitPunctuation(word), ' ');
                     }, output)
-                    .concat(lastWord || []);
+                    .concat(this.splitPunctuation(lastWord));
             }
             return output;
         }, []);
+    }
+
+    /** Splits trailing punctuation off a word, so the client can still match it as an icon keyword (`card,` → `card`, `,`). */
+    private splitPunctuation(word: string | undefined): Array<string> {
+        const match = word?.match(/^(.*?\w)([,.;:!?]+)$/);
+        if(match) {
+            return [match[1], match[2]];
+        }
+        return word ? [word] : [];
     }
 
     /** A message built elsewhere as `[format, args]`, to be passed as one argument of another message. */

@@ -19,6 +19,14 @@ describe('GameChat', function () {
             });
         });
 
+        describe('when a word ends in punctuation', function () {
+            it('should split the punctuation off the word', function () {
+                var message = this.chat.formatMessage('draw 1 card, gain 1 fate.', []);
+
+                expect(message).toEqual(['draw', ' ', '1', ' ', 'card', ',', ' ', 'gain', ' ', '1', ' ', 'fate', '.']);
+            });
+        });
+
         describe('when there are embedded args', function () {
             it('should split the message text', function () {
                 var message = this.chat.formatMessage('Hello {0} world', this.args);
