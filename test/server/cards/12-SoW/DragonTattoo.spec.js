@@ -230,7 +230,7 @@ describe('Dragon Tattoo', function() {
 
             expect(this.kata.location).toBe('removed from game');
 
-            expect(this.getChatLogs(4)).toContain('player1 plays Rising Stars Kata to give Togashi Kazue +3 military skill until the end of the conflict');
+            expect(this.getChatLogs(4)).toContain('player1 plays Rising Stars Kata to give Togashi Kazue +3military until the end of the conflict');
             expect(this.getChatLogs(3)).toContain('player1 uses Dragon Tattoo to remove Rising Stars Kata from the game');
         });
 

@@ -24,7 +24,7 @@ export default class EbbAndFlow extends DrawCard {
             }, cardLastingEffect({
                 effect: switchBaseSkills()
             }))
-            .chatText((context) => msg`switch ${context.targets.opponents}'s military and political skill`)
+            .chatText((context) => msg`switch ${context.targets.opponents}'s military and political`)
             .onAffinity(Trait.Water, {
                 activePromptTitle: 'Pay 1 fate to swap abilities?',
                 chatText: (context) => msg`swap the abilities of ${context.targets.mine} and ${context.targets.opponents}`

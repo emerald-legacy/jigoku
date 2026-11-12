@@ -29,8 +29,8 @@ export abstract class TokenCard extends DrawCard {
         super.leavesPlay();
     }
 
-    override getSummary(activePlayer: StateViewer, hideWhenFaceup?: boolean): CardSummary {
-        const summary = super.getSummary(activePlayer, hideWhenFaceup);
+    protected override buildSummary(activePlayer: StateViewer, hideWhenFaceup: boolean): CardSummary {
+        const summary = super.buildSummary(activePlayer, hideWhenFaceup);
         const tokenProps: Record<string, unknown> = { isToken: true };
         if(activePlayer === this.controller) {
             tokenProps.facedownId = this.facedownCard.cardData.id;

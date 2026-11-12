@@ -15,7 +15,7 @@ class Banzai extends DrawCard {
             }, cardLastingEffect({
                 effect: modifyMilitarySkill(2)
             }))
-            .chatText('grant 2 military skill to {0}')
+            .chatText('grant +2 military to {0}')
             .mayResolveAgain({ cost: loseHonor(), label: 'Lose 1 honor' })
             .max(perConflict(1));
     }

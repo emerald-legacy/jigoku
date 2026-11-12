@@ -309,8 +309,8 @@ export class ProvinceCard extends BaseCard {
         return menu;
     }
 
-    override getSummary(activePlayer: StateViewer, hideWhenFaceup: boolean) {
-        const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
+    protected override buildSummary(activePlayer: StateViewer, hideWhenFaceup: boolean) {
+        const baseSummary = super.buildSummary(activePlayer, hideWhenFaceup);
         return {
             ...baseSummary,
             isProvince: this.isProvince,

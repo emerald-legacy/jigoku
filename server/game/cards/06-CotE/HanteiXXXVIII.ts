@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { CardType } from '../../Constants.js';
 import { delayedEffect } from '../../effects.js';
 import { bow, discardFromPlay } from '../../GameActions/GameActions.js';
-import { msg } from '../../GameChat.js';
+import { msg, verbatim } from '../../GameChat.js';
 
 class HanteiXXXVIII extends DrawCard {
     static id = 'hantei-xxxviii';
@@ -31,7 +31,7 @@ class HanteiXXXVIII extends DrawCard {
             .handler((context) => {
                 context.event.context.choosingPlayerOverride = context.player;
             })
-            .chatText((context) => msg`choose targets for ${context.event.card}'s ${context.event.ability.title} ability`);
+            .chatText((context) => msg`choose targets for ${context.event.card}'s ${verbatim(context.event.ability.title)} ability`);
     }
 }
 

@@ -43,7 +43,7 @@ describe('Matsu Koso', function() {
             expect(this.solemnScholar.militarySkill).toBe(this.solemnScholar.printedMilitarySkill - this.solemnScholar.printedPoliticalSkill);
             expect(this.shibaTsukune.militarySkill).toBe(this.shibaTsukune.printedMilitarySkill - this.shibaTsukune.printedPoliticalSkill);
             expect(this.isawaUona.militarySkill).toBe(this.isawaUona.printedMilitarySkill); // Printed pol is NaN
-            expect(this.getChatLogs(5)).toContain('player1 uses Matsu Koso to lower the military skill of Kitsu Motso, Solemn Scholar and Shiba Tsukune by their respective printed political skill');
+            expect(this.getChatLogs(5)).toContain('player1 uses Matsu Koso to lower the military of Kitsu Motso, Solemn Scholar and Shiba Tsukune by their respective printed political skill');
         });
 
         it('should decrease each participating characters military skill by their printed base political skill on both sides (Koso defending)', function() {
@@ -66,7 +66,7 @@ describe('Matsu Koso', function() {
             expect(this.solemnScholar.militarySkill).toBe(this.solemnScholar.printedMilitarySkill - this.solemnScholar.printedPoliticalSkill);
             expect(this.shibaTsukune.militarySkill).toBe(this.shibaTsukune.printedMilitarySkill - this.shibaTsukune.printedPoliticalSkill);
             expect(this.isawaUona.militarySkill).toBe(this.isawaUona.printedMilitarySkill); // Printed pol is NaN
-            expect(this.getChatLogs(5)).toContain('player1 uses Matsu Koso to lower the military skill of Solemn Scholar, Shiba Tsukune and Kitsu Motso by their respective printed political skill');
+            expect(this.getChatLogs(5)).toContain('player1 uses Matsu Koso to lower the military of Solemn Scholar, Shiba Tsukune and Kitsu Motso by their respective printed political skill');
         });
 
         it('does not touch a character with no printed political skill', function() {

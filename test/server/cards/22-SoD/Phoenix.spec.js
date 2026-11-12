@@ -686,7 +686,7 @@ describe('SoD - Phoenix', function () {
                 this.player1.clickCard(this.adept);
                 this.player1.clickCard(this.aramoro);
 
-                expect(this.getChatLogs(5)).toContain('player1 plays Ebb and Flow to switch Bayushi Aramoro\'s military and political skill');
+                expect(this.getChatLogs(5)).toContain('player1 plays Ebb and Flow to switch Bayushi Aramoro\'s military and political');
 
                 // the "may" is decided before any effect applies
                 expect(this.player1).toHavePrompt('Pay 1 fate to swap abilities?');
@@ -713,7 +713,7 @@ describe('SoD - Phoenix', function () {
                 this.player1.clickCard(this.adept);
                 this.player1.clickCard(this.aramoro);
 
-                expect(this.getChatLogs(5)).toContain('player1 uses Adept of the Waves\'s gained ability from Bayushi Aramoro, dishonoring Adept of the Waves to reduce Bayushi Aramoro\'s military skill by 2 - they will die if they reach 0');
+                expect(this.getChatLogs(5)).toContain('player1 uses Adept of the Waves\'s gained ability from Bayushi Aramoro, dishonoring Adept of the Waves to reduce Bayushi Aramoro\'s military by 2 - they will die if they reach 0');
             });
 
             it('shouldnt be able to swap if you dont have fate', function () {
@@ -730,7 +730,7 @@ describe('SoD - Phoenix', function () {
                 this.player1.clickCard(this.adept);
                 this.player1.clickCard(this.aramoro);
 
-                expect(this.getChatLogs(5)).toContain('player1 plays Ebb and Flow to switch Bayushi Aramoro\'s military and political skill');
+                expect(this.getChatLogs(5)).toContain('player1 plays Ebb and Flow to switch Bayushi Aramoro\'s military and political');
 
                 expect(this.aramoro.militarySkill).toBe(2);
                 expect(this.aramoro.politicalSkill).toBe(5);

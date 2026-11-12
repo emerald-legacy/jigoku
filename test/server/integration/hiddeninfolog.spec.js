@@ -24,6 +24,18 @@ describe('Replay hidden-info log', function() {
             expect(this.game.hiddenInfoLog[1].info.player1.hand.map((card) => card.id)).toEqual(['fine-katana']);
         });
 
+        it('shares the piles that did not change with the previous entry', function() {
+            this.game.recordHiddenInfo();
+            this.player1.moveCard('banzai', 'conflict discard pile');
+            this.game.recordHiddenInfo();
+
+            const [first, second] = this.game.hiddenInfoLog.map((entry) => entry.info);
+            expect(second.player1.hand).not.toBe(first.player1.hand);
+            expect(second.player1.provinces.one).toBe(first.player1.provinces.one);
+            expect(second.player2.hand).toBe(first.player2.hand);
+            expect(JSON.parse(JSON.stringify(second))).toEqual(JSON.parse(JSON.stringify(this.game.serializer.getHiddenInfo())));
+        });
+
         it('ends with the winning state', function() {
             expect(this.game.recordHiddenInfo()).toBe(1);
             this.game.recordWinner(this.player1.player, 'honor');

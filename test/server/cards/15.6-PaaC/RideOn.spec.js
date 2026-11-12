@@ -41,6 +41,25 @@ describe('Ride On', function () {
             expect(this.player1).not.toBeAbleToSelect(this.shono);
         });
 
+        it('should not offer to pay costs first, as it has no cost before the dash', function () {
+            this.noMoreActions();
+            this.initiateConflict({
+                type: 'military',
+                attackers: ['border-rider', 'bayushi-manipulator'],
+                defenders: ['shinjo-shono']
+            });
+
+            this.player2.pass();
+            this.player1.clickCard(this.rideOn);
+            expect(this.player1).not.toHavePromptButton('Pay costs first');
+            this.player1.clickCard(this.rider);
+            expect(this.player1).toHavePromptButton('Move home');
+            expect(this.player1).not.toHavePromptButton('Pay costs first');
+            expect(this.player1).toHavePromptButton('Cancel');
+            this.player1.clickPrompt('Move home');
+            expect(this.rider.isParticipating()).toBe(false);
+        });
+
         it('should move into the conflict a character at home', function () {
             this.noMoreActions();
             this.initiateConflict({

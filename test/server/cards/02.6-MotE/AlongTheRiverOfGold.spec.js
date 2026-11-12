@@ -44,7 +44,7 @@ describe('Along the River of Gold', function() {
             expect(this.player2).not.toBeAbleToSelect(this.whisperer);
             expect(this.player2).not.toBeAbleToSelect(this.challenger);
             this.player2.clickCard(this.brash);
-            expect(this.getChatLogs(5)).toContain('player2 uses Along the River of Gold to switch Brash Samurai\'s military and political skill');
+            expect(this.getChatLogs(5)).toContain('player2 uses Along the River of Gold to switch Brash Samurai\'s military and political');
             expect(this.brash.getMilitarySkill()).toBe(1);
             expect(this.brash.getPoliticalSkill()).toBe(2);
             this.noMoreActions();
@@ -133,7 +133,7 @@ describe('Along the River of Gold', function() {
                 this.player2.clickCard(this.river);
                 expect(this.player2).toHavePrompt('Along the River of Gold');
                 this.player2.clickCard(this.whisperer);
-                expect(this.getChatLogs(5)).toContain('player2 uses Along the River of Gold to switch Doji Whisperer\'s military and political skill');
+                expect(this.getChatLogs(5)).toContain('player2 uses Along the River of Gold to switch Doji Whisperer\'s military and political');
                 expect(this.whisperer.getMilitarySkill()).toBe(3);
                 expect(this.whisperer.getPoliticalSkill()).toBe(0);
             });

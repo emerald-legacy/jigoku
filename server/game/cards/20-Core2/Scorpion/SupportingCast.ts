@@ -31,7 +31,7 @@ export default class SupportingCast extends DrawCard {
             })), cardLastingEffect({
                 effect: modifyMilitarySkill(3)
             }))
-            .chatText((context) => msg`give +3 military skill to ${context.target} - ${context.event.cardTargets} was just a distraction`)
+            .chatText((context) => msg`give +3 military to ${context.target} - ${context.event.cardTargets} was just a distraction`)
             .max(perConflict(1))
             // "bow the first character" uses its triggering condition
             .cannotBeMirrored();

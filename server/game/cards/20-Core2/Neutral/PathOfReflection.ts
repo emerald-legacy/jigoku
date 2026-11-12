@@ -19,7 +19,7 @@ export default class PathOfReflection extends ProvinceCard {
                 cardType: CardType.Character,
                 cardCondition: (card) => card.isParticipating() && canSwitchSkills(card)
             }, cardLastingEffect({ effect: switchBaseSkills() }))
-            .chatText('switch {0}\'s military and political skill');
+            .chatText('switch {0}\'s military and political');
     }
 
     protected override printedElementSymbols = [

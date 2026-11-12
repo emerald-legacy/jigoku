@@ -151,7 +151,7 @@ describe('Wildfire Kick', function() {
                 expect(this.challenger.militarySkill).toBe(this.challenger.getBaseMilitarySkill());
                 expect(this.challenger.politicalSkill).toBe(this.challenger.getBasePoliticalSkill());
 
-                expect(this.getChatLogs(4)).toContain('player1 plays Wildfire Kick to give player2\'s participating characters -2military/-2political if their military skill is equal to or lower than 4. This affects: Adept of Shadows');
+                expect(this.getChatLogs(4)).toContain('player1 plays Wildfire Kick to give player2\'s participating characters -2military/-2political if their military is equal to or lower than 4. This affects: Adept of Shadows');
             });
         });
     });

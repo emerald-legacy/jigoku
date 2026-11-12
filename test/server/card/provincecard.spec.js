@@ -319,18 +319,16 @@ describe('Province Card - strengthSummary', function() {
                 expect(summary.strengthSummary.modifiers).toBeDefined();
             });
 
-            it('should include isProvince and isBroken in getSummary output', function() {
+            it('should include isProvince, and leave out isBroken while unbroken', function() {
                 const summary = this.manicured.getSummary(this.player1Object, false);
                 expect(summary.isProvince).toBe(true);
-                expect(summary.isBroken).toBe(false);
+                expect(summary.isBroken).toBeUndefined();
             });
 
-            it('should return empty strengthSummary in getSummary when facedown', function() {
+            it('should leave out strengthSummary in getSummary when facedown', function() {
                 this.manicured.facedown = true;
                 const summary = this.manicured.getSummary(this.player1Object, false);
-                expect(summary.strengthSummary).toBeDefined();
-                expect(summary.strengthSummary.stat).toBeUndefined();
-                expect(summary.strengthSummary.modifiers).toBeUndefined();
+                expect(summary.strengthSummary).toBeUndefined();
             });
         });
 

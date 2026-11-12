@@ -20,7 +20,7 @@ class InDefenseOfRokugan extends DrawCard {
             }, cardLastingEffect({
                 effect: setMilitarySkill(0)
             }))
-            .chatText((context) => msg`set ${context.chatTarget()}'s ${'military'} skill to 0`);
+            .chatText((context) => msg`set ${context.chatTarget()}'s ${'military'} to 0`);
     }
 }
 

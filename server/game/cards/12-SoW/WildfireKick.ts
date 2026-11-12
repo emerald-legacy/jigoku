@@ -27,7 +27,7 @@ class WildfireKick extends DrawCard {
             }))
             .chatText((context) => {
                 const targetMs = context.target.militarySkill;
-                return msg`give ${context.player.opponent}'s participating characters -2${'military'}/-2${'political'} if their military skill is equal to or lower than ${targetMs}. This affects: ${weakerOpponents(context, targetMs)}`;
+                return msg`give ${context.player.opponent}'s participating characters -2${'military'}/-2${'political'} if their military is equal to or lower than ${targetMs}. This affects: ${weakerOpponents(context, targetMs)}`;
             });
     }
 }

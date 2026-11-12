@@ -54,7 +54,7 @@ describe('For Death and Glory', function () {
             expect(this.miyaMystic.bowed).toBe(true);
             expect(this.miyaMystic.location).toBe('play area');
             expect(this.getChatLogs(10)).toContain(
-                'player1 plays For Death and Glory! to grant 2 military skill to Miya Mystic'
+                'player1 plays For Death and Glory! to grant +2 military to Miya Mystic'
             );
         });
 
@@ -77,7 +77,7 @@ describe('For Death and Glory', function () {
             this.noMoreActions();
             expect(this.miyaMystic.location).toBe('dynasty discard pile');
             expect(this.getChatLogs(10)).toContain(
-                'player1 plays For Death and Glory! to grant 4 military skill to Miya Mystic, sacrificing them at the end of the conflict'
+                'player1 plays For Death and Glory! to grant +4 military to Miya Mystic, sacrificing them at the end of the conflict'
             );
             expect(this.getChatLogs(10)).toContain(
                 'Miya Mystic is sacrificed due to the delayed effect of For Death and Glory!'

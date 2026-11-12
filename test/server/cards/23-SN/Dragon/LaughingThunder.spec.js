@@ -81,7 +81,7 @@ describe('Laughing Thunder', function () {
             expect(this.player1).toBeAbleToSelect(this.thunder);
             this.player1.clickCard(this.thunder);
 
-            expect(this.getChatLogs(5)).toContain('player1 uses Laughing Thunder\'s gained ability from Hurricane Punch to grant 2 military skill to Laughing Thunder and draw a card');
+            expect(this.getChatLogs(5)).toContain('player1 uses Laughing Thunder\'s gained ability from Hurricane Punch to grant +2 military to Laughing Thunder and draw a card');
         });
 
         it('no cancels', function () {

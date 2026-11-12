@@ -24,8 +24,8 @@ const illegalActions = new Set([
 export class RoleCard extends BaseCard {
     isRole = true;
 
-    override getSummary(activePlayer: StateViewer, hideWhenFaceup = false) {
-        const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
+    protected override buildSummary(activePlayer: StateViewer, hideWhenFaceup: boolean) {
+        const baseSummary = super.buildSummary(activePlayer, hideWhenFaceup);
         return {
             ...baseSummary,
             isRole: this.isRole,

@@ -877,8 +877,8 @@ export class DrawCard extends BaseCard {
         return matching;
     }
 
-    override getSummary(activePlayer: StateViewer, hideWhenFaceup = false): CardSummary {
-        const baseSummary = super.getSummary(activePlayer, hideWhenFaceup);
+    protected override buildSummary(activePlayer: StateViewer, hideWhenFaceup: boolean): CardSummary {
+        const baseSummary = super.buildSummary(activePlayer, hideWhenFaceup);
         if(this.isHiddenFrom(activePlayer, hideWhenFaceup)) {
             // the client picks the card back from these
             return Object.assign(baseSummary, { isConflict: this.isConflict, isDynasty: this.isDynasty });
@@ -903,7 +903,7 @@ export class DrawCard extends BaseCard {
             militarySkillSummary: this.militarySkillSummary,
             politicalSkillSummary: this.politicalSkillSummary,
             glorySummary: this.glorySummary,
-            controller: this.controller.getShortSummary(),
+            controller: this.controller.name,
             effectMarkers: this.getEffectMarkers()
         });
     }

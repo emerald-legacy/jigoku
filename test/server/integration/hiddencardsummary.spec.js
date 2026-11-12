@@ -11,10 +11,9 @@ describe('Summary of a card hidden from the viewer', function() {
 
         it('is the hidden form plus the card back, without the in-play fields', function() {
             const summary = this.game.getState('player2').players.player1.cardPiles.hand[0];
-            expect(Object.keys(summary).sort()).toEqual([
-                'controller', 'facedown', 'inConflict', 'isConflict', 'isDynasty', 'location', 'menu',
-                'selectable', 'selected', 'unselectable', 'uuid'
-            ]);
+            // Fields with a default value (false, empty) are left out of every summary
+            expect(Object.keys(summary).sort()).toEqual(['controller', 'facedown', 'isConflict', 'location']);
+            expect(summary.controller).toBe('player1');
             expect(summary.facedown).toBe(true);
             expect(summary.isConflict).toBe(true);
             expect(summary.uuid).toBeUndefined();
@@ -44,7 +43,7 @@ describe('Summary of a hidden province during setup', function() {
             expect(provinceDeck.length).toBe(5);
             for(const summary of provinceDeck) {
                 expect(summary.facedown).toBe(true);
-                expect(summary.strengthSummary).toEqual({});
+                expect(summary.strengthSummary).toBeUndefined();
             }
         });
     });

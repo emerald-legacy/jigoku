@@ -20,7 +20,7 @@ class MenacingIronWarrior extends DrawCard {
             }))
             .chatText((context) => {
                 const opp = context.player.opponent ?? context.player;
-                return msg`prevent ${opp}'s participating characters from using any abilities if their military skill is equal to or lower than ${context.source.militarySkill}. This affects: ${weakerOpponents(context)}`;
+                return msg`prevent ${opp}'s participating characters from using any abilities if their military is equal to or lower than ${context.source.militarySkill}. This affects: ${weakerOpponents(context)}`;
             });
     }
 }
