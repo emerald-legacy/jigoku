@@ -1,5 +1,5 @@
 import type { ActionOverrides } from './GameAction.js';
-import type { MessageArgs } from '../GameChat.js';
+import { verbatim, type MessageArgs } from '../GameChat.js';
 import type { AbilityContext } from '../AbilityContext.js';
 import type { CardAbility } from '../CardAbility.js';
 import { EventName, Blocker } from '../Constants.js';
@@ -111,7 +111,7 @@ export class ResolveAbilityAction<Context extends AbilityContext = AbilityContex
     };
 
     protected override effectMessage(context: Context, additionalProperties: ActionOverrides = {}): MessageArgs {
-        return ['resolve {0}\'s {1} ability', [this.getProperties(context, additionalProperties).ability.title]];
+        return ['resolve {0}\'s {1} ability', [verbatim(this.getProperties(context, additionalProperties).ability.title)]];
     }
 
     override canAffect(card: DrawCard, context: Context, additionalProperties: ActionOverrides = {}): boolean {

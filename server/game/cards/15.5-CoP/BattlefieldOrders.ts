@@ -2,7 +2,7 @@ import DrawCard from '../../DrawCard.js';
 import { reduceCost } from '../../effects.js';
 import { resolveAbility } from '../../GameActions/GameActions.js';
 import { CardType, Players, Location, AbilityType, ConflictType, Blocker } from '../../Constants.js';
-import { msg } from '../../GameChat.js';
+import { msg, verbatim } from '../../GameChat.js';
 
 class BattlefieldOrders extends DrawCard {
     static id = 'battlefield-orders';
@@ -30,7 +30,7 @@ class BattlefieldOrders extends DrawCard {
                 ignoredBlockers: [Blocker.WrongPlayer],
                 choosingPlayerOverride: context.choosingPlayerOverride
             })))
-            .chatText((context) => msg`resolve ${context.targetAbility.card}'s '${context.targetAbility.title}' ability`);
+            .chatText((context) => msg`resolve ${context.targetAbility.card}'s '${verbatim(context.targetAbility.title)}' ability`);
     }
 }
 

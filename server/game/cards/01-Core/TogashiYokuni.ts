@@ -3,7 +3,7 @@ import { Duration, CardType } from '../../Constants.js';
 import { perRound } from '../../AbilityLimit.js';
 import { gainAbility } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
-import { msg } from '../../GameChat.js';
+import { msg, verbatim } from '../../GameChat.js';
 
 class TogashiYokuni extends DrawCard {
     static id = 'togashi-yokuni';
@@ -19,7 +19,7 @@ class TogashiYokuni extends DrawCard {
                 duration: Duration.UntilEndOfPhase,
                 effect: context.targetAbility ? gainAbility(context.targetAbility.abilityType, context.targetAbility) : []
             })))
-            .chatText((context) => msg`copy ${context.targetAbility.card}'s '${context.targetAbility.title}' ability`)
+            .chatText((context) => msg`copy ${context.targetAbility.card}'s '${verbatim(context.targetAbility.title)}' ability`)
             .max(perRound(1));
     }
 }

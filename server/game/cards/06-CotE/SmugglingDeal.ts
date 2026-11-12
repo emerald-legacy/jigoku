@@ -4,7 +4,7 @@ import { increaseLimitOnAbilities } from '../../effects.js';
 import { cardLastingEffect } from '../../GameActions/GameActions.js';
 import { CardType, Players } from '../../Constants.js';
 import { getExtraUseDuration } from '../extraAbilityUse.js';
-import { msg } from '../../GameChat.js';
+import { msg, verbatim } from '../../GameChat.js';
 
 class SmugglingDeal extends DrawCard {
     static id = 'smuggling-deal';
@@ -23,7 +23,7 @@ class SmugglingDeal extends DrawCard {
                     targetAbility: context.targetAbility
                 })
             })))
-            .chatText((context) => msg`increase the limit on ${context.targetAbility.card}'s '${context.targetAbility.title}' ability`);
+            .chatText((context) => msg`increase the limit on ${context.targetAbility.card}'s '${verbatim(context.targetAbility.title)}' ability`);
     }
 }
 

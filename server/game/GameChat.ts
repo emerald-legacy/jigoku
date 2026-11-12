@@ -23,6 +23,11 @@ export type MsgArg =
 
 export type MessageArgs = [string, MsgArg[]];
 
+/** Text kept as one fragment, so the client shows no icons in it (player chat, quoted ability titles). */
+export function verbatim(text: string | undefined): { message: MessageText } {
+    return { message: text ?? '' };
+}
+
 /** A message written as a template: `msg\`take 1 ${resource} from ${player}\``. */
 export function msg(strings: TemplateStringsArray, ...args: MsgArg[]): MessageArgs {
     const format = strings.slice(1).reduce((text, part, index) => `${text}{${index}}${part}`, strings[0]);
@@ -44,7 +49,7 @@ export class GameChat {
             noAvatar: player.user.settings?.disableGravatar
         };
 
-        this.addMessage(msg`${playerArg} ${message}`);
+        this.addMessage(msg`${playerArg} ${typeof message === 'string' ? verbatim(message) : message}`);
     }
 
     addMessage([format, args]: MessageArgs): void {
@@ -73,19 +78,25 @@ export class GameChat {
                     } else if(typeof arg === 'object' && 'getShortSummary' in arg) {
                         return output.concat(arg.getShortSummary());
                     }
+                    if(typeof arg === 'string') {
+                        return output.concat(this.splitWords(arg));
+                    }
                     return output.concat(arg);
                 }
             } else if(!argMatch && fragment) {
-                const splitFragment = fragment.split(' ');
-                const lastWord = splitFragment.pop();
-                return splitFragment
-                    .reduce<Array<MessageFragment>>((output, word) => {
-                        return output.concat(this.splitPunctuation(word), ' ');
-                    }, output)
-                    .concat(this.splitPunctuation(lastWord));
+                return output.concat(this.splitWords(fragment));
             }
             return output;
         }, []);
+    }
+
+    /** Splits text into words and spaces, so the client can match each word as an icon keyword. */
+    private splitWords(text: string): Array<string> {
+        const words = text.split(' ');
+        const lastWord = words.pop();
+        return words
+            .reduce<Array<string>>((output, word) => output.concat(this.splitPunctuation(word), ' '), [])
+            .concat(this.splitPunctuation(lastWord));
     }
 
     /** Splits trailing punctuation off a word, so the client can still match it as an icon keyword (`card,` → `card`, `,`). */

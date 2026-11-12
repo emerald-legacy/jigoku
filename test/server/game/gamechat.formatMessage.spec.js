@@ -1,4 +1,4 @@
-import { GameChat, msg } from '../../../build/server/game/GameChat.js';
+import { GameChat, msg, verbatim } from '../../../build/server/game/GameChat.js';
 
 describe('GameChat', function () {
     beforeEach(function () {
@@ -8,6 +8,14 @@ describe('GameChat', function () {
         };
         this.args = ['foo', this.bar];
         this.chat = new GameChat();
+    });
+
+    describe('addChatMessage()', function () {
+        it('should keep the player\'s text as one fragment', function () {
+            this.chat.addChatMessage({ user: { username: 'player1' } }, 'gain 1 fate');
+
+            expect(this.chat.messages[0].message).toEqual([{ name: 'player1', emailHash: undefined, noAvatar: undefined }, ' ', 'gain 1 fate']);
+        });
     });
 
     describe('formatMessage()', function () {
@@ -24,6 +32,20 @@ describe('GameChat', function () {
                 var message = this.chat.formatMessage('draw 1 card, gain 1 fate.', []);
 
                 expect(message).toEqual(['draw', ' ', '1', ' ', 'card', ',', ' ', 'gain', ' ', '1', ' ', 'fate', '.']);
+            });
+        });
+
+        describe('when a string argument has several words', function () {
+            it('should split it into words', function () {
+                var message = this.chat.formatMessage('draw 1 card{0}', [' and gain 1 fate']);
+
+                expect(message).toEqual(['draw', ' ', '1', ' ', 'card', ' ', 'and', ' ', 'gain', ' ', '1', ' ', 'fate']);
+            });
+
+            it('should keep verbatim text as one fragment', function () {
+                var message = this.chat.formatMessage('resolve {0}', [verbatim('Gain 1 fate')]);
+
+                expect(message).toEqual(['resolve', ' ', 'Gain 1 fate']);
             });
         });
 
