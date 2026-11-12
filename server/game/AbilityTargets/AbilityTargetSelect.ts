@@ -91,12 +91,15 @@ export class AbilityTargetSelect extends AbilityTargetBase<AbilityTargetSelectPr
                 }
             }));
         if(player !== context.player.opponent && context.stage === Stage.PreTarget) {
-            options.push({ text: 'Pay costs first', handler: () => (targetResults.payCostsFirst = true) });
+            if(this.offersPayCostsFirst(context, targetResults)) {
+                options.push({ text: 'Pay costs first', handler: () => (targetResults.payCostsFirst = true) });
+            }
             options.push({ text: 'Cancel', handler: () => (targetResults.cancelled = true) });
         }
         if(options.length === 1) {
             options[0].handler();
         } else if(options.length > 1) {
+            targetResults.targetPrompted = true;
             context.game.promptWithHandlerMenu(player, {
                 waitingPromptTitle: context.stage === Stage.PreTarget ? waitingPromptTitle(context) : '',
                 activePromptTitle: promptTitle,

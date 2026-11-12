@@ -105,7 +105,7 @@ console.log(card.getActions().map((action) =&gt; `${action.title}: ${action.meet
 <p><code>AbilityResolver</code> (<code>gamesteps/AbilityResolver.ts</code>) runs these steps:</p>
 <ol>
     <li><code>createSnapshot()</code>: a character, holding or attachment source's state goes into <code>context.cardStateWhenInitiated</code> (not for events).</li>
-    <li><code>resolveEarlyTargets()</code>: unless <a href="builder.html#b-cannotTargetFirst"><code>cannotTargetFirst()</code></a>, targets are offered before costs at <code>Stage.PreTarget</code>, with "Pay costs first" unless a cost depends on a target (<code>targetDependentFate</code> when an attachment is played).</li>
+    <li><code>resolveEarlyTargets()</code>: unless <a href="builder.html#b-cannotTargetFirst"><code>cannotTargetFirst()</code></a>, targets are offered before costs at <code>Stage.PreTarget</code>, with "Pay costs first" on the first target prompt when the ability has a cost before the dash (not the card's fate cost alone) and no cost depends on a target (<code>targetDependentFate</code> when an attachment is played).</li>
     <li><code>checkForCancel()</code>.</li>
     <li><code>openInitiateAbilityEventWindow()</code>: one window with <code>onCardAbilityInitiated</code> (<code>onAbilityResolverInitiated</code> if <code>!isCardAbility()</code> or <code>isStep()</code>), plus <code>onCardPlayed</code> for a played card and <code>onCardAbilityTriggered</code> when <code>isTriggeredAbility()</code> (actions too). The initiate event's handler queues:
         <ol>

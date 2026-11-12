@@ -68,16 +68,31 @@ export abstract class AbilityTargetBase<Properties extends AbilityTargetBaseProp
             .map((action) => ({ action, overrides }));
     }
 
+    /**
+     * Whether to offer paying costs before this target: only on the first target prompt (paying first restarts
+     * targeting), and only when the ability has a cost of its own (before the dash), not just the card's fate cost.
+     */
+    protected offersPayCostsFirst(context: AbilityContext, targetResults: TargetResults): boolean {
+        if(targetResults.targetPrompted) {
+            return false;
+        }
+        // a cost that depends on a target (an attachment's reducers) can't be paid before it's chosen
+        if(context.ability.cost.some((cost) => cost.dependsOn)) {
+            return false;
+        }
+        return context.ability.getCosts(context).some((cost) => !cost.isPlayCost);
+    }
+
     /** What a prompt for this target always has: before costs are paid, the buttons to pay them first or cancel. */
     protected targetPromptProperties(context: AbilityContext, targetResults: TargetResults) {
         const buttons: PromptButton[] = [];
         if(context.stage === Stage.PreTarget) {
-            // a cost that depends on a target (an attachment's reducers) can't be paid before it's chosen
-            if(!context.ability.cost.some((cost) => cost.dependsOn)) {
+            if(this.offersPayCostsFirst(context, targetResults)) {
                 buttons.push({ text: 'Pay costs first', arg: 'costsFirst' });
             }
             buttons.push({ text: 'Cancel', arg: 'cancel' });
         }
+        targetResults.targetPrompted = true;
         return {
             waitingPromptTitle: context.stage === Stage.PreTarget ? waitingPromptTitle(context) : '',
             context,

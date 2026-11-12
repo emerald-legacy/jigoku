@@ -75,6 +75,8 @@ export interface TargetResults {
     cancelled?: boolean;
     payCostsFirst?: boolean;
     delayTargeting?: AbilityTarget | null;
+    /** A target was already prompted for, so paying costs first would throw that choice away. */
+    targetPrompted?: boolean;
 }
 
 /**

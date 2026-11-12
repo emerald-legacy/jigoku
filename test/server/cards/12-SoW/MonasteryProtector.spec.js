@@ -390,47 +390,6 @@ describe('Monastery Protector', function() {
             expect(this.player2.fate).toBe(0);
         });
 
-        it('should work if you choose to pay costs first', function() {
-            this.player2.fate = 3;
-            this.protector.bowed = true;
-            this.ancientMaster.bowed = true;
-
-            this.player1.pass();
-            this.player2.clickCard(this.duty);
-            this.player2.clickPrompt('Pay costs first');
-
-            expect(this.player2).toBeAbleToSelect(this.protector);
-            expect(this.player2).toBeAbleToSelect(this.ancientMaster);
-
-            this.player2.clickCard(this.protector);
-            expect(this.player2).toBeAbleToSelect(this.protector);
-            expect(this.player2).not.toBeAbleToSelect(this.ancientMaster);
-
-            this.player2.clickCard(this.protector);
-            expect(this.player2).toBeAbleToSelect(this.protector);
-            expect(this.player2).toBeAbleToSelect(this.ancientMaster);
-        });
-
-        it('should spend a fate even if you choose to pay costs first', function() {
-            this.player2.fate = 3;
-            this.protector.bowed = true;
-            this.ancientMaster.bowed = true;
-
-            this.player1.pass();
-            this.player2.clickCard(this.duty);
-            this.player2.clickPrompt('Pay costs first');
-
-            expect(this.player2).toBeAbleToSelect(this.protector);
-            expect(this.player2).toBeAbleToSelect(this.ancientMaster);
-
-            this.player2.clickCard(this.protector);
-            expect(this.player2).toBeAbleToSelect(this.protector);
-            expect(this.player2).not.toBeAbleToSelect(this.ancientMaster);
-
-            this.player2.clickPrompt('Done');
-            expect(this.player2.fate).toBe(0);
-        });
-
         it('should not allow targeting if you cannot pay a fate (duel - you choose target)', function() {
             this.player1.fate = 10;
             this.player2.fate = 0;
@@ -514,30 +473,6 @@ describe('Monastery Protector', function() {
             this.player2.clickCard(this.kireiKo);
             expect(this.challenger.bowed).toBe(true);
             expect(this.player2.fate).toBe(1);
-        });
-
-        it('should allow for using alternate fate pools to pay for the event, and if not chosen then the event is discarded without resolving (paying costs first)', function() {
-            this.game.rings.air.fate = 1;
-            this.player2.fate = 1;
-            this.noMoreActions();
-            this.initiateConflict({
-                attackers: [this.protector, this.challenger, this.ancientMaster, this.tetsuko],
-                defenders: [this.hiroue],
-                type: 'military',
-                ring: 'water'
-            });
-
-            this.player2.clickCard(this.hurricanePunch);
-            this.player2.clickPrompt('Pay costs first');
-            expect(this.player2).toHavePrompt('Choose amount of fate to spend from Air Ring');
-            expect(this.player2.currentButtons).toContain('0');
-            expect(this.player2.currentButtons).toContain('1');
-            expect(this.player2.currentButtons).toContain('Cancel');
-            this.player2.clickPrompt('0');
-            expect(this.getChatLogs(3)).toContain('player2 attempted to use Hurricane Punch, but there are insufficient legal targets');
-            expect(this.hurricanePunch.location).toBe('conflict discard pile');
-            expect(this.player2.fate).toBe(0);
-            expect(this.player1).toHavePrompt('Conflict Action Window');
         });
 
         it('should allow for using alternate fate pools to pay for the event, and if not chosen then the event is discarded without resolving (choosing targets first)', function() {

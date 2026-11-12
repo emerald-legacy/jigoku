@@ -196,22 +196,6 @@ describe('Hantei XXXVII', function() {
                 expect(this.asahinaStoryteller.isDishonored).toBe(true);
             });
 
-            it('should trigger for Court Games not using pretargeting', function() {
-                this.player2.clickCard('court-games');
-                expect(this.player2).toHavePrompt('Court Games');
-                this.player2.clickPrompt('Pay costs first');
-                expect(this.player1).toHavePrompt('Triggered Abilities');
-                expect(this.player1).toBeAbleToSelect(this.hantei);
-                this.player1.clickCard(this.hantei);
-                expect(this.player2).toHavePrompt('Court Games');
-                this.player2.clickPrompt('Honor a friendly character');
-                expect(this.player1).toHavePrompt('Court Games');
-                expect(this.player1).toBeAbleToSelect(this.prudentChallenger);
-                expect(this.player1).not.toBeAbleToSelect(this.asahinaStoryteller);
-                this.player1.clickCard(this.prudentChallenger);
-                expect(this.prudentChallenger.isHonored).toBe(true);
-            });
-
             it('should trigger for Favored Niece', function() {
                 this.player2.moveCard(this.honoredBlade, 'conflict deck');
                 this.player2.clickCard('favored-niece');
@@ -277,7 +261,8 @@ describe('Hantei XXXVII', function() {
 
             it('should trigger for Policy Debate', function() {
                 this.player2.clickCard('policy-debate');
-                this.player2.clickPrompt('Pay costs first');
+                this.player2.clickCard(this.kitsukiInvestigator);
+                this.player2.clickCard(this.asahinaStoryteller);
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.hantei);
                 this.player1.clickCard(this.hantei);
@@ -296,7 +281,7 @@ describe('Hantei XXXVII', function() {
                 this.player1.playAttachment(this.fineKatana, this.asahinaStoryteller);
                 this.player2.clickCard(this.prudentChallenger);
                 this.player2.clickPrompt('Initiate a duel to discard attachment');
-                this.player2.clickPrompt('Pay costs first');
+                this.player2.clickCard(this.asahinaStoryteller);
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.hantei);
                 this.player1.clickCard(this.hantei);
@@ -312,7 +297,8 @@ describe('Hantei XXXVII', function() {
 
             it('should trigger for Taryu-Jiai', function() {
                 this.player2.clickCard('taryu-jiai');
-                this.player2.clickPrompt('Pay costs first');
+                this.player2.clickCard(this.fusuiDisciple);
+                this.player2.clickCard(this.asahinaStoryteller);
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.hantei);
                 this.player1.clickCard(this.hantei);

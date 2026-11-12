@@ -79,8 +79,8 @@ describe('Mantis Tenkinja', function() {
                 expect(this.agelessCrone.inConflict).toBe(true);
                 this.player1.clickCard('against-the-waves');
                 expect(this.player1).toHavePrompt('Against the Waves');
-                expect(this.player1).toHavePromptButton('Pay costs first');
-                this.player1.clickPrompt('Pay costs first');
+                expect(this.player1).not.toHavePromptButton('Pay costs first');
+                this.player1.clickCard(this.mantisTenkinja);
                 expect(this.player1).toHavePrompt('Triggered Abilities');
                 expect(this.player1).toBeAbleToSelect(this.mantisTenkinja);
                 expect(this.player1).toBeAbleToSelect(this.mantisTenkinja2);
@@ -93,9 +93,7 @@ describe('Mantis Tenkinja', function() {
                 expect(this.player1).toHavePromptButton('Pass');
                 expect(this.player1).not.toHavePromptButton('Cancel');
                 this.player1.clickPrompt('Pass');
-                expect(this.player1).toHavePrompt('Against the Waves');
-                expect(this.player1).toBeAbleToSelect(this.mantisTenkinja);
-                expect(this.player1).toBeAbleToSelect(this.mantisTenkinja2);
+                expect(this.mantisTenkinja.bowed).toBe(true);
             });
 
             it('should trigger when the player doesn\'t have enough fate but can pay costs', function() {
