@@ -584,7 +584,7 @@ describe('Monastery Protector', function() {
             expect(this.player2.currentButtons).toContain('1');
             expect(this.player2.currentButtons).toContain('Cancel');
             this.player2.clickPrompt('1');
-            expect(this.getChatLogs(4)).toContain('player2 plays Hurricane Punch to grant 2 military skill to Monastery Protector and draw a card');
+            expect(this.getChatLogs(4)).toContain('player2 plays Hurricane Punch to grant +2 military to Monastery Protector and draw a card');
             expect(this.getChatLogs(3)).toContain('player2 pays 1 fate in order to target Monastery Protector');
             expect(this.hurricanePunch.location).toBe('conflict discard pile');
             expect(this.player2.fate).toBe(0);

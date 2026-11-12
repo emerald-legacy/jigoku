@@ -26,7 +26,7 @@ class BayushiAramoro extends DrawCard {
                     })
                 ]
             })))
-            .chatText('reduce {0}\'s military skill by 2 - they will die if they reach 0');
+            .chatText('reduce {0}\'s military by 2 - they will die if they reach 0');
     }
 }
 

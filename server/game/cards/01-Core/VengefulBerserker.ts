@@ -14,7 +14,7 @@ class VengefulBerserker extends DrawCard {
                 }
             })
             .cardLastingEffect({ effect: modifyMilitarySkillMultiplier(2) })
-            .chatText('double his military skill until the end of the conflict');
+            .chatText('double his military until the end of the conflict');
     }
 }
 

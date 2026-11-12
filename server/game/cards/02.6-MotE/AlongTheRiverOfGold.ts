@@ -18,7 +18,7 @@ export default class AlongTheRiverOfGold extends ProvinceCard {
             }, cardLastingEffect({
                 effect: switchBaseSkills()
             }))
-            .chatText('switch {0}\'s military and political skill');
+            .chatText('switch {0}\'s military and political');
     }
 
     protected override printedElementSymbols = [

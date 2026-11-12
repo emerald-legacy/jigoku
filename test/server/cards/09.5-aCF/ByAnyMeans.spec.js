@@ -75,7 +75,7 @@ describe('By Any Means', function() {
                 this.player1.clickCard(this.dojiChallenger);
                 this.player1.clickCard(this.toturi);
 
-                expect(this.getChatLogs(3)).toContain('player1 plays By Any Means to set Doji Challenger\'s base military skill to equal Akodo Toturi\'s current military skill');
+                expect(this.getChatLogs(3)).toContain('player1 plays By Any Means to set Doji Challenger\'s base military skill to equal Akodo Toturi\'s current military');
                 expect(this.dojiChallenger.getBaseMilitarySkill()).toBe(this.toturi.militarySkill);
             });
 

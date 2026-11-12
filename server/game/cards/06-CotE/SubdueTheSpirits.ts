@@ -13,7 +13,7 @@ class SubdueTheSpirits extends DrawCard {
                 target: context.game.requireConflict().getCharacters(context.player),
                 effect: modifyBothSkills((card) => card.glory)
             }))
-            .chatText(() => msg`add glory to ${'military'} and ${'political'} skills on participating characters they control`);
+            .chatText(() => msg`add glory to ${'military'} and ${'political'} on participating characters they control`);
     }
 }
 

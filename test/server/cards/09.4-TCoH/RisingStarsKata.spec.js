@@ -32,7 +32,7 @@ describe('Rising Stars Kata', function() {
                 this.player1.clickCard(this.risingStarsKata);
                 this.player1.clickCard(this.mirumotoHitomi);
                 expect(this.mirumotoHitomi.militarySkill).toBe(7);
-                expect(this.getChatLogs(6)).toContain('player1 plays Rising Stars Kata to give Mirumoto Hitomi +3 military skill until the end of the conflict');
+                expect(this.getChatLogs(6)).toContain('player1 plays Rising Stars Kata to give Mirumoto Hitomi +3military until the end of the conflict');
             });
 
             it('should give +5 military if the target has won a duel this conflict', function () {
@@ -52,7 +52,7 @@ describe('Rising Stars Kata', function() {
                 this.player1.clickCard(this.mirumotoHitomi);
 
                 expect(this.mirumotoHitomi.militarySkill).toBe(9);
-                expect(this.getChatLogs(6)).toContain('player1 plays Rising Stars Kata to give Mirumoto Hitomi +5 military skill until the end of the conflict');
+                expect(this.getChatLogs(6)).toContain('player1 plays Rising Stars Kata to give Mirumoto Hitomi +5military until the end of the conflict');
             });
 
             it('can only choose a unique participating character', function () {
@@ -71,7 +71,7 @@ describe('Rising Stars Kata', function() {
                 this.player1.clickCard(this.risingStarsKata);
                 this.player1.clickCard(this.mirumotoHitomi);
                 expect(this.mirumotoHitomi.militarySkill).toBe(7);
-                expect(this.getChatLogs(6)).toContain('player1 plays Rising Stars Kata to give Mirumoto Hitomi +3 military skill until the end of the conflict');
+                expect(this.getChatLogs(6)).toContain('player1 plays Rising Stars Kata to give Mirumoto Hitomi +3military until the end of the conflict');
 
                 this.player2.pass();
 
