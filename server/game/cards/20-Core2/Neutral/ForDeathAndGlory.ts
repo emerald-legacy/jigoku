@@ -27,7 +27,7 @@ export default class ForDeathAndGlory extends DrawCard {
                         target: context.targets[CHARACTER],
                         effect: modifyMilitarySkill(2)
                     })),
-                    chatText: (context) => msg`${'grant 2 military skill to '}${context.targets[CHARACTER]}`
+                    chatText: (context) => msg`grant +2 military to ${context.targets[CHARACTER]}`
                 },
                 'Gain +4 skill, and be sacrificed when the conflict ends': {
                     action: multiple([
@@ -43,7 +43,7 @@ export default class ForDeathAndGlory extends DrawCard {
                             })
                         }))
                     ]),
-                    chatText: (context) => msg`${'grant 4 military skill to '}${context.targets[CHARACTER]}, sacrificing them at the end of the conflict`
+                    chatText: (context) => msg`grant +4 military to ${context.targets[CHARACTER]}, sacrificing them at the end of the conflict`
                 }
             })
             .max(perConflict(1));
