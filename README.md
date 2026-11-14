@@ -50,13 +50,12 @@ The game server communicates with the lobby server via WebSocket. Configure the 
 | `DOMAIN` | Site domain |
 | `SECRET` | JWT secret shared with the lobby |
 | `HTTPS` | `true` or `false` |
-| `ENVIRONMENT` | Environment name, also used in the game report URL (e.g. `production`; `npm run jasmine` uses `test`) |
+| `ENVIRONMENT` | Environment name (e.g. `production`; `npm run jasmine` uses `test`) |
 | `LOBBY_PORT` | Lobby port number |
 | `MAX_GAMES` | Optional. Games this node accepts, default `20` |
 | `NODE_SECRET` | Optional. Secret sent to the lobby when the node connects |
 | `GAME_NODE_CERT_PATH`, `GAME_NODE_KEY_PATH` | Optional. TLS certificate and key for the node itself |
 | `BUILD_VERSION` | Optional. Version reported to the lobby, default `LOCAL` |
-| `ANALYTICS_URL` | Optional. Game report endpoint; defaults to the analytics engine, empty disables the reports |
 
 See `server/env.ts` for the definitions.
 

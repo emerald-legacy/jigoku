@@ -20,7 +20,6 @@ import { ShortCardDataSchema, type GameSummary, type PendingGameDTO, type ShortC
 import * as env from '../env.js';
 
 const MAX_DEBUG_DATA_LENGTH = 4 * 1024 * 1024;
-const ANALYTICS_TIMEOUT = 10_000;
 
 /** Validates a client command's arguments; undefined when they don't match. */
 type GameCommand = (args: unknown[]) => ((game: Game, player: string) => void) | undefined;
@@ -321,21 +320,6 @@ export class GameServer implements GameRouter, LobbyHandlers {
     gameWon(game: Game, reason: string, winner: Player): void {
         const saveState = game.getSaveState();
         this.wsSocket.send('GAMEWIN', { game: saveState, winner: winner.name, reason: reason });
-
-        if(env.analyticsUrl) {
-            void fetch(`${env.analyticsUrl}/${env.environment}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(saveState),
-                signal: AbortSignal.timeout(ANALYTICS_TIMEOUT)
-            })
-                .then((response) => {
-                    if(!response.ok) {
-                        logger.warn(`Game report failed: HTTP ${response.status}`);
-                    }
-                })
-                .catch((err: unknown) => logger.warn(`Game report failed: ${err instanceof Error ? err.message : String(err)}`));
-        }
     }
 
     /** Sent to both players with the winning state; the replay ends there, even if play continues. */
