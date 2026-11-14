@@ -50,7 +50,6 @@ The game server communicates with the lobby server via WebSocket. Configure the 
 | `DOMAIN` | Site domain |
 | `SECRET` | JWT secret shared with the lobby |
 | `HTTPS` | `true` or `false` |
-| `ENVIRONMENT` | Environment name (e.g. `production`; `npm run jasmine` uses `test`) |
 | `LOBBY_PORT` | Lobby port number |
 | `MAX_GAMES` | Optional. Games this node accepts, default `20` |
 | `NODE_SECRET` | Optional. Secret sent to the lobby when the node connects |
