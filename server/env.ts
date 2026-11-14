@@ -3,7 +3,6 @@ import { z } from 'zod';
 const parsedEnv = z
     .object({
         DOMAIN: z.string(),
-        ENVIRONMENT: z.string(),
         GAME_NODE_CERT_PATH: z.string().optional(),
         GAME_NODE_KEY_PATH: z.string().optional(),
         GAME_NODE_NAME: z.string(),
@@ -15,9 +14,7 @@ const parsedEnv = z
         LOBBY_WS_URL: z.string(),
         NODE_SECRET: z.string().optional(),
         SECRET: z.string(),
-        BUILD_VERSION: z.string().optional(),
-        // empty disables the game reports
-        ANALYTICS_URL: z.string().default('https://l5r-analytics-engine-production.up.railway.app/api/game-report')
+        BUILD_VERSION: z.string().optional()
     })
     .safeParse(process.env);
 
@@ -26,7 +23,6 @@ if(!parsedEnv.success) {
 }
 
 export const domain = parsedEnv.data.DOMAIN;
-export const environment = parsedEnv.data.ENVIRONMENT;
 export const gameNodeCertPath = parsedEnv.data.GAME_NODE_CERT_PATH;
 export const gameNodeKeyPath = parsedEnv.data.GAME_NODE_KEY_PATH;
 export const gameNodeName = parsedEnv.data.GAME_NODE_NAME;
@@ -39,4 +35,3 @@ export const lobbyWsUrl = parsedEnv.data.LOBBY_WS_URL;
 export const nodeSecret = parsedEnv.data.NODE_SECRET;
 export const secret = parsedEnv.data.SECRET;
 export const buildVersion = parsedEnv.data.BUILD_VERSION ?? 'LOCAL';
-export const analyticsUrl = parsedEnv.data.ANALYTICS_URL;
