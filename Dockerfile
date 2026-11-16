@@ -1,4 +1,4 @@
-FROM node:26.13-alpine3.23@sha256:44a3247313f9bc069a4ec25d01b66254ed7dc4d0408727d8720dc827f0753423 AS builder
+FROM node:26.13-alpine3.23@sha256:39d8c143e60e99ae98f014bebea1e72fc96d3c9bdf9504bc3a27af5c05bfa39f AS builder
 
 WORKDIR /app
 
@@ -18,7 +18,7 @@ ENV BUILD_VERSION=$BUILD_VERSION
 RUN npx tsc && npm prune --omit=dev
 
 # Production stage
-FROM node:26.13-alpine3.23@sha256:44a3247313f9bc069a4ec25d01b66254ed7dc4d0408727d8720dc827f0753423
+FROM node:26.13-alpine3.23@sha256:39d8c143e60e99ae98f014bebea1e72fc96d3c9bdf9504bc3a27af5c05bfa39f
 
 WORKDIR /app
 
